@@ -1,0 +1,28 @@
+{
+  "name": "nodecents",
+  "version": "0.0.0",
+  "description": "Personal finance done with node.js.  Some DropBox integration.  WIP.",
+  "main": "cents.node.server.js",
+  "dependencies": {
+    "httpsync": "^0.0.8",
+    "request": "^2.44.0",
+    "xml2js": "^0.4.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "testDropBox.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/crosshj/nodeCents.git"
+  },
+  "keywords": [
+    "finance"
+  ],
+  "author": "HJ Cross",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/crosshj/nodeCents/issues"
+  },
+  "homepage": "https://github.com/crosshj/nodeCents"
+}
