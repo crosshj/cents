@@ -77,8 +77,19 @@ function getAccounts(){
 
 function saveAccounts(data){
 	var jsonFile = require('path').join(__dirname + '/accounts.json');
-	//TODO: make sure data is clean since this will be read back out
-	require('fs').writeFileSync(jsonFile,JSON.stringify(data, null, '\t'),'utf8');
+	
+	// simple check to make sure data is clean and safe
+	var dataOkayToSave = data.hasOwnProperty('balance') 
+				&& data.hasOwnProperty('assets') 
+				&& data.hasOwnProperty('liabilities');
+	if (dataOkayToSave){
+		require('fs')
+			.writeFileSync(
+				jsonFile,
+				JSON.stringify(data, null, '\t')
+				,'utf8'
+			);
+	}
 }
 
 var htmlFromJson = function(json){
