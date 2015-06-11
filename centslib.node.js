@@ -1,15 +1,14 @@
 // http://nodejs.org/api/child_process.html#child_process_child_process_fork_modulepath_args_options -- RUN NODEJS FILES IN ANOTHER PROCESS!!!
 
 function get(url) {
-  var httpsync = require('httpsync');
-  var req = httpsync.get(url);
-  return req.end().data;
+  var request = require('sync-request');
+  var res = request('GET',url);
+  return res.getBody();
 }
 
 function _getBalances(accounts){
 	var balance = [];
-	var _uBal = get('localhost:/cents/accounts/usaa/balance');
-	console.log(_uBal);
+	var _uBal = 0; //--- TODO: fix this ---//get('localhost/cents/accounts/usaa/balance');
 	var usaaBalance = JSON.parse(_uBal).balance||0;
 	
 	var totalAssets = parseFloat(accounts.assets.map(function(el) {
@@ -447,7 +446,7 @@ var htmlFromJson = function(json){
 			});
 
 			base.netTotal = Number(base.assetsTotal - base.liabilityTotal);
-			console.log(base.netTotal);
+			//console.log(base.netTotal);
 			// set up html
 			$("body").append('<table class="main"><tbody id="main_tbody"><tr><td id="container" class="noborder"></tr></tbody></table>');
 			$("#container").append('<table class="inner_b tablesorter" id="balanceTable"><tbody id="balanceContain"></tbody></table><h4>Liabilities [ ' + base.liabilityTotal.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ' ] / <a class="blend" target="new" href = "https://spreadsheets.google.com/ccc?key=0ApidX2Ywo6QCdExHYnpYc0VyeGJaUWZXcnA1WE5VMEE">[ ' + base.totalOwed.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ' ]</a>' + '<a href="../history.htm?' + totalOwed.toFixed(2).toString() + '"> - history</a></h4>');

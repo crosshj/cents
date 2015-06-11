@@ -11,7 +11,7 @@ TODO:
 
 var http = require('http');
 var c = require('./centslib.node');
-var port = 8080;
+var port = 777;
 
 http.createServer(function (req, res) {
 	if (req.method == 'POST') {
@@ -35,3 +35,5 @@ http.createServer(function (req, res) {
 		res.end(index);
 	}
 }).listen(port);
+
+console.log("---- nodeCents server running on http://localhost:"+port);
