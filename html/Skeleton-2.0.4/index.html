@@ -207,6 +207,22 @@ http://stackoverflow.com/questions/12112746/how-can-i-tint-a-background-image-wi
     $('div.menu').append(makeMenuRow({ name: item.name}));
   });
 
+  $.get("/json",function(data){
+    window.MAIN_DATA = data;
+    //TODO: sort data
+    MAIN_DATA.liabilities.forEach(function(item){
+      if (item.hidden === "true") return;
+      $('div.liabilities').append(makeRow({
+          status: item.status,
+          title: item.title,
+          amount: item.amount,
+          totalOwed: item.total_owed > 0 ? '$'+item.total_owed : '',
+          date: item.date
+        }));
+      });
+    });
+  });
+
   var liabilities = [
     {
       "title": "Sawnee Power",
@@ -468,17 +484,7 @@ http://stackoverflow.com/questions/12112746/how-can-i-tint-a-background-image-wi
     }
   ];
 
-  liabilities.forEach(function(item){
-    if (item.hidden === "true") return;
-    $('div.liabilities').append(makeRow({
-        status: item.status,
-        title: item.title,
-        amount: item.amount,
-        totalOwed: item.total_owed > 0 ? '$'+item.total_owed : '',
-        date: item.date
-      }));
-    });
-  });
+
 
 
 </script>

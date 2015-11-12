@@ -11,29 +11,90 @@ TODO:
 
 var http = require('http');
 var c = require('./centslib.node');
-var port = 777;
+var httpProxy = require('http-proxy');
 
-http.createServer(function (req, res) {
-	if (req.method == 'POST') {
-		var body = '';
-        	req.on('data', function (data) {
-            		body += data;
-        	});
-        	req.on('end', function () {
-            		var data = JSON.parse(body);
-            		c.saveAccounts(data);
-        	});
-       		res.writeHead(200, {'Content-Type': 'text/html'});
-        	res.end('post received');
-	} else {
-		var jsonFile = c.getAccounts();
-		
-		var index = c.htmlFromJson(jsonFile);
-		index = (index||"").replace("{{MAIN_DATA}}",JSON.stringify(jsonFile));
+var options = {};
+var proxy = httpProxy.createProxyServer(options);
 
+var port = 8080;
+
+var readScriptStdOut = function(script, callback){
+	var exec = require('child_process').exec;
+	exec(script, function (error, stdout, stderr){
+	    // result
+	    if (error) return callback(error);
+	    callback(null, stdout);
+	});
+}
+
+var postAccounts = function(req, res){
+	var body = '';
+	req.on('data', function (data) {
+    		body += data;
+	});
+	req.on('end', function () {
+    		var data = JSON.parse(body);
+    		c.saveAccounts(data);
+	});
 		res.writeHead(200, {'Content-Type': 'text/html'});
-		res.end(index);
+	return res.end('post received');
+};
+
+var mainHTML = function(req, res){
+	var jsonFile = c.getAccounts();
+	
+	var index = c.htmlFromJson(jsonFile);
+	index = (index||"").replace("{{MAIN_DATA}}",JSON.stringify(jsonFile));
+
+	res.writeHead(200, {'Content-Type': 'text/html'});
+	res.end(index);
+};
+
+var getJSON = function(req, res){
+	var jsonFile = c.getAccounts();
+	res.writeHead(200, {'Content-Type': 'application/json'});
+	res.end(JSON.stringify(jsonFile));
+};
+
+var router = function(req, res){
+	console.log("[REQUEST] " + req.url);
+
+	if (req.url === '/favicon.ico') {
+		res.writeHead(200, {'Content-Type': 'image/x-icon'} );
+		res.end();
+		return;
+	} 
+
+	switch(true){
+		case /responsive$/.test(req.url):
+			res.writeHead(302, { 'Location': 'responsive/' });
+			res.end();
+			break;
+		case /^\/responsive\/.*$/.test(req.url):
+			console.log("--call to proxy for static file");
+			req.url = req.url.replace(/\/responsive$/,"/responsive/");
+			proxy.web(req, res, { target: 'http://127.0.0.1:81' });
+			break;
+		case (req.method == 'POST'):
+			postAccounts(req, res);
+			break;
+		case ( /\/json$/.test(req.url) ):
+			getJSON(req, res);
+			break;
+		case /^\/static(\/.*$|$)/.test(req.url):
+			console.log("--call to proxy for static file");
+			req.url = req.url.replace(/^\/static(\/|$)/,"/");
+			proxy.web(req, res, { target: 'http://127.0.0.1:81' });
+			break;
+		default:
+			mainHTML(req, res);
+			//getJSON(req, res);
+			break;
 	}
+};
+
+http.createServer( function(req, res){ 
+	router(req, res); 
 }).listen(port);
 
 console.log("---- nodeCents server running on http://localhost:"+port);

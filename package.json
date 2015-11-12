@@ -5,6 +5,7 @@
   "description": "Personal finance done with node.js.  Some DropBox integration.  WIP.",
   "main": "node cents.node.server.js",
   "dependencies": {
+    "http-proxy": "^1.12.0",
     "request": "^2.44.0",
     "sync-request": "^2.0.1",
     "xml2js": "^0.4.4"
@@ -16,10 +17,8 @@
   "scripts": {
     "test": "node testDropBox.js",
     "start": "node cents.node.server.js",
-
-    "//":"lint does not work - Can't open **.js",
+    "//": "lint does not work - Can't open **.js",
     "lint": "jshint **.js",
-    
     "build": "browserify index.js > myproject.min.js"
   },
   "repository": {
