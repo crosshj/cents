@@ -15,8 +15,9 @@ var httpProxy = require('http-proxy');
 
 var options = {};
 var proxy = httpProxy.createProxyServer(options);
+var PROXY_PORT = 81;
 
-var port = 8080;
+var port = process.argv[2] || 8080;
 
 var readScriptStdOut = function(script, callback){
 	var exec = require('child_process').exec;
@@ -73,7 +74,7 @@ var router = function(req, res){
 		case /^\/responsive\/.*$/.test(req.url):
 			console.log("--call to proxy for static file");
 			req.url = req.url.replace(/\/responsive$/,"/responsive/");
-			proxy.web(req, res, { target: 'http://127.0.0.1:81' });
+			proxy.web(req, res, { target: 'http://127.0.0.1:' + PROXY_PORT });
 			break;
 		case (req.method == 'POST'):
 			postAccounts(req, res);
@@ -84,7 +85,7 @@ var router = function(req, res){
 		case /^\/static(\/.*$|$)/.test(req.url):
 			console.log("--call to proxy for static file");
 			req.url = req.url.replace(/^\/static(\/|$)/,"/");
-			proxy.web(req, res, { target: 'http://127.0.0.1:81' });
+			proxy.web(req, res, { target: 'http://127.0.0.1:' + PROXY_PORT });
 			break;
 		default:
 			mainHTML(req, res);
