@@ -4,6 +4,10 @@ SIMPLE NODE SERVER - http://stackoverflow.com/questions/6084360/using-node-js-as
 NODE ON PI AT STARTUP WITH FOREVER (CRONTAB) - http://www.linuxcircle.com/2013/12/30/run-nodejs-server-on-boot-with-forever-on-raspberry-pi/
 RELATIVE URL TO ANOTHER PORT - http://stackoverflow.com/questions/6016120/relative-url-to-a-different-port-number-in-a-hyperlink
 NGINX ON PI (CONFIGURE DEFAULTS) - http://www.ducky-pond.com/posts/2013/Sep/setup-a-web-server-on-rpi/
+GZIP - http://canvace.com/tutorials/http-compression.html
+BROWSER CACHE NGINX - https://www.digitalocean.com/community/questions/leverage-browser-caching-for-nginx
+	- http://stackoverflow.com/questions/12640014/enable-gzip-for-css-and-js-files-on-nginx-server-for-magento
+BROWSER CACHE NODE - TODO 
 
 TODO:
 
@@ -12,6 +16,8 @@ TODO:
 var http = require('http');
 var c = require('./centslib.node');
 var httpProxy = require('http-proxy');
+var zlib = require('zlib');
+var fs = require('fs');
 
 var options = {};
 var proxy = httpProxy.createProxyServer(options);
@@ -51,9 +57,15 @@ var mainHTML = function(req, res){
 };
 
 var getJSON = function(req, res){
-	var jsonFile = c.getAccounts();
-	res.writeHead(200, {'Content-Type': 'application/json'});
-	res.end(JSON.stringify(jsonFile));
+	// not gzipped, using centslib
+	//var jsonFile = c.getAccounts();
+	//res.writeHead(200, {'Content-Type': 'application/json'});
+	//res.end(JSON.stringify(jsonFile));
+	
+	// gzipped, using stream
+	var raw = fs.createReadStream('/var/www/nodecents/accounts.json');
+    res.writeHead(200, { 'content-encoding': 'gzip', 'Content-Type': 'application/json' });
+    raw.pipe( zlib.createGzip() ).pipe(res);	
 };
 
 var router = function(req, res){
