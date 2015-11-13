@@ -2,6 +2,7 @@
 <head>
 <style type="text/css">
 	
+/*	
 	#container {
 		width: 100%;
 		height: 100%;
@@ -14,88 +15,92 @@
 	#background {
 		width: 200%;
 		height: 200%;
-/*	    -webkit-filter: blur(28px);
+	    -webkit-filter: blur(28px);
 	    -webkit-transform: translate3d(0, 0, 0);
 	    filter: blur(10px);
-	    transform: translate3d(0,0,0);*/
+	    transform: translate3d(0,0,0);
 		background-repeat: no-repeat;
     	background-size: cover;
 	}
-
+*/
+/*
 	body {
 		background-repeat: no-repeat;
     	background-size: cover;
     	background-blend-mode: lighten, luminosity;
     	background-color: rgba(81, 84, 17, 0.46);
 	}
-
+*/
 </style>
 </head>
 
 <body>
-	<div id="container"><div id="background"></div></div>
-	<div id="foo" style="width: 100%;height: 300%; display: none;"></div>
+	<!--div id="container"><div id="background"></div></div-->
+	<!--div id="foo" style="width: 100%;height: 300%; display: none;"></div-->
 </body>
 
 <script type="text/javascript">
 
+	function putPixel(context, x, y, r, g, b, a){
+		context._imageData = context._imageData || context.getImageData(x,y,1,1);
+		context._imageDataRaw  = context._imageDataRaw || context._imageData.data;
+		context._imageDataRaw[0]   = r;
+		context._imageDataRaw[1]   = g;
+		context._imageDataRaw[2]   = b;
+		context._imageDataRaw[3]   = a;
+		context.putImageData( context._imageData, x, y );
 
-console.log("make canvas")
-
-var canvas = document.createElement("canvas");
-canvas.id = "mycanvas";
-canvas.width = 3;
-canvas.height = 3;
-var context = canvas.getContext('2d');
-
-
-function putPixel(context, x, y, r, g, b, a){
-	context._imageData = context._imageData || context.getImageData(x,y,1,1);
-	context._imageDataRaw  = context._imageDataRaw || context._imageData.data;
-	context._imageDataRaw[0]   = r;
-	context._imageDataRaw[1]   = g;
-	context._imageDataRaw[2]   = b;
-	context._imageDataRaw[3]   = a;
-	context.putImageData( context._imageData, x, y );
-
-	// ALTERNATE
-	//context.fillStyle = "rgba("+255+","+0+","+255+","+1+")";
-	//context.fillRect( 0, 0, 1, 1 );
-
-
-}
-
-for (var y = 0; y < canvas.height; y++) { 
-	for (var x = 0; x < canvas.width; x++) { 
-		var red = Math.floor(Math.random() * 30)+20;
-		var green = Math.floor(Math.random() * 50)+20;
-		var blue = Math.floor(Math.random() * 50)+20;
-		console.log("colors %O",{red,green,blue});
-		putPixel(
-			context, 
-			x, y, 
-			red, 
-			green, 
-			blue, 
-			255
-		);
+		// ALTERNATE
+		//context.fillStyle = "rgba("+255+","+0+","+255+","+1+")";
+		//context.fillRect( 0, 0, 1, 1 );
 	}
-}
+
+	var colorsList = [
 
 
+	];
+	var bgColor = "rgba(81, 84, 17, 0.46)";
 
+	var backgroundGradient = function(colors, w, h, bgColor){
+		colors = colors || [];
+		w = w || 3;
+		h = h || 3;
+		var canvas = document.createElement("canvas");
+		canvas.id = "mycanvas";
+		canvas.width = w || 3;
+		canvas.height = h || 3;
+		var context = canvas.getContext('2d');
 
-var dataURI = canvas.toDataURL("image/png");
-//document.querySelector("#background").style.backgroundImage='url("' + dataURI +'")';
-document.body.background = dataURI;
+		for (var y = 0; y < canvas.height; y++) { 
+			for (var x = 0; x < canvas.width; x++) { 
+				var red = Math.floor(Math.random() * 30)+20;
+				var green = Math.floor(Math.random() * 50)+20;
+				var blue = Math.floor(Math.random() * 50)+20;
+				//console.log("colors %O",{red,green,blue});
+				putPixel(
+					context, 
+					x, y, 
+					red, 
+					green, 
+					blue, 
+					255
+				);
+			}
+		}
 
+		var dataURI = canvas.toDataURL("image/png");
+		document.body.background = dataURI;
+		document.body.style.backgroundRepeat = "no-repeat";
+		document.body.style.backgroundSize = "cover";
+		if (bgColor){
+			document.body.style.backgroundBlendMode = "lighten, luminosity";
+			document.body.style.backgroundColor = bgColor;	
+		}
+		//document.querySelector("#background").style.backgroundImage='url("' + dataURI +'")';
+		//document.body.appendChild(canvas);
 
-
-//document.body.appendChild(canvas);
-
-
-
-
+	};
+	backgroundGradient(colorsList, 3, 3, bgColor);
 
 
 
