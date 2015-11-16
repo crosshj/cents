@@ -13,6 +13,10 @@ chrome.extension.onMessage.addListener(
   });
 
 chrome.browserAction.onClicked.addListener(function(tab) { 
-	alert('icon clicked');
+	chrome.tabs.create({url: '/src/cents.html'});
+	//alert('icon clicked');
 	//chrome.windows.create({ url: 'https://mobile.twitter.com/', type: 'foo' });
 });
+
+// got this from xmarks, not sure it is required
+function OpenExtensionUrl(a,c){function d(a){for(var c=!1,d=0;d<a.length;d++){var g=a[d];if(0==g.url.indexOf(b)){chrome.tabs.update(g.id,{url:e,selected:!0});c=!0;break}}c||chrome.tabs.create({url:e,selected:!0})}var b=chrome.extension.getURL(a),e=b;c&&(e+="?"+c);chrome.windows.getCurrent(function(a){chrome.tabs.getAllInWindow(a.id,d)})}
