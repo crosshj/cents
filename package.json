@@ -5,11 +5,8 @@
   "description": "Personal finance done with node.js.  Some DropBox integration.  WIP.",
   "main": "node cents.node.server.js",
   "dependencies": {
-<<<<<<< HEAD
     "lodash": "^4.12.0",
-=======
     "http-proxy": "^1.12.0",
->>>>>>> 5d52f028c163640bc6fa68ec865d15f0cbff5ef3
     "request": "^2.44.0",
     "sync-request": "^2.0.1",
     "xml2js": "^0.4.4"
