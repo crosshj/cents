@@ -1,6 +1,7 @@
-# nodeCents
-Personal finance done with node.js.  Some DropBox integration.  WIP.
+> Personal finance done with node.js.  Some DropBox integration.  WIP.
 
+# goals
+The aim of this project is to create an application with a simple, responsive inerface for personal finance with an emphasis on automation, mobility, and ubiquity.   
 
 # required files
 
