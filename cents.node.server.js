@@ -7,7 +7,7 @@ NGINX ON PI (CONFIGURE DEFAULTS) - http://www.ducky-pond.com/posts/2013/Sep/setu
 GZIP - http://canvace.com/tutorials/http-compression.html
 BROWSER CACHE NGINX - https://www.digitalocean.com/community/questions/leverage-browser-caching-for-nginx
 	- http://stackoverflow.com/questions/12640014/enable-gzip-for-css-and-js-files-on-nginx-server-for-magento
-BROWSER CACHE NODE - TODO 
+BROWSER CACHE NODE - TODO
 
 TODO:
 
@@ -49,9 +49,11 @@ var postAccounts = function(req, res){
 
 var mainHTML = function(req, res){
 	var jsonFile = c.getAccounts();
-	
+
 	var index = c.htmlFromJson(jsonFile);
-	index = (index||"").replace("{{MAIN_DATA}}",JSON.stringify(jsonFile));
+	index = (index||"")
+    .replace("{{MAIN_DATA}}", JSON.stringify(jsonFile))
+    .replace("{{DIR_NAME}}", __dirname);
 
 	res.writeHead(200, {'Content-Type': 'text/html'});
 	res.end(index);
@@ -62,11 +64,11 @@ var getJSON = function(req, res){
 	//var jsonFile = c.getAccounts();
 	//res.writeHead(200, {'Content-Type': 'application/json'});
 	//res.end(JSON.stringify(jsonFile));
-	
+
 	// gzipped, using stream
 	var raw = fs.createReadStream('/var/www/nodecents/accounts.json');
     res.writeHead(200, { 'content-encoding': 'gzip', 'Content-Type': 'application/json' });
-    raw.pipe( zlib.createGzip() ).pipe(res);	
+    raw.pipe( zlib.createGzip() ).pipe(res);
 };
 
 var router = function(req, res){
@@ -76,7 +78,7 @@ var router = function(req, res){
 		res.writeHead(200, {'Content-Type': 'image/x-icon'} );
 		res.end();
 		return;
-	} 
+	}
 
 	switch(true){
 		case /responsive$/.test(req.url):
@@ -106,8 +108,8 @@ var router = function(req, res){
 	}
 };
 
-http.createServer( function(req, res){ 
-	router(req, res); 
+http.createServer( function(req, res){
+	router(req, res);
 }).listen(port);
 
 console.log("---- nodeCents server running on http://localhost:"+port);
