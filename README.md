@@ -1,5 +1,7 @@
 > Personal finance done with node.js.  Some DropBox integration.  WIP.
 
+![image](https://cloud.githubusercontent.com/assets/1816471/18216275/b6a21c5e-7123-11e6-982b-e3f90fabe969.png)
+
 # goals
 The aim of this project is to create an application with a simple, responsive inerface for personal finance with an emphasis on automation, mobility, and ubiquity.   
 
