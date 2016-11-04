@@ -1,6 +1,7 @@
 > Personal finance done with node.js.  Some DropBox integration.  WIP.
 
-[![Join the chat at https://gitter.im/cents-personal-finance/Lobby](https://badges.gitter.im/cents-personal-finance/Lobby.svg)](https://gitter.im/cents-personal-finance/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)   
+[![Join the chat at https://gitter.im/cents-personal-finance/Lobby](https://badges.gitter.im/cents-personal-finance/Lobby.svg)](https://gitter.im/cents-personal-finance/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Build Status](https://travis-ci.org/crosshj/cents.svg?branch=master)](https://travis-ci.org/crosshj/cents)
 
 ![image](https://cloud.githubusercontent.com/assets/1816471/18216275/b6a21c5e-7123-11e6-982b-e3f90fabe969.png)
 
