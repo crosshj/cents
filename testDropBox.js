@@ -1,7 +1,10 @@
+// TODO: find a way to test on CI without token for dropbox
+/*
 var c = require('./cents.dropbox');
 
-// TODO: find a way to test on CI without token for dropbox
-//c.testDataStore();
+
+c.testDataStore();
+*/
 
 //get list of dataStores
 
