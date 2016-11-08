@@ -37,11 +37,11 @@ var readScriptStdOut = function(script, callback){
 var postAccounts = function(req, res){
 	var body = '';
 	req.on('data', function (data) {
-    		body += data;
+		body += data;
 	});
 	req.on('end', function () {
-    		var data = JSON.parse(body);
-    		c.saveAccounts(data);
+		var data = JSON.parse(body);
+		c.saveAccounts(data);
 	});
 		res.writeHead(200, {'Content-Type': 'text/html'});
 	return res.end('post received');
@@ -52,8 +52,8 @@ var mainHTML = function(req, res){
 
 	var index = c.htmlFromJson(jsonFile);
 	index = (index||"")
-    .replace("{{MAIN_DATA}}", JSON.stringify(jsonFile))
-    .replace("{{DIR_NAME}}", __dirname);
+	.replace("{{MAIN_DATA}}", JSON.stringify(jsonFile))
+	.replace("{{DIR_NAME}}", __dirname);
 
 	res.writeHead(200, {'Content-Type': 'text/html'});
 	res.end(index);
@@ -81,26 +81,26 @@ var router = function(req, res){
 	}
 
 	switch(true){
-		case /responsive$/.test(req.url):
-			res.writeHead(302, { 'Location': 'responsive/' });
-			res.end();
-			break;
-		case /^\/responsive\/.*$/.test(req.url):
-			console.log("--call to proxy for static file");
-			req.url = req.url.replace(/\/responsive$/,"/responsive/");
-			proxy.web(req, res, { target: 'http://127.0.0.1:' + PROXY_PORT });
-			break;
+		// case /responsive$/.test(req.url):
+		// 	res.writeHead(302, { 'Location': 'responsive/' });
+		// 	res.end();
+		// 	break;
+		// case /^\/responsive\/.*$/.test(req.url):
+		// 	console.log("--call to proxy for static file");
+		// 	req.url = req.url.replace(/\/responsive$/,"/responsive/");
+		// 	proxy.web(req, res, { target: 'http://127.0.0.1:' + PROXY_PORT });
+		// 	break;
 		case (req.method == 'POST'):
 			postAccounts(req, res);
 			break;
 		case ( /\/json$/.test(req.url) ):
 			getJSON(req, res);
 			break;
-		case /^\/static(\/.*$|$)/.test(req.url):
-			console.log("--call to proxy for static file");
-			req.url = req.url.replace(/^\/static(\/|$)/,"/");
-			proxy.web(req, res, { target: 'http://127.0.0.1:' + PROXY_PORT });
-			break;
+		// case /^\/static(\/.*$|$)/.test(req.url):
+		// 	console.log("--call to proxy for static file");
+		// 	req.url = req.url.replace(/^\/static(\/|$)/,"/");
+		// 	proxy.web(req, res, { target: 'http://127.0.0.1:' + PROXY_PORT });
+		// 	break;
 		default:
 			mainHTML(req, res);
 			//getJSON(req, res);
