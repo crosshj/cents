@@ -11,7 +11,9 @@
     "sync-request": "^2.0.1",
     "xml2js": "^0.4.4"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "webpack": "^1.13.3"
+  },
   "config": {
     "tester": "jest"
   },
