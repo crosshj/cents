@@ -18,8 +18,8 @@
     "tester": "jest"
   },
   "scripts": {
-    "test": "node testDropBox.js",
-    "start": "node cents.node.server.js",
+    "test": "node ./oldCode/testDropBox.js",
+    "start": "node index.js",
     "//": "lint does not work - Can't open **.js",
     "lint": "jshint **.js",
     "build": "browserify index.js > myproject.min.js"

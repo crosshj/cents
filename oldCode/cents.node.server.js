@@ -69,7 +69,7 @@ function oldServer(){
 		//res.end(JSON.stringify(jsonFile));
 
 		// gzipped, using stream
-		var raw = fs.createReadStream('/var/www/nodecents/accounts.json');
+		var raw = fs.createReadStream(__dirname + '/../accounts.json');
 	    res.writeHead(200, { 'content-encoding': 'gzip', 'Content-Type': 'application/json' });
 	    raw.pipe( zlib.createGzip() ).pipe(res);
 	};
@@ -104,6 +104,9 @@ function oldServer(){
 			// 	req.url = req.url.replace(/^\/static(\/|$)/,"/");
 			// 	proxy.web(req, res, { target: 'http://127.0.0.1:' + PROXY_PORT });
 			// 	break;
+			case (/(index.css|manifest.json|\/.*\.png|\/.*\.jpg)$/).test(req.url):
+				fs.createReadStream(__dirname + '/' + req.url.replace(/^.*\//g,'')).pipe(res);
+				break;
 			default:
 				mainHTML(req, res);
 				//getJSON(req, res);

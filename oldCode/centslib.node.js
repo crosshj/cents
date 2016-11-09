@@ -65,7 +65,7 @@ function _getBalances(accounts){
 }
 
 function getAccounts(){
-	var jsonFile = require('path').join(__dirname + '/accounts.json');
+	var jsonFile = require('path').join(__dirname + '/../accounts.json');
 	var body = require('fs').readFileSync(jsonFile,'utf8');
 	body = body.replace(/<script[^>]*>/gi, '<span style=\'color:red;\'>!!!BAD!!!</span>'); //TODO: sanitize or validate better than this
     body = body.replace(/<\//gi, '<\/\/');
@@ -75,7 +75,7 @@ function getAccounts(){
 }
 
 function saveAccounts(data){
-	var jsonFile = require('path').join(__dirname + '/accounts.json');
+	var jsonFile = require('path').join(__dirname + '/../accounts.json');
 	
 	// simple check to make sure data is clean and safe
 	var dataOkayToSave = data.hasOwnProperty('balance') 
@@ -234,7 +234,7 @@ var htmlFromJson = function(json){
 
 			var path = require('path');
 			var inputXMLFilename = path.resolve(filepath, filename);
-			var outputJSONFilename = path.resolve(filepath, "accounts.json");
+			var outputJSONFilename = path.resolve(filepath, "/../accounts.json");
 
 			var callback = function(err, result) {
 				if (err) console.log(err);

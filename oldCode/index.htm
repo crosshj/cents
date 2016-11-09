@@ -3,23 +3,31 @@
 	
 	http://css-tricks.com/css-media-queries/
 	http://alistapart.com/article/fluidgrids
+	https://android-material-icon-generator.bitdroid.de/ - icons in manifest from here
 
 	-->
 
 	<head>
 		<!-- <meta name="viewport" content="width=device-width, target-densitydpi=device-dpi"> -->
 		<title>Cents</title>
-		<link rel="stylesheet" type="text/css" href="https://dl.dropboxusercontent.com/s/higzaedhwcdskuf/index.css">
+		<link rel="stylesheet" type="text/css" href="index.css">
+		<link rel="manifest" href="manifest.json">
+		<meta name="theme-color" content="#b1bbba">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 	</head>
 
 	<body class="pattern06">
-		<p style="position:absolute; top:-10px; left:10px;">{{DIR_NAME}}</p>
 		{{MAIN_TABLE}}
+		<p style="text-align: center;">{{DIR_NAME}}</p>
 	</body>
 
 	<script> 
 		var docReady = function(){
+			if(document.location.hash){
+				// THIS IS HOMESCREEN MODE?
+				// alert(document.location.hash.replace('#',''));
+			}
 			window.MAIN_DATA=JSON.parse('{{MAIN_DATA}}');
 			
 			var getByName = function(title){
