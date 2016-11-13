@@ -111,25 +111,26 @@ http://stackoverflow.com/questions/12112746/how-can-i-tint-a-background-image-wi
     }*/
 
     a.button {
+      user-select: none;
       padding: 0px 13px;
-      color: rgba(255, 255, 255, 0.4);
-      border-color: rgba(255, 255, 255, 0.12);
-      background-color: rgba(255, 255, 255, 0.1);
+      color: rgb(255, 255, 255);
+      border-color: rgb(255, 255, 255);
+      background-color: rgb(173, 168, 137);
       font-weight: 500;
       letter-spacing: .1rem;
       padding-bottom: 8px;
     }
 
     a.button.due{
-      color: rgba(255, 255, 255, 0.4);
-      background-color: rgba(255, 0, 0, 0.12);
-      border-color: rgba(255, 255, 255, 0.42);
+      color: rgba(255, 255, 255, 1);
+      background-color: rgba(255, 0, 0, 1);
+      border-color: rgba(255, 255, 255, 1);
     }
 
     a.button.pending {
-      color: rgba(255, 255, 255, 0.4);
-      background-color: rgba(220, 170, 62, 0.12);
-      border-color: rgba(255, 255, 255, 0.2);
+      color: rgba(255, 255, 255, 1);
+      background-color: rgba(220, 170, 62, 1);
+      border-color: rgba(255, 255, 255, 1);
     }
 
     body {
@@ -140,6 +141,11 @@ http://stackoverflow.com/questions/12112746/how-can-i-tint-a-background-image-wi
       background-repeat: no-repeat, no-repeat, repeat-x;
       background-position: top left, top right, top;
       background-size: 100% 100%;
+    }
+
+    a.button.menu.selected {
+      background-color: #33C3F0 !important;
+      color: white !important;
     }
 
   </style>
@@ -189,8 +195,11 @@ http://stackoverflow.com/questions/12112746/how-can-i-tint-a-background-image-wi
     ');
   }
   var makeMenuRow = function(data){
+    var selected = data.count === 0
+      ? " selected "
+      : "";
     return $(' \
-      <a class="button menu button-primary '+ data.name.toLowerCase() + '"> \
+      <a class="button menu button-primary '+ data.name.toLowerCase() + selected + '"> \
           ' + data.name.toLowerCase() + ' \
       </a> \
     ');
@@ -202,8 +211,8 @@ http://stackoverflow.com/questions/12112746/how-can-i-tint-a-background-image-wi
       { name: "totals" },
       { name: "assets" }
     ];
-    menu.forEach(function(item){
-      $('div.menu').append(makeMenuRow({ name: item.name}));
+    menu.forEach(function(item, i){
+      $('div.menu').append(makeMenuRow({ name: item.name, count: i}));
     });
     window.MAIN_DATA = data;
     //TODO: sort data
@@ -217,16 +226,20 @@ http://stackoverflow.com/questions/12112746/how-can-i-tint-a-background-image-wi
           date: item.date
       }));
     });
+
+    $('a.button.menu').on("click", function(e){
+      e.preventDefault();
+      $('a.button.menu.selected').removeClass('selected')
+      $(e.target).addClass('selected');
+      console.log('button clicked');
+      console.log($(e.target))
+    });
   });
 
   $(document).ready(function(){
     var colorsList = [];
     var bgColor = "rgba(81, 84, 17, 0.46)";
     backgroundGradient(colorsList, 3, 3, bgColor);
-
-    $('a.button').on("click",function(e){
-      e.preventDefault();
-    });
 
 
   });

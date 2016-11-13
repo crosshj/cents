@@ -70,7 +70,11 @@ function oldServer(){
 
 		// gzipped, using stream
 		var raw = fs.createReadStream(__dirname + '/../accounts.json');
-	    res.writeHead(200, { 'content-encoding': 'gzip', 'Content-Type': 'application/json' });
+	    res.writeHead(200, {
+	    	'content-encoding': 'gzip',
+	    	'Content-Type': 'application/json',
+	    	'Access-Control-Allow-Origin': '*'
+	    });
 	    raw.pipe( zlib.createGzip() ).pipe(res);
 	};
 
@@ -84,15 +88,15 @@ function oldServer(){
 		}
 
 		switch(true){
-			// case /responsive$/.test(req.url):
-			// 	res.writeHead(302, { 'Location': 'responsive/' });
-			// 	res.end();
-			// 	break;
-			// case /^\/responsive\/.*$/.test(req.url):
-			// 	console.log("--call to proxy for static file");
-			// 	req.url = req.url.replace(/\/responsive$/,"/responsive/");
-			// 	proxy.web(req, res, { target: 'http://127.0.0.1:' + PROXY_PORT });
-			// 	break;
+			case /responsive$/.test(req.url):
+				res.writeHead(302, { 'Location': 'responsive/' });
+				res.end();
+				break;
+			case /^\/responsive\/.*$/.test(req.url):
+				console.log("--call to proxy for static file");
+				req.url = req.url.replace(/\/responsive$/,"/responsive/");
+				proxy.web(req, res, { target: 'http://127.0.0.1:' + PROXY_PORT });
+				break;
 			case (req.method == 'POST'):
 				postAccounts(req, res);
 				break;
