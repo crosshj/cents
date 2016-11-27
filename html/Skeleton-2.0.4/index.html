@@ -28,127 +28,9 @@ http://stackoverflow.com/questions/12112746/how-can-i-tint-a-background-image-wi
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <link rel="stylesheet" href="css/normalize.css">
   <link rel="stylesheet" href="css/skeleton.css">
+  <link rel="stylesheet" href="css/cents.css">
   <!-- link rel="stylesheet" href="css/font-awesome.min.css" -->
 
-  <style type="text/css">
-    .column.menu {
-      margin-top: 3%;
-      text-align: center;
-      line-height: 25px;
-      padding-top: 8px;
-      margin-bottom: 3%;
-    }
-    div.menu a {
-      width: 25%;
-      padding-top: 10px;
-      line-height: 20px;
-      color: rgba(0, 0, 0, 0.49) !important;
-      background-color: rgba(255, 255, 255, 0.36) !important;
-      font-weight: bolder;
-      border-color: rgba(255, 255, 255, 0) !important;
-    }
-
-    div.menu a:first-child {
-      float: left;
-    }
-    div.menu a:last-child {
-      float: right;
-    }
-
-    a.button {
-      width: 100%;
-      height: auto;
-    }
-    table {
-      margin-bottom: 0px;
-      line-height: auto;
-    }
-    td {
-      border-bottom: none;
-      padding: 0px;
-    }
-    td.title {
-        font-weight: 600;
-        padding-left: 5px;
-    }
-    td.total, td.status, td.date {
-        text-align: right;
-    }
-
-    td.status, td.date {
-        text-align: right;
-        width: 42%;
-        padding-right: 7px;
-    }
-
-    td.amount {
-      padding-left: 7px;
-    }
-
-
-    tr.header td {
-      line-height: 16px;
-      padding-top: 12px;
-      font-size: 15px;
-      border-bottom: 1px solid;
-      padding-bottom: 5px;
-      border-color: rgba(255, 255, 255, 0.05);
-    }
-
-    tr.info td {
-      padding-top: 6px;
-      line-height: 10px;
-      padding-bottom: 6px;
-      border-color: rgba(0, 0, 0, 0.09);
-      font-size: 14px;
-      font-family: sans-serif;
-      background-color: rgba(0, 0, 0, 0.03);
-    }
-
-/*    i {
-      position: relative;
-      right: 0px;
-    }*/
-
-    a.button {
-      user-select: none;
-      padding: 0px 13px;
-      color: rgb(255, 255, 255);
-      border-color: rgb(255, 255, 255);
-      background-color: rgb(173, 168, 137);
-      font-weight: 500;
-      letter-spacing: .1rem;
-      padding-bottom: 8px;
-    }
-
-    a.button.due{
-      color: rgba(255, 255, 255, 1);
-      background-color: rgba(255, 0, 0, 1);
-      border-color: rgba(255, 255, 255, 1);
-    }
-
-    a.button.pending {
-      color: rgba(255, 255, 255, 1);
-      background-color: rgba(220, 170, 62, 1);
-      border-color: rgba(255, 255, 255, 1);
-    }
-
-    body {
-      background-color: rgba(91,89,77,1);
-      /*
-      background-image: linear-gradient( rgba(0, 0, 0, 0.51), rgba(255, 255, 255, 0.09) ), url('http://mycolorscreen.com/wp-content/uploads/wallpapers_2012/320931/background-01.jpg');
-      */
-      background-repeat: no-repeat, no-repeat, repeat-x;
-      background-position: top left, top right, top;
-      background-size: 100% 100%;
-    }
-
-    a.button.menu.selected {
-      background-color: #33C3F0 !important;
-      color: white !important;
-    }
-
-  </style>
 
   <!-- Favicon
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
@@ -168,6 +50,7 @@ http://stackoverflow.com/questions/12112746/how-can-i-tint-a-background-image-wi
       <div class="column liabilities"></div>
     </div>
   </div>
+  <div id="popup-modal"></div>
 
 <!-- End Document
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
@@ -205,6 +88,23 @@ http://stackoverflow.com/questions/12112746/how-can-i-tint-a-background-image-wi
     ');
   }
 
+  function popUpModal(target, content){
+   if(content){
+    $('div#popup-modal').html(content);
+   }
+   if ($('div#popup-modal.show').length){
+     $('div#popup-modal').css({top:'100%', bottom: '100%'});
+     $('div#popup-modal').removeClass('show');
+     $('body').removeClass('lock-screen');
+   } else {
+     var scrollTop = $('body').scrollTop();
+     $('div#popup-modal').css({top:scrollTop, bottom: -1*scrollTop});
+     $('body').addClass('lock-screen');
+     $('div#popup-modal').addClass('show');
+   }
+   target && console.log(target.find('.amount').text());
+  }
+
   $.get("/json",function(data){
     var menu = [
       { name: "debts" },
@@ -227,12 +127,63 @@ http://stackoverflow.com/questions/12112746/how-can-i-tint-a-background-image-wi
       }));
     });
 
-    $('a.button.menu').on("click", function(e){
-      e.preventDefault();
-      $('a.button.menu.selected').removeClass('selected')
-      $(e.target).addClass('selected');
-      console.log('button clicked');
-      console.log($(e.target))
+    $('a.button').on("click", function(e){
+      switch (true){
+        case $(this).is('.menu'):
+          $('a.button.selected').removeClass('selected')
+          $(this).addClass('selected');
+          console.log('--- menu button clicked');
+          break;
+        case $(this).is('.paid, .pending, .due'):
+          $('a.button.selected:not(".menu")').removeClass('selected')
+          //$(this).addClass('selected');
+          var statusItems = ['due', 'pending', 'paid'];
+          var statusRow = function(status){
+            return '<div class="row">' +
+              statusItems.reduce(function(target, item){
+                var className = ' class="' +
+                  (item === status.toLowerCase() ? 'selected ' : '') +
+                  item + '"';
+                return target + '<button'+className+'>' + item + '</button>';
+              }, '') +
+            '</div>';
+          }
+
+          var content = $('<div class="container content">'
+            + '<h2>'+$(this).find('.title').text()+'</h2>'
+            + '<p>'
+              + statusRow($(this).find('.status').text())
+            + '</p>'
+            + '<p>'
+              + '<label>Amount</label>'
+              + '<input type="number" value="'+$(this).find('.amount').text().replace(/\$/g,'')+'"/>'
+            +'</p>'
+            + '<p>'
+              + '<label>Total</label>'
+              + '<input type="number" value="'+$(this).find('.total').text().replace(/\$/g,'')+'"/>'
+            +'</p>'
+            + '<p>'
+              + '<label>Date</label>'
+              + '<input type="date" value="'+$(this).find('.date').text()+'"/>'
+            +'</p>'
+            + '</div>');
+          typeof popUpModal === "function" && popUpModal($(this), content);
+          console.log('--- paid OR pending button clicked');
+          break;
+        default:
+          console.log('--- some other case');
+          break;
+      }
+      console.log($(this))
+    });
+    $('#popup-modal').on('click', function(e){
+      if(e.target !== e.currentTarget) return;
+      typeof popUpModal === "function" && popUpModal();
+      $('a.button.selected:not(".menu")').removeClass('selected')
+    });
+    $('#popup-modal .content').on('click', function(e){
+      e.stopPropagation();
+      return false;
     });
   });
 
@@ -240,8 +191,6 @@ http://stackoverflow.com/questions/12112746/how-can-i-tint-a-background-image-wi
     var colorsList = [];
     var bgColor = "rgba(81, 84, 17, 0.46)";
     backgroundGradient(colorsList, 3, 3, bgColor);
-
-
   });
 </script>
 </html>

@@ -1,0 +1,189 @@
+.column.menu {
+  margin-top: 3%;
+  text-align: center;
+  line-height: 25px;
+  padding-top: 8px;
+  margin-bottom: 3%;
+}
+div.menu a {
+  width: 25%;
+  padding-top: 10px;
+  line-height: 20px;
+  color: rgba(0, 0, 0, 0.49) !important;
+  background-color: rgba(255, 255, 255, 0.36) !important;
+  font-weight: bolder;
+  border-color: rgba(255, 255, 255, 0) !important;
+}
+
+div.menu a:first-child {
+  float: left;
+}
+div.menu a:last-child {
+  float: right;
+}
+
+a.button {
+  width: 100%;
+  height: auto;
+}
+table {
+  margin-bottom: 0px;
+  line-height: auto;
+}
+td {
+  border-bottom: none;
+  padding: 0px;
+}
+td.title {
+    font-weight: 600;
+    padding-left: 5px;
+}
+td.total, td.status, td.date {
+    text-align: right;
+}
+
+td.status, td.date {
+    text-align: right;
+    width: 42%;
+    padding-right: 7px;
+}
+
+td.amount {
+  padding-left: 7px;
+}
+
+
+tr.header td {
+  line-height: 16px;
+  padding-top: 12px;
+  font-size: 15px;
+  border-bottom: 1px solid;
+  padding-bottom: 5px;
+  border-color: rgba(255, 255, 255, 0.05);
+}
+
+tr.info td {
+  padding-top: 6px;
+  line-height: 10px;
+  padding-bottom: 6px;
+  border-color: rgba(0, 0, 0, 0.09);
+  font-size: 14px;
+  font-family: sans-serif;
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+/*
+i {
+  position: relative;
+  right: 0px;
+}
+*/
+
+a.button {
+  user-select: none;
+  padding: 0px 13px;
+  font-weight: 500;
+  letter-spacing: .1rem;
+  padding-bottom: 8px;
+}
+
+a.button.paid, button.selected.paid, button.paid:hover {
+  color: rgb(255, 255, 255);
+  border-color: rgb(255, 255, 255);
+  background-color: rgb(173, 168, 137);
+}
+
+a.button.due, button.selected.due, button.due:hover{
+  color: rgba(255, 255, 255, 1);
+  background-color: rgba(255, 0, 0, 1);
+  border-color: rgba(255, 255, 255, 1);
+}
+
+a.button.pending, button.selected.pending, button.pending:hover {
+  color: rgba(255, 255, 255, 1);
+  background-color: rgba(220, 170, 62, 1);
+  border-color: rgba(255, 255, 255, 1);
+}
+
+body {
+  background-color: rgba(91,89,77,1);
+  /*
+  background-image: linear-gradient( rgba(0, 0, 0, 0.51), rgba(255, 255, 255, 0.09) ), url('http://mycolorscreen.com/wp-content/uploads/wallpapers_2012/320931/background-01.jpg');
+  */
+  background-repeat: no-repeat, no-repeat, repeat-x;
+  background-position: top left, top right, top;
+  background-size: 100% 100%;
+}
+
+a.button.menu.selected {
+  background-color: #33C3F0 !important;
+  color: white !important;
+}
+
+a.button.selected {
+  color: #FFF;
+  background-color: #1EAEDB;
+  border-color: #1EAEDB;
+}
+
+#popup-modal {
+  position: absolute;
+  overflow: hidden;
+  top: 100%;
+  right: 23%;
+  bottom: 100%;
+  left: 23%;
+  background: rgba(0,0,0,0.8);
+  z-index: 99999;
+  opacity:0.8;
+  /*transition: bottom 0.4s ease-out, opacity 400ms ease-out;*/
+}
+
+#popup-modal.show {
+  top: -200;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  opacity:1;
+  min-height: 110%;
+  /*transition: bottom 0.3s ease-in, opacity 400ms ease-in;*/
+}
+
+#popup-modal .content {
+  padding: 2em;
+  opacity: 0;
+}
+
+#popup-modal:target {
+  opacity:1;
+  pointer-events: auto;
+}
+
+#popup-modal.show .content {
+  opacity:1;
+  background: white;
+  margin-top: 5%;
+/*  top: 5%;*/
+/*  position: fixed;*/
+/*
+  left: 15%;
+  right: 15%;
+*/
+  border-radius: 3px;
+  /*min-height: 80%;*/
+  /*transition: opacity 400ms ease-in;*/
+}
+
+.container.content button {
+    float: left;
+    margin-right: 1em;
+    padding-left: 2em;
+    padding-right: 2em;
+}
+
+.lock-screen {
+    height: 100%;
+    overflow: hidden;
+    width: 100%;
+    /*position: fixed;*/
+}
