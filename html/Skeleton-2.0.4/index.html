@@ -96,6 +96,7 @@ http://stackoverflow.com/questions/12112746/how-can-i-tint-a-background-image-wi
      $('div#popup-modal').css({top:'100%', bottom: '100%'});
      $('div#popup-modal').removeClass('show');
      $('body').removeClass('lock-screen');
+     $('div#popup-modal').remove();
    } else {
      var scrollTop = $('body').scrollTop();
      $('div#popup-modal').css({top:scrollTop, bottom: -1*scrollTop});

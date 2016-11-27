@@ -128,7 +128,7 @@ a.button.selected {
 
 #popup-modal {
   position: absolute;
-  overflow: hidden;
+/*  overflow: hidden;*/
   top: 100%;
   right: 23%;
   bottom: 100%;
