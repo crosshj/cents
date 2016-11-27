@@ -139,6 +139,17 @@ a.button.selected {
   /*transition: bottom 0.4s ease-out, opacity 400ms ease-out;*/
 }
 
+div#popup-modal:after {
+  content: '×';
+  position: fixed;
+  color: lightgrey;
+  top: 0px;
+  right: 40px;
+  padding: 0 0px;
+  font-weight: normal;
+  font-size: 50px;
+}
+
 #popup-modal.show {
   top: -200;
   right: 0;
@@ -174,16 +185,29 @@ a.button.selected {
   /*transition: opacity 400ms ease-in;*/
 }
 
+#popup-modal button.graph{
+  float: none;
+  margin: 0px;
+  margin-left: 1em;
+  font-size: 21px;
+  padding: 1px 5px 0px 6px;
+  line-height: 37px;
+  vertical-align: top;
+  background: lightgray;
+  color: white;
+  border: 0px;
+}
+
 .container.content button {
-    float: left;
-    margin-right: 1em;
-    padding-left: 2em;
-    padding-right: 2em;
+  float: left;
+  margin-right: 1em;
+  padding-left: 2em;
+  padding-right: 2em;
 }
 
 .lock-screen {
-    height: 100%;
-    overflow: hidden;
-    width: 100%;
-    /*position: fixed;*/
+  height: 100%;
+  overflow: hidden;
+  width: 100%;
+  /*position: fixed;*/
 }

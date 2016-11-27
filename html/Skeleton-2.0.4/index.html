@@ -29,7 +29,7 @@ http://stackoverflow.com/questions/12112746/how-can-i-tint-a-background-image-wi
   <link rel="stylesheet" href="css/normalize.css">
   <link rel="stylesheet" href="css/skeleton.css">
   <link rel="stylesheet" href="css/cents.css">
-  <!-- link rel="stylesheet" href="css/font-awesome.min.css" -->
+  <link rel="stylesheet" href="css/font-awesome.min.css">
 
 
   <!-- Favicon
@@ -151,21 +151,15 @@ http://stackoverflow.com/questions/12112746/how-can-i-tint-a-background-image-wi
 
           var content = $('<div class="container content">'
             + '<h2>'+$(this).find('.title').text()+'</h2>'
-            + '<p>'
               + statusRow($(this).find('.status').text())
-            + '</p>'
-            + '<p>'
               + '<label>Amount</label>'
               + '<input type="number" value="'+$(this).find('.amount').text().replace(/\$/g,'')+'"/>'
-            +'</p>'
-            + '<p>'
+              + '<button class="graph"><i class="fa fa-bar-chart"></i></button>'
               + '<label>Total</label>'
-              + '<input type="number" value="'+$(this).find('.total').text().replace(/\$/g,'')+'"/>'
-            +'</p>'
-            + '<p>'
+              + '<div class="row"><input type="number" value="'+$(this).find('.total').text().replace(/\$/g,'')+'"/>'
+              + '<button class="graph"><i class="fa fa-bar-chart"></i></button></div>'
               + '<label>Date</label>'
               + '<input type="date" value="'+$(this).find('.date').text()+'"/>'
-            +'</p>'
             + '</div>');
           typeof popUpModal === "function" && popUpModal($(this), content);
           console.log('--- paid OR pending button clicked');
@@ -187,10 +181,20 @@ http://stackoverflow.com/questions/12112746/how-can-i-tint-a-background-image-wi
     });
   });
 
+  function handleMove(e){
+    if($('div#popup-modal.show').length){
+      e.preventDefault();
+      return false;
+    }
+  }
+
   $(document).ready(function(){
     var colorsList = [];
     var bgColor = "rgba(81, 84, 17, 0.46)";
     backgroundGradient(colorsList, 3, 3, bgColor);
+    var lockOrientation = screen.lockOrientation || screen.mozLockOrientation || screen.msLockOrientation || function(){};
+    lockOrientation("portrait-primary");
+    $(window).on("touchmove", handleMove);
   });
 </script>
 </html>
