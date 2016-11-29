@@ -128,6 +128,7 @@ a.button.selected {
 
 #popup-modal {
   position: absolute;
+  display: none;
 /*  overflow: hidden;*/
   top: 100%;
   right: 23%;
@@ -157,12 +158,14 @@ a.button.selected {
   left: 0;
   opacity:1;
   min-height: 110%;
+  display: block;
   /*transition: bottom 0.3s ease-in, opacity 400ms ease-in;*/
 }
 
 #popup-modal .content {
   padding: 2em;
   opacity: 0;
+  max-width: 410px;
 }
 
 #popup-modal:target {
@@ -186,7 +189,6 @@ a.button.selected {
 }
 
 #popup-modal button.graph{
-  display: none;
   float: none;
   margin: 0px;
   margin-left: 1em;
@@ -197,10 +199,6 @@ a.button.selected {
   background: lightgray;
   color: white;
   border: 0px;
-}
-
-#popup-modal.show {
-  display: auto;
 }
 
 .container.content button {
