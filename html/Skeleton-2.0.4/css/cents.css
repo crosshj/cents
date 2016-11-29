@@ -139,9 +139,9 @@ a.button.selected {
   /*transition: bottom 0.4s ease-out, opacity 400ms ease-out;*/
 }
 
-div#popup-modal:after {
+#popup-modal.show:after {
   content: '×';
-  position: fixed;
+  position: inherit;
   color: lightgrey;
   top: 0px;
   right: 40px;
@@ -186,6 +186,7 @@ div#popup-modal:after {
 }
 
 #popup-modal button.graph{
+  display: none;
   float: none;
   margin: 0px;
   margin-left: 1em;
@@ -196,6 +197,10 @@ div#popup-modal:after {
   background: lightgray;
   color: white;
   border: 0px;
+}
+
+#popup-modal.show {
+  display: auto;
 }
 
 .container.content button {
