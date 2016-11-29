@@ -87,24 +87,47 @@ a.button {
   padding-bottom: 8px;
 }
 
-a.button.paid, button.selected.paid, button.paid:hover {
+a.button.paid, button.selected.paid {
   color: rgb(255, 255, 255);
   border-color: rgb(255, 255, 255);
   background-color: rgb(173, 168, 137);
 }
 
-a.button.due, button.selected.due, button.due:hover{
+a.button.due, button.selected.due {
   color: rgba(255, 255, 255, 1);
   background-color: rgba(255, 0, 0, 1);
   border-color: rgba(255, 255, 255, 1);
 }
 
-a.button.pending, button.selected.pending, button.pending:hover {
+a.button.pending, button.selected.pending {
   color: rgba(255, 255, 255, 1);
   background-color: rgba(220, 170, 62, 1);
   border-color: rgba(255, 255, 255, 1);
 }
 
+@media (min-width: 750px) {
+  button.paid:hover {
+    color: rgb(255, 255, 255);
+    border-color: rgb(255, 255, 255);
+    background-color: rgb(173, 168, 137);
+  }
+
+  button.due:hover{
+    color: rgba(255, 255, 255, 1);
+    background-color: rgba(255, 0, 0, 1);
+    border-color: rgba(255, 255, 255, 1);
+  }
+
+  button.pending:hover {
+    color: rgba(255, 255, 255, 1);
+    background-color: rgba(220, 170, 62, 1);
+    border-color: rgba(255, 255, 255, 1);
+  }
+}
+
+a, button {
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+}
 body {
   background-color: rgba(91,89,77,1);
   /*
