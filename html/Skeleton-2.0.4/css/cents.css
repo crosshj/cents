@@ -1,3 +1,7 @@
+﻿.hidden {
+  display: none;
+}
+
 .column.menu {
   margin-top: 3%;
   text-align: center;
@@ -234,6 +238,10 @@ a.button.selected {
 #popup-modal div.actions button{
   float: none;
   min-width: 120px;
+}
+
+#popup-modal h2 a {
+  text-decoration: none;
 }
 
 .container.content button {

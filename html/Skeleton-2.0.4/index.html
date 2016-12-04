@@ -76,6 +76,7 @@ http://stackoverflow.com/questions/12112746/how-can-i-tint-a-background-image-wi
                 <td class="amount">$'+ data.amount +'</td> \
                 <td class="total">'+ data.totalOwed +'</td> \
                 <td class="date">'+ data.date +'</td> \
+                <td class="website hidden">'+ data.website +'</td> \
               </tr> \
             </tbody> \
           </table> \
@@ -157,7 +158,8 @@ http://stackoverflow.com/questions/12112746/how-can-i-tint-a-background-image-wi
           title: item.title,
           amount: item.amount,
           totalOwed: item.total_owed > 0 ? '$'+item.total_owed : '',
-          date: item.date
+          date: item.date,
+          website: item.website
       }));
     });
 
@@ -177,7 +179,11 @@ http://stackoverflow.com/questions/12112746/how-can-i-tint-a-background-image-wi
       var originalDateString = $clickedRow.find('.date').text();
       var originalStatus = $clickedRow.find('.status').text();
       var content = $('<div class="container content">'
-        + '<h2>'+$clickedRow.find('.title').text()+'</h2>'
+        + '<h2>'
+          + '<a target="_blank" href="'+$clickedRow.find('.website').text()+'">'
+          + $clickedRow.find('.title').text()
+          + '</a>'
+        +'</h2>'
           + statusRow(originalStatus)
           + '<label>Amount</label>'
           + '<input class="amount" type="number" value="'+$clickedRow.find('.amount').text().replace(/\$/g,'')+'"/>'
