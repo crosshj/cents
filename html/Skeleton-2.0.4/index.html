@@ -126,8 +126,23 @@ http://stackoverflow.com/questions/12112746/how-can-i-tint-a-background-image-wi
     MAIN_DATA.liabilities.getByName = getByName;
     MAIN_DATA.assets.getByName = getByName;
 
-    //TODO: sort data
-    MAIN_DATA.liabilities.forEach(function(item){
+    var pending = MAIN_DATA.liabilities.filter(function(a){
+      return a.status.toLowerCase() === 'pending'
+    }).sort(function(a, b) {
+      return new Date(a.date) - new Date(b.date);
+    });
+    var paid = MAIN_DATA.liabilities.filter(function(a){
+      return a.status.toLowerCase() === 'paid'
+    }).sort(function(a, b) {
+      return new Date(a.date) - new Date(b.date);
+    });
+    var due = MAIN_DATA.liabilities.filter(function(a){
+      return a.status.toLowerCase() === 'due'
+    }).sort(function(a, b) {
+      return new Date(a.date) - new Date(b.date);
+    });
+    var liabilities = [].concat(due, pending, paid);
+    liabilities.forEach(function(item){
       if (item.hidden === "true") return;
       $('div.liabilities').append(makeRow({
           status: item.status,
