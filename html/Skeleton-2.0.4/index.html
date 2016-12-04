@@ -186,7 +186,7 @@ http://stackoverflow.com/questions/12112746/how-can-i-tint-a-background-image-wi
     });
   });
 
-  function handleMove(e){
+  function handleTouchMove(e){
     if($('div#popup-modal.show').length){
       e.preventDefault();
       return false;
@@ -199,7 +199,7 @@ http://stackoverflow.com/questions/12112746/how-can-i-tint-a-background-image-wi
     backgroundGradient(colorsList, 3, 3, bgColor);
     var lockOrientation = screen.lockOrientation || screen.mozLockOrientation || screen.msLockOrientation || function(){};
     lockOrientation("portrait-primary");
-    $(window).on("touchmove", handleMove);
+    $(window).on("touchmove", handleTouchMove);
   });
 </script>
 </html>
