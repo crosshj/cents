@@ -174,9 +174,11 @@ http://stackoverflow.com/questions/12112746/how-can-i-tint-a-background-image-wi
         '</div>';
       }
 
+      var originalDateString = $clickedRow.find('.date').text();
+      var originalStatus = $clickedRow.find('.status').text();
       var content = $('<div class="container content">'
         + '<h2>'+$clickedRow.find('.title').text()+'</h2>'
-          + statusRow($clickedRow.find('.status').text())
+          + statusRow(originalStatus)
           + '<label>Amount</label>'
           + '<input class="amount" type="number" value="'+$clickedRow.find('.amount').text().replace(/\$/g,'')+'"/>'
           + '<button class="graph"><i class="fa fa-bar-chart"></i></button>'
@@ -184,22 +186,47 @@ http://stackoverflow.com/questions/12112746/how-can-i-tint-a-background-image-wi
           + '<div class="row"><input  class="total" type="number" value="'+$clickedRow.find('.total').text().replace(/\$/g,'')+'"/>'
           + '<button class="graph"><i class="fa fa-bar-chart"></i></button></div>'
           + '<label>Date</label>'
-          + '<input type="date" value="'+$clickedRow.find('.date').text()+'"/>'
+          + '<input type="date" value="'+ originalDateString +'"/>'
           + '<div class="row actions">'
             +'<button class="button-primary cancel" onClick="">Cancel</button>'
             +'<button class="button-primary save" onClick="">Save</button>'
           +'</div>'
         + '</div>');
+      var getStatus = function($item){
+        var status = $item.attr('class').replace(/selected/g, '').trim();
+        status = status.substring( 0, 1 ).toUpperCase() + status.substring(1).trim();
+        return status;
+      };
+
       content.find('.status.row button').on('click', function (e){
+        var currentSelectedStatus = getStatus(content.find('.selected'));
+        var clickedStatus = getStatus($(this));
+
+        if(clickedStatus.toLowerCase() === 'paid' && originalStatus.toLowerCase() !== 'paid'){
+          var day = Number(originalDateString.replace(/.*-/g,''));
+          var month = Number(originalDateString.replace(/-..$/g,'').replace(/.*-/g,''));
+          var year = Number(originalDateString.replace(/-.*/g,''));
+          if (month === 12) {
+            year += 1;
+            month = 1;
+          } else {
+            month += 1;
+          }
+          day = (day < 10) ? '0'+day : day;
+          month = (month < 10) ? '0'+month : month;
+          content.find('input[type="date"]').val(year + '-' + month + '-' + day)
+        } else {
+          content.find('input[type="date"]').val(originalDateString);
+        }
         content.find('.status.row button').removeClass('selected');
         $(this).addClass('selected');
       });
+
       var getCurrentItem = function(item){
-        var status = item.find('.selected').attr('class').replace(/selected/g, '');
-        status = status.substring( 0, 1 ).toUpperCase() + status.substring(1);
+        var status = getStatus(item.find('.selected'));
         return {
           name: item.find('h2').text().trim(),
-          status: status.trim(),
+          status: status,
           amount: item.find('.amount').val(),
           total: item.find('.total').val(),
           date: item.find('input[type="date"]').val()
