@@ -120,6 +120,14 @@ http://stackoverflow.com/questions/12112746/how-can-i-tint-a-background-image-wi
     });
     window.MAIN_DATA = data;
 
+    MAIN_DATA.liabilities = MAIN_DATA.liabilities.map(function(item){
+      
+      if (item.status.toLowerCase() === 'paid' && new Date(item.date) <= new Date()){
+        item.status = "Due";
+      }
+      return item;
+    });
+
     var getByName = function(title){
       return this.filter(function(val,i,arr){ return val.title.toLowerCase().indexOf(title) >= 0; })[0];
     }
