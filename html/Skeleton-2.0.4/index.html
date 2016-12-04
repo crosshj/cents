@@ -107,7 +107,7 @@ http://stackoverflow.com/questions/12112746/how-can-i-tint-a-background-image-wi
      $('body').addClass('lock-screen');
      $('div#popup-modal').addClass('show');
    }
-   target && console.log(target.find('.amount').text());
+   //target && console.log(target.find('.amount').text());
   }
 
   $.get("/json",function(data){
@@ -137,7 +137,7 @@ http://stackoverflow.com/questions/12112746/how-can-i-tint-a-background-image-wi
         case $(this).is('.menu'):
           $('a.button.selected').removeClass('selected')
           $(this).addClass('selected');
-          console.log('--- menu button clicked');
+          //console.log('--- menu button clicked');
           break;
         case $(this).is('.paid, .pending, .due'):
           $('a.button.selected:not(".menu")').removeClass('selected')
@@ -158,22 +158,42 @@ http://stackoverflow.com/questions/12112746/how-can-i-tint-a-background-image-wi
             + '<h2>'+$(this).find('.title').text()+'</h2>'
               + statusRow($(this).find('.status').text())
               + '<label>Amount</label>'
-              + '<input type="number" value="'+$(this).find('.amount').text().replace(/\$/g,'')+'"/>'
+              + '<input class="amount" type="number" value="'+$(this).find('.amount').text().replace(/\$/g,'')+'"/>'
               + '<button class="graph"><i class="fa fa-bar-chart"></i></button>'
               + '<label>Total</label>'
-              + '<div class="row"><input type="number" value="'+$(this).find('.total').text().replace(/\$/g,'')+'"/>'
+              + '<div class="row"><input  class="total" type="number" value="'+$(this).find('.total').text().replace(/\$/g,'')+'"/>'
               + '<button class="graph"><i class="fa fa-bar-chart"></i></button></div>'
               + '<label>Date</label>'
               + '<input type="date" value="'+$(this).find('.date').text()+'"/>'
+              + '<div class="row actions">'
+                +'<button class="button-primary cancel" onClick="">Cancel</button>'
+                +'<button class="button-primary save" onClick="">Save</button>'
+              +'</div>'
             + '</div>');
+          var getCurrentItem = function(item){
+            return {
+              name: item.find('h2').text().trim(),
+              status: item.find('.selected').attr('class').replace(/selected /g, ''),
+              amount: item.find('.amount').val(),
+              total: item.find('.total').val(),
+              date: item.find('input[type="date"]').val()
+            };
+          }
+          content.find('button.cancel').on('click', function (e){
+            console.log($(this));
+          });
+          content.find('button.save').on('click', function (e){
+            var currentItem = getCurrentItem($(this).parent().parent());
+            console.log(currentItem);
+          });
           typeof popUpModal === "function" && popUpModal($(this), content);
-          console.log('--- paid OR pending button clicked');
+          //console.log('--- paid OR pending button clicked');
           break;
         default:
           console.log('--- some other case');
           break;
       }
-      console.log($(this))
+      //console.log($(this))
     });
     $('#popup-modal').on('click', function(e){
       if(e.target !== e.currentTarget) return;

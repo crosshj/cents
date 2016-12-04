@@ -224,6 +224,16 @@ a.button.selected {
   border: 0px;
 }
 
+#popup-modal div.actions {
+  text-align: center;
+  margin-top: 20px;
+}
+
+#popup-modal div.actions button{
+  float: none;
+  min-width: 120px;
+}
+
 .container.content button {
   float: left;
   margin-right: 1em;
