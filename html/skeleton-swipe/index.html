@@ -127,7 +127,6 @@
     draggable: true
   });
   function selectListener(/* parameters */) {
-    console.log('Flickity select ' + flkty.selectedIndex );
     var selectedTab = document.querySelector('.tab.selected');
     if (selectedTab){
       selectedTab.className = selectedTab.className.replace(/selected/,'').trim();
