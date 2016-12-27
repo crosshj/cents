@@ -1,0 +1,21 @@
+<html>
+	<head>
+			<link rel="icon" type="image/x-icon" href="/favicon.ico#5" />
+			<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css"/>
+
+			<script src="https://www.gstatic.com/firebasejs/3.6.4/firebase.js"></script>
+			<script src="https://www.gstatic.com/firebasejs/3.6.2/firebase-app.js"></script>
+			<script src="https://www.gstatic.com/firebasejs/3.6.2/firebase-auth.js"></script>
+			<script src="https://www.gstatic.com/firebasejs/3.6.2/firebase-database.js"></script>
+			<script src='/accounts.js'></script>
+			<script src='/database.js'></script>
+		<script>
+		</script>
+	</head>
+	<body>
+		<button class='sign in' onclick="Database.signIn()">Sign IN</button>
+		<button class='sign out' onclick="Database.signOut()">Sign OUT</button>
+		<button class='get database' onclick="Database.read()">Read DB</button>
+		<button class='get database' onclick="Database.write()">Write DB</button>
+	</body>
+</html>
