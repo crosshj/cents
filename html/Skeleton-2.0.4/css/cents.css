@@ -244,6 +244,10 @@ a.button.selected {
   text-decoration: none;
 }
 
+#popup-modal textarea.notes {
+  width: 100%;
+}
+
 .container.content button {
   float: left;
   margin-right: 1em;
