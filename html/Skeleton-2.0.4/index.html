@@ -248,6 +248,7 @@ http://stackoverflow.com/questions/12112746/how-can-i-tint-a-background-image-wi
         $('#popup-modal').click();
       });
       content.find('button.save').on('click', function (e){
+
         var currentItem = getCurrentItem($(this).parent().parent());
         var previousVersion = MAIN_DATA.liabilities.getByName(currentItem.name.toLowerCase());
         previousVersion.title = currentItem.name;
@@ -255,6 +256,7 @@ http://stackoverflow.com/questions/12112746/how-can-i-tint-a-background-image-wi
         previousVersion.amount = currentItem.amount;
         previousVersion.total_owed = currentItem.total || '0.00';
         previousVersion.date = currentItem.date;
+        previousVersion.note = currentItem.notes.replace(/</g, "&lt;").replace(/>/g, "&gt;");
         $.post( "/", JSON.stringify(MAIN_DATA),function( data ) {
           console.log( "SERVER RESPONSE", data );
           location.reload();
