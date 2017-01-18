@@ -77,6 +77,7 @@ http://stackoverflow.com/questions/12112746/how-can-i-tint-a-background-image-wi
                 <td class="total">'+ data.totalOwed +'</td> \
                 <td class="date">'+ data.date +'</td> \
                 <td class="website hidden">'+ data.website +'</td> \
+                <td class="notes hidden">'+ data.notes +'</td> \
               </tr> \
             </tbody> \
           </table> \
@@ -122,7 +123,7 @@ http://stackoverflow.com/questions/12112746/how-can-i-tint-a-background-image-wi
     window.MAIN_DATA = data;
 
     MAIN_DATA.liabilities = MAIN_DATA.liabilities.map(function(item){
-      
+
       if (item.status.toLowerCase() === 'paid' && new Date(item.date) <= new Date()){
         item.status = "Due";
       }
@@ -178,6 +179,8 @@ http://stackoverflow.com/questions/12112746/how-can-i-tint-a-background-image-wi
 
       var originalDateString = $clickedRow.find('.date').text();
       var originalStatus = $clickedRow.find('.status').text();
+      var notes = $clickedRow.find('.notes').text();
+
       var content = $('<div class="container content">'
         + '<h2>'
           + '<a target="_blank" href="'+$clickedRow.find('.website').text()+'">'
@@ -185,6 +188,7 @@ http://stackoverflow.com/questions/12112746/how-can-i-tint-a-background-image-wi
           + '</a>'
         +'</h2>'
           + statusRow(originalStatus)
+          + '<textarea>' + notes + '<textarea>'
           + '<label>Amount</label>'
           + '<input class="amount" type="number" value="'+$clickedRow.find('.amount').text().replace(/\$/g,'')+'"/>'
           + '<button class="graph"><i class="fa fa-bar-chart"></i></button>'
