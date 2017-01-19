@@ -44,9 +44,7 @@
           ? 'liabilities'
           : item;
         $('.container .row .column.' + itemName).removeClass('hidden');
-        console.log('TODO: switch between liabilities, assets, and totals');
       });
-
       $menuContainer.append($button);
     });
   }
