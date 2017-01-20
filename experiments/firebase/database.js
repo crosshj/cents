@@ -1,7 +1,7 @@
 (function(){
 	// Initialize Firebase
 	var config = {
-		apiKey: "AIzaSyBOkCVHw25eFVukddh2lxMQMFXvX5xpKqo",
+		apiKey: "<your api key here>",
 		authDomain: "centsv1-db5cd.firebaseapp.com",
 		databaseURL: "https://centsv1-db5cd.firebaseio.com",
 		storageBucket: "centsv1-db5cd.appspot.com",
