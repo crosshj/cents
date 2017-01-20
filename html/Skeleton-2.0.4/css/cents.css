@@ -9,6 +9,9 @@
   padding-top: 8px;
   margin-bottom: 3%;
 }
+.column:not(.menu) {
+  min-height: 1200px;
+}
 div.menu a {
   width: 25%;
   padding-top: 10px;
