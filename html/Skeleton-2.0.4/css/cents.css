@@ -290,4 +290,20 @@ a.button.selected {
   overflow-y: overlay;
 }
 
+@media (min-width: 550px) {
+  .carousel-cell::-webkit-scrollbar {
+    width: 0px;
+  }
+}
 
+/*::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: red;
+}
+
+::-webkit-scrollbar-track {
+  background-color: rgba(91,89,77,1);
+}*/

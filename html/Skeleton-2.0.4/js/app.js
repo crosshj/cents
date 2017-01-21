@@ -283,13 +283,23 @@
         tabToSelect.className += ' selected';
       }
     }
-    function scrollListener(progress) {
-      var someProg = Math.max( 0, Math.min( 1, progress ))
-      document.querySelector('.bar-container .bar').style.left = 100 * someProg * 0.6666 + "%";
-    }
-    // bind event listener
     flkty.on( 'select', selectListener );
+
+    // function scrollListener(progress) {
+    //   var someProg = Math.max( 0, Math.min( 1, progress ))
+    //   document.querySelector('.bar-container .bar').style.left = 100 * someProg * 0.6666 + "%";
+    // }
     //flkty.on( 'scroll', scrollListener );
+
+    // TODO: don't change tabs while scrolling
+    // function tempDisableDrag() {
+    //   flkty.unbindDrag();
+    //   setTimeout(function(){
+    //     flkty.bindDrag();
+    //   }, 1000);
+    // }
+    // $(document).scroll(tempDisableDrag);
+    // $(window).on("touchmove", tempDisableDrag);
   }
 
   $(document).ready(function(){
