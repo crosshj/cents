@@ -37,13 +37,7 @@
     menu.forEach(function(item, i){
       var $button = makeMenuButton({ name: item, count: i});
       $button.click(function(){
-        $('a.button.selected').removeClass('selected')
-        $(this).addClass('selected');
-        $('.container .row .column:not(.menu)').addClass('hidden');
-        var itemName = item === 'debts'
-          ? 'liabilities'
-          : item;
-        $('.container .row .column.' + itemName).removeClass('hidden');
+        window.flkty && window.flkty.selectCell(i);
       });
       $menuContainer.append($button);
     });
@@ -261,7 +255,7 @@
       return;
     }
     // setup column swipe
-    var flkty = new Flickity('#main-carousel', {
+    window.flkty = new Flickity('#main-carousel', {
       // options
       setGallerySize: false,
       dragThreshold: 50,
