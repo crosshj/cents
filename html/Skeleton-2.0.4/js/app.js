@@ -1,3 +1,11 @@
+  /*
+    TODO:
+      - DO NOT open popup if x scrolling
+      - DO NOT x scroll if popup is opening
+      - DO NOT x scroll if y is scrolling
+      - DO NOT y scroll if x is scrolling
+  */
+
   function makeRow (data){
     var primary = data.status.toLowerCase() !== "paid" ? " button-primary" : "";
     return $(' \
