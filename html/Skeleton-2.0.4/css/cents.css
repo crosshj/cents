@@ -1,4 +1,8 @@
-﻿.hidden {
+﻿body {
+  overflow-y: hidden;
+}
+
+.hidden {
   display: none;
 }
 
@@ -10,8 +14,9 @@
   margin-bottom: 3%;
 }
 .column:not(.menu) {
-  min-height: 1200px;
+  height: 100%;
 }
+
 div.menu a {
   width: 25%;
   padding-top: 10px;
@@ -142,7 +147,7 @@ body {
   */
   background-repeat: no-repeat, no-repeat, repeat-x;
   background-position: top left, top right, top;
-  background-size: 100% 100%;
+  background-size: 200% 100%;
 }
 
 a.button.menu.selected {
@@ -266,3 +271,23 @@ a.button.selected {
   width: 100%;
   /*position: fixed;*/
 }
+
+#main-carousel {
+  position: absolute;
+  bottom: 0px;
+  top: 80px;
+  left: 0px;
+  right: 0px;
+}
+/* inherit height from parent */
+.carousel { height: 100%; }
+
+.carousel-cell {
+  padding-top: 0px;
+  height: 100%;
+  width: 100%;
+  overflow-x: hidden;
+  overflow-y: overlay;
+}
+
+

@@ -239,6 +239,11 @@
       e.stopPropagation();
       return false;
     });
+
+    setTimeout(function(){
+      setupSwipe();
+      console.log('-- apply swipe');
+    }, 1000)
   }
 
   $.get("/json", createUI);
@@ -250,10 +255,45 @@
     }
   }
 
+  function setupSwipe(){
+    if (!window.Flickity){
+      console.log('No swipe library found');
+      return;
+    }
+    // setup column swipe
+    var flkty = new Flickity('#main-carousel', {
+      // options
+      setGallerySize: false,
+      dragThreshold: 50,
+      prevNextButtons: false,
+      pageDots: false,
+      wrapAround: false,
+      draggable: true,
+      percentPosition: true
+    });
+    function selectListener(/* parameters */) {
+      var selectedTab = document.querySelector('.menu .button.selected');
+      if (selectedTab){
+        selectedTab.className = selectedTab.className.replace(/selected/,'').trim();
+      }
+      var tabToSelect = document.querySelectorAll('.menu .button')[flkty.selectedIndex];
+      if (tabToSelect){
+        tabToSelect.className += ' selected';
+      }
+    }
+    function scrollListener(progress) {
+      var someProg = Math.max( 0, Math.min( 1, progress ))
+      document.querySelector('.bar-container .bar').style.left = 100 * someProg * 0.6666 + "%";
+    }
+    // bind event listener
+    flkty.on( 'select', selectListener );
+    //flkty.on( 'scroll', scrollListener );
+  }
+
   $(document).ready(function(){
     var colorsList = [];
     var bgColor = "rgba(81, 84, 17, 0.46)";
-    backgroundGradient(colorsList, 3, 3, bgColor);
+    //backgroundGradient(colorsList, 3, 3, bgColor);
     var lockOrientation = screen.lockOrientation || screen.mozLockOrientation || screen.msLockOrientation || function(){};
     lockOrientation("portrait-primary");
     $(window).on("touchmove", handleTouchMove);
