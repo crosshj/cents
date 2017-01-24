@@ -117,6 +117,27 @@ a.button.pending, button.selected.pending {
   border-color: rgba(255, 255, 255, 1);
 }
 
+a.button.totals:not(.menu) {
+  background-color: rgba(0, 0, 0, 0.09);
+  border-color: rgba(0, 0, 0, 0);
+  color: rgb(230, 226, 202);
+}
+
+a.button.totals td{
+  text-transform: none;
+}
+
+a.button.totals table tr:last-child td{
+  border-bottom: 0px;
+}
+
+a.totals .title.center {
+  text-align: center;
+  padding-bottom: 5px;
+  border-bottom: 0px;
+  text-transform: uppercase;
+}
+
 @media (min-width: 750px) {
   button.paid:hover {
     color: rgb(255, 255, 255);
