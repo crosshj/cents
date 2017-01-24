@@ -30,7 +30,8 @@
   }
 
   function makeMenuButton (data){
-    var selected = data.count === 0
+    var initialIndex = localStorage && localStorage.getItem('selectedTab');
+    var selected = data.count === Number(initialIndex)
       ? " selected "
       : "";
     return $(' \
@@ -244,7 +245,6 @@
 
     setTimeout(function(){
       setupSwipe();
-      console.log('-- apply swipe');
     }, 1000)
   }
 
@@ -262,9 +262,13 @@
       console.log('No swipe library found');
       return;
     }
+    var initialIndex = localStorage && localStorage.getItem('selectedTab');
+    initialIndex = initialIndex || 0;
+
     // setup column swipe
     window.flkty = new Flickity('#main-carousel', {
       // options
+      initialIndex,
       setGallerySize: false,
       dragThreshold: 50,
       prevNextButtons: false,
@@ -281,6 +285,7 @@
       var tabToSelect = document.querySelectorAll('.menu .button')[flkty.selectedIndex];
       if (tabToSelect){
         tabToSelect.className += ' selected';
+        localStorage.setItem('selectedTab', flkty.selectedIndex);
       }
     }
     flkty.on( 'select', selectListener );
