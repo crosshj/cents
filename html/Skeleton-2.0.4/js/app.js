@@ -116,9 +116,23 @@
   function createUI(data){
     makeMenu($('div.menu'));
     var formattedData = formatAccountData(data);
+
     formattedData.liabilities.forEach(function(item){
       if (item.hidden === "true") return;
       $('div.liabilities').append(makeRow({
+          status: item.status,
+          title: item.title,
+          amount: item.amount,
+          totalOwed: item.total_owed > 0 ? '$'+item.total_owed : '',
+          date: item.date,
+          website: item.website,
+          notes: item.note
+      }));
+    });
+
+    formattedData.assets.forEach(function(item){
+      if (item.hidden === "true") return;
+      $('div.assets').append(makeRow({
           status: item.status,
           title: item.title,
           amount: item.amount,
