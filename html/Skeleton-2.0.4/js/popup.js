@@ -14,19 +14,20 @@ function popUpModal(target, content){
  }
 }
 
+var statusRow = function(statusItems, status){
+  status = status || '';
+  return '<div class="row status">' +
+    statusItems.reduce(function(target, item){
+      var className = ' class="' +
+        (item === status.trim().toLowerCase() ? 'selected ' : '') +
+        item + '"';
+      return target + '<button'+className+'>' + item + '</button>';
+    }, '') +
+  '</div>';
+}
+
 function makeAccountContent($clickedRow){
   var statusItems = ['due', 'pending', 'paid'];
-  var statusRow = function(status){
-    return '<div class="row status">' +
-      statusItems.reduce(function(target, item){
-        var className = ' class="' +
-          (item === status.toLowerCase() ? 'selected ' : '') +
-          item + '"';
-        return target + '<button'+className+'>' + item + '</button>';
-      }, '') +
-    '</div>';
-  }
-
   var originalDateString = $clickedRow.find('.date').text();
   var originalStatus = $clickedRow.find('.status').text();
   var notes = $clickedRow.find('.notes').text();
@@ -37,14 +38,14 @@ function makeAccountContent($clickedRow){
       + $clickedRow.find('.title').text()
       + '</a>'
     +'</h2>'
-      + statusRow(originalStatus)
+      + statusRow(statusItems, originalStatus)
       + '<label>Notes</label>'
       + '<textarea class="notes">' + notes + '</textarea>'
       + '<label>Amount</label>'
-      + '<input class="amount" type="number" value="'+$clickedRow.find('.amount').text().replace(/\$/g,'')+'"/>'
+      + '<input class="amount" type="number" step="0.01" value="'+$clickedRow.find('.amount').text().replace(/[$,]+/g,"")+'"/>'
       + '<button class="graph"><i class="fa fa-bar-chart"></i></button>'
       + '<label>Total</label>'
-      + '<div class="row"><input  class="total" type="number" value="'+$clickedRow.find('.total').text().replace(/\$/g,'')+'"/>'
+      + '<div class="row"><input  class="total" type="number" value="'+$clickedRow.find('.total').text().replace(/[$,]+/g,"")+'"/>'
       + '<button class="graph"><i class="fa fa-bar-chart"></i></button></div>'
       + '<label>Date</label>'
       + '<input type="date" value="'+ originalDateString +'"/>'
@@ -100,7 +101,8 @@ function makeAccountContent($clickedRow){
   content.find('button.save').on('click', function (e){
 
     var currentItem = getCurrentItem($(this).parent().parent());
-    var previousVersion = MAIN_DATA.liabilities.getByName(currentItem.name.toLowerCase());
+    var previousVersion = MAIN_DATA.liabilities.getByName(currentItem.name.toLowerCase())
+      || MAIN_DATA.assets.getByName(currentItem.name.toLowerCase());
     previousVersion.title = currentItem.name;
     previousVersion.status = currentItem.status;
     previousVersion.amount = currentItem.amount;

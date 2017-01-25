@@ -8,86 +8,91 @@
 
   function makeRow (data){
     var primary = data.status.toLowerCase() !== "paid" ? " button-primary" : "";
-    return $(' \
-      <a class="button '+ data.status.toLowerCase() + primary + '"> \
-          <table class="u-full-width"> \
-            <tbody> \
-              <tr class="header"> \
-                <td colspan="2" class="title">' + data.title + ' <!-- i class="fa fa-info-circle"></i --></td> \
-                <td class="status">'+ data.status.toUpperCase() +'</td> \
-              </tr> \
-              <tr class="info"> \
-                <td class="amount">$'+ data.amount +'</td> \
-                <td class="total">'+ data.totalOwed +'</td> \
-                <td class="date">'+ data.date +'</td> \
-                <td class="website hidden">'+ data.website +'</td> \
-                <td class="notes hidden">'+ data.notes +'</td> \
-              </tr> \
-            </tbody> \
-          </table> \
-        </a> \
-    ');
+    return $(`
+      <a class="button ${data.status.toLowerCase() + primary}">
+          <table class="u-full-width">
+            <tbody>
+              <tr class="header">
+                <td colspan="2" class="title">
+                  ${data.title}
+                  <!-- i class="fa fa-info-circle"></i -->
+                </td>
+                <td class="status">
+                  ${data.status.toUpperCase()}
+                </td>
+              </tr>
+              <tr class="info">
+                <td class="amount">${formatMoney(data.amount)}</td>
+                <td class="total">${Boolean(data.totalOwed) ? formatMoney(data.totalOwed) : ''}</td>
+                <td class="date">${data.date}</td>
+                <td class="website hidden">${data.website}</td>
+                <td class="notes hidden">${data.notes}</td>
+              </tr>
+            </tbody>
+          </table>
+        </a>
+    `);
   }
 
-  function makeTotalsRow(){
-    return $(' \
-      <a class="button totals"> \
-        <table class="u-full-width"> \
-          <tbody> \
-            <tr class="header"> \
-              <td colspan="2" class="title center">Current</td> \
-            </tr> \
-            <tr class="header"> \
-              <td class="title">Balance</td> \
-              <td class="status">TODO</td> \
-            </tr> \
-            <tr class="header"> \
-              <td class="title">Pending</td> \
-              <td class="status">TODO</td> \
-            </tr> \
-            <tr class="header"> \
-              <td class="title">Due</td> \
-              <td class="status">TODO</td> \
-            </tr> \
-            <tr class="header"> \
-              <td class="title"></td> \
-              <td class="status">TODO</td> \
-            </tr> \
-          </tbody> \
-        </table> \
-      </a> \
-      <a class="button totals"> \
-        <table class="u-full-width"> \
-          <tbody> \
-            <tr class="header"> \
-              <td colspan="2" class="title center">Monthly</td> \
-            </tr> \
-            <tr class="header"> \
-              <td class="title">Assets</td> \
-              <td class="status">$6,442.00</td> \
-            </tr> \
-            <tr class="header"> \
-              <td class="title">Debt</td> \
-              <td class="status">$4,699.66</td> \
-            </tr> \
-            <tr class="header"> \
-              <td class="title"></td> \
-              <td class="status">$1742.34</td> \
-            </tr> \
-          </tbody> \
-        </table> \
-      </a> \
-      <a class="button totals"> \
-        <table class="u-full-width"> \
-          <tbody> \
-            <tr class="header"> \
-              <td class="title">Debt Total</td> \
-              <td class="status">$97,082.84</td> \
-            </tr> \
-          </tbody> \
-        </table> \
-      </a> \
-    ');
+  function makeTotalsRow({balance=0, pending=0, due=0, assets=0, debts=0, debtTotal=0}){
+    return $(`
+      <a class="button totals">
+        <table class="u-full-width">
+          <tbody>
+            <tr class="header">
+              <td colspan="2" class="title center">Current</td>
+            </tr>
+            <tr class="header">
+              <td class="title">Balance</td>
+              <td class="status">${formatMoney(balance)}</td>
+            </tr>
+            <tr class="header">
+              <td class="title">Pending</td>
+              <td class="status">${formatMoney(pending)}</td>
+            </tr>
+            <tr class="header">
+              <td class="title">Due</td>
+              <td class="status">${formatMoney(due)}</td>
+            </tr>
+            <tr class="header">
+              <td class="title"></td>
+              <td class="status">${formatMoney(balance - pending - due)}</td>
+            </tr>
+          </tbody>
+        </table>
+      </a>
+      <a class="button totals">
+        <table class="u-full-width">
+          <tbody>
+            <tr class="header">
+              <td colspan="2" class="title center">Monthly</td>
+            </tr>
+            <tr class="header">
+              <td class="title">Assets</td>
+              <td class="status">${formatMoney(assets)}</td>
+            </tr>
+            <tr class="header">
+              <td class="title">Debt</td>
+              <td class="status">${formatMoney(debts)}</td>
+            </tr>
+            <tr class="header">
+              <td class="title"></td>
+              <td class="status">${formatMoney(assets - debts)}</td>
+            </tr>
+          </tbody>
+        </table>
+      </a>
+      <a class="button totals">
+        <table class="u-full-width">
+          <tbody>
+            <tr class="header">
+              <td class="title">Debt Total</td>
+              <td class="status">${formatMoney(debtTotal)}</td>
+            </tr>
+          </tbody>
+        </table>
+      </a>
+    `);
   }
 
   function makeMenuButton (data){
@@ -143,7 +148,7 @@
       }));
     });
 
-    $('div.totals .row').append(makeTotalsRow());
+    $('div.totals .row').append(makeTotalsRow(formattedData.totals || {}));
 
     $('a.button:not(.menu)').on("click", function(e){
       switch (true){

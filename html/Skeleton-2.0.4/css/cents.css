@@ -275,6 +275,7 @@ a.button.selected {
 
 #popup-modal textarea.notes {
   width: 100%;
+  font-family: monospace;
   font-size: 12px;
   overflow-y: hidden;
 }
