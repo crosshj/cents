@@ -4,6 +4,10 @@
       - DO NOT x scroll if popup is opening
       - DO NOT x scroll if y is scrolling
       - DO NOT y scroll if x is scrolling
+      - dirty form controls
+      - account history
+      - integrate with DB service
+      - new account / restore / demo account
   */
 
   function makeRow (data){
@@ -174,9 +178,11 @@
       return false;
     });
 
-    setTimeout(function(){
-      setupSwipe();
-    }, 1000)
+    // why is this?
+    // setTimeout(function(){
+    //   setupSwipe();
+    // }, 1);
+    setupSwipe();
   }
 
   $.get("/json", createUI);

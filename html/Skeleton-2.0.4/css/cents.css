@@ -312,6 +312,10 @@ a.button.selected {
   overflow-y: overlay;
 }
 
+#main-carousel > .carousel-cell {
+  opacity: 0;
+}
+
 @media (min-width: 550px) {
   .carousel-cell::-webkit-scrollbar {
     width: 0px;
