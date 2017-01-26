@@ -7,11 +7,10 @@
 }
 
 .column.menu {
-  margin-top: 3%;
+  margin-top: 13px;
   text-align: center;
   line-height: 25px;
   padding-top: 8px;
-  margin-bottom: 3%;
 }
 .column:not(.menu) {
   height: 100%;
@@ -41,6 +40,7 @@ a.button {
 table {
   margin-bottom: 0px;
   line-height: auto;
+  border-collapse: collapse;
 }
 td {
   border-bottom: none;
