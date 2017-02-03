@@ -109,7 +109,7 @@ function makeAccountContent($clickedRow){
     previousVersion.total_owed = currentItem.total || '0.00';
     previousVersion.date = currentItem.date;
     previousVersion.note = currentItem.notes.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    $.post( "/", JSON.stringify(MAIN_DATA),function( data ) {
+    $.post( "/", JSON.stringify(MAIN_DATA), function( data ) {
       console.log( "SERVER RESPONSE", data );
       location.reload();
     });

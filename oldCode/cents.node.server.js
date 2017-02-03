@@ -19,6 +19,8 @@ var httpProxy = require('http-proxy');
 var zlib = require('zlib');
 var fs = require('fs');
 
+var postAccounts = require('./lib/postAccounts');
+
 var options = {};
 var proxy = httpProxy.createProxyServer(options);
 var PROXY_PORT = 81;
@@ -36,19 +38,6 @@ function oldServer(){
 		    callback(null, stdout);
 		});
 	}
-
-	var postAccounts = function(req, res){
-		var body = '';
-		req.on('data', function (data) {
-			body += data;
-		});
-		req.on('end', function () {
-			var data = JSON.parse(body);
-			c.saveAccounts(data);
-		});
-			res.writeHead(200, {'Content-Type': 'text/html'});
-		return res.end('post received');
-	};
 
 	var mainHTML = function(req, res){
 		var jsonFile = c.getAccounts();
@@ -98,7 +87,7 @@ function oldServer(){
 				proxy.web(req, res, { target: 'http://127.0.0.1:' + PROXY_PORT });
 				break;
 			case (req.method == 'POST'):
-				postAccounts(req, res);
+				proxy.web(req, res, { target: 'http://127.0.0.1:' + PROXY_PORT });
 				break;
 			case ( /\/json$/.test(req.url) ):
 				getJSON(req, res);
