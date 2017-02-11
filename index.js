@@ -14,13 +14,9 @@ useOldserver && oldServer();
 
 var jsonParser = bodyParser.json();
 
-app.get('/', function (req, res) {
-  res.send('Hello World!')
-})
-
 var responsivePath = path.join(__dirname, '/html/Skeleton-2.0.4');
 //console.log(responsivePath);
-app.use('/responsive', express.static(responsivePath));
+app.use('/', express.static(responsivePath));
 
 var swipePath = path.join(__dirname, '/html/skeleton-swipe');
 //console.log(responsivePath);

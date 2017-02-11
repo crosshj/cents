@@ -185,7 +185,7 @@
     setupSwipe();
   }
 
-  $.get("/json", createUI);
+  $.get("json", createUI);
 
   function handleTouchMove(e){
     if($('div#popup-modal.show').length){
