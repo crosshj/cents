@@ -2,6 +2,10 @@
   overflow-y: hidden;
 }
 
+.flickity-enabled.is-draggable .flickity-viewport {
+    cursor: all-scroll !important;
+}
+
 .hidden {
   display: none;
 }
