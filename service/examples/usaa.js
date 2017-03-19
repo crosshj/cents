@@ -16,7 +16,7 @@ nightmare
   .evaluate(() => document.querySelector('label[for="securityQuestionTextField"]').innerHTML)
   .then(result => {
     return nightmare
-      .type('#securityQuestionTextField', getPrivateInfo().answer(result))
+      .type('#securityQuestionTextField', getPrivateInfo().answer(result.toLowerCase()))
       .click('button[type="submit"]')
       .wait('#menu')
       .click('#menu li:first-child a')
