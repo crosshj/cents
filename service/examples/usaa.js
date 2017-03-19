@@ -1,7 +1,7 @@
 var Nightmare = require('nightmare');
 var nightmare = Nightmare({ show: false, frame: false });
 var path = require('path');
-import { usaa } as getPrivateInfo from './getPrivateInfo';
+var getPrivateInfo = require('./getPrivateInfo').usaa;
 
 nightmare
   .goto('https://mobile.usaa.com/inet/ent_logon/Logon?acf=1')
@@ -13,19 +13,24 @@ nightmare
   .type('input#pinTextField', getPrivateInfo().pin())
   .click('button[type="submit"]')
   .wait('label[for="securityQuestionTextField"]')
-  .type('#securityQuestionTextField', getPrivateInfo().answer(
-    [...document.querySelector('label[for="securityQuestionTextField"]').innerHTML]
-  ))
-  .click('button[type="submit"]')
-  .wait('#menu')
-  .screenshot(path.join(__dirname, 'usaa.png'))
-  .end()
-    .then(function (result) {
-      console.log(result)
-    })
-    .catch(function (error) {
-      console.error('Error:', error);
-    });
+  .evaluate(() => document.querySelector('label[for="securityQuestionTextField"]').innerHTML)
+  .then(result => {
+    return nightmare
+      .type('#securityQuestionTextField', getPrivateInfo().answer(result))
+      .click('button[type="submit"]')
+      .wait('#menu')
+      .click('#menu li:first-child a')
+      .wait('.acct-group-list')
+      //TODO: get info from here then move on to the next step (for each account)
+      .screenshot(path.join(__dirname, 'usaa.png'))
+      .end()
+  })
+  .then(function (result) {
+    console.log(result)
+  })
+  .catch(function (error) {
+    console.error('Error:', error);
+  });
 
 
     // nightmare
