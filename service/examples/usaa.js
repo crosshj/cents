@@ -3,77 +3,165 @@ var nightmare = Nightmare({ show: false, frame: false });
 var path = require('path');
 var getPrivateInfo = require('./getPrivateInfo').usaa;
 
-nightmare
-  .goto(getPrivateInfo().url())
-  .click('#logOnButton a')
-  .type('input#input_onlineid', getPrivateInfo().username())
-  .type('input#input_password', getPrivateInfo().password())
-  .click('input[type="submit"]')
-  .wait('input#pinTextField')
-  .type('input#pinTextField', getPrivateInfo().pin())
-  .click('button[type="submit"]')
-  .wait('label[for="securityQuestionTextField"]')
-  .evaluate(() => document.querySelector('label[for="securityQuestionTextField"]').innerHTML)
-  .then(result => {
-    return nightmare
-      .type('#securityQuestionTextField', getPrivateInfo().answer(result.toLowerCase()))
-      .click('button[type="submit"]')
-      .wait('#menu')
-      .click('#menu li:first-child a')
-      .wait('.acct-group-list')
-      .evaluate(() => [...document.querySelectorAll('.acct-group-list:first-child  li .link-liner')]
-        .map(node=>{ return node.innerHTML; })
-      )
-      .then(result => {
-        result.forEach(string=>{
-            if(!string.split('acct-bal">')[1]) return;
-            const account = {
-              name: string.split('acct-name">')[1].split('</span>')[0] + ' ' + string.split('acct-detail">')[1].split('</span>')[0],
-              balance: string.split('acct-bal">')[1].split('</span>')[0]
-            };
-            console.log(account)
-        });
-        return nightmare
-          .click('.custom-accts > div:first-child > div:nth-child(2) .acct-group-list:first-child .acct-group-row:first-child a:first-child')
-          //.click('a.acct-info')
-          .wait('.section')
-          .evaluate(() => [...document.querySelectorAll('.details')]
-            .map(node=>{ return node.innerText.replace(/\n/g,'').replace(/\t/g,'').replace('&nbsp;',''); })
-          )
-          .then(result => {
-            console.log(result);
-            return nightmare
-              .screenshot(path.join(__dirname, 'usaa.png'))
-          })
+const getUSAA = callback => {
+  var usaaOutput = {
+    accounts: []
+  };
+  nightmare
+    .goto(getPrivateInfo().url())
+    .click('#logOnButton a')
+    .type('input#input_onlineid', getPrivateInfo().username())
+    .type('input#input_password', getPrivateInfo().password())
+    .click('input[type="submit"]')
+    .wait('input#pinTextField')
+    .type('input#pinTextField', getPrivateInfo().pin())
+    .click('button[type="submit"]')
+    .wait('label[for="securityQuestionTextField"]')
+    .evaluate(() => document.querySelector('label[for="securityQuestionTextField"]').innerHTML)
+    .then(result => {
+      return nightmare
+        .type('#securityQuestionTextField', getPrivateInfo().answer(result.toLowerCase()))
+        .click('button[type="submit"]')
+        .wait('#menu')
+        .click('#menu li:first-child a')
+        .wait('.acct-group-list')
+        .evaluate(() => [...document.querySelectorAll('.acct-group-list:first-child  li .link-liner')]
+          .map(node=>{ return node.innerHTML; })
+        )
+    })
+    .then(result => {
+      // results of accounts overview
+      result.forEach(string=>{
+          if(!string.split('acct-bal">')[1]) return;
+          const account = {
+            name: string.split('acct-name">')[1].split('</span>')[0] + ' ' + string.split('acct-detail">')[1].split('</span>')[0],
+            balance: string.split('acct-bal">')[1].split('</span>')[0].replace('$','').replace(',','')
+          };
+          usaaOutput.accounts.push(account);
+      });
+    })
+    .then(() => {
+      return nightmare
+        .click('.custom-accts > div:first-child > div:nth-child(2) .acct-group-list:first-child .acct-group-row:first-child a:first-child')
+        //.click('a.acct-info')
+        .wait('.section')
+        .evaluate(() => [...document.querySelectorAll('.details')]
+          .map(node=>{ return node.innerText.replace(/\n/g,'').replace(/\t/g,'').replace('&nbsp;',''); })
+        )
+    })
+    .then(result => {
+      // results of main account list
+      const transactions = result
+        .filter(x => /(\s){3}/g.test(x) ) //has whitespace repeated 3 times
+        .map(x => ({
+          date: x.split(/(\s){3}/g)[0],
+          description: x.split(/(\s){3}/g)[2],
+          amount: (() => {
+            const value = x.split(/(\s){3}/g)[4].replace('$','').replace(',','');
+            return value.match(/^\([\d,\.]*\)$/)
+              ? '-' + value.replace(/[\(\)]/g,'')
+              : value;
+          })()
+        }))
+      usaaOutput.accounts[0].transactions = transactions;
+    })
+    .then(() => {
+      return nightmare
+        .back()
+        .wait('.acct-group-list')
+        .click('.acct-group-list li:nth-child(2) a')
+        .wait('.section')
+        .evaluate(() => [...document.querySelectorAll('.details')]
+          .map(node=>{ return node.innerText.replace(/\n/g,'').replace(/\t/g,'').replace('&nbsp;',''); })
+        )
+        //TODO: get info from other accounts
+    })
+    .then(result => {
+      // results of savings account list
+      const transactions = result
+        .filter(x => /(\s){3}/g.test(x) ) //has whitespace repeated 3 times
+        .map(x => ({
+          date: x.split(/(\s){3}/g)[0],
+          description: x.split(/(\s){3}/g)[2],
+          amount: (() => {
+            const value = x.split(/(\s){3}/g)[4].replace('$','').replace(',','');
+            return value.match(/^\([\d,\.]*\)$/)
+              ? '-' + value.replace(/[\(\)]/g,'')
+              : value;
+          })()
+        }))
+      usaaOutput.accounts[1].transactions = transactions;
+    })
+    .then(() => {
+      return nightmare
+        .back()
+        .wait('.acct-group-list')
+        .click('.acct-group-list li:nth-child(3) a')
+        .wait('.section')
+        .evaluate(() => [...document.querySelectorAll('.details')]
+          .map(node=>{ return node.innerText.replace(/\n/g,'').replace(/\t/g,'').replace('&nbsp;',''); })
+        )
+        //TODO: get info from other accounts
+    })
+    .then(result => {
+      // results of savings account list
+      const transactions = result
+        .filter(x => /(\s){3}/g.test(x) ) //has whitespace repeated 3 times
+        .map(x => ({
+          date: x.split(/(\s){3}/g)[0],
+          description: x.split(/(\s){3}/g)[2],
+          amount: (() => {
+            const value = x.split(/(\s){3}/g)[4].replace('$','').replace(',','');
+            return value.match(/^\([\d,\.]*\)$/)
+              ? '-' + value.replace(/[\(\)]/g,'')
+              : value;
+          })()
+        }))
+      usaaOutput.accounts[2].transactions = transactions;
+    })
+    // TODO: get VISA details
+    // .then(() => {
+    //   return nightmare
+    //     .back()
+    //     .wait('.acct-group-list')
+    //     .click('.acct-group-list li:nth-child(4) a')
+    //     .wait('.section')
+    //     .evaluate(() => [...document.querySelectorAll('.details')]
+    //       .map(node=>{ return node.innerText.replace(/\n/g,'').replace(/\t/g,'').replace('&nbsp;',''); })
+    //     )
+    // })
+    // .then(result => {
+    //   // results of VISA account list
+    //   const transactions = result
+    //     .filter(x => /(\s){3}/g.test(x) ) //has whitespace repeated 3 times
+    //     .map(x => ({
+    //       date: x.split(/(\s){3}/g)[0],
+    //       description: x.split(/(\s){3}/g)[2],
+    //       amount: (() => {
+    //         const value = x.split(/(\s){3}/g)[4].replace('$','').replace(',','');
+    //         return value.match(/^\([\d,\.]*\)$/)
+    //           ? '-' + value.replace(/[\(\)]/g,'')
+    //           : value;
+    //       })()
+    //     }))
+    //   usaaOutput.accounts[3].transactions = transactions;
+    // })
+    .then(() => {
+      callback(null, usaaOutput)
+      return nightmare
+        .screenshot(path.join(__dirname, 'usaa.png'))
+        .end()
+    })
+    .catch(function (error) {
+      callback(error);
+    });
+}
 
-      })
-  })
-  .then(() => {
-    return nightmare
-      .end()
-  })
-  .catch(function (error) {
-    console.error('Error:', error);
-  });
+const callback = (err, data) => {
+  if (err){
+    return console.log('Error:\n', err);
+  }
+  console.log('USAA:\n', JSON.stringify(data, null, '  '));
+};
 
-
-    // nightmare
-    //   .goto('https://mobile.usaa.com/inet/ent_logon/Logon?acf=1')
-    //   .click('input#input_onlineid')
-    //   .click('div#main-ctr > div.section-ctr:nth-child(4)')
-    //   .click('input#input_password')
-    //   .click('div#main-ctr > div.section-ctr:nth-child(4)')
-    //   .click('div#main-ctr > div.section-ctr:nth-child(4) > div.button-ctr:nth-child(1) > div.yui3-g.padded:nth-child(1) > div.yui3-u-1:nth-child(1) > input.main-button:nth-child(1)')
-    //   .click('input#pinTextField')
-    //   .click('button#id4')
-    //   .click('input#securityQuestionTextField')
-    //   .click('div#flowWrapper')
-    //   .click('button#id6')
-    //   .click('div#id3 > ul.acct-group-list:nth-child(1) > li.acct-group-row:nth-child(1) > a.usaa-link.acct-info.clearfix:nth-child(1) > span.link-liner:nth-child(1) > span.acct-name:nth-child(1)')
-    //   .end()
-    //     .then(function (result) {
-    //       console.log(result)
-    //     })
-    //     .catch(function (error) {
-    //       console.error('Error:', error);
-    //     });
+getUSAA(callback);
