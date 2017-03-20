@@ -4,7 +4,7 @@ var path = require('path');
 var getPrivateInfo = require('./getPrivateInfo').usaa;
 
 nightmare
-  .goto('https://mobile.usaa.com/inet/ent_logon/Logon?acf=1')
+  .goto(getPrivateInfo().url())
   .click('#logOnButton a')
   .type('input#input_onlineid', getPrivateInfo().username())
   .type('input#input_password', getPrivateInfo().password())
@@ -15,18 +15,38 @@ nightmare
   .wait('label[for="securityQuestionTextField"]')
   .evaluate(() => document.querySelector('label[for="securityQuestionTextField"]').innerHTML)
   .then(result => {
-    return nightmare
+    nightmare
       .type('#securityQuestionTextField', getPrivateInfo().answer(result.toLowerCase()))
       .click('button[type="submit"]')
       .wait('#menu')
       .click('#menu li:first-child a')
       .wait('.acct-group-list')
       //TODO: get info from here then move on to the next step (for each account)
-      .screenshot(path.join(__dirname, 'usaa.png'))
-      .end()
+
   })
-  .then(function (result) {
-    console.log(result)
+  .then(() => {
+    nightmare
+      .evaluate(() => [].slice.call(document.querySelectorAll('.acct-group-list:first-child  li .link-liner')).map(node=>{ return node.innerHTML; }))
+      .then(result => result.forEach(
+        string=>{
+          if(!string.split('acct-bal">')[1]) return;
+          const account = {
+            name: string.split('acct-name">')[1].split('</span>')[0] + ' ' + string.split('acct-detail">')[1].split('</span>')[0],
+            balance: string.split('acct-bal">')[1].split('</span>')[0]
+          };
+          console.log(account)
+        })
+      )
+      // .then(() => {
+      //   nightmare
+      //     .click('.custom-accts > div:first-child > div:nth-child(2) .acct-group-list:first-child .acct-group-row:first-child a:first-child')
+      //     .wait('.section')
+      //     .screenshot(path.join(__dirname, 'usaa.png'))
+      // })
+  })
+  .then(() => {
+    nightmare
+      .end()
   })
   .catch(function (error) {
     console.error('Error:', error);
