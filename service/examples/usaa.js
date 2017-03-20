@@ -15,37 +15,41 @@ nightmare
   .wait('label[for="securityQuestionTextField"]')
   .evaluate(() => document.querySelector('label[for="securityQuestionTextField"]').innerHTML)
   .then(result => {
-    nightmare
+    return nightmare
       .type('#securityQuestionTextField', getPrivateInfo().answer(result.toLowerCase()))
       .click('button[type="submit"]')
       .wait('#menu')
       .click('#menu li:first-child a')
       .wait('.acct-group-list')
-      //TODO: get info from here then move on to the next step (for each account)
-
-  })
-  .then(() => {
-    nightmare
-      .evaluate(() => [].slice.call(document.querySelectorAll('.acct-group-list:first-child  li .link-liner')).map(node=>{ return node.innerHTML; }))
-      .then(result => result.forEach(
-        string=>{
-          if(!string.split('acct-bal">')[1]) return;
-          const account = {
-            name: string.split('acct-name">')[1].split('</span>')[0] + ' ' + string.split('acct-detail">')[1].split('</span>')[0],
-            balance: string.split('acct-bal">')[1].split('</span>')[0]
-          };
-          console.log(account)
-        })
+      .evaluate(() => [...document.querySelectorAll('.acct-group-list:first-child  li .link-liner')]
+        .map(node=>{ return node.innerHTML; })
       )
-      // .then(() => {
-      //   nightmare
-      //     .click('.custom-accts > div:first-child > div:nth-child(2) .acct-group-list:first-child .acct-group-row:first-child a:first-child')
-      //     .wait('.section')
-      //     .screenshot(path.join(__dirname, 'usaa.png'))
-      // })
+      .then(result => {
+        result.forEach(string=>{
+            if(!string.split('acct-bal">')[1]) return;
+            const account = {
+              name: string.split('acct-name">')[1].split('</span>')[0] + ' ' + string.split('acct-detail">')[1].split('</span>')[0],
+              balance: string.split('acct-bal">')[1].split('</span>')[0]
+            };
+            console.log(account)
+        });
+        return nightmare
+          .click('.custom-accts > div:first-child > div:nth-child(2) .acct-group-list:first-child .acct-group-row:first-child a:first-child')
+          //.click('a.acct-info')
+          .wait('.section')
+          .evaluate(() => [...document.querySelectorAll('.details')]
+            .map(node=>{ return node.innerText.replace(/\n/g,'').replace(/\t/g,'').replace('&nbsp;',''); })
+          )
+          .then(result => {
+            console.log(result);
+            return nightmare
+              .screenshot(path.join(__dirname, 'usaa.png'))
+          })
+
+      })
   })
   .then(() => {
-    nightmare
+    return nightmare
       .end()
   })
   .catch(function (error) {
