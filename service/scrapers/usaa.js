@@ -1,7 +1,7 @@
 var Nightmare = require('nightmare');
 var nightmare = Nightmare({ show: false, frame: false });
 var path = require('path');
-var getPrivateInfo = require('./utilities/getPrivateInfo').usaa;
+var getPrivateInfo = require('../utilities/getPrivateInfo').usaa;
 
 const getUSAA = callback => {
   var usaaOutput = {
@@ -157,11 +157,4 @@ const getUSAA = callback => {
     });
 }
 
-const callback = (err, data) => {
-  if (err){
-    return console.log('Error:\n', err);
-  }
-  console.log('USAA:\n', JSON.stringify(data, null, '  '));
-};
-
-getUSAA(callback);
+module.exports = getUSAA;
