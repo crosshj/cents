@@ -1,7 +1,7 @@
 var Nightmare = require('nightmare');
 var nightmare = Nightmare({ show: false, frame: false });
 var path = require('path');
-var getPrivateInfo = require('./getPrivateInfo').usaa;
+var getPrivateInfo = require('./utilities/getPrivateInfo').usaa;
 
 const getUSAA = callback => {
   var usaaOutput = {
