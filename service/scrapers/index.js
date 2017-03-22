@@ -1,3 +1,3 @@
 module.exports = {
-  require('./usaa.js')
+  usaa: require('./usaa.js')
 };
