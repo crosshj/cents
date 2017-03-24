@@ -24,3 +24,4 @@ async.parallel(queue, function(err, results) {
 
 //TODO: express API read from DB
 //TODO: only add new transactions, parse results better before writing to DB
+//TODO: get/set private info from/in database
