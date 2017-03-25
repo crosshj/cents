@@ -185,7 +185,13 @@
     setupSwipe();
   }
 
-  $.get("json", createUI);
+  $.get("json", mainData => {
+    $.get("accounts", scrapedData => {
+      var data = mainData;
+      data.scraped = scrapedData;
+      createUI(data);
+    });
+  });
 
   function handleTouchMove(e){
     if($('div#popup-modal.show').length){

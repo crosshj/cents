@@ -21,7 +21,7 @@ const init = ({
 } = {}) => {
   db = new Db(dbPath, {});
   collection = db.collection(collectionName);
-  callback();
+  callback(null, collection);
 };
 
 const create = ({docs, callback = defaultCallback('create')} = {}) => {
