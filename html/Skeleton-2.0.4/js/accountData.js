@@ -5,9 +5,9 @@ var getByName = function(data, title){
 
 var formatMoney = function(amount){
   amount = amount.toString().replace(/[$,]+/g,"");
-  amount = (Number(amount) >= 0 ? "$" :"-$") 
+  amount = (Number(amount) >= 0 ? "$" :"-$")
     + parseFloat(Math.abs(amount)).toFixed(2);
-  amount = amount.replace(/\B(?=(\d{3})+(?!\d))/g, ","); //COMMAS 
+  amount = amount.replace(/\B(?=(\d{3})+(?!\d))/g, ","); //COMMAS
   return amount
 };
 
@@ -66,7 +66,7 @@ function formatAccountData(data){
         .reduce((all, one) => all - Number(one.total_owed), 0);
 
     var totals = {
-      balance: 2173.05, //TODO
+      balance: data.scraped.data.accounts[0].balance,
       pending: pendingTotal,
       due: dueTotal,
       assets: assetsTotal,

@@ -29,3 +29,5 @@ node_modules
 #private data
 accounts*.json*
 _private/*
+
+integration

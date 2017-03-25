@@ -24,6 +24,7 @@ app.use('/swipe', express.static(swipePath));
 
 app.post('', postAccounts);
 
+require('./service/routes')(app);
 
 app.listen(appPort, function () {
   console.log('Example app listening on port ' + appPort + '!')
