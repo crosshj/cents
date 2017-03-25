@@ -5,6 +5,9 @@ var bodyParser = require('body-parser');
 var app = express();
 var appPort = 81;
 
+var cron = require('./service/cron');
+cron();
+
 var postAccounts = require('./lib/postAccounts');
 
 // listens on 8080

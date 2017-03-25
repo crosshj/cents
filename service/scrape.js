@@ -2,26 +2,32 @@ var scrapers = require('./scrapers');
 var db = require('./database');
 var async = require('async');
 
-db.init({
-  collectionName: 'records'
-});
+function scrape() {
 
-const pushResults = (context, callback) => (err, data) => {
-  const result = {
-    err, data, context,
-    date: new Date().valueOf()
+  db.init({
+    collectionName: 'records'
+  });
+
+  const pushResults = (context, callback) => (err, data) => {
+    const result = {
+      err, data, context,
+      date: new Date().valueOf()
+    };
+    callback(null, result);
   };
-  callback(null, result);
-};
 
-var queue = [
-  callback => scrapers.usaa(pushResults('usaa', callback))
-];
+  var queue = [
+    callback => scrapers.usaa(pushResults('usaa', callback))
+  ];
 
-async.parallel(queue, function(err, results) {
-  db.create({docs: results});
-});
+  async.parallel(queue, function(err, results) {
+    db.create({docs: results});
+  });
 
-//TODO: express API read from DB
-//TODO: only add new transactions, parse results better before writing to DB
-//TODO: get/set private info from/in database
+  //TODO: express API read from DB
+  //TODO: only add new transactions, parse results better before writing to DB
+  //TODO: get/set private info from/in database
+
+}
+
+module.exports = scrape;
