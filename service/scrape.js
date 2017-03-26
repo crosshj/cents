@@ -21,7 +21,7 @@ function scrape() {
   const pushResults = (context, callback) => (err, data) => {
     const result = {
       err, data, context,
-      date: new Date(new Date().getTime() - (date.getTimezoneOffset() * 60000))
+      date: new Date(new Date().getTime() - (new Date().getTimezoneOffset() * 60000))
         .toISOString().replace(/-/g,'').replace(/T/g,' ').substr(0,17)
       //date: new Date().valueOf()
     };
