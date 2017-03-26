@@ -2,16 +2,34 @@ var logger = require('logger');
 var scrapers = require('./scrapers');
 var db = require('./database');
 var async = require('async');
+var timestamp = require('./utilities/date').stamp;
 
-var log = logger.createLogger(
-  require('path').join(__dirname, 'scrape.log')
-);
-log.format = function(level, date, message) {
-  return new Date(date.getTime() - (date.getTimezoneOffset() * 60000))
-    .toISOString().replace(/-/g,'').replace(/T/g,' ').substr(0,17)
-      + " [" + level + "]: "
-      + message;
-};
+// don't write results to DB if we already have (USAA)
+// don't write blank results to DB, in case of error(?)
+function scrapeCallback (err, result, results) {
+  var log = logger.createLogger(
+    require('path').join(__dirname, 'scrape.log')
+  );
+  log.format = function(level, date, message) {
+    return timestamp(date)
+        + " [" + level + "]: "
+        + message;
+  };
+
+  const scrapedUSAABalance = results[0].data.accounts[0].balance;
+  const lastDBUSAABalance = result[result.length-1].data.accounts[0].balance;
+  if (scrapedUSAABalance === lastDBUSAABalance){
+    log.info('good scrape - already had data');
+    return;
+  }
+
+  if (results[0].data) {
+    log.info('good scrape');
+    db.create({docs: results, callback: ()=>{}});
+  } else {
+    log.error('bad scrape');
+  }
+}
 
 function scrape() {
   db.init({
@@ -21,9 +39,7 @@ function scrape() {
   const pushResults = (context, callback) => (err, data) => {
     const result = {
       err, data, context,
-      date: new Date(new Date().getTime() - (new Date().getTimezoneOffset() * 60000))
-        .toISOString().replace(/-/g,'').replace(/T/g,' ').substr(0,17)
-      //date: new Date().valueOf()
+      date: timestamp()
     };
     callback(null, result);
   };
@@ -33,25 +49,9 @@ function scrape() {
   ];
 
   async.parallel(queue, function(err, results) {
-    // also don't write results if we already have
-    // don't write blank results to DB, in case of error(?)
     db.read({
       query: '',
-      callback: (err, result) => {
-        const scrapedUSAABalance = results[0].data.accounts[0].balance;
-        const lastDBUSAABalance = result[result.length-1].data.accounts[0].balance;
-        if (scrapedUSAABalance === lastDBUSAABalance){
-          log.info('good scrape - already had data');
-          return;
-        }
-
-        if (results[0].data) {
-          log.info('good scrape');
-          db.create({docs: results, callback: ()=>{}});
-        } else {
-          log.error('bad scrape');
-        }
-      }
+      callback: (err, result) => scrapeCallback(err, result, results)
     });
 
   });

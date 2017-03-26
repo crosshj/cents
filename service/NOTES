@@ -5,3 +5,12 @@ apt-get update && apt-get install -y xvfb x11-xkb-utils xfonts-100dpi xfonts-75d
 DEBUG=nightmare xvfb-run --server-args="-screen 0 1024x768x24" node example.js
 
 see previous scrapers at C:\Users\Harrison\Dropbox\CODE\phantomjs-1.8.2-windows
+
+
+
+XVFB / XVFB-RUN:
+
+xvfb has locks and if not terminated properly when run into problems
+adding --auto-servernum arg to xvfb-run works but probably is messy and looking for trouble
+
+http://stackoverflow.com/questions/37481482/howto-terminate-xvfb-run-properly
