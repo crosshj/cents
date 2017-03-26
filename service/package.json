@@ -6,9 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "server": "node app.js",
-    "example": "DEBUG=nightmare xvfb-run --server-args='-screen 0 801x601x24' node utilities/example1.js",
-    "scrape": "xvfb-run --server-args='-screen 0 801x601x24' node scrape.js",
-    "headless": "DEBUG=nightmare xvfb-run --server-args='-screen 0 801x601x24' node "
+    "example": "DEBUG=nightmare xvfb-run --auto-servernum --server-args='-screen 0 801x601x24' node utilities/example1.js",
+    "scrape": "xvfb-run --auto-servernum --server-args='-screen 0 801x601x24' node scrape.js",
+    "headless": "DEBUG=nightmare xvfb-run --auto-servernum --server-args='-screen 0 801x601x24' node "
   },
   "author": "",
   "license": "MIT",
