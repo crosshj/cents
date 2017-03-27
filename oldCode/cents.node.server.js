@@ -1,4 +1,8 @@
 /*
+eslint-disable no-console
+*/
+
+/*
 
 SIMPLE NODE SERVER - http://stackoverflow.com/questions/6084360/using-node-js-as-a-simple-web-server
 NODE ON PI AT STARTUP WITH FOREVER (CRONTAB) - http://www.linuxcircle.com/2013/12/30/run-nodejs-server-on-boot-with-forever-on-raspberry-pi/
@@ -32,10 +36,10 @@ function oldServer(){
 
 	var readScriptStdOut = function(script, callback){
 		var exec = require('child_process').exec;
-		exec(script, function (error, stdout, stderr){
-		    // result
-		    if (error) return callback(error);
-		    callback(null, stdout);
+		exec(script, function (error, stdout /*, stderr*/){
+				// result
+				if (error) return callback(error);
+				callback(null, stdout);
 		});
 	}
 
@@ -59,12 +63,12 @@ function oldServer(){
 
 		// gzipped, using stream
 		var raw = fs.createReadStream(__dirname + '/../accounts.json');
-	    res.writeHead(200, {
-	    	'content-encoding': 'gzip',
-	    	'Content-Type': 'application/json',
-	    	'Access-Control-Allow-Origin': '*'
-	    });
-	    raw.pipe( zlib.createGzip() ).pipe(res);
+			res.writeHead(200, {
+				'content-encoding': 'gzip',
+				'Content-Type': 'application/json',
+				'Access-Control-Allow-Origin': '*'
+			});
+			raw.pipe( zlib.createGzip() ).pipe(res);
 	};
 
 	var router = function(req, res){

@@ -1,3 +1,7 @@
+/*
+eslint-disable no-console
+*/
+
 var scrapers = require('./index.js');
 
 const callback = (err, data) => {

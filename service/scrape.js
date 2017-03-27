@@ -4,12 +4,12 @@ var db = require('./database');
 var async = require('async');
 var timestamp = require('./utilities/date').stamp;
 
+var logLocation = require('path').join(__dirname, '../logs/scrape.log');
+
 // don't write results to DB if we already have (USAA)
 // don't write blank results to DB, in case of error(?)
 function scrapeCallback (err, result, results) {
-  var log = logger.createLogger(
-    require('path').join(__dirname, 'scrape.log')
-  );
+  var log = logger.createLogger(logLocation);
   log.format = function(level, date, message) {
     return timestamp(date)
         + " [" + level + "]: "
@@ -61,4 +61,4 @@ function scrape() {
 }
 
 //module.exports = scrape;
-scrape()
+scrape();

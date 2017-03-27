@@ -27,7 +27,7 @@ const getUSAA = callback => {
         .wait('.acct-group-list')
         .evaluate(() => [...document.querySelectorAll('.acct-group-list:first-child  li .link-liner')]
           .map(node=>{ return node.innerHTML; })
-        )
+        );
     })
     .then(result => {
       // results of accounts overview
@@ -47,7 +47,7 @@ const getUSAA = callback => {
         .wait('.section')
         .evaluate(() => [...document.querySelectorAll('.details')]
           .map(node=>{ return node.innerText.replace(/\n/g,'').replace(/\t/g,'').replace('&nbsp;',''); })
-        )
+        );
     })
     .then(result => {
       // results of main account list
@@ -62,7 +62,7 @@ const getUSAA = callback => {
               ? '-' + value.replace(/[\(\)]/g,'')
               : value;
           })()
-        }))
+        }));
       usaaOutput.accounts[0].transactions = transactions;
     })
     .then(() => {
@@ -73,7 +73,7 @@ const getUSAA = callback => {
         .wait('.section')
         .evaluate(() => [...document.querySelectorAll('.details')]
           .map(node=>{ return node.innerText.replace(/\n/g,'').replace(/\t/g,'').replace('&nbsp;',''); })
-        )
+        );
         //TODO: get info from other accounts
     })
     .then(result => {
@@ -89,7 +89,7 @@ const getUSAA = callback => {
               ? '-' + value.replace(/[\(\)]/g,'')
               : value;
           })()
-        }))
+        }));
       usaaOutput.accounts[1].transactions = transactions;
     })
     .then(() => {
@@ -100,7 +100,7 @@ const getUSAA = callback => {
         .wait('.section')
         .evaluate(() => [...document.querySelectorAll('.details')]
           .map(node=>{ return node.innerText.replace(/\n/g,'').replace(/\t/g,'').replace('&nbsp;',''); })
-        )
+        );
         //TODO: get info from other accounts
     })
     .then(result => {
@@ -116,7 +116,7 @@ const getUSAA = callback => {
               ? '-' + value.replace(/[\(\)]/g,'')
               : value;
           })()
-        }))
+        }));
       usaaOutput.accounts[2].transactions = transactions;
     })
     // TODO: get VISA details
@@ -147,14 +147,14 @@ const getUSAA = callback => {
     //   usaaOutput.accounts[3].transactions = transactions;
     // })
     .then(() => {
-      callback(null, usaaOutput)
+      callback(null, usaaOutput);
       return nightmare
         .screenshot(path.join(__dirname, 'usaa.png'))
-        .end()
+        .end();
     })
     .catch(function (error) {
       callback(error);
     });
-}
+};
 
 module.exports = getUSAA;

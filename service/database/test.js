@@ -1,3 +1,7 @@
+/*
+eslint-disable no-console
+*/
+
 var db = require('./index');
 var async = require('async');
 
@@ -5,10 +9,10 @@ var async = require('async');
 const defaultCallback = (operation, callback) => {
   return (err, result) => {
     if (err){
-      return console.log('ERROR - default DB ' + operation.toUpperCase() + ' callback:\n', JSON.stringify(err, null, ' '))
+      return console.log('ERROR - default DB ' + operation.toUpperCase() + ' callback:\n', JSON.stringify(err, null, ' '));
     }
     console.log('SUCCESS - default DB ' + operation.toUpperCase() + ' callback');
-    result && console.log('Result:\n', JSON.stringify(result, null, ' '))
+    result && console.log('Result:\n', JSON.stringify(result, null, ' '));
     callback();
   };
 };
@@ -21,8 +25,8 @@ const init = callback => {
 
 const create = callback => {
   const docs = [
-  	{hello:'world-1'},
-  	{hello:'world-2'}
+    {hello:'world-1'},
+    {hello:'world-2'}
   ];
   db.create({
     docs,
