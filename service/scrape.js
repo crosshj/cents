@@ -22,24 +22,28 @@ function scrapeCallback (err, result, results) {
         + message;
   };
 
-  const scrapedUSAABalance = results[0].data.accounts[0].balance;
-  const lastDBUSAABalance = result[result.length-1].data.accounts[0].balance;
-  if (scrapedUSAABalance === lastDBUSAABalance){
-    log.info('good scrape - already had data');
+  try {
+    if (results[0].data) {
+      const scrapedUSAABalance = results[0].data.accounts[0].balance;
+      const lastDBUSAABalance = result[result.length-1].data.accounts[0].balance;
+      if (scrapedUSAABalance === lastDBUSAABalance){
+        log.info('good scrape - already had data');
+      } else {
+        log.info('good scrape');
+        db.create({docs: results, callback: ()=>{}});
+      }
+    } else {
+      log.error('bad scrape - results:', results);
+    }
+  } catch(err) {
+    log.error('bad scrape - error: ', err);
     return;
-  }
-
-  if (results[0].data) {
-    log.info('good scrape');
-    db.create({docs: results, callback: ()=>{}});
-  } else {
-    log.error('bad scrape');
   }
 }
 
 function scrape() {
   if (DEBUG) {
-    console.log(timestamp(), ' CRON: exexuting scrape');
+    console.log(timestamp(), ' CRON: executing scrape');
   }
 
   db.init({
