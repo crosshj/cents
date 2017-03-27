@@ -14,23 +14,25 @@ const randomNumberBetween = (start, end) => {
 
 const randomDelay = fn => {
   return () => {
-    const delay = randomNumberBetween(0, 59);
+    const delay = randomNumberBetween(0, 45);
     if (DEBUG) {
       console.log(timestamp(), ' CRON: will execute scrape with delay: ', delay, ' minutes');
     }
-    setTimeout(() => {
-      if (DEBUG) {
-        console.log(timestamp(), ' CRON: exexuting scrape');
-      }
-      fn();
-    }, delay * 60000);
+    fn(delay);
   };
 };
 
 // TODO: should not run if it doesn't make sense to
-const runScrape = () => {
-  const command = "xvfb-run --auto-servernum --server-args='-screen 0 801x601x24' node " + require('path').join(__dirname, 'scrape.js');
-  exec(command);
+const runScrape = (sleepMinutes) => {
+  const command = "sleep " + (sleepMinutes * 60) +
+    " && xvfb-run --auto-servernum --server-args='-screen 0 801x601x24' node " +
+    require('path').join(__dirname, 'scrape.js');
+  var child = exec(command);
+  child.stdout.on('data', console.log);
+  child.stderr.on('data', console.error);
+  // child.on('close', function(code) {
+  //     console.log('closing code: ' + code);
+  // });
 };
 
 var job = new cron.CronJob({

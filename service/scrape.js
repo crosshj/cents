@@ -1,8 +1,14 @@
+/*
+eslint-disable no-console
+*/
+
 var logger = require('logger');
 var scrapers = require('./scrapers');
 var db = require('./database');
 var async = require('async');
 var timestamp = require('./utilities/date').stamp;
+
+const DEBUG = true;
 
 var logLocation = require('path').join(__dirname, '../logs/scrape.log');
 
@@ -32,6 +38,10 @@ function scrapeCallback (err, result, results) {
 }
 
 function scrape() {
+  if (DEBUG) {
+    console.log(timestamp(), ' CRON: exexuting scrape');
+  }
+
   db.init({
     collectionName: 'records'
   });
