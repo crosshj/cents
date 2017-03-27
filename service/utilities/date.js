@@ -10,4 +10,4 @@ function stamp(date){
     .toISOString().replace(/-/g,'').replace(/T/g,' ').substr(0,17);
 }
 
-module.exports = { stamp }
+module.exports = { stamp };

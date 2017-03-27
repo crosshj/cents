@@ -1,3 +1,7 @@
+/*
+eslint-disable no-console
+*/
+
 var Nightmare = require('nightmare');
 var nightmare = Nightmare({ show: false, frame: false });
 var path = require('path');

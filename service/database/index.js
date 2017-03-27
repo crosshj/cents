@@ -1,3 +1,6 @@
+/*
+eslint-disable no-console
+*/
 var Db = require('tingodb')().Db;
 var path = require('path');
 
@@ -7,10 +10,10 @@ var collection;
 const defaultCallback = operation => {
   return (err, result) => {
     if (err){
-      return console.log('ERROR - default DB ' + operation.toUpperCase() + ' callback:\n', JSON.stringify(err, null, ' '))
+      return console.log('ERROR - default DB ' + operation.toUpperCase() + ' callback:\n', JSON.stringify(err, null, ' '));
     }
     console.log('SUCCESS - default DB ' + operation.toUpperCase() + ' callback');
-    result && console.log('Result:\n', JSON.stringify(result, null, ' '))
+    result && console.log('Result:\n', JSON.stringify(result, null, ' '));
   };
 };
 
@@ -49,4 +52,4 @@ module.exports = {
   read,
   update,
   del
-}
+};

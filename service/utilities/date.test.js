@@ -1,3 +1,7 @@
+/*
+eslint-disable no-console
+*/
+
 var timestamp = require('./date').stamp;
 
 console.log(timestamp('hello'));
