@@ -18,12 +18,12 @@ TODO:
 */
 
 var http = require('http');
-var c = require('./centslib.node');
+//var c = require('./centslib.node');
 var httpProxy = require('http-proxy');
 var zlib = require('zlib');
 var fs = require('fs');
-
-var postAccounts = require('./lib/postAccounts');
+var timestamp = require('../service/utilities/date').stamp;
+//var postAccounts = require('./lib/postAccounts');
 
 var options = {};
 var proxy = httpProxy.createProxyServer(options);
@@ -34,26 +34,26 @@ var port = process.argv[2] || 8080;
 
 function oldServer(){
 
-	var readScriptStdOut = function(script, callback){
-		var exec = require('child_process').exec;
-		exec(script, function (error, stdout /*, stderr*/){
-				// result
-				if (error) return callback(error);
-				callback(null, stdout);
-		});
-	}
-
-	var mainHTML = function(req, res){
-		var jsonFile = c.getAccounts();
-
-		var index = c.htmlFromJson(jsonFile);
-		index = (index||"")
-		.replace("{{MAIN_DATA}}", JSON.stringify(jsonFile))
-		.replace("{{DIR_NAME}}", __dirname);
-
-		res.writeHead(200, {'Content-Type': 'text/html'});
-		res.end(index);
-	};
+	// var readScriptStdOut = function(script, callback){
+	// 	var exec = require('child_process').exec;
+	// 	exec(script, function (error, stdout /*, stderr*/){
+	// 			// result
+	// 			if (error) return callback(error);
+	// 			callback(null, stdout);
+	// 	});
+	// };
+  //
+	// var mainHTML = function(req, res){
+	// 	var jsonFile = c.getAccounts();
+  //
+	// 	var index = c.htmlFromJson(jsonFile);
+	// 	index = (index||"")
+	// 	.replace("{{MAIN_DATA}}", JSON.stringify(jsonFile))
+	// 	.replace("{{DIR_NAME}}", __dirname);
+  //
+	// 	res.writeHead(200, {'Content-Type': 'text/html'});
+	// 	res.end(index);
+	// };
 
 	var getJSON = function(req, res){
 		// not gzipped, using centslib
@@ -72,7 +72,8 @@ function oldServer(){
 	};
 
 	var router = function(req, res){
-		console.log("[REQUEST] " + req.url);
+
+    console.log(timestamp() + " [REQUEST]: " + req.url);
 
 		if (req.url === '/favicon.ico') {
 			res.writeHead(200, {'Content-Type': 'image/x-icon'} );
