@@ -5,6 +5,10 @@
   https://github.com/cazala/synaptic
 
   https://blog.webkid.io/neural-networks-in-javascript/
+
+  also see:
+  https://github.com/dn2a/dn2a-javascript
+
 */
 
 const mnist = require('mnist');
@@ -13,8 +17,6 @@ const set = mnist.set(700, 20);
 
 const trainingSet = set.training;
 const testSet = set.test;
-
-
 
 const synaptic = require('synaptic');
 
