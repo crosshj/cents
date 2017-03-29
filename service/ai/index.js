@@ -1,5 +1,4 @@
 /*
-
  - TODO: should scrape or not scrape
 
   https://github.com/cazala/synaptic
@@ -8,7 +7,14 @@
 
   also see:
   https://github.com/dn2a/dn2a-javascript
+  https://stevenmiller888.github.io/mind-how-to-build-a-neural-network/ - general NN stuff
+  http://stackabuse.com/neural-networks-in-javascript-with-brain-js/
 
+*/
+
+
+/*
+  eslint-disable no-console
 */
 
 const mnist = require('mnist');
