@@ -13,6 +13,7 @@
   },
   "rules": {
     "no-trailing-spaces": "warn",
-    "semi": "warn"
+    "semi": "warn",
+    "no-extra-boolean-cast": 0
   }
 }
