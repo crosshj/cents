@@ -33,7 +33,11 @@ function scrapeCallback (err, result, results) {
         db.create({docs: results, callback: ()=>{}});
       }
     } else {
-      log.error('bad scrape - results:', results);
+      if (!!~JSON.stringify(results).toLowerCase().indexOf("timed out")){
+        log.error('bad scrape - timed out');
+      } else {
+        log.error('bad scrape - results:', results);
+      }
     }
   } catch(err) {
     log.error('bad scrape - error: ', err);
