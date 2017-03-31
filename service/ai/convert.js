@@ -8,10 +8,6 @@ const path = require('path');
 const rl = readline.createInterface({
   input: fs.createReadStream(
     path.join(__dirname, '../../logs/scrape.log')
-  ),
-  output: fs.createWriteStream(
-    path.join(__dirname, '../../logs/scrape.log.converted'),
-    {'flags': 'w+'}
   )
 });
 
@@ -49,9 +45,9 @@ function convert(line, previous){
     hour/24,
     minutes/60,
     seconds/60,
-    line.includes('already'),
+    parseFloat(Number(!line.includes('already'))),
     (diffMins / (5*24*60)) || 0,
-    previous.includes('already'),
+    parseFloat(Number(!previous.includes('already'))),
     lastGoodMins / (5*24*60)
   ];
 
@@ -73,7 +69,10 @@ rl.on('line', function (line) {
 
   var normalized = convert(line, previous);
   if (normalized[normalized.length-1]){
-    normArray.push(normalized);
+    normArray.push({
+      input: normalized.filter((item,index)=> index !== 6),
+      output: [normalized[6]]
+    });
     //console.log(normalized.map(x=>Number(x).toFixed(4)).join(', '));
   }
   previous = line;
@@ -81,15 +80,19 @@ rl.on('line', function (line) {
 
 rl.on('close', () => {
   fs.writeFile(
-    path.join(__dirname, '../../logs/scrape.log.converted'),
-    JSON.stringify(normArray),
+    path.join(__dirname, '../../logs/scrape.log.converted.json'),
+    JSON.stringify(normArray, null, '  '),
     function(err) {
       if(err) {
           return console.log(err);
       }
 
-      console.log(normArray.map(x =>
-        x.map(x=>Number(x).toFixed(4)).join(', ')
-      ).join('\n'));
+      console.log(
+        JSON.stringify(
+          require(path.join(__dirname, '../../logs/scrape.log.converted.json')),
+          null,
+          '  '
+        )
+      );
   });
 });
