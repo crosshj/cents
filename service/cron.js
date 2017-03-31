@@ -28,7 +28,8 @@ const runScrape = (sleepMinutes) => {
     " && xvfb-run --auto-servernum --server-args='-screen 0 801x601x24' node " +
     require('path').join(__dirname, 'scrape.js');
   var child = exec(command);
-  child.stdout.on('data', (...args) => !/^\s*$/.test(args.join('').trim()) && console.log(...args)); //don't log if blank line
+  child.stdout.on('data', console.log);
+  //child.stdout.on('data', (...args) => !/^\s*$/.test(args.join('').trim()) && console.log(...args)); //don't log if blank line
   child.stderr.on('data', console.error);
   // child.on('close', function(code) {
   //     console.log('closing code: ' + code);
