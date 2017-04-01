@@ -28,7 +28,7 @@ const Network = synaptic.Network;
 const Trainer = synaptic.Trainer;
 
 const inputLayer = new Layer(9);
-const hiddenLayer = new Layer(11);
+const hiddenLayer = new Layer(8);
 const outputLayer = new Layer(1);
 
 inputLayer.project(hiddenLayer);
@@ -43,7 +43,7 @@ const myNetwork = new Network({
 const trainer = new Trainer(myNetwork);
 const trainingOptionsA = {
   rate: .1,
-  error: .000001,
+  error: .00001,
   shuffle: true,
   log: 1
 };
