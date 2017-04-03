@@ -18,6 +18,7 @@
     "express": "^4.15.2",
     "mnist": "^1.0.5",
     "nightmare": "^2.10.0",
+    "read-last-lines": "^1.1.2",
     "synaptic": "^1.0.10",
     "tingodb": "^0.5.1"
   }

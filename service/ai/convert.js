@@ -3,12 +3,12 @@
 const readline = require('readline');
 const fs = require('fs');
 const path = require('path');
-
+const revert = require('./revert');
+const scrapePath = path.join(__dirname, '../../logs/scrape.log');
+const readLastLines = require('read-last-lines');
 
 const rl = readline.createInterface({
-  input: fs.createReadStream(
-    path.join(__dirname, '../../logs/scrape.log')
-  )
+  input: fs.createReadStream(scrapePath)
 });
 
 var lastGot = '';
@@ -87,12 +87,17 @@ rl.on('close', () => {
           return console.log(err);
       }
 
-      console.log(
-        JSON.stringify(
-          require(path.join(__dirname, '../../logs/scrape.log.converted.json')),
-          null,
-          '  '
-        )
-      );
+      var converted = require(path.join(__dirname, '../../logs/scrape.log.converted.json'));
+      // console.log(
+      //   JSON.stringify(
+      //     converted,
+      //     null,
+      //     '  '
+      //   )
+      // );
+      readLastLines.read(scrapePath, 1).then((lines) => {
+        console.log('Last line of log: ', lines.replace(/\n/g, ''));
+        console.log('Last converted:   ', revert(converted[converted.length-1].input));
+      });
   });
 });
