@@ -31,3 +31,4 @@ accounts*.json*
 _private/*
 
 integration
+service/utilities/getPrivateInfo.js
