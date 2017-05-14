@@ -7,6 +7,7 @@ var express = require('express');
 var session = require('express-session');
 var TingoStore = require('connect-tingo')({session});
 var bodyParser = require('body-parser');
+var cookieParser = require('cookie-parser');
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 
@@ -39,9 +40,9 @@ var settings = {
   cookieSecret: 'foofosioaoiodsllkl3klkl523l',
   folderLocation: '/service/database/data'
 };
-app.use(express.cookieParser());
+app.use(cookieParser());
 app.use(session({
-    secret: settings.cookie_secret,
+    secret: settings.cookieSecret,
     store: new TingoStore({
       db: settings.folderLocation
     }),
