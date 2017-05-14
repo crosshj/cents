@@ -9,7 +9,6 @@ var TingoStore = require('connect-tingo')({session});
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var passport = require('passport');
-var LocalStrategy = require('passport-local').Strategy;
 
 var app = express();
 var appPort = 81;
@@ -25,20 +24,15 @@ var useOldserver = true;
 useOldserver && oldServer();
 
 var jsonParser = bodyParser.json(); // eslint-disable-line no-unused-vars
+app.use(bodyParser.urlencoded({
+  extended: false
+}));
 
-var responsivePath = path.join(__dirname, '/html/Skeleton-2.0.4');
-app.use('/', express.static(responsivePath));
-
-var swipePath = path.join(__dirname, '/html/skeleton-swipe');
-app.use('/swipe', express.static(swipePath));
-
-app.post('', postAccounts);
-
-require('./service/routes')(app);
+require('./service/authentication').init(app);
 
 var settings = {
   cookieSecret: 'foofosioaoiodsllkl3klkl523l',
-  folderLocation: '/service/database/data'
+  folderLocation:  path.join(__dirname, '/service/database/data')
 };
 app.use(cookieParser());
 app.use(session({
@@ -49,44 +43,40 @@ app.use(session({
     resave: false,
     saveUninitialized: false
 }));
+
 app.use(passport.initialize());
 app.use(passport.session());
 
-var user = {
-  username: 'user',
-  password: 'password',
-  id: 1
-};
+app.post('/login', passport.authenticate('local', {
+  successRedirect: '/',
+  failureRedirect: '/welcome'
+}));
 
-function authenticationMiddleware () {
-  return function (req, res, next) {
-    if (req.isAuthenticated()) {
-      return next();
-    }
-    res.redirect('/');
-  };
-}
+app.get('/welcome', (req, res) => {
+  res.header('Content-Type', 'text/html').send(`
+    <h3>Log in :</h3>
 
-function findUser(username, callback){
-  callback(null, user);
-}
+    <form action="/login" method="post">
+      <input name="username" id="username" type="text" placeholder="Your username" />
+      <input name="password" id="password" type="password" placeholder="Your password"/>
+      <input type="submit" />
+    </form>
+  `);
+});
 
-passport.use(new LocalStrategy(
-  function(username, password, done) {
-    findUser(username, function (err, user) {
-      if (err) { return done(err); }
-      if (!user) { return done(null, false); }
-      if (password !== user.password  ) {
-        return done(null, false);
-      }
-      return done(null, user);
-    });
-  }
-));
-
-app.get('/profile', authenticationMiddleware(), function(req, res) {
+app.get('/profile', passport.authenticationMiddleware(), function(req, res) {
   res.send('okay!');
 });
+
+var responsivePath = path.join(__dirname, '/html/Skeleton-2.0.4');
+app.use('/', passport.authenticationMiddleware(), express.static(responsivePath));
+
+var swipePath = path.join(__dirname, '/html/skeleton-swipe');
+app.use('/swipe', express.static(swipePath));
+
+app.post('/accounts', postAccounts);
+
+require('./service/routes')(app);
 
 app.listen(appPort, function () {
   console.log('Example app listening on port ' + appPort + '!');
