@@ -7,6 +7,7 @@
   "dependencies": {
     "body-parser": "^1.16.0",
     "connect-tingo": "^1.0.3",
+    "cookie-parser": "^1.4.3",
     "diff-json": "^0.1.11",
     "express": "^4.15.2",
     "express-session": "^1.15.2",
