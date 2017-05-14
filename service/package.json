@@ -1,0 +1,25 @@
+{
+  "name": "cents-service",
+  "version": "1.0.0",
+  "description": "scraper and misc services for cents-server",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "node app.js",
+    "example": "DEBUG=nightmare xvfb-run --auto-servernum --server-args='-screen 0 801x601x24' node utilities/example1.js",
+    "scrape": "xvfb-run --auto-servernum --server-args='-screen 0 801x601x24' node scrape.js",
+    "headless": "DEBUG=nightmare xvfb-run --auto-servernum --server-args='-screen 0 801x601x24' node "
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "async": "^2.1.5",
+    "cron": "^1.2.1",
+    "express": "^4.15.2",
+    "mnist": "^1.0.5",
+    "nightmare": "^2.10.0",
+    "read-last-lines": "^1.1.2",
+    "synaptic": "^1.0.10",
+    "tingodb": "^0.5.1"
+  }
+}

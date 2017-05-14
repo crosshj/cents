@@ -1,14 +1,25 @@
-﻿.hidden {
+﻿body {
+  overflow-y: hidden;
+}
+
+.flickity-enabled.is-draggable .flickity-viewport {
+    cursor: all-scroll !important;
+}
+
+.hidden {
   display: none;
 }
 
 .column.menu {
-  margin-top: 3%;
+  margin-top: 13px;
   text-align: center;
   line-height: 25px;
   padding-top: 8px;
-  margin-bottom: 3%;
 }
+.column:not(.menu) {
+  height: 100%;
+}
+
 div.menu a {
   width: 25%;
   padding-top: 10px;
@@ -33,6 +44,7 @@ a.button {
 table {
   margin-bottom: 0px;
   line-height: auto;
+  border-collapse: collapse;
 }
 td {
   border-bottom: none;
@@ -109,6 +121,27 @@ a.button.pending, button.selected.pending {
   border-color: rgba(255, 255, 255, 1);
 }
 
+a.button.totals:not(.menu) {
+  background-color: rgba(0, 0, 0, 0.09);
+  border-color: rgba(0, 0, 0, 0);
+  color: rgb(230, 226, 202);
+}
+
+a.button.totals td{
+  text-transform: none;
+}
+
+a.button.totals table tr:last-child td{
+  border-bottom: 0px;
+}
+
+a.totals .title.center {
+  text-align: center;
+  padding-bottom: 5px;
+  border-bottom: 0px;
+  text-transform: uppercase;
+}
+
 @media (min-width: 750px) {
   button.paid:hover {
     color: rgb(255, 255, 255);
@@ -139,7 +172,7 @@ body {
   */
   background-repeat: no-repeat, no-repeat, repeat-x;
   background-position: top left, top right, top;
-  background-size: 100% 100%;
+  background-size: 200% 100%;
 }
 
 a.button.menu.selected {
@@ -246,6 +279,7 @@ a.button.selected {
 
 #popup-modal textarea.notes {
   width: 100%;
+  font-family: monospace;
   font-size: 12px;
   overflow-y: hidden;
 }
@@ -263,3 +297,43 @@ a.button.selected {
   width: 100%;
   /*position: fixed;*/
 }
+
+#main-carousel {
+  position: absolute;
+  bottom: 0px;
+  top: 80px;
+  left: 0px;
+  right: 0px;
+}
+/* inherit height from parent */
+.carousel { height: 100%; }
+
+.carousel-cell {
+  padding-top: 0px;
+  height: 100%;
+  width: 100%;
+  overflow-x: hidden;
+  overflow-y: overlay;
+}
+
+#main-carousel > .carousel-cell {
+  opacity: 0;
+}
+
+@media (min-width: 550px) {
+  .carousel-cell::-webkit-scrollbar {
+    width: 0px;
+  }
+}
+
+/*::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: red;
+}
+
+::-webkit-scrollbar-track {
+  background-color: rgba(91,89,77,1);
+}*/

@@ -5,9 +5,13 @@
   "description": "Personal finance done with node.js.  Some DropBox integration.  WIP.",
   "main": "node cents.node.server.js",
   "dependencies": {
-    "express": "^4.14.0",
+    "body-parser": "^1.16.0",
+    "diff-json": "^0.1.11",
+    "express": "^4.15.2",
     "http-proxy": "^1.12.0",
     "lodash": "^4.12.0",
+    "logger": "git+https://github.com/fatshotty/node-logger.git#5b80950",
+    "moment": "^2.17.1",
     "request": "^2.44.0",
     "sync-request": "^2.0.1",
     "xml2js": "^0.4.4"
