@@ -9,7 +9,7 @@ const authenticationMiddleware = function authenticationMiddleware () {
       }
       return next();
     }
-    res.redirect('/welcome');
+    res.redirect('./welcome');
   };
 };
 
