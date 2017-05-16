@@ -23,7 +23,7 @@ var oldServer = require('./oldCode/cents.node.server.js');
 var useOldserver = true;
 useOldserver && oldServer();
 
-var jsonParser = bodyParser.json(); // eslint-disable-line no-unused-vars
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
   extended: false
 }));
