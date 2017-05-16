@@ -57,6 +57,7 @@ app.get('/welcome', (req, res) => {
     <h3>Log in :</h3>
 
     <form action="/login" method="post">
+      <p>TODO: make this look nice</p>
       <input name="username" id="username" type="text" placeholder="Your username" />
       <input name="password" id="password" type="password" placeholder="Your password"/>
       <input type="submit" />
@@ -74,10 +75,11 @@ app.use('/', passport.authenticationMiddleware(), express.static(responsivePath)
 var swipePath = path.join(__dirname, '/html/skeleton-swipe');
 app.use('/swipe', express.static(swipePath));
 
-app.post('/accounts', postAccounts);
+app.post('/accounts', passport.authenticationMiddleware(), postAccounts);
 
-require('./service/routes')(app);
+require('./service/routes')(app, passport);
 
 app.listen(appPort, function () {
-  console.log('Example app listening on port ' + appPort + '!');
+  console.log('New server on port ' + appPort + '!');
+  console.log('Old server on port 8080!');
 });
