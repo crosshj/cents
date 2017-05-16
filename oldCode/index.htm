@@ -1,6 +1,6 @@
 <html>
-	<!-- 
-	
+	<!--
+
 	http://css-tricks.com/css-media-queries/
 	http://alistapart.com/article/fluidgrids
 	https://android-material-icon-generator.bitdroid.de/ - icons in manifest from here
@@ -22,14 +22,14 @@
 		<p style="text-align: center;">{{DIR_NAME}}</p>
 	</body>
 
-	<script> 
+	<script>
 		var docReady = function(){
 			if(document.location.hash){
 				// THIS IS HOMESCREEN MODE?
 				// alert(document.location.hash.replace('#',''));
 			}
 			window.MAIN_DATA=JSON.parse('{{MAIN_DATA}}');
-			
+
 			var getByName = function(title){
 				return this.filter(function(val,i,arr){ return val.title.toLowerCase().indexOf(title) >= 0; })[0];
 			}
@@ -39,49 +39,49 @@
 
 			var formatMoney = function(amount){
 				amount = (amount>=0)	? "$"+amount	:"-$"+parseFloat(Math.abs(amount)).toFixed(2); //NEG AND DOLLAR SIGN
-				amount = amount.replace(/\B(?=(\d{3})+(?!\d))/g, ","); //COMMAS	
+				amount = amount.replace(/\B(?=(\d{3})+(?!\d))/g, ","); //COMMAS
 				return amount
 			};
 
 			var unFormatMoney = function(money){
 				var amount = Number(money.replace(/[$,]+/g,""));
 				return amount;
-			}			
+			}
 
 			var updateServer = function(updateData){
 				//TODO: now post to all data to API  OR just update amount (depends on API)
-				$.post( "/", JSON.stringify(MAIN_DATA),function( data ) {
+				$.post( "/accounts", JSON.stringify(MAIN_DATA),function( data ) {
 				  console.log( "SERVER RESPONSE", data );
 				});
 				//TODO: where relevant, should also update Total Owed, Total Liabilities, etc
 				if(!!updateData.message){
-					/*var liabsNames = MAIN_DATA.liabilities.map(function(a){ 
-						return a.title; 
-					}); 
-					var liabs = $('tr.standard:not(".summary")').filter(function(val,i,arr){ 
-						return liabsNames.indexOf($(i).attr("data-id")) != -1 
+					/*var liabsNames = MAIN_DATA.liabilities.map(function(a){
+						return a.title;
+					});
+					var liabs = $('tr.standard:not(".summary")').filter(function(val,i,arr){
+						return liabsNames.indexOf($(i).attr("data-id")) != -1
 					});*/
-					var totalAssets = MAIN_DATA.assets.reduce(function(total,num){ 
-						return total + Number(num.amount); 
+					var totalAssets = MAIN_DATA.assets.reduce(function(total,num){
+						return total + Number(num.amount);
 					},0).toFixed(2);
 
-					var totalLiabilities = MAIN_DATA.liabilities.reduce(function(total,num){ 
-						return total + Number(num.amount); 
+					var totalLiabilities = MAIN_DATA.liabilities.reduce(function(total,num){
+						return total + Number(num.amount);
 					},0).toFixed(2);
 
-					var totalOwed = MAIN_DATA.liabilities.reduce(function(total,num){ 
-						return total + Number(num.total_owed); 
+					var totalOwed = MAIN_DATA.liabilities.reduce(function(total,num){
+						return total + Number(num.total_owed);
 					},0).toFixed(2);
 
-					var totalPending = MAIN_DATA.liabilities.filter(function(val){ 
-						return val.status.toLowerCase() == "pending"; 
-					}).reduce(function(total,num){ 
-						return total + Number(num.amount); 
+					var totalPending = MAIN_DATA.liabilities.filter(function(val){
+						return val.status.toLowerCase() == "pending";
+					}).reduce(function(total,num){
+						return total + Number(num.amount);
 					},0).toFixed(2);
 
 					var balance = unFormatMoney($('tr[data-id="Balance"] td:last').text());
 					var balMinusPend = parseFloat(Math.abs(balance - totalPending)).toFixed(2);
-					
+
 					$('tr[data-id="Total Assets"] td:last').text(formatMoney(totalAssets));
 					$('tr[data-id="Total Liabilities"] td:last').text(formatMoney(totalLiabilities));
 					$('tr[data-id="Total Owed"] td:last').text(formatMoney(totalOwed));
@@ -109,19 +109,19 @@
 					if (!!date && MAIN_DATA.liabilities[i].title == accountName){
 						updateMsg = "Updating "+accountName+ " from "+MAIN_DATA.liabilities[i].date+" to "+date;
 						MAIN_DATA.liabilities[i].date = date;
-					}					
+					}
 				}
 				updateServer({message : updateMsg});
 			};
-			
+
 			var editAmount = function(e){
 					var OriginalContent = $(this).text().split('$')[1]||$(this).text();
 					var nameText = $(this).parent().find('td:first-child').text();
 					var accountName = (nameText[nameText.length-1]=="i")? nameText.slice(0,-1) : nameText;
-			
+
 			                var inputNewText = prompt(accountName+":", OriginalContent);
 			                inputNewText = (inputNewText||"").replace(/,/g,"");
-			
+
 			                if (inputNewText!=null && !isNaN(parseFloat(inputNewText)) )
 			                  {
 								inputNewText = parseFloat(inputNewText).toFixed(2);
@@ -135,10 +135,10 @@
 					var OriginalContent = $(this).text().split('$')[1]||$(this).text();
 					var nameText = $(this).parent().find('td:first-child').text();
 					var accountName = (nameText[nameText.length-1]=="i")? nameText.slice(0,-1) : nameText;
-			
+
 			                var inputNewText = prompt(accountName+":", OriginalContent);
 			                inputNewText = (inputNewText||"").replace(/,/g,"");
-			
+
 			                if (inputNewText!=null && !isNaN(parseFloat(inputNewText)) )
 			                  {
 								inputNewText = parseFloat(inputNewText).toFixed(2);
@@ -148,11 +148,11 @@
 			};
 			$('tr.standard:not(.summary) td:nth-child(5)').click(editTotalOwed);
 
-			
+
 			var editDate = function(e){
 					var OriginalContent = $(this).text().split('$')[1]||$(this).text();
 					var nameText = $(this).parent().find('td:first-child').text();
-					var accountName = (nameText[nameText.length-1]=="i")? nameText.slice(0,-1) : nameText;			
+					var accountName = (nameText[nameText.length-1]=="i")? nameText.slice(0,-1) : nameText;
 	                var inputNewText = prompt(accountName+":", OriginalContent);
 	                if (inputNewText!=null)
 					{
@@ -167,7 +167,7 @@
 				var accountName = $(this).parent().find('td:first-child').text().slice(0,-1);
 				var currentStatus = $(this).text();
 				var $select = $('<select></select>');
-				['Pending','Paid','Due'].map(function(a){ 
+				['Pending','Paid','Due'].map(function(a){
 					var capsStatus = a.toUpperCase();
 					var isSelected = (capsStatus==currentStatus)?"selected":"";
 					$select.append('<option value = "'+a+'" '+ isSelected+'>'+capsStatus+'</option>');
