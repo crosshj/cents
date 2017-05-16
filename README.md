@@ -86,4 +86,9 @@ dropbox is not fully integrated presently, but test will fail without this
 }
 ```
 
+### NOTES
 
+with ubuntu security policy, node will not run on port < 1024; fix:
+```
+sudo setcap 'cap_net_bind_service=+ep' `which node`
+```
