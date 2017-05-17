@@ -9,6 +9,7 @@ const authenticationMiddleware = function authenticationMiddleware () {
       }
       return next();
     }
+    if (/json/.test(req.headers.accept)) {
       res.send({ error: 'not logged in' });
       return;
     }
