@@ -1,4 +1,4 @@
-var db = require('../database');
+var db = require('../../service/database');
 
 module.exports = function(app, passport) {
     app.get('/accounts', passport.authenticationMiddleware(), function(req, res) {

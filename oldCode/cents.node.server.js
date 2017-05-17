@@ -94,9 +94,9 @@ function oldServer(){
 			case (req.method == 'POST'):
 				proxy.web(req, res, { target: 'http://127.0.0.1:' + PROXY_PORT });
 				break;
-			case ( /\/json$/.test(req.url) ):
-				getJSON(req, res);
-				break;
+			// case ( /\/json$/.test(req.url) ):
+			// 	getJSON(req, res);
+			// 	break;
 			// case /^\/static(\/.*$|$)/.test(req.url):
 			// 	console.log("--call to proxy for static file");
 			// 	req.url = req.url.replace(/^\/static(\/|$)/,"/");
