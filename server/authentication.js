@@ -9,10 +9,19 @@ const authenticationMiddleware = function authenticationMiddleware () {
       }
       return next();
     }
-    res.redirect('./welcome');
+      res.send({ error: 'not logged in' });
+      return;
+    }
+
+    if (req.session) {
+      req.session.returnTo = req.originalUrl || req.url;
+    }
+    res.redirect('./login');
   };
 };
 
+
+//TODO: should connect to user DB, this is fake
 const user = {
   username: 'user',
   password: 'password',

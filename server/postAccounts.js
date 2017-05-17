@@ -8,7 +8,7 @@ https://github.com/flitbit/diff
 https://www.npmjs.com/package/diff-json
 
 */
-
+/* eslint-disable no-console */
 
 var fs = require('fs');
 var diff = require('diff-json').diff;
@@ -16,12 +16,12 @@ var moment = require('moment');
 
 function saveAccounts(data){
 	var jsonFile = require('path').join(__dirname + '/../accounts.json');
-	var logFile = require('path').join(__dirname + '/../diffs.log')
-	
+	var logFile = require('path').join(__dirname + '/../diffs.log');
+
 	// simple check to make sure data is clean and safe
 	var dataOkayToSave = data
-		&& data.hasOwnProperty('balance') 
-		&& data.hasOwnProperty('assets') 
+		&& data.hasOwnProperty('balance')
+		&& data.hasOwnProperty('assets')
 		&& data.hasOwnProperty('liabilities');
 	if (dataOkayToSave){
 		var oldData = JSON.parse(fs.readFileSync(jsonFile, 'utf8'));
@@ -44,6 +44,7 @@ function saveAccounts(data){
 			,'utf8'
 		);
 	} else {
+
 		console.log('-------------- data not okay to save: balance', data.hasOwnProperty('balance'));
 		console.log('-------------- data not okay to save: assets', data.hasOwnProperty('assets'));
 		console.log('-------------- data not okay to save: liabilities', data.hasOwnProperty('liabilities'));
@@ -61,6 +62,6 @@ function postAccounts (req, res){
 		res.writeHead(400, {'Content-Type': 'text/html'});
 		res.end(error.toString());
 	}
-};
+}
 
 module.exports = postAccounts;

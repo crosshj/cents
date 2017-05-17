@@ -185,14 +185,6 @@
     setupSwipe();
   }
 
-  $.get("json", mainData => {
-    $.get("accounts", scrapedData => {
-      var data = mainData;
-      data.scraped = scrapedData;
-      createUI(data);
-    });
-  });
-
   function handleTouchMove(e){
     if($('div#popup-modal.show').length){
       e.preventDefault();
@@ -249,6 +241,20 @@
     // $(document).scroll(tempDisableDrag);
     // $(window).on("touchmove", tempDisableDrag);
   }
+
+
+  $.getJSON("json", mainData => {
+    if (mainData.error){
+      document.getElementById('main-carousel').style.display = 'none';
+      document.getElementById('login').style.display = 'block';
+      return;
+    }
+    $.getJSON("accounts", scrapedData => {
+      var data = mainData;
+      data.scraped = scrapedData;
+      createUI(data);
+    });
+  });
 
   $(document).ready(function(){
     var colorsList = [];

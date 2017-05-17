@@ -2,7 +2,8 @@
 eslint-disable no-console
 */
 
-var path = require('path');
+const path = (path) => require('path').join(__dirname, path);
+
 var express = require('express');
 var session = require('express-session');
 var TingoStore = require('connect-tingo')({session});
@@ -10,29 +11,19 @@ var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var passport = require('passport');
 
-var app = express();
-var appPort = 81;
+var appPort = 8080;
 
 var cron = require('./service/cron');
 cron();
 
-var postAccounts = require('./lib/postAccounts');
-
-// listens on 8080
-var oldServer = require('./oldCode/cents.node.server.js');
-var useOldserver = true;
-useOldserver && oldServer();
-
+var app = express();
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({
-  extended: false
-}));
+app.use(bodyParser.urlencoded({ extended: false }));
 
-require('./service/authentication').init(app);
-
+require('./server/authentication').init(app);
 var settings = {
-  cookieSecret: 'foofosioaoiodsllkl3klkl523l',
-  folderLocation:  path.join(__dirname, '/service/database/data')
+  cookieSecret: require('crypto').randomBytes(64).toString('hex'),
+  folderLocation:  path('/service/database/data')
 };
 app.use(cookieParser());
 app.use(session({
@@ -46,40 +37,20 @@ app.use(session({
 
 app.use(passport.initialize());
 app.use(passport.session());
+const PROTECTED = passport.authenticationMiddleware;
 
 app.post('/login', passport.authenticate('local', {
-  successRedirect: './',
-  failureRedirect: './welcome'
+  successReturnToOrRedirect: './',
+  failureRedirect: './login'
 }));
+app.get('/login', require('./server/login'));
 
-app.get('/welcome', (req, res) => {
-  res.header('Content-Type', 'text/html').send(`
-    <h3>Log in :</h3>
+app.use('/json', PROTECTED(), require('./server/getJSON'));
+app.post('/accounts', PROTECTED(), require('./server/postAccounts'));
 
-    <form action="./login" method="post">
-      <p>TODO: make this look nice</p>
-      <input name="username" id="username" type="text" placeholder="Your username" />
-      <input name="password" id="password" type="password" placeholder="Your password"/>
-      <input type="submit" />
-    </form>
-  `);
-});
-
-app.get('/profile', passport.authenticationMiddleware(), function(req, res) {
-  res.send('okay!');
-});
-
-var responsivePath = path.join(__dirname, '/html/Skeleton-2.0.4');
-app.use('/', passport.authenticationMiddleware(), express.static(responsivePath));
-
-var swipePath = path.join(__dirname, '/html/skeleton-swipe');
-app.use('/swipe', express.static(swipePath));
-
-app.post('/accounts', passport.authenticationMiddleware(), postAccounts);
-
-require('./service/routes')(app, passport);
+require('./server/routes')(app, passport);
+app.use('/', express.static(path('/client')));
 
 app.listen(appPort, function () {
   console.log('New server on port ' + appPort + '!');
-  console.log('Old server on port 8080!');
 });
