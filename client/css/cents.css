@@ -3,10 +3,13 @@
 }
 
 #login {
-  width: 100%;
-  text-align: center;
-  margin-top: 30%;
-  display: none;
+    width: 100%;
+    text-align: center;
+    top: 30%;
+    display: none;
+    position: absolute;
+    left: 0px;
+    z-index: -999;
 }
 
 .flickity-enabled.is-draggable .flickity-viewport {
