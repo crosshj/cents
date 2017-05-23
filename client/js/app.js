@@ -9,7 +9,9 @@
       - integrate with DB service
       - new account / restore / demo account
   */
-
+Element.prototype.remove = function() {
+    this.parentElement.removeChild(this);
+}
   function makeRow (data){
     var primary = data.status.toLowerCase() !== "paid" ? " button-primary" : "";
     return $(`
@@ -251,8 +253,10 @@
     }
     $.getJSON("accounts", scrapedData => {
       var data = mainData;
+      
       data.scraped = scrapedData;
-      createUI(data);
+      document.getElementById('login').remove();
+      createUcreateUI(data);
     });
   });
 
