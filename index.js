@@ -43,7 +43,6 @@ app.post('/login', passport.authenticate('local', {
   successReturnToOrRedirect: './',
   failureRedirect: './login'
 }));
-app.get('/login', require('./server/login'));
 
 app.use('/json', PROTECTED(), require('./server/getJSON'));
 app.post('/accounts', PROTECTED(), require('./server/postAccounts'));
