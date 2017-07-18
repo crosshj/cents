@@ -32,3 +32,5 @@ _private/*
 
 integration
 service/utilities/getPrivateInfo.js
+
+.npmrc
