@@ -20,9 +20,12 @@
   <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
 
   <!-- CSS –––––––––––––––––––––––––––––––– -->
+  <link rel="stylesheet" href="/css/login.css">
+  <!--
   <link rel="stylesheet" href="/css/skeleton.css">
   <link rel="stylesheet" href="/css/cents.css">
   <link rel="stylesheet" href="/css/font-awesome.min.css">
+  -->
 
   <!-- Favicon –––––––––––––––––––––––––––––––– -->
   <link rel="icon" type="image/png" href="/launcher-icon-3x.png">
@@ -35,11 +38,21 @@
 
   <!-- Primary Page Layout ––––––––––––––––––––––– -->
     <h3>Log in :</h3>
-    <form action="/login" method="post">
-      <p></p>
-      <input name="username" id="username" type="text" placeholder="Your username" />
-      <input name="password" id="password" type="password" placeholder="Your password"/>
-      <input type="submit" />
+    <form action="/login" method="post" name="login">
+      <div class="loginView">
+        <div className="field">
+          <input name="username" id="username" type="text" placeholder="Your username" />
+        </div>
+        <div className="field">
+          <input name="password" id="password" type="password" placeholder="Your password"/>
+        </div>
+        <div className="button">
+          <button type="button" onclick="document.login.submit()">Sign In</button>
+        </div>
+        <div className="button">
+          <button type="button" onclick="alert('Does Nothing Yet!')">Register</button>
+        </div>
+      </div>
     </form>
   <!-- End Document -–––––––––––––––––––––––––––––– -->
 </body>
