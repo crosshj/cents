@@ -20,7 +20,8 @@
   <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
 
   <!-- CSS –––––––––––––––––––––––––––––––– -->
-  <link rel="stylesheet" href="/css/login.css">
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet"></link>
+  <link rel="stylesheet" href="../css/login.css">
   <!--
   <link rel="stylesheet" href="/css/skeleton.css">
   <link rel="stylesheet" href="/css/cents.css">
@@ -37,19 +38,18 @@
 <body>
 
   <!-- Primary Page Layout ––––––––––––––––––––––– -->
-    <h3>Log in :</h3>
-    <form action="/login" method="post" name="login">
+    <form action="../login" method="post" name="login">
       <div class="loginView">
-        <div className="field">
+        <div class="field">
           <input name="username" id="username" type="text" placeholder="Your username" />
         </div>
-        <div className="field">
+        <div class="field">
           <input name="password" id="password" type="password" placeholder="Your password"/>
         </div>
-        <div className="button">
+        <div class="button">
           <button type="button" onclick="document.login.submit()">Sign In</button>
         </div>
-        <div className="button">
+        <div class="button">
           <button type="button" onclick="alert('Does Nothing Yet!')">Register</button>
         </div>
       </div>
