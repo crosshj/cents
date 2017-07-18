@@ -256,7 +256,7 @@ Element.prototype.remove = function() {
       
       data.scraped = scrapedData;
       document.getElementById('login').remove();
-      createUcreateUI(data);
+      createUI(data);
     });
   });
 
