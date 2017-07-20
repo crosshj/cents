@@ -40,17 +40,20 @@
   <!-- Primary Page Layout ––––––––––––––––––––––– -->
     <form action="../login" method="post" name="login">
       <div class="loginView">
-        <div class="field">
-          <input name="username" id="username" type="text" placeholder="Your username" />
+        <div class="header">
+          <img src="../launcher-icon-4x.png" />
         </div>
         <div class="field">
-          <input name="password" id="password" type="password" placeholder="Your password"/>
+          <input name="username" class="form-control input-lg" id="username" type="text" placeholder="Your username" />
+        </div>
+        <div class="field">
+          <input name="password" class="form-control input-lg" id="password" type="password" placeholder="Your password"/>
         </div>
         <div class="button">
-          <button type="button" onclick="document.login.submit()">Sign In</button>
+          <button type="button" class="btn btn-lg btn-primary btn-block" onclick="document.login.submit()">Sign In</button>
         </div>
         <div class="button">
-          <button type="button" onclick="alert('Does Nothing Yet!')">Register</button>
+          <button type="button" class="btn btn-lg btn-secondary btn-block transparent-bg" onclick="alert('Does Nothing Yet!')">Register</button>
         </div>
       </div>
     </form>
