@@ -27,6 +27,8 @@ body {
   text-transform: uppercase;
 }
 
+.button:focus, .btn:focus, .btn:active { outline: none; }
+
 
 
 /* MENU ---------------*/
