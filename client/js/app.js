@@ -246,16 +246,14 @@ Element.prototype.remove = function() {
 
 
   $.getJSON("json", mainData => {
-    if (mainData.error){
-      document.getElementById('main-carousel').style.display = 'none';
-      document.getElementById('login').style.display = 'block';
+    if (!mainData || mainData.error){
+      window.location.replace("login/");
       return;
     }
     $.getJSON("accounts", scrapedData => {
       var data = mainData;
       
       data.scraped = scrapedData;
-      document.getElementById('login').remove();
       createUI(data);
     });
   });
