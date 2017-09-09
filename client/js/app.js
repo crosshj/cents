@@ -40,6 +40,12 @@ Element.prototype.remove = function() {
     `);
   }
 
+  function makeAddNew(){
+    return $(`
+      <a id="add-new" class="button">Add New</a>
+    `);
+  }
+
   function makeTotalsRow({balance=0, pending=0, due=0, assets=0, debts=0, debtTotal=0}){
     return $(`
       <a class="button totals">
@@ -141,6 +147,8 @@ Element.prototype.remove = function() {
       }));
     });
 
+    $('div.liabilities').append(makeAddNew());
+
     formattedData.assets.forEach(function(item){
       if (item.hidden === "true") return;
       $('div.assets').append(makeRow({
@@ -159,6 +167,12 @@ Element.prototype.remove = function() {
     $('a.button:not(.menu)').on("click", function(e){
       switch (true){
         case $(this).is('.paid, .pending, .due'):
+          $('a.button.selected:not(".menu")').removeClass('selected')
+          var content = typeof makeAccountContent === "function" && makeAccountContent($(this));
+          typeof popUpModal === "function" && popUpModal($(this), content);
+          break;
+        case $(this).is('#add-new'):
+          console.log('clicked add new');
           $('a.button.selected:not(".menu")').removeClass('selected')
           var content = typeof makeAccountContent === "function" && makeAccountContent($(this));
           typeof popUpModal === "function" && popUpModal($(this), content);
