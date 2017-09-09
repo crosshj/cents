@@ -14,46 +14,98 @@ function popUpModal(target, content){
  }
 }
 
-var statusRow = function(statusItems, status){
+var statusRow = function(statusItems, status, showLabel){
   status = status || '';
-  return '<div class="row status">' +
-    statusItems.reduce(function(target, item){
-      var className = ' class="' +
-        (item === status.trim().toLowerCase() ? 'selected ' : '') +
-        item + '"';
-      return target + '<button'+className+'>' + item + '</button>';
-    }, '') +
-  '</div>';
+  return `
+    <div class="row status">
+      ${showLabel ?  `
+        <label>Status</label>
+      ` : ''}
+      ${statusItems.reduce(function(target, item){
+        var className = ' class="' +
+          (item === status.trim().toLowerCase() ? 'selected ' : '') +
+          item + '"';
+        return target + '<button'+className+'>' + item + '</button>';
+      }, '')}
+    </div>
+  `;
 }
 
 function makeAccountContent($clickedRow){
   var statusItems = ['due', 'pending', 'paid'];
-  var originalDateString = $clickedRow.find('.date').text();
+  var dueDate = new Date(Date.now());
+  dueDate.setMonth(dueDate.getMonth()+1);
+  var defaultDateString = dueDate.toISOString().substring(0, 10);
+  var originalDateString = $clickedRow.find('.date').text() || defaultDateString;
   var originalStatus = $clickedRow.find('.status').text();
   var notes = $clickedRow.find('.notes').text();
+  var website = $clickedRow.find('.website').text();
+  var title = $clickedRow.find('.title').text();
+  var amount = $clickedRow.find('.amount').text().replace(/[$,]+/g,"");
+  var total = $clickedRow.find('.total').text().replace(/[$,]+/g,"");
+  var isNewItem = !title; //TODO: better condition
 
-  var content = $('<div class="container content">'
-    + '<h2>'
-      + '<a target="_blank" href="'+$clickedRow.find('.website').text()+'">'
-      + $clickedRow.find('.title').text()
-      + '</a>'
-    +'</h2>'
-      + statusRow(statusItems, originalStatus)
-      + '<label>Notes</label>'
-      + '<textarea class="notes">' + notes + '</textarea>'
-      + '<label>Amount</label>'
-      + '<input class="amount" type="number" step="0.01" value="'+$clickedRow.find('.amount').text().replace(/[$,]+/g,"")+'"/>'
-      + '<button class="graph"><i class="fa fa-bar-chart"></i></button>'
-      + '<label>Total</label>'
-      + '<div class="row"><input  class="total" type="number" value="'+$clickedRow.find('.total').text().replace(/[$,]+/g,"")+'"/>'
-      + '<button class="graph"><i class="fa fa-bar-chart"></i></button></div>'
-      + '<label>Date</label>'
-      + '<input type="date" value="'+ originalDateString +'"/>'
-      + '<div class="row actions">'
-        +'<button class="button-primary cancel" onClick="">Cancel</button>'
-        +'<button class="button-primary save" onClick="">Save</button>'
-      +'</div>'
-    + '</div>');
+  var content = $(`<div class="container content">
+    ${ isNewItem
+      ? `
+        <h2><a>New Item</a></h2>
+        <div class="form-group">
+          <label>Title</label>
+          <input class="u-full-width form-control" type="text"/>
+        </div>
+        `
+      : `
+        <h2>
+          <a target="_blank" href="${website}">${title}</a>
+        </h2>
+        `
+      }
+    ${statusRow(statusItems, originalStatus, isNewItem)}
+    ${isNewItem ? `
+      <div class="form-group">
+        <label for="website">Website</label>
+        <input class="u-full-width form-control" type="text" id="website"/>
+      </div>
+    ` : ''}
+    <div class="form-group">
+      <label for="notes">Notes</label>
+      <textarea class="u-max-full-width u-full-width form-control" rows="5" id="notes">${notes}</textarea>
+    </div>
+    <div class="form-group">
+      <label>Payment Amount</label>
+      <input class="amount" type="number" step="0.01" value="${amount}"/>
+      ${!isNewItem ? `
+        <button class="graph"><i class="fa fa-bar-chart"></i></button>
+      ` : ''}
+    </div>
+    <div class="form-group">
+      <label>Total Owed</label>
+      <input  class="total" type="number" value="${total}"/>
+      ${!isNewItem ? `
+        <button class="graph"><i class="fa fa-bar-chart"></i></button>
+      ` : ''}
+    </div>
+    <div class="form-group">
+      <label>Date Due</label>
+      <input type="date" value="${originalDateString}"/>
+    </div>
+    ${isNewItem ?  `
+      <div class="form-group">
+        <label>Occurence</label>
+        <select class="u-full-width" id="occurence">
+          <option value="once">Once</option>
+          <option value="week">Weekly</option>
+          <option value="bi-week">Bi-weekly</option>
+          <option value="month" selected="selected">Monthly</option>
+        </select>
+      </div>
+    ` : ''}
+    <div class="row actions">
+      <button class="button-primary cancel" onClick="">Cancel</button>
+      <button class="button-primary save" onClick="">${isNewItem ? 'Add' : 'Save'}</button>
+    </div>
+  `);
+
   var getStatus = function($item){
     var status = $item.attr('class').replace(/selected/g, '').trim();
     status = status.substring( 0, 1 ).toUpperCase() + status.substring(1).trim();
