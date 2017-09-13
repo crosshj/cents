@@ -144,7 +144,7 @@ function makeAccountContent($clickedRow){
       amount: item.find('.amount').val(),
       total: item.find('.total').val(),
       date: item.find('input[type="date"]').val(),
-      notes: item.find('textarea.notes').val()
+      notes: item.find('textarea#notes').val()
     };
   }
   content.find('button.cancel').on('click', function (e){
