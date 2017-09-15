@@ -24,7 +24,7 @@ var zlib = require('zlib');
 var fs = require('fs');
 var timestamp = require('../service/utilities/date').stamp;
 //var postAccounts = require('./lib/postAccounts');
-
+var getAccountsFileName = require('../server/utilities').getAccountsFileName;
 var options = {};
 var proxy = httpProxy.createProxyServer(options);
 var PROXY_PORT = 81;
@@ -62,7 +62,7 @@ function oldServer(){
 		//res.end(JSON.stringify(jsonFile));
 
 		// gzipped, using stream
-		var raw = fs.createReadStream(__dirname + '/../accounts.json');
+		var raw = fs.createReadStream(getAccountsFileName());
 			res.writeHead(200, {
 				'content-encoding': 'gzip',
 				'Content-Type': 'application/json',

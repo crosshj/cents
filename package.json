@@ -29,6 +29,7 @@
     "tester": "jest"
   },
   "scripts": {
+    "install": "./init.sh",
     "test": "node ./oldCode/testDropBox.js",
     "start": "node index.js",
     "//": "lint does not work - Can't open **.js",

@@ -1,8 +1,9 @@
 var inspect = require('util').inspect;
 var dropbox = require('./cents.dropbox');
+var getAccountsFileName = require('../server/utilities').getAccountsFileName;
 
 function getAccounts(){
-	var jsonFile = require('path').join(__dirname + '/accounts.json');
+	var jsonFile = require('path').join(getAccountsFileName());
 	var accountsJson = JSON.parse(require('fs').readFileSync(jsonFile,'utf8'));
 	return accountsJson;
 }
