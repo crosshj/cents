@@ -27,7 +27,7 @@ build/Release
 node_modules
 
 #private data
-accounts*.json*
+accounts.json
 _private/*
 
 integration
