@@ -17,9 +17,9 @@ The aim of this project is to create an application with a simple, responsive in
 
 # required files
 
-###./accounts.json (see accounts.default.json)
+### ./accounts.json (see accounts.default.json)
 
-###./_private/access_token.json 
+### ./_private/access_token.json 
 
 dropbox is not fully integrated presently, but test will fail without this
 ```javascript
