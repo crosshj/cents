@@ -22,6 +22,7 @@ The aim of this project is to create an application with a simple, responsive in
 ### ./_private/access_token.json 
 
 dropbox is not fully integrated presently, but test will fail without this
+
 ```javascript
 {
 	"token" : "<YOUR_DROPBOX_TOKEN>"
