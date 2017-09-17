@@ -2,14 +2,15 @@ var zlib = require('zlib');
 var fs = require('fs');
 var getAccountsFileName = require('./utilities').getAccountsFileName;
 
-var getJSON = function(req, res){
+const getJSON = function(req, res){
   // not gzipped, using centslib
   //var jsonFile = c.getAccounts();
   //res.writeHead(200, {'Content-Type': 'application/json'});
   //res.end(JSON.stringify(jsonFile));
 
   // gzipped, using stream
-  var raw = fs.createReadStream(getAccountsFileName());
+  const accountsfileName = getAccountsFileName();
+  var raw = fs.createReadStream(accountsfileName);
     res.writeHead(200, {
       'content-encoding': 'gzip',
       'Content-Type': 'application/json',
