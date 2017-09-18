@@ -15,8 +15,8 @@ var diff = require('diff-json').diff;
 var moment = require('moment');
 
 function saveAccounts(data){
-	var jsonFile = require('path').join(__dirname + '/../accounts.json');
-	var logFile = require('path').join(__dirname + '/../diffs.log');
+	var jsonFile = require('path').resolve(__dirname, '../accounts.json');
+	var logFile = require('path').resolve(__dirname, '../diffs.log');
 
 	// simple check to make sure data is clean and safe
 	var dataOkayToSave = data
@@ -36,12 +36,18 @@ function saveAccounts(data){
 			.replace(/:/g, '')
 			.replace(/-/g, '')
 			.slice(0, 13);
-		fs.appendFileSync(logFile, JSON.stringify({ date, delta })+'\n');
+		fs.appendFileSync(
+			logFile,
+			JSON.stringify({ date, delta })+'\n',
+			{ encoding: 'utf8', flag: 'a+' }
+		);
+
+		console.log(newData);
 
 		fs.writeFileSync(
 			jsonFile,
-			JSON.stringify(newData, null, '\t')
-			,'utf8'
+			JSON.stringify(newData, null, '\t'),
+			{ encoding: 'utf8', flag: 'w+' }
 		);
 	} else {
 
