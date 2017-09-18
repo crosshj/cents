@@ -1,34 +1,5 @@
 {
-	"balance": [
-		{
-			"title": "Balance",
-			"amount": "9999.99"
-		}
-	],
-	"liabilities": [
-		{
-			"title": "Power Bill",
-			"status": "Due",
-			"amount": "99.99",
-			"occurence": "month",
-			"date": "2014-06-18",
-			"website": "https://www.powerbill.com/",
-			"total_owed": "999.99",
-			"note": "need to pay what is owed",
-			"hidden": "false"
-		}
-	],
-	"assets": [
-		{
-			"title": "Paycheck",
-			"status": "Paid",
-			"amount": "999.99",
-			"occurence": "month",
-			"date": "2014-06-18",
-			"website": "http://www.mypaycheck.com",
-			"total_owed": "0.00",
-			"note": "",
-			"hidden": "false"
-		}
-	]
+	"balance": [],
+	"liabilities": [],
+	"assets": []
 }
