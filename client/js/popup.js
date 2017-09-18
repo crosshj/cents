@@ -50,8 +50,8 @@ function makeAccountContent($clickedRow){
       ? `
         <h2><a>New Item</a></h2>
         <div class="form-group">
-          <label>Title</label>
-          <input class="u-full-width form-control" type="text"/>
+          <label for="title">Title</label>
+          <input class="u-full-width form-control" id="title" type="text"/>
         </div>
         `
       : `
@@ -80,7 +80,7 @@ function makeAccountContent($clickedRow){
     </div>
     <div class="form-group">
       <label>Total Owed</label>
-      <input  class="total" type="number" value="${total}"/>
+      <input  class="total" type="number" value="${total}" id="total"/>
       ${!isNewItem ? `
         <button class="graph"><i class="fa fa-bar-chart"></i></button>
       ` : ''}
@@ -107,7 +107,7 @@ function makeAccountContent($clickedRow){
   `);
 
   var getStatus = function($item){
-    var status = $item.attr('class').replace(/selected/g, '').trim();
+    var status = ($item.attr('class') || '').replace(/selected/g, '').trim();
     status = status.substring( 0, 1 ).toUpperCase() + status.substring(1).trim();
     return status;
   };
@@ -139,22 +139,35 @@ function makeAccountContent($clickedRow){
   var getCurrentItem = function(item){
     var status = getStatus(item.find('.selected'));
     return {
-      name: item.find('h2').text().trim(),
-      status: status,
+      name: (item.find('#title').val() || item.find('h2').text() || '').trim(),
+      status,
+      website: (item.find('#website').val() || '').trim(),
       amount: item.find('.amount').val(),
-      total: item.find('.total').val(),
+      occurence: item.find('#occurence').val(),
+      total: item.find('#total').val(),
       date: item.find('input[type="date"]').val(),
       notes: item.find('textarea#notes').val()
     };
-  }
+  };
+  var getPopupItem = function(item){
+
+  };
   content.find('button.cancel').on('click', function (e){
     $('#popup-modal').click();
   });
   content.find('button.save').on('click', function (e){
 
     var currentItem = getCurrentItem($(this).parent().parent());
+    //TODO: are we writing to liab or assets?
     var previousVersion = MAIN_DATA.liabilities.getByName(currentItem.name.toLowerCase())
       || MAIN_DATA.assets.getByName(currentItem.name.toLowerCase());
+    if (!previousVersion){
+      previousVersion = {};
+      MAIN_DATA.liabilities.push(previousVersion);
+      previousVersion.occurence = currentItem.occurence;
+      previousVersion.website = currentItem.website;
+      previousVersion.hidden = false;
+    }
     previousVersion.title = currentItem.name;
     previousVersion.status = currentItem.status;
     previousVersion.amount = currentItem.amount;
