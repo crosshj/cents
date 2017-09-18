@@ -30,7 +30,7 @@
   },
   "scripts": {
     "install": "./init.sh",
-    "test": "node ./oldCode/testDropBox.js",
+    "test": "",
     "start": "node server/index.js",
     "prestart": "touch ./accounts.json",
     "//": "lint does not work - Can't open **.js",
