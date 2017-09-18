@@ -1,28 +1,8 @@
 {
 	"balance": [
 		{
-			"title": "Total Assets",
-			"amount": "999.99"
-		},
-		{
-			"title": "Total Liabilities",
-			"amount": "99.99"
-		},
-		{
-			"title": "Total Owed",
-			"amount": "999.99"
-		},
-		{
-			"title": "Total Due",
-			"amount": "99.99"
-		},
-		{
 			"title": "Balance",
 			"amount": "9999.99"
-		},
-		{
-			"title": "Balance - Pend/Due",
-			"amount": "9900.00"
 		}
 	],
 	"liabilities": [
