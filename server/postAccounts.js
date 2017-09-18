@@ -14,7 +14,7 @@ var fs = require('fs');
 var diff = require('diff-json').diff;
 var moment = require('moment');
 
-function saveAccounts(data){
+function saveAccounts(data, callback){
 	var jsonFile = require('path').resolve(__dirname, '../accounts.json');
 	var logFile = require('path').resolve(__dirname, '../diffs.log');
 
@@ -24,7 +24,12 @@ function saveAccounts(data){
 		&& data.hasOwnProperty('assets')
 		&& data.hasOwnProperty('liabilities');
 	if (dataOkayToSave){
-		var oldData = JSON.parse(fs.readFileSync(jsonFile, 'utf8'));
+		var oldData = {};
+		try {
+			oldData = JSON.parse(fs.readFileSync(jsonFile, 'utf8'));
+		} catch (e) {
+			// nothing to do
+		}
 		var newData = {
 			balance: data.balance,
 			assets: data.assets,
@@ -42,12 +47,11 @@ function saveAccounts(data){
 			{ encoding: 'utf8', flag: 'a+' }
 		);
 
-		console.log(newData);
-
-		fs.writeFileSync(
+		fs.writeFile(
 			jsonFile,
-			JSON.stringify(newData, null, '\t'),
-			{ encoding: 'utf8', flag: 'w+' }
+			(JSON.stringify(newData, null, '\t')||'').trim(),
+			{ encoding: 'utf8', flag: 'w+' },
+			callback
 		);
 	} else {
 
@@ -61,9 +65,10 @@ function saveAccounts(data){
 // already tried this and failed because (I think) the proxied call
 function postAccounts (req, res){
 	try {
-		saveAccounts(req.body);
-		res.writeHead(200, {'Content-Type': 'text/html'});
-		res.end('post received');
+		saveAccounts(req.body, () => {
+			res.writeHead(200, {'Content-Type': 'text/html'});
+			res.end('post received');
+		});
 	} catch (error) {
 		res.writeHead(400, {'Content-Type': 'text/html'});
 		res.end(error.toString());
