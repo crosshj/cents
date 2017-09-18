@@ -32,6 +32,7 @@
     "install": "./init.sh",
     "test": "node ./oldCode/testDropBox.js",
     "start": "node index.js",
+    "prestart": "touch ./accounts.json",
     "//": "lint does not work - Can't open **.js",
     "lint": "jshint **.js",
     "build": "browserify index.js > myproject.min.js"
