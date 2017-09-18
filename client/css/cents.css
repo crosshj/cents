@@ -252,6 +252,14 @@ a.button.selected {
   /*transition: opacity 400ms ease-in;*/
 }
 
+@media (min-width: 400px) {
+  #popup-modal > .container {
+    width: 99%;
+    margin-top: 1% !important;
+    margin-bottom: 1% !important;
+  }
+}
+
 #popup-modal button.graph{
   float: none;
   margin: 0px;
