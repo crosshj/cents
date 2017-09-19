@@ -280,12 +280,13 @@ Element.prototype.remove = function() {
     var lockOrientation = screen.lockOrientation || screen.mozLockOrientation || screen.msLockOrientation || function(){};
     lockOrientation("portrait-primary");
     $(window).on("touchmove", handleTouchMove);
+
     $(window).on("focus", () => {
-      console.log('window focused');
-      $('#corner-circle').text(Number($('#corner-circle').text()) + 1); 
+      console.log('TODO: when focused, refresh if needed');
+      //$('#corner-circle').text(Number($('#corner-circle').text()) + 1); 
     });
     $(window).on("blur", () => {
-      console.log('window blurred');
-      $('#corner-circle').text(Number($('#corner-circle').text()) + 1); 
+      console.log('TODO: on blur save current time');
+      //$('#corner-circle').text(Number($('#corner-circle').text()) + 1); 
     });
   });
