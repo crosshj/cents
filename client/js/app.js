@@ -12,6 +12,7 @@
 Element.prototype.remove = function() {
     this.parentElement.removeChild(this);
 }
+
   function makeRow (data){
     var primary = data.status.toLowerCase() !== "paid" ? " button-primary" : "";
     return $(`
@@ -279,4 +280,12 @@ Element.prototype.remove = function() {
     var lockOrientation = screen.lockOrientation || screen.mozLockOrientation || screen.msLockOrientation || function(){};
     lockOrientation("portrait-primary");
     $(window).on("touchmove", handleTouchMove);
+    $(window).on("focus", () => {
+      console.log('window focused');
+      $('#corner-circle').text(Number($('#corner-circle').text()) + 1); 
+    });
+    $(window).on("blur", () => {
+      console.log('window blurred');
+      $('#corner-circle').text(Number($('#corner-circle').text()) + 1); 
+    });
   });
