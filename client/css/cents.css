@@ -382,8 +382,9 @@ a.button.selected {
 
 #popup-modal #history-graph {
   height: 300px;
-  border: 1px solid lightgrey;
-  width: 100%;
+  /* border: 1px solid lightgrey; */
+  margin-left: -20px;
+  margin-right: -20px !important;
 }
 
 #popup-modal #history-graph .loading-spinner {
