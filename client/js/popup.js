@@ -198,7 +198,11 @@ function makeAccountContent($clickedRow){
         <h4>
           <a>${title} ${field} History</a>
         </h4>
-        <div id="history-graph"></div>
+        <div id="history-graph">
+          <div class="loading-spinner">
+            <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+          </div>
+        </div>
         <div class="row actions">
           <button class="button-primary cancel">Dismiss</button>
         </div>
