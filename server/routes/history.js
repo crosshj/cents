@@ -51,9 +51,10 @@ function getDiffs(req, res) {
         .map(item => JSON.parse(item));
 
       res.setHeader('content-type', 'text/plain');
-      const fields = ['amount', 'total_owed'];
+      const fields = req.query.field || ['amount', 'total_owed'];
       const account = req.query.account;
-      const diffs = filterDiffs(lines, 'liabilities', fields, account);
+      const type = req.query.type || 'liabilities';
+      const diffs = filterDiffs(lines, type, fields, account);
       res.send(diffs);
     } catch (e) {
       //console.log(`error with sending lines from ${DIFF_LOG_LOCATION}: ${e}`);

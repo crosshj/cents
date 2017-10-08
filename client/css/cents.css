@@ -385,3 +385,10 @@ a.button.selected {
   border: 1px solid lightgrey;
   width: 100%;
 }
+
+#popup-modal #history-graph .loading-spinner {
+  text-align: center;
+  color: white;
+  line-height: 300px;
+  background: #ddd;
+}
