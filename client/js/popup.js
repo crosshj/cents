@@ -242,6 +242,16 @@ function makeAccountContent($clickedRow){
         credits: {
             enabled: false
         },
+        tooltip: {
+          formatter: function() {
+            return `
+              <b>$${this.y}</b>
+              <br/>
+              <p>${moment(this.x).format('MMM DD YYYY, HH:mm a')}</p>
+              
+            `;
+          }
+        },
         xAxis: {
             type: 'datetime'
         },
