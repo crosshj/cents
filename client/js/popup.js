@@ -202,6 +202,7 @@ function makeAccountContent($clickedRow){
           <div class="loading-spinner">
             <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
           </div>
+          <div class="graph-container"></div>
         </div>
         <div class="row actions">
           <button class="button-primary cancel">Dismiss</button>
@@ -216,17 +217,75 @@ function makeAccountContent($clickedRow){
     return content;
   }
 
+  function formatGraphData(json){
+    var formattedData = json.map(x => [
+      moment(x.date.replace('_', ' ')).valueOf(),
+      Number(x.value)
+    ]);
+    //console.log(formattedData);
+    return formattedData;
+  }
+  function makeGraph($container, data){
+    console.log(data)
+    var chartConfig = {
+        chart: {
+            renderTo: $container,
+            marginTop: 30,
+            height: 300
+        },
+        title:{
+            text:''
+        },
+        legend: {
+            enabled: false
+        },
+        credits: {
+            enabled: false
+        },
+        xAxis: {
+            type: 'datetime'
+        },
+        yAxis: {
+          title: ''
+        },
+        series: [{
+          name: '',
+          data: data
+        }]
+    };
+    var graph = new Highcharts.Chart(chartConfig);
+    return graph;
+  }
   //graph click handler
   content.find('button.graph').on('click', function(e){
-    
-    var historyContent = makeHistoryContent({
+    var h = {
       type: 'liabilities',
-      title,
+      title: title.trim(),
       field: $(this).data('title')
-    });
+    };
+    var historyContent = makeHistoryContent(h);
     $('div#popup-modal .history').html(historyContent);
     $('div#popup-modal .account').hide();
     $('div#popup-modal .history').show();
+
+    var fetchField = h.field.toLowerCase().replace(' ', '_');
+    fetch(`diffs?type=${h.type}&account=${h.title}&field=${fetchField}`, {
+      credentials: 'include'  
+    })
+      .then(function(response) {
+        return response.json();
+      })
+      .then(function(json) {
+        historyContent.find('.loading-spinner').hide();
+        var graphContainer = historyContent.find('.graph-container')[0];
+        //graphContainer.text('got data');
+        var graphData = formatGraphData(json);
+        var chart = makeGraph(graphContainer, graphData);
+        //console.log(json);
+      })
+      .catch(function(error) { 
+        console.log("Error making graph", error); 
+      });
   });
 
   return content;
