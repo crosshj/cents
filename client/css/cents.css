@@ -225,6 +225,10 @@ a.button.selected {
   /*transition: bottom 0.3s ease-in, opacity 400ms ease-in;*/
 }
 
+#popup-modal .history {
+  display: none;
+}
+
 #popup-modal .content {
   padding: 2em;
   opacity: 0;
@@ -374,4 +378,10 @@ a.button.selected {
   padding: 0px 10px;
   border-radius: 20px;
   line-height: 25px;
+}
+
+#popup-modal #history-graph {
+  height: 300px;
+  border: 1px solid lightgrey;
+  width: 100%;
 }

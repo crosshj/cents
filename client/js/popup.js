@@ -45,64 +45,70 @@ function makeAccountContent($clickedRow){
   var total = $clickedRow.find('.total').text().replace(/[$,]+/g,"");
   var isNewItem = !title; //TODO: better condition
 
-  var content = $(`<div class="container content">
-    ${ isNewItem
-      ? `
-        <h2><a>New Item</a></h2>
+  var content = $(`
+    <div>
+      <div class="container content history">
+      </div>
+      <div class="container content account">
+        ${ isNewItem
+          ? `
+            <h2><a>New Item</a></h2>
+            <div class="form-group">
+              <label for="title">Title</label>
+              <input class="u-full-width form-control" id="title" type="text"/>
+            </div>
+            `
+          : `
+            <h2>
+              <a target="_blank" href="${website}">${title}</a>
+            </h2>
+            `
+          }
+        ${statusRow(statusItems, originalStatus, isNewItem)}
+        ${isNewItem ? `
+          <div class="form-group">
+            <label for="website">Website</label>
+            <input class="u-full-width form-control" type="text" id="website"/>
+          </div>
+        ` : ''}
         <div class="form-group">
-          <label for="title">Title</label>
-          <input class="u-full-width form-control" id="title" type="text"/>
+          <label for="notes">Notes</label>
+          <textarea class="u-max-full-width u-full-width form-control" rows="5" id="notes">${notes}</textarea>
         </div>
-        `
-      : `
-        <h2>
-          <a target="_blank" href="${website}">${title}</a>
-        </h2>
-        `
-      }
-    ${statusRow(statusItems, originalStatus, isNewItem)}
-    ${isNewItem ? `
-      <div class="form-group">
-        <label for="website">Website</label>
-        <input class="u-full-width form-control" type="text" id="website"/>
+        <div class="form-group">
+          <label>Payment Amount</label>
+          <input class="amount" type="number" step="0.01" value="${amount}"/>
+          ${!isNewItem ? `
+            <button class="graph" data-title="Amount"><i class="fa fa-bar-chart"></i></button>
+          ` : ''}
+        </div>
+        <div class="form-group">
+          <label>Total Owed</label>
+          <input  class="total" type="number" value="${total}" id="total"/>
+          ${!isNewItem ? `
+            <button class="graph" data-title="Total Owed"><i class="fa fa-bar-chart"></i></button>
+          ` : ''}
+        </div>
+        <div class="form-group">
+          <label>Date Due</label>
+          <input type="date" value="${originalDateString}"/>
+        </div>
+        ${isNewItem ?  `
+          <div class="form-group">
+            <label>Occurence</label>
+            <select class="u-full-width" id="occurence">
+              <option value="once">Once</option>
+              <option value="week">Weekly</option>
+              <option value="bi-week">Bi-weekly</option>
+              <option value="month" selected="selected">Monthly</option>
+            </select>
+          </div>
+        ` : ''}
+        <div class="row actions">
+          <button class="button-primary cancel" onClick="">Cancel</button>
+          <button class="button-primary save" onClick="">${isNewItem ? 'Add' : 'Save'}</button>
+        </div>
       </div>
-    ` : ''}
-    <div class="form-group">
-      <label for="notes">Notes</label>
-      <textarea class="u-max-full-width u-full-width form-control" rows="5" id="notes">${notes}</textarea>
-    </div>
-    <div class="form-group">
-      <label>Payment Amount</label>
-      <input class="amount" type="number" step="0.01" value="${amount}"/>
-      ${!isNewItem ? `
-        <button class="graph"><i class="fa fa-bar-chart"></i></button>
-      ` : ''}
-    </div>
-    <div class="form-group">
-      <label>Total Owed</label>
-      <input  class="total" type="number" value="${total}" id="total"/>
-      ${!isNewItem ? `
-        <button class="graph"><i class="fa fa-bar-chart"></i></button>
-      ` : ''}
-    </div>
-    <div class="form-group">
-      <label>Date Due</label>
-      <input type="date" value="${originalDateString}"/>
-    </div>
-    ${isNewItem ?  `
-      <div class="form-group">
-        <label>Occurence</label>
-        <select class="u-full-width" id="occurence">
-          <option value="once">Once</option>
-          <option value="week">Weekly</option>
-          <option value="bi-week">Bi-weekly</option>
-          <option value="month" selected="selected">Monthly</option>
-        </select>
-      </div>
-    ` : ''}
-    <div class="row actions">
-      <button class="button-primary cancel" onClick="">Cancel</button>
-      <button class="button-primary save" onClick="">${isNewItem ? 'Add' : 'Save'}</button>
     </div>
   `);
 
@@ -185,5 +191,39 @@ function makeAccountContent($clickedRow){
       }
     });
   });
+
+  function makeHistoryContent({type, title, field}){
+    var content = $(`
+      <div>
+        <h4>
+          <a>${title} ${field} History</a>
+        </h4>
+        <div id="history-graph"></div>
+        <div class="row actions">
+          <button class="button-primary cancel">Dismiss</button>
+        </div>
+      </div>
+    `);
+
+    content.find('button.cancel').on('click', function(e){
+      $('div#popup-modal .history').hide();
+      $('div#popup-modal .account').show();
+    });
+    return content;
+  }
+
+  //graph click handler
+  content.find('button.graph').on('click', function(e){
+    
+    var historyContent = makeHistoryContent({
+      type: 'liabilities',
+      title,
+      field: $(this).data('title')
+    });
+    $('div#popup-modal .history').html(historyContent);
+    $('div#popup-modal .account').hide();
+    $('div#popup-modal .history').show();
+  });
+
   return content;
 }
