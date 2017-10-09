@@ -31,6 +31,124 @@ var statusRow = function(statusItems, status, showLabel){
   `;
 }
 
+function makeHistoryContent({type, title, field, hijack}){
+  var historyContent = $(`
+    <div>
+      <h4>
+        <a>${title} ${field} History</a>
+      </h4>
+      <div id="history-graph">
+        <div class="loading-spinner">
+          <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+        </div>
+        <div class="graph-container"></div>
+      </div>
+      <div class="row actions">
+        <button class="button-primary close">Close</button>
+        ${hijack ? `<button class="button-primary cancel">Back</button>` : ''}
+      </div>
+    </div>
+  `);
+
+  historyContent.find('button.cancel').on('click', function(e){
+    $('div#popup-modal .history').hide();
+    $('div#popup-modal .account').show();
+  });
+
+  historyContent.find('button.close').on('click', function(e){
+    $('div#popup-modal .history').hide();
+    $('div#popup-modal').removeClass('show');
+    $('body').removeClass('lock-screen');
+  });
+
+  return historyContent;
+}
+
+function formatGraphData(json){
+  var formattedData = json.map(x => [
+    moment(x.date.replace('_', ' ')).valueOf(),
+    Number(x.value)
+  ]);
+  return formattedData;
+}
+
+function makeGraph($container, data){
+  var chartConfig = {
+      chart: {
+          renderTo: $container,
+          marginTop: 30,
+          height: 300
+      },
+      title:{
+          text:''
+      },
+      legend: {
+          enabled: false
+      },
+      credits: {
+          enabled: false
+      },
+      tooltip: {
+        formatter: function() {
+          return `
+            <b>$${this.y}</b>
+            <br/>
+            <p>${moment(this.x).format('MMM DD YYYY, HH:mm a')}</p>
+            
+          `;
+        }
+      },
+      xAxis: {
+          type: 'datetime'
+      },
+      yAxis: {
+        title: ''
+      },
+      series: [{
+        name: '',
+        data: data
+      }]
+  };
+  var graph = new Highcharts.Chart(chartConfig);
+  return graph;
+}
+
+function showHistoryPopup(target, h){
+  var historyContent = makeHistoryContent(h);
+  $('div#popup-modal .history').html(historyContent);
+  if(h.hijack){
+    $('div#popup-modal .account').hide();
+  }
+
+  if (!h.hijack){
+    var historyPopupContainer = $(`
+      <div>
+        <div class="container content history"></div>
+      </div>
+    `);
+    historyPopupContainer.find('.content.history').html(historyContent);
+    popUpModal(target, historyPopupContainer);
+  }
+  $('div#popup-modal .history').show();
+
+  var fetchField = h.field.toLowerCase().replace(' ', '_');
+  fetch(`diffs?type=${h.type}&account=${h.title}&field=${fetchField}`, {
+    credentials: 'include'  
+  })
+    .then(function(response) {
+      return response.json();
+    })
+    .then(function(json) {
+      historyContent.find('.loading-spinner').hide();
+      var graphContainer = historyContent.find('.graph-container')[0];
+      var graphData = formatGraphData(json);
+      var chart = makeGraph(graphContainer, graphData);
+    })
+    .catch(function(error) { 
+      console.log("Error making graph", error); 
+    });
+}
+
 function makeAccountContent($clickedRow){
   var statusItems = ['due', 'pending', 'paid'];
   var dueDate = new Date(Date.now());
@@ -192,107 +310,17 @@ function makeAccountContent($clickedRow){
     });
   });
 
-  function makeHistoryContent({type, title, field}){
-    var content = $(`
-      <div>
-        <h4>
-          <a>${title} ${field} History</a>
-        </h4>
-        <div id="history-graph">
-          <div class="loading-spinner">
-            <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
-          </div>
-          <div class="graph-container"></div>
-        </div>
-        <div class="row actions">
-          <button class="button-primary cancel">Dismiss</button>
-        </div>
-      </div>
-    `);
-
-    content.find('button.cancel').on('click', function(e){
-      $('div#popup-modal .history').hide();
-      $('div#popup-modal .account').show();
-    });
-    return content;
-  }
-
-  function formatGraphData(json){
-    var formattedData = json.map(x => [
-      moment(x.date.replace('_', ' ')).valueOf(),
-      Number(x.value)
-    ]);
-    return formattedData;
-  }
-  function makeGraph($container, data){
-    var chartConfig = {
-        chart: {
-            renderTo: $container,
-            marginTop: 30,
-            height: 300
-        },
-        title:{
-            text:''
-        },
-        legend: {
-            enabled: false
-        },
-        credits: {
-            enabled: false
-        },
-        tooltip: {
-          formatter: function() {
-            return `
-              <b>$${this.y}</b>
-              <br/>
-              <p>${moment(this.x).format('MMM DD YYYY, HH:mm a')}</p>
-              
-            `;
-          }
-        },
-        xAxis: {
-            type: 'datetime'
-        },
-        yAxis: {
-          title: ''
-        },
-        series: [{
-          name: '',
-          data: data
-        }]
-    };
-    var graph = new Highcharts.Chart(chartConfig);
-    return graph;
-  }
   //graph click handler
   content.find('button.graph').on('click', function(e){
     var h = {
       type: 'liabilities',
       title: title.trim(),
-      field: $(this).data('title')
+      field: $(this).data('title'),
+      hijack: true
     };
-    var historyContent = makeHistoryContent(h);
-    $('div#popup-modal .history').html(historyContent);
-    $('div#popup-modal .account').hide();
-    $('div#popup-modal .history').show();
-
-    var fetchField = h.field.toLowerCase().replace(' ', '_');
-    fetch(`diffs?type=${h.type}&account=${h.title}&field=${fetchField}`, {
-      credentials: 'include'  
-    })
-      .then(function(response) {
-        return response.json();
-      })
-      .then(function(json) {
-        historyContent.find('.loading-spinner').hide();
-        var graphContainer = historyContent.find('.graph-container')[0];
-        var graphData = formatGraphData(json);
-        var chart = makeGraph(graphContainer, graphData);
-      })
-      .catch(function(error) { 
-        console.log("Error making graph", error); 
-      });
+    showHistoryPopup(null, h);
   });
 
   return content;
 }
+
