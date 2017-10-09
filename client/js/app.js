@@ -95,7 +95,7 @@ Element.prototype.remove = function() {
           </tbody>
         </table>
       </a>
-      <a class="button totals">
+      <a class="button totals" id="totals_history">
         <table class="u-full-width">
           <tbody>
             <tr class="header">
@@ -111,9 +111,6 @@ Element.prototype.remove = function() {
         </table>
       </a>
     `);
-    totalsRow.find('tr.history').on('click', function(){
-      alert('make a popup with totals history');
-    })
     return totalsRow;
   }
 
@@ -187,8 +184,16 @@ Element.prototype.remove = function() {
           var content = typeof makeAccountContent === "function" && makeAccountContent($(this));
           typeof popUpModal === "function" && popUpModal($(this), content);
           break;
+        case $(this).is('#totals_history'):
+          console.log('totals history');
+          typeof showHistoryPopup === "function" && showHistoryPopup($(this), {
+            type: 'balance',
+            title: 'Total Owed',
+            field: 'Amount'
+          });
+          break;
         default:
-          console.log('--- some other case');
+          console.log('--- some other case', $(this));
           break;
       }
     });
