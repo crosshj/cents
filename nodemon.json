@@ -3,6 +3,6 @@
   "ignore": [
     "client/*",
     "diffs.log",
-    "accounts.*"
+    "accounts.*json"
   ]
 }
