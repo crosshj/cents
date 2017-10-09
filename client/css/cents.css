@@ -393,3 +393,8 @@ a.button.selected {
   line-height: 300px;
   background: #ddd;
 }
+
+.totals .history button {
+  background: #aaa;
+  border: 0px;
+}
