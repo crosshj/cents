@@ -222,11 +222,9 @@ function makeAccountContent($clickedRow){
       moment(x.date.replace('_', ' ')).valueOf(),
       Number(x.value)
     ]);
-    //console.log(formattedData);
     return formattedData;
   }
   function makeGraph($container, data){
-    console.log(data)
     var chartConfig = {
         chart: {
             renderTo: $container,
@@ -288,10 +286,8 @@ function makeAccountContent($clickedRow){
       .then(function(json) {
         historyContent.find('.loading-spinner').hide();
         var graphContainer = historyContent.find('.graph-container')[0];
-        //graphContainer.text('got data');
         var graphData = formatGraphData(json);
         var chart = makeGraph(graphContainer, graphData);
-        //console.log(json);
       })
       .catch(function(error) { 
         console.log("Error making graph", error); 
