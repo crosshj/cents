@@ -267,7 +267,7 @@ a.button.selected {
 #popup-modal button.graph{
   float: none;
   margin: 0px;
-  margin-left: 1em;
+  margin-left: 0.75em;
   font-size: 21px;
   padding: 1px 5px 0px 6px;
   line-height: 37px;
@@ -397,4 +397,10 @@ a.button.selected {
 .totals .history button {
   background: #aaa;
   border: 0px;
+}
+
+.form-group input.amount,
+.form-group input.total {
+  display: inline-flex;
+  width: 80%;
 }
