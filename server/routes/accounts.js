@@ -72,12 +72,30 @@ function saveAccounts(data, callback) {
 		} catch (e) {
 			// nothing to do
 		}
+
+		const oldTotal = oldData.liabilities
+			.filter(item => !JSON.parse(item.hidden))
+			.reduce((all, one) => all + Number(one.total_owed), 0);
+		oldData.balance.push({
+			"title": "Total Owed",
+			"amount": oldTotal
+		});
+
+		const newTotal = data.liabilities
+			.filter(item => !JSON.parse(item.hidden))
+			.reduce((all, one) => all + Number(one.total_owed), 0);
+		data.balance.push({
+			"title": "Total Owed",
+			"amount": newTotal
+		});
+
 		var newData = {
 			balance: data.balance,
 			assets: data.assets,
 			liabilities: data.liabilities
 		};
-		var delta = diff(oldData, newData, { liabilities: 'title', assets: 'title' });
+
+		var delta = diff(oldData, newData, { liabilities: 'title', assets: 'title', balance: 'title' });
 		var date = moment().format()
 			.replace('T', '_')
 			.replace(/:/g, '')
