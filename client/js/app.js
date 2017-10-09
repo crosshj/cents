@@ -48,7 +48,7 @@ Element.prototype.remove = function() {
   }
 
   function makeTotalsRow({balance=0, pending=0, due=0, assets=0, debts=0, debtTotal=0}){
-    return $(`
+    var totalsRow = $(`
       <a class="button totals">
         <table class="u-full-width">
           <tbody>
@@ -102,10 +102,19 @@ Element.prototype.remove = function() {
               <td class="title">Debt Total</td>
               <td class="status">${formatMoney(debtTotal)}</td>
             </tr>
+            <tr class="header history">
+              <td colspan="2" class="title center">
+                <button>History</button>
+              </td>
+            </tr>
           </tbody>
         </table>
       </a>
     `);
+    totalsRow.find('tr.history').on('click', function(){
+      alert('make a popup with totals history');
+    })
+    return totalsRow;
   }
 
   function makeMenuButton (data){
