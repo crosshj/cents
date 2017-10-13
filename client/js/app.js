@@ -33,7 +33,7 @@ Element.prototype.remove = function() {
                 <td class="total">${Boolean(data.totalOwed) ? formatMoney(data.totalOwed) : ''}</td>
                 <td class="date">${data.date}</td>
                 <td class="website hidden">${data.website}</td>
-                <td class="notes hidden">${data.notes}</td>
+                <td class="notes hidden">${data.note}</td>
                 <td class="auto hidden">${data.auto||'false'}</td>
               </tr>
             </tbody>
