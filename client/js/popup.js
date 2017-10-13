@@ -162,6 +162,7 @@ function makeAccountContent($clickedRow){
   var amount = $clickedRow.find('.amount').text().replace(/[$,]+/g,"");
   var total = $clickedRow.find('.total').text().replace(/[$,]+/g,"");
   var isNewItem = !title; //TODO: better condition
+  var autoIsChecked = JSON.parse($clickedRow.find('.auto').text());
 
   var content = $(`
     <div>
@@ -190,8 +191,12 @@ function makeAccountContent($clickedRow){
           </div>
         ` : ''}
         <div class="form-group">
-          <label for="notes">Notes</label>
-          <textarea class="u-max-full-width u-full-width form-control" rows="5" id="notes">${notes}</textarea>
+        <label for="notes">Notes</label>
+        <textarea class="u-max-full-width u-full-width form-control" rows="5" id="notes">${notes}</textarea>
+      </div>
+        <div class="form-group checkbox-group">
+          <label for="auto-checkbox">AUTO</label>
+          <input type="checkbox" id="auto-checkbox" ${autoIsChecked ? 'checked' : ''}>
         </div>
         <div class="form-group">
           <label>Payment Amount</label>
@@ -270,7 +275,8 @@ function makeAccountContent($clickedRow){
       occurence: item.find('#occurence').val(),
       total: item.find('#total').val(),
       date: item.find('input[type="date"]').val(),
-      notes: item.find('textarea#notes').val()
+      notes: item.find('textarea#notes').val(),
+      auto: item.find('#auto-checkbox').is(":checked")
     };
   };
   var getPopupItem = function(item){
@@ -298,6 +304,7 @@ function makeAccountContent($clickedRow){
     previousVersion.total_owed = currentItem.total || '0.00';
     previousVersion.date = currentItem.date;
     previousVersion.note = currentItem.notes.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    previousVersion.auto = currentItem.auto;
     $.ajax({
       url: "./accounts",
       type: 'POST',

@@ -13,29 +13,26 @@ https://www.npmjs.com/package/diff-json
 var fs = require('fs');
 var diff = require('diff-json').diff;
 var moment = require('moment');
-var zlib = require('zlib');
 
 var getAccountsFileName = require('../utilities').getAccountsFileName;
+var updateAccounts = require('../utilities').updateAccounts;
+
 var jsonFile = require('path').resolve(__dirname, '../../accounts.json');
 var logFile = require('path').resolve(__dirname, '../../diffs.log');
 
 var db = require('../../service/database');
 
-function getJSON (req, res){
-  // not gzipped, using centslib
-  //var jsonFile = c.getAccounts();
-  //res.writeHead(200, {'Content-Type': 'application/json'});
-  //res.end(JSON.stringify(jsonFile));
+function getJSON(req, res) {
+	const accountsFileName = getAccountsFileName();
+	accounts = JSON.parse(fs.readFileSync(accountsFileName));
+	var headers = {
+		'Content-Type': 'application/json',
+		'Access-Control-Allow-Origin': '*'
+	};
 
-  // gzipped, using stream
-  const accountsfileName = getAccountsFileName();
-  var raw = fs.createReadStream(accountsfileName);
-    res.writeHead(200, {
-      'content-encoding': 'gzip',
-      'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': '*'
-    });
-    raw.pipe( zlib.createGzip() ).pipe(res);
+	res.writeHead(200, headers);
+	accounts = updateAccounts(accounts);
+	res.end(JSON.stringify(accounts));
 }
 
 function getAccounts(req, res) {

@@ -34,6 +34,7 @@ Element.prototype.remove = function() {
                 <td class="date">${data.date}</td>
                 <td class="website hidden">${data.website}</td>
                 <td class="notes hidden">${data.notes}</td>
+                <td class="auto hidden">${data.auto||'false'}</td>
               </tr>
             </tbody>
           </table>
@@ -143,30 +144,18 @@ Element.prototype.remove = function() {
 
     formattedData.liabilities.forEach(function(item){
       if (item.hidden === "true") return;
-      $('div.liabilities').append(makeRow({
-          status: item.status,
-          title: item.title,
-          amount: item.amount,
-          totalOwed: item.total_owed > 0 ? '$'+item.total_owed : '',
-          date: item.date,
-          website: item.website,
-          notes: item.note
-      }));
+      var row = JSON.parse(JSON.stringify(item));
+      row.totalOwed = item.total_owed > 0 ? '$'+item.total_owed : '';
+      $('div.liabilities').append(makeRow(row));
     });
 
     $('div.liabilities').append(makeAddNew());
 
     formattedData.assets.forEach(function(item){
       if (item.hidden === "true") return;
-      $('div.assets').append(makeRow({
-          status: item.status,
-          title: item.title,
-          amount: item.amount,
-          totalOwed: item.total_owed > 0 ? '$'+item.total_owed : '',
-          date: item.date,
-          website: item.website,
-          notes: item.note
-      }));
+      var row = JSON.parse(JSON.stringify(item));
+      row.totalOwed = item.total_owed > 0 ? '$'+item.total_owed : '';
+      $('div.assets').append(makeRow(row));
     });
 
     $('div.totals .row').append(makeTotalsRow(formattedData.totals || {}));
