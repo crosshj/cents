@@ -404,3 +404,13 @@ a.button.selected {
   display: inline-flex;
   width: 80%;
 }
+
+.checkbox-group > label{
+  display: inline;
+}
+
+.checkbox-group > input[type="checkbox"]{
+  margin: 0px;
+  margin-left: 5px;
+  margin-bottom: 1.5rem;
+}
