@@ -9,6 +9,22 @@
       - integrate with DB service
       - new account / restore / demo account
   */
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('sw.js', {scope: './'}).then(function(registration) {
+      // Registration was successful
+      console.log('ServiceWorker registration successful with scope: ', registration.scope); //eslint-disable-line no-console
+      navigator.serviceWorker.addEventListener('message', event => {
+        console.log(event.data.msg, event.data.url);
+      });
+    }).catch(function(err) {
+      // registration failed :(
+      console.log('ServiceWorker registration failed: ', err); //eslint-disable-line no-console
+    });
+  });
+}
+
 Element.prototype.remove = function() {
     this.parentElement.removeChild(this);
 }
@@ -262,10 +278,14 @@ Element.prototype.remove = function() {
     // $(window).on("touchmove", tempDisableDrag);
   }
 
+  function login(){
+    document.querySelector('#login').className = '';
+    //window.location.replace("login/");
+  }
 
   $.getJSON("json", mainData => {
     if (!mainData || mainData.error){
-      window.location.replace("login/");
+      login();
       return;
     }
     $.getJSON("accounts", scrapedData => {

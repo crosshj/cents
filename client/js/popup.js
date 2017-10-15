@@ -139,6 +139,9 @@ function showHistoryPopup(target, h){
       return response.json();
     })
     .then(function(json) {
+      if(json.mustLogin){
+        return login();
+      }
       historyContent.find('.loading-spinner').hide();
       var graphContainer = historyContent.find('.graph-container')[0];
       var graphData = formatGraphData(json);
