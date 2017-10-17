@@ -21,7 +21,13 @@ The aim of this project is to create an application with a simple, responsive in
 
 ### ./_private/access_token.json 
 
-
+### TODO
+- [ ] login & serviceworker issues...
+- [ ] when not logged in and PWA, header status shows without accounts listed
+- [ ] auto-mark next pay day
+- [ ] site scrapers (phantom, nightmare, newman)
+- [ ] auto-group (or update status of) accounts per paycheck
+- [ ] marking pending item as paid reduces total owed (or prompts)
 	
 
 ### NOTES
