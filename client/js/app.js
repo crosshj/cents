@@ -283,18 +283,21 @@ Element.prototype.remove = function() {
     //window.location.replace("login/");
   }
 
-  $.getJSON("json", mainData => {
-    if (!mainData || mainData.error){
-      login();
-      return;
-    }
-    $.getJSON("accounts", scrapedData => {
-      var data = mainData;
-      
-      data.scraped = scrapedData;
-      createUI(data);
+  function getMainData(){
+    $.getJSON("json", mainData => {
+      if (!mainData || mainData.error){
+        login();
+        return;
+      }
+      $.getJSON("accounts", scrapedData => {
+        var data = mainData;
+        
+        data.scraped = scrapedData;
+        createUI(data);
+      });
     });
-  });
+  }
+  getMainData();
 
   $(document).ready(function(){
     var colorsList = [];
@@ -312,4 +315,18 @@ Element.prototype.remove = function() {
       console.log('TODO: on blur save current time');
       //$('#corner-circle').text(Number($('#corner-circle').text()) + 1); 
     });
+
+    // Create IE + others compatible event handler
+    var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
+    var eventer = window[eventMethod];
+    var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
+
+    // Listen to message from child window
+    eventer(messageEvent,function(e) {
+      console.log('parent received message!:  ',e.data);
+      if(e.data.name === "logInSuccess"){
+        document.querySelector('#login').className = 'hidden';
+        getMainData();
+      }
+    },false);
   });

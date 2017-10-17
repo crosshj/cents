@@ -1,0 +1,100 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <!-- Added ––––––––––––––––––––––––––––––– -->
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <!-- Basic Page Needs -––––––––––––––––––– -->
+  <meta charset="utf-8">
+  <title>Cents Personal Finance - Login</title>
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <meta name="theme-color" content="#746D5D">
+
+  <!-- Mobile Specific Metas  –––––––––––––– -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+  <!-- FONT –––––––––––––––––––––––––––––––– -->
+  <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+
+  <!-- CSS –––––––––––––––––––––––––––––––– -->
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet"></link>
+  <link rel="stylesheet" href="../css/login.css">
+  <!--
+  <link rel="stylesheet" href="/css/skeleton.css">
+  <link rel="stylesheet" href="/css/cents.css">
+  <link rel="stylesheet" href="/css/font-awesome.min.css">
+  -->
+
+  <!-- Favicon –––––––––––––––––––––––––––––––– -->
+  <link rel="icon" type="image/png" href="../images/launcher-icon-3x.png">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+  <!--
+  <script src="/js/bgGrad.js"></script>
+  -->
+
+</head>
+<script>
+  function inIframe () {
+      try {
+          return window.self !== window.top;
+      } catch (e) {
+          return true;
+      }
+  }
+
+  function submitForm(e, form){
+    fetch('../login', {
+      method: 'POST',
+      body: JSON.stringify({
+        username: form.username.value,
+        password: form.password.value
+      }),
+      credentials: 'same-origin'
+    }).then(function(response) {
+      return response.json();
+    }).then(function(data) {
+      window.parent.postMessage({name: 'logInSuccess'}, '*');
+    }).catch(function(err) {
+      window.parent.postMessage({name: 'logInError'}, '*');
+    });
+  }
+  function submitHandler(event, form){
+    event.preventDefault();
+    var formEl = document.querySelector('form');
+    if (inIframe()){
+      submitForm(event, formEl);
+    } else {
+      document.login.submit();
+    }
+  }
+</script>
+
+<body>
+
+  <!-- Primary Page Layout ––––––––––––––––––––––– -->
+    <form action="../login" method="post" name="login">
+      <div class="loginView">
+        <div class="header">
+          <img src="../images/launcher-icon-4x.png" />
+        </div>
+        <div class="field">
+          <input name="username" class="form-control input-lg" id="username" type="text" placeholder="Your username" />
+        </div>
+        <div class="field">
+          <input name="password" class="form-control input-lg" id="password" type="password" placeholder="Your password"/>
+        </div>
+        <div class="button">
+          <button type="button" class="btn btn-lg btn-primary btn-block" onclick="submitHandler(event, this);">Sign In</button>
+        </div>
+        <div class="button">
+          <button type="button" class="btn btn-lg btn-secondary btn-block transparent-bg" onclick="alert('Does Nothing Yet!')">Register</button>
+        </div>
+      </div>
+    </form>
+  <!-- End Document -–––––––––––––––––––––––––––––– -->
+</body>
+</html>

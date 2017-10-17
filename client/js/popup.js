@@ -136,7 +136,9 @@ function showHistoryPopup(target, h){
     credentials: 'include'  
   })
     .then(function(response) {
-      return response.json();
+      return response.redirected
+        ? { mustLogin: true }
+        : response.json();
     })
     .then(function(json) {
       if(json.mustLogin){

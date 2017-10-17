@@ -14,6 +14,7 @@ const authenticationMiddleware = function authenticationMiddleware () {
       return;
     }
 
+    // redirect to URL if not logged in before request
     if (req.session) {
       req.session.returnTo = req.originalUrl || req.url;
     }
