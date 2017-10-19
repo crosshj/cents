@@ -31,7 +31,6 @@ const user = {
 };
 
 function findUser (username, callback) {
-  console.log('=== ', username);
   if (username === user.username) {
     return callback(null, user);
   }
@@ -50,7 +49,6 @@ function initPassport () {
   passport.use(new LocalStrategy(
     function(username, password, done) {
       findUser(username, function (err, user) {
-        console.log('---', err, user);
         if (err) { return done(err); }
         if (!user) { return done(null, false); }
         if (password !== user.password  ) {

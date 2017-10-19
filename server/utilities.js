@@ -50,7 +50,7 @@ function updateAccounts(accounts) {
   u.liabilities = u.liabilities.map(function (item) {
     if (item.status.toLowerCase() === 'paid' && new Date(item.date) <= oneWeekAhead) {
       item.status = "due";
-      console.log(item);
+      //console.log(item);
       if(item.auto){
         item.status = "pending";
       }
