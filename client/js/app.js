@@ -278,14 +278,36 @@ Element.prototype.remove = function() {
     // $(window).on("touchmove", tempDisableDrag);
   }
 
+  function ajaxLogin(){
+    fetch('./login/', {
+      method: 'POST',
+      body: {
+        username: 'user',
+        password: 'password'
+      },
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      credentials: 'same-origin'
+    }).then(function(response) {
+      return response.json();
+    }).then(function(data) {
+      console.log('success: ', data);
+    }).catch(function(error) {
+      console.log('error: ', error);
+    });
+  }
+
   function login(){
     document.querySelector('#login').className = '';
     //window.location.replace("login/");
   }
-
+  var GLOBAL_FUNCTION_QUEUE = [];
   function getMainData(){
     $.getJSON("json", mainData => {
       if (!mainData || mainData.error){
+        GLOBAL_FUNCTION_QUEUE.push(this);
         login();
         return;
       }
@@ -297,7 +319,8 @@ Element.prototype.remove = function() {
       });
     });
   }
-  getMainData();
+  //make it so this inside function is the function itself
+  getMainData.bind(getMainData)();
 
   $(document).ready(function(){
     var colorsList = [];
@@ -328,5 +351,22 @@ Element.prototype.remove = function() {
         document.querySelector('#login').className = 'hidden';
         getMainData();
       }
-    },false);
+      if(e.data.name === "formSubmitted"){
+        try {
+          document.querySelector('#login').className = 'hidden';
+          const logInIframe = document.querySelector('iframe')
+          //const responseText = logInIframe.contentDocument.body.innerText;
+          //const responseObj = JSON.parse(responseText);
+          logInIframe.location = './login';
+          //pop function off queue and pass data to it
+          //console.log(responseObj);
+          const functionFromQueue = GLOBAL_FUNCTION_QUEUE.pop();
+          functionFromQueue();
+        } catch(e){
+          debugger;
+          
+        }
+
+      }
+    }, false);
   });

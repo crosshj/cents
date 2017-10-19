@@ -37,8 +37,44 @@
   -->
 
 </head>
-<body>
+<script>
+  function inIframe () {
+    try {
+        return window.self !== window.top;
+    } catch (e) {
+        return true;
+    }
+  }
 
+  function submitForm(e, form){
+    fetch('../login', {
+      method: 'POST',
+      body: JSON.stringify({
+        username: form.username.value,
+        password: form.password.value
+      }),
+      credentials: 'same-origin'
+    }).then(function(response) {
+      return response.json();
+    }).then(function(data) {
+      window.parent.postMessage({name: 'logInSuccess'}, '*');
+    }).catch(function(err) {
+      window.parent.postMessage({name: 'logInError'}, '*');
+    });
+  }
+
+  function submitHandler(event, form){
+    event.preventDefault();
+    var formEl = document.querySelector('form');
+    // replace page with loading spinner first??
+    if (inIframe()){
+      window.parent.postMessage({name: 'formSubmitted'}, '*');
+      //submitForm(event, formEl);
+    }
+    document.login.submit();
+  }
+</script>
+<body>
   <!-- Primary Page Layout ––––––––––––––––––––––– -->
     <form action="../login" method="post" name="login">
       <div class="loginView">
@@ -52,7 +88,7 @@
           <input name="password" class="form-control input-lg" id="password" type="password" placeholder="Your password"/>
         </div>
         <div class="button">
-          <button type="button" class="btn btn-lg btn-primary btn-block" onclick="document.login.submit()">Sign In</button>
+          <button type="button" class="btn btn-lg btn-primary btn-block" onclick="submitHandler(event, this)">Sign In</button>
         </div>
         <div class="button">
           <button type="button" class="btn btn-lg btn-secondary btn-block transparent-bg" onclick="alert('Does Nothing Yet!')">Register</button>

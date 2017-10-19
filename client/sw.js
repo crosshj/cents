@@ -33,14 +33,14 @@ self.addEventListener('fetch', event => {
         fetch(request)
             .then(res => {
                 console.log('---', res.url, res.status);
-                if(res.redirected){
-                    var fallbackResponse = {
-                        mustLogin: true
-                    };
-                    return new Response(JSON.stringify(fallbackResponse), {
-                        headers: {'Content-Type': 'application/json'}
-                      });
-                }
+                // if(res.redirected){
+                //     var fallbackResponse = {
+                //         redirected: true
+                //     };
+                //     return new Response(JSON.stringify(fallbackResponse), {
+                //         headers: {'Content-Type': 'application/json'}
+                //       });
+                // }
                 return res;
             })
             .catch(function () {
