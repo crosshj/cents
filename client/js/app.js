@@ -278,13 +278,16 @@ Element.prototype.remove = function() {
     // $(window).on("touchmove", tempDisableDrag);
   }
 
-  function ajaxLogin(){
+  function serializeLogin(username, password){
+    return `username=${username}&password=${password}`;
+  }
+
+  function ajaxLogin(username, password, callback){
+    const loginBody = serializeLogin(username, password);
+
     fetch('./login/', {
       method: 'POST',
-      body: {
-        username: 'user',
-        password: 'password'
-      },
+      body: loginBody,
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/x-www-form-urlencoded'
@@ -293,9 +296,11 @@ Element.prototype.remove = function() {
     }).then(function(response) {
       return response.json();
     }).then(function(data) {
-      console.log('success: ', data);
+      console.log('login success -->', data);
+      if (callback) callback(null, data);
     }).catch(function(error) {
-      console.log('error: ', error);
+      console.log('login error --> ', error);
+      if (callback) callback(error);
     });
   }
 
@@ -347,26 +352,20 @@ Element.prototype.remove = function() {
     // Listen to message from child window
     eventer(messageEvent,function(e) {
       console.log('parent received message!:  ',e.data);
-      if(e.data.name === "logInSuccess"){
-        document.querySelector('#login').className = 'hidden';
-        getMainData();
-      }
-      if(e.data.name === "formSubmitted"){
-        try {
+
+      if(e.data.name === "ajaxLoginRequest"){
+        const username = e.data.payload.username;
+        const password = e.data.payload.password;
+
+        const callback = () => {
           document.querySelector('#login').className = 'hidden';
-          const logInIframe = document.querySelector('iframe')
-          //const responseText = logInIframe.contentDocument.body.innerText;
-          //const responseObj = JSON.parse(responseText);
+          const logInIframe = document.querySelector('iframe');
           logInIframe.location = './login';
-          //pop function off queue and pass data to it
-          //console.log(responseObj);
           const functionFromQueue = GLOBAL_FUNCTION_QUEUE.pop();
           functionFromQueue();
-        } catch(e){
-          debugger;
-          
         }
 
+        ajaxLogin(username, password, callback);
       }
     }, false);
   });

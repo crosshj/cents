@@ -146,12 +146,10 @@ function showHistoryPopup(target, h){
         return response.json();
       })
       .then(function(json) {
-        if(json.mustLogin){
+        if(json.mustLogin || json.error === 'not logged in'){
           return login();
         }
-        if(json.error === 'not logged in'){
-          debugger;
-        }
+
         GLOBAL_FUNCTION_QUEUE.pop();
         historyContent.find('.loading-spinner').hide();
         var graphContainer = historyContent.find('.graph-container')[0];

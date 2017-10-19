@@ -46,32 +46,23 @@
     }
   }
 
-  function submitForm(e, form){
-    fetch('../login', {
-      method: 'POST',
-      body: JSON.stringify({
-        username: form.username.value,
-        password: form.password.value
-      }),
-      credentials: 'same-origin'
-    }).then(function(response) {
-      return response.json();
-    }).then(function(data) {
-      window.parent.postMessage({name: 'logInSuccess'}, '*');
-    }).catch(function(err) {
-      window.parent.postMessage({name: 'logInError'}, '*');
-    });
-  }
-
   function submitHandler(event, form){
     event.preventDefault();
     var formEl = document.querySelector('form');
-    // replace page with loading spinner first??
+
+    // TOOD: replace page with loading spinner first??
+
     if (inIframe()){
-      window.parent.postMessage({name: 'formSubmitted'}, '*');
-      //submitForm(event, formEl);
+      window.parent.postMessage({
+        name: 'ajaxLoginRequest',
+        payload: {
+          username: formEl.querySelector('[name="username"]').value,
+          password: formEl.querySelector('[name="password"]').value
+        }
+      }, '*');
+    } else {
+      document.login.submit();
     }
-    document.login.submit();
   }
 </script>
 <body>
