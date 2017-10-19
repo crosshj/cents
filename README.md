@@ -23,6 +23,7 @@ The aim of this project is to create an application with a simple, responsive in
 
 ### TODO
 - [ ] login & serviceworker issues...
+- [ ] find a happy medium between PWA and traditional app
 - [ ] when not logged in and PWA, header status shows without accounts listed
 - [ ] auto-mark next pay day
 - [ ] site scrapers (phantom, nightmare, newman)
