@@ -32,7 +32,7 @@ self.addEventListener('fetch', event => {
     event.respondWith(
         fetch(request)
             .then(res => {
-                console.log('---', res.url, res.status);
+                //console.log('---', res.url, res.status);
                 // if(res.redirected){
                 //     var fallbackResponse = {
                 //         redirected: true
