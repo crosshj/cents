@@ -132,21 +132,35 @@ function showHistoryPopup(target, h){
   $('div#popup-modal .history').show();
 
   var fetchField = h.field.toLowerCase().replace(' ', '_');
-  fetch(`diffs?type=${h.type}&account=${h.title}&field=${fetchField}`, {
-    credentials: 'include'  
-  })
-    .then(function(response) {
-      return response.json();
+  function updateDiffs(){
+    const thisFunction = this;
+    GLOBAL_FUNCTION_QUEUE.push(thisFunction.bind(thisFunction));
+
+    fetch(`diffs?type=${h.type}&account=${h.title}&field=${fetchField}`, {
+      headers: {
+        'Accept': 'application/json'
+      },
+      credentials: 'include'  
     })
-    .then(function(json) {
-      historyContent.find('.loading-spinner').hide();
-      var graphContainer = historyContent.find('.graph-container')[0];
-      var graphData = formatGraphData(json);
-      var chart = makeGraph(graphContainer, graphData);
-    })
-    .catch(function(error) { 
-      console.log("Error making graph", error); 
-    });
+      .then(function(response) {
+        return response.json();
+      })
+      .then(function(json) {
+        if(json.mustLogin || json.error === 'not logged in'){
+          return login();
+        }
+
+        GLOBAL_FUNCTION_QUEUE.pop();
+        historyContent.find('.loading-spinner').hide();
+        var graphContainer = historyContent.find('.graph-container')[0];
+        var graphData = formatGraphData(json);
+        var chart = makeGraph(graphContainer, graphData);
+      })
+      .catch(function(error) { 
+        console.log("Error making graph", error); 
+      });
+  }
+  updateDiffs.bind(updateDiffs)();
 }
 
 function makeAccountContent($clickedRow){

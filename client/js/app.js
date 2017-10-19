@@ -9,6 +9,22 @@
       - integrate with DB service
       - new account / restore / demo account
   */
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('sw.js', {scope: './'}).then(function(registration) {
+      // Registration was successful
+      console.log('ServiceWorker registration successful with scope: ', registration.scope); //eslint-disable-line no-console
+      navigator.serviceWorker.addEventListener('message', event => {
+        console.log(event.data.msg, event.data.url);
+      });
+    }).catch(function(err) {
+      // registration failed :(
+      console.log('ServiceWorker registration failed: ', err); //eslint-disable-line no-console
+    });
+  });
+}
+
 Element.prototype.remove = function() {
     this.parentElement.removeChild(this);
 }
@@ -262,19 +278,54 @@ Element.prototype.remove = function() {
     // $(window).on("touchmove", tempDisableDrag);
   }
 
+  function serializeLogin(username, password){
+    return `username=${username}&password=${password}`;
+  }
 
-  $.getJSON("json", mainData => {
-    if (!mainData || mainData.error){
-      window.location.replace("login/");
-      return;
-    }
-    $.getJSON("accounts", scrapedData => {
-      var data = mainData;
-      
-      data.scraped = scrapedData;
-      createUI(data);
+  function ajaxLogin(username, password, callback){
+    const loginBody = serializeLogin(username, password);
+
+    fetch('./login/', {
+      method: 'POST',
+      body: loginBody,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      credentials: 'same-origin'
+    }).then(function(response) {
+      return response.json();
+    }).then(function(data) {
+      console.log('login success -->', data);
+      if (callback) callback(null, data);
+    }).catch(function(error) {
+      console.log('login error --> ', error);
+      if (callback) callback(error);
     });
-  });
+  }
+
+  function login(){
+    document.querySelector('#login').className = '';
+    //window.location.replace("login/");
+  }
+  var GLOBAL_FUNCTION_QUEUE = [];
+  function getMainData(){
+    $.getJSON("json", mainData => {
+      if (!mainData || mainData.error){
+        GLOBAL_FUNCTION_QUEUE.push(this);
+        login();
+        return;
+      }
+      $.getJSON("accounts", scrapedData => {
+        var data = mainData;
+        
+        data.scraped = scrapedData;
+        createUI(data);
+      });
+    });
+  }
+  //make it so this inside function is the function itself
+  getMainData.bind(getMainData)();
 
   $(document).ready(function(){
     var colorsList = [];
@@ -292,4 +343,29 @@ Element.prototype.remove = function() {
       console.log('TODO: on blur save current time');
       //$('#corner-circle').text(Number($('#corner-circle').text()) + 1); 
     });
+
+    // Create IE + others compatible event handler
+    var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
+    var eventer = window[eventMethod];
+    var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
+
+    // Listen to message from child window
+    eventer(messageEvent,function(e) {
+      console.log('parent received message!:  ',e.data);
+
+      if(e.data.name === "ajaxLoginRequest"){
+        const username = e.data.payload.username;
+        const password = e.data.payload.password;
+
+        const callback = () => {
+          document.querySelector('#login').className = 'hidden';
+          const logInIframe = document.querySelector('iframe');
+          logInIframe.location = './login';
+          const functionFromQueue = GLOBAL_FUNCTION_QUEUE.pop();
+          functionFromQueue();
+        }
+
+        ajaxLogin(username, password, callback);
+      }
+    }, false);
   });
