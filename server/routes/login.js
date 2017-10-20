@@ -14,7 +14,7 @@ module.exports = function(app, passport){
           res.send({ status: 'no user' });
           return;
         }
-        return res.redirect('/login');
+        return res.redirect('./login');
       }
       req.logIn(user, function(err) {
         if (err) { return next(err); }
