@@ -37,7 +37,14 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 require('./routes')(app, passport);
-app.use('/', express.static(path.resolve(__dirname, '../client')));
+app.use('/', express.static(
+  path.resolve(__dirname, '../client'),
+  {
+        setHeaders: (res) => {
+            res.setHeader('x-powered-by', 'Foo')
+        }
+    }
+));
 
 app.listen(appPort, function () {
   console.log('New server on port ' + appPort + '!');
