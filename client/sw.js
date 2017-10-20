@@ -44,6 +44,7 @@ function updateStaticCache() {
         '/css/skeleton.css',
         '/css/cents.css',
         '/css/font-awesome.min.css',
+        //'/fonts/fontawesome-webfont.woff?v=4.4.0',
         '/js/flickity.pkgd.js',
         '/js/highcharts.4.2.2.js',
         '/js/moment.2.18.1.min.js',
@@ -72,9 +73,9 @@ function clearStaleCaches(){
 
 function offlineResponse(request){
   // If the request is for an image, show an offline placeholder
-  if (!!~request.headers.get('Accept').indexOf('image')) {
-    return new Response('<svg width="400" height="300" role="img" aria-labelledby="offline-title" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg"><title id="offline-title">Offline</title><g fill="none" fill-rule="evenodd"><path fill="#D8D8D8" d="M0 0h400v300H0z"/><text fill="#9B9B9B" font-family="Helvetica Neue,Arial,Helvetica,sans-serif" font-size="72" font-weight="bold"><tspan x="93" y="172">offline</tspan></text></g></svg>', { headers: { 'Content-Type': 'image/svg+xml' } });
-  }
+  // if (!!~request.headers.get('Accept').indexOf('image')) {
+  //   return new Response('<svg width="400" height="300" role="img" aria-labelledby="offline-title" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg"><title id="offline-title">Offline</title><g fill="none" fill-rule="evenodd"><path fill="#D8D8D8" d="M0 0h400v300H0z"/><text fill="#9B9B9B" font-family="Helvetica Neue,Arial,Helvetica,sans-serif" font-size="72" font-weight="bold"><tspan x="93" y="172">offline</tspan></text></g></svg>', { headers: { 'Content-Type': 'image/svg+xml' } });
+  // }
 
   if(!!~request.headers.get('Accept').indexOf('application/json')){ 
     const fallbackResponse = {
