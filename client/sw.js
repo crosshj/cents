@@ -81,7 +81,7 @@ function offlineResponse(request){
     });
     return jsonResponse;
   }
-  const htmlResponse = caches.match('./offline.html');
+  const htmlResponse = caches.match('/offline.html');
   return htmlResponse;
 }
 
