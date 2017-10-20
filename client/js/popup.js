@@ -176,7 +176,7 @@ function makeAccountContent($clickedRow){
   var amount = $clickedRow.find('.amount').text().replace(/[$,]+/g,"");
   var total = $clickedRow.find('.total').text().replace(/[$,]+/g,"");
   var isNewItem = !title; //TODO: better condition
-  var autoIsChecked = JSON.parse($clickedRow.find('.auto').text());
+  var autoIsChecked = JSON.parse($clickedRow.find('.auto').text() || 'false');
 
   var content = $(`
     <div>
