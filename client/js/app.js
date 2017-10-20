@@ -31,7 +31,7 @@ Element.prototype.remove = function() {
 
   function makeRow (data){
     var primary = data.status.toLowerCase() !== "paid" ? " button-primary" : "";
-    return $(`
+    const row = $(`
       <a class="button ${data.status.toLowerCase() + primary}">
           <table class="u-full-width">
             <tbody>
@@ -56,6 +56,7 @@ Element.prototype.remove = function() {
           </table>
         </a>
     `);
+    return row;
   }
 
   function makeAddNew(){
@@ -310,13 +311,13 @@ Element.prototype.remove = function() {
   }
   var GLOBAL_FUNCTION_QUEUE = [];
   function getMainData(){
-    $.getJSON("json", mainData => {
+    $.getJSON("./json", mainData => {
       if (!mainData || mainData.error){
         GLOBAL_FUNCTION_QUEUE.push(this);
         login();
         return;
       }
-      $.getJSON("accounts", scrapedData => {
+      $.getJSON("./accounts", scrapedData => {
         var data = mainData;
         
         data.scraped = scrapedData;
