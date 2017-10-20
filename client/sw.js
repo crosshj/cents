@@ -10,11 +10,15 @@ https://github.com/mozilla/serviceworker-cookbook/tree/master/virtual-server
 
 OTHER:
 https://googlechrome.github.io/samples/service-worker/post-message/index.html
+
+
+https://serviceworke.rs/
+
 */
 
 // Update 'version' if you need to refresh the cache
 var staticCacheName = 'static';
-var version = 'v1.0.0::';
+var version = 'v1.0.1::';
 
 self.addEventListener('activate', function (event) {
   event.waitUntil(clearStaleCaches());
