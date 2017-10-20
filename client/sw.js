@@ -41,16 +41,16 @@ function updateStaticCache() {
       return cache.addAll([
         'https://fonts.googleapis.com/css?family=Raleway:400,300,600',
         'https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js',
-        '/css/skeleton.css',
-        '/css/cents.css',
-        '/css/font-awesome.min.css',
-        '/js/flickity.pkgd.js',
-        '/js/highcharts.4.2.2.js',
-        '/js/moment.2.18.1.min.js',
-        '/js/accountData.js',
-        '/js/popup.js',
-        '/js/app.js',
-        '/offline.html'
+        './css/skeleton.css',
+        './css/cents.css',
+        './css/font-awesome.min.css',
+        './js/flickity.pkgd.js',
+        './js/highcharts.4.2.2.js',
+        './js/moment.2.18.1.min.js',
+        './js/accountData.js',
+        './js/popup.js',
+        './js/app.js',
+        './offline.html'
       ]);
     });
 }
@@ -85,7 +85,7 @@ function offlineResponse(request){
     });
     return jsonResponse;
   }
-  const htmlResponse = caches.match('/offline.html');
+  const htmlResponse = caches.match('./offline.html');
   return htmlResponse;
 }
 
