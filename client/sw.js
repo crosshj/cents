@@ -18,7 +18,7 @@ https://serviceworke.rs/
 
 // Update 'version' if you need to refresh the cache
 var staticCacheName = 'static';
-var version = 'v1.0.1::';
+var version = 'v1.0.2::';
 
 self.addEventListener('activate', function (event) {
   event.waitUntil(clearStaleCaches());
