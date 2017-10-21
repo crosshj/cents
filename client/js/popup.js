@@ -1,16 +1,16 @@
 function popUpModal(target, content){
  if(content){
-  $('div#popup-modal').html(content);
+  jq('div#popup-modal').html(content);
  }
- if ($('div#popup-modal.show').length){
-   $('div#popup-modal').css({top:'100%', bottom: '100%'});
-   $('div#popup-modal').removeClass('show');
-   $('body').removeClass('lock-screen');
+ if (jq('div#popup-modal.show').length){
+   jq('div#popup-modal').css({top:'100%', bottom: '100%'});
+   jq('div#popup-modal').removeClass('show');
+   jq('body').removeClass('lock-screen');
  } else {
-   var scrollTop = $('body').scrollTop();
-   $('div#popup-modal').css({top:scrollTop, bottom: -1*scrollTop});
-   $('body').addClass('lock-screen');
-   $('div#popup-modal').addClass('show');
+   var scrollTop = jq('body').scrollTop();
+   jq('div#popup-modal').css({top:scrollTop, bottom: -1*scrollTop});
+   jq('body').addClass('lock-screen');
+   jq('div#popup-modal').addClass('show');
  }
 }
 
@@ -32,7 +32,7 @@ var statusRow = function(statusItems, status, showLabel){
 }
 
 function makeHistoryContent({type, title, field, hijack}){
-  var historyContent = $(`
+  var historyContent = jq(`
     <div>
       <h4>
         <a>${title} ${field} History</a>
@@ -51,14 +51,14 @@ function makeHistoryContent({type, title, field, hijack}){
   `);
 
   historyContent.find('button.cancel').on('click', function(e){
-    $('div#popup-modal .history').hide();
-    $('div#popup-modal .account').show();
+    jq('div#popup-modal .history').hide();
+    jq('div#popup-modal .account').show();
   });
 
   historyContent.find('button.close').on('click', function(e){
-    $('div#popup-modal .history').hide();
-    $('div#popup-modal').removeClass('show');
-    $('body').removeClass('lock-screen');
+    jq('div#popup-modal .history').hide();
+    jq('div#popup-modal').removeClass('show');
+    jq('body').removeClass('lock-screen');
   });
 
   return historyContent;
@@ -115,13 +115,13 @@ function makeGraph($container, data){
 
 function showHistoryPopup(target, h){
   var historyContent = makeHistoryContent(h);
-  $('div#popup-modal .history').html(historyContent);
+  jq('div#popup-modal .history').html(historyContent);
   if(h.hijack){
-    $('div#popup-modal .account').hide();
+    jq('div#popup-modal .account').hide();
   }
 
   if (!h.hijack){
-    var historyPopupContainer = $(`
+    var historyPopupContainer = jq(`
       <div>
         <div class="container content history"></div>
       </div>
@@ -129,7 +129,7 @@ function showHistoryPopup(target, h){
     historyPopupContainer.find('.content.history').html(historyContent);
     popUpModal(target, historyPopupContainer);
   }
-  $('div#popup-modal .history').show();
+  jq('div#popup-modal .history').show();
 
   var fetchField = h.field.toLowerCase().replace(' ', '_');
   function updateDiffs(){
@@ -153,6 +153,14 @@ function showHistoryPopup(target, h){
         GLOBAL_FUNCTION_QUEUE.pop();
         historyContent.find('.loading-spinner').hide();
         var graphContainer = historyContent.find('.graph-container')[0];
+
+        if(json.error === "offline"){
+          graphContainer.innerHTML = 'offline';
+          graphContainer.className = "offline"
+          return;
+        }
+
+
         var graphData = formatGraphData(json);
         var chart = makeGraph(graphContainer, graphData);
       })
@@ -178,7 +186,7 @@ function makeAccountContent($clickedRow){
   var isNewItem = !title; //TODO: better condition
   var autoIsChecked = JSON.parse($clickedRow.find('.auto').text() || 'false');
 
-  var content = $(`
+  var content = jq(`
     <div>
       <div class="container content history">
       </div>
@@ -257,7 +265,7 @@ function makeAccountContent($clickedRow){
 
   content.find('.status.row button').on('click', function (e){
     var currentSelectedStatus = getStatus(content.find('.selected'));
-    var clickedStatus = getStatus($(this));
+    var clickedStatus = getStatus(jq(this));
 
     if(clickedStatus.toLowerCase() === 'paid' && originalStatus.toLowerCase() !== 'paid'){
       var day = Number(originalDateString.replace(/.*-/g,''));
@@ -276,7 +284,7 @@ function makeAccountContent($clickedRow){
       content.find('input[type="date"]').val(originalDateString);
     }
     content.find('.status.row button').removeClass('selected');
-    $(this).addClass('selected');
+    jq(this).addClass('selected');
   });
 
   var getCurrentItem = function(item){
@@ -297,11 +305,11 @@ function makeAccountContent($clickedRow){
 
   };
   content.find('button.cancel').on('click', function (e){
-    $('#popup-modal').click();
+    jq('#popup-modal').click();
   });
   content.find('button.save').on('click', function (e){
 
-    var currentItem = getCurrentItem($(this).parent().parent());
+    var currentItem = getCurrentItem(jq(this).parent().parent());
     //TODO: are we writing to liab or assets?
     var previousVersion = MAIN_DATA.liabilities.getByName(currentItem.name.toLowerCase())
       || MAIN_DATA.assets.getByName(currentItem.name.toLowerCase());
@@ -336,7 +344,7 @@ function makeAccountContent($clickedRow){
     var h = {
       type: 'liabilities',
       title: title.trim(),
-      field: $(this).data('title'),
+      field: jq(this).data('title'),
       hijack: true
     };
     showHistoryPopup(null, h);

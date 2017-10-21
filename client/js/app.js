@@ -10,6 +10,8 @@
       - new account / restore / demo account
   */
 
+jq = window.jQuery.noConflict();
+
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
     navigator.serviceWorker.register('sw.js', {scope: './'}).then(function(registration) {
@@ -31,7 +33,7 @@ Element.prototype.remove = function() {
 
   function makeRow (data){
     var primary = data.status.toLowerCase() !== "paid" ? " button-primary" : "";
-    const row = $(`
+    const row = jq(`
       <a class="button ${data.status.toLowerCase() + primary}">
           <table class="u-full-width">
             <tbody>
@@ -60,13 +62,13 @@ Element.prototype.remove = function() {
   }
 
   function makeAddNew(){
-    return $(`
+    return jq(`
       <a id="add-new" class="button">Add New</a>
     `);
   }
 
   function makeTotalsRow({balance=0, pending=0, due=0, assets=0, debts=0, debtTotal=0}){
-    var totalsRow = $(`
+    var totalsRow = jq(`
       <a class="button totals">
         <table class="u-full-width">
           <tbody>
@@ -137,7 +139,7 @@ Element.prototype.remove = function() {
     var selected = data.count === Number(initialIndex)
       ? " selected "
       : "";
-    return $(' \
+    return jq(' \
       <a class="button menu button-primary '+ data.name.toLowerCase() + selected + '"> \
           ' + data.name.toLowerCase() + ' \
       </a> \
@@ -156,61 +158,61 @@ Element.prototype.remove = function() {
   }
 
   function createUI(data){
-    makeMenu($('div.menu'));
+    makeMenu(jq('div.menu'));
     var formattedData = formatAccountData(data);
 
     formattedData.liabilities.forEach(function(item){
       if (item.hidden === "true") return;
       var row = JSON.parse(JSON.stringify(item));
       row.totalOwed = item.total_owed > 0 ? '$'+item.total_owed : '';
-      $('div.liabilities').append(makeRow(row));
+      jq('div.liabilities').append(makeRow(row));
     });
 
-    $('div.liabilities').append(makeAddNew());
+    jq('div.liabilities').append(makeAddNew());
 
     formattedData.assets.forEach(function(item){
       if (item.hidden === "true") return;
       var row = JSON.parse(JSON.stringify(item));
       row.totalOwed = item.total_owed > 0 ? '$'+item.total_owed : '';
-      $('div.assets').append(makeRow(row));
+      jq('div.assets').append(makeRow(row));
     });
 
-    $('div.totals .row').append(makeTotalsRow(formattedData.totals || {}));
+    jq('div.totals .row').append(makeTotalsRow(formattedData.totals || {}));
 
-    $('a.button:not(.menu)').on("click", function(e){
+    jq('a.button:not(.menu)').on("click", function(e){
       switch (true){
-        case $(this).is('.paid, .pending, .due'):
-          $('a.button.selected:not(".menu")').removeClass('selected')
-          var content = typeof makeAccountContent === "function" && makeAccountContent($(this));
-          typeof popUpModal === "function" && popUpModal($(this), content);
+        case jq(this).is('.paid, .pending, .due'):
+          jq('a.button.selected:not(".menu")').removeClass('selected')
+          var content = typeof makeAccountContent === "function" && makeAccountContent(jq(this));
+          typeof popUpModal === "function" && popUpModal(jq(this), content);
           break;
-        case $(this).is('#add-new'):
+        case jq(this).is('#add-new'):
           console.log('clicked add new');
-          $('a.button.selected:not(".menu")').removeClass('selected')
-          var content = typeof makeAccountContent === "function" && makeAccountContent($(this));
-          typeof popUpModal === "function" && popUpModal($(this), content);
+          jq('a.button.selected:not(".menu")').removeClass('selected')
+          var content = typeof makeAccountContent === "function" && makeAccountContent(jq(this));
+          typeof popUpModal === "function" && popUpModal(jq(this), content);
           break;
-        case $(this).is('#totals_history'):
+        case jq(this).is('#totals_history'):
           console.log('totals history');
-          typeof showHistoryPopup === "function" && showHistoryPopup($(this), {
+          typeof showHistoryPopup === "function" && showHistoryPopup(jq(this), {
             type: 'balance',
             title: 'Total Owed',
             field: 'Amount'
           });
           break;
         default:
-          console.log('--- some other case', $(this));
+          console.log('--- some other case', jq(this));
           break;
       }
     });
 
-    $('#popup-modal').on('click', function(e){
+    jq('#popup-modal').on('click', function(e){
       if(e.target !== e.currentTarget) return;
       typeof popUpModal === "function" && popUpModal();
-      $('a.button.selected:not(".menu")').removeClass('selected')
+      jq('a.button.selected:not(".menu")').removeClass('selected')
     });
 
-    $('#popup-modal .content').on('click', function(e){
+    jq('#popup-modal .content').on('click', function(e){
       e.stopPropagation();
       return false;
     });
@@ -223,7 +225,7 @@ Element.prototype.remove = function() {
   }
 
   function handleTouchMove(e){
-    if($('div#popup-modal.show').length){
+    if(jq('div#popup-modal.show').length){
       e.preventDefault();
       return false;
     }
@@ -275,8 +277,8 @@ Element.prototype.remove = function() {
     //     flkty.bindDrag();
     //   }, 1000);
     // }
-    // $(document).scroll(tempDisableDrag);
-    // $(window).on("touchmove", tempDisableDrag);
+    // jq(document).scroll(tempDisableDrag);
+    // jq(window).on("touchmove", tempDisableDrag);
   }
 
   function serializeLogin(username, password){
@@ -311,13 +313,13 @@ Element.prototype.remove = function() {
   }
   var GLOBAL_FUNCTION_QUEUE = [];
   function getMainData(){
-    $.getJSON("./json", mainData => {
+    jq.getJSON("./json", mainData => {
       if (!mainData || mainData.error){
         GLOBAL_FUNCTION_QUEUE.push(this);
         login();
         return;
       }
-      $.getJSON("./accounts", scrapedData => {
+      jq.getJSON("./accounts", scrapedData => {
         var data = mainData;
         
         data.scraped = scrapedData;
@@ -328,21 +330,21 @@ Element.prototype.remove = function() {
   //make it so this inside function is the function itself
   getMainData.bind(getMainData)();
 
-  $(document).ready(function(){
+  jq(document).ready(function(){
     var colorsList = [];
     var bgColor = "rgba(81, 84, 17, 0.46)";
     //backgroundGradient(colorsList, 3, 3, bgColor);
     var lockOrientation = screen.lockOrientation || screen.mozLockOrientation || screen.msLockOrientation || function(){};
     lockOrientation("portrait-primary");
-    $(window).on("touchmove", handleTouchMove);
+    jq(window).on("touchmove", handleTouchMove);
 
-    $(window).on("focus", () => {
+    jq(window).on("focus", () => {
       console.log('TODO: when focused, refresh if needed');
-      //$('#corner-circle').text(Number($('#corner-circle').text()) + 1); 
+      //jq('#corner-circle').text(Number(jq('#corner-circle').text()) + 1); 
     });
-    $(window).on("blur", () => {
+    jq(window).on("blur", () => {
       console.log('TODO: on blur save current time');
-      //$('#corner-circle').text(Number($('#corner-circle').text()) + 1); 
+      //jq('#corner-circle').text(Number(jq('#corner-circle').text()) + 1); 
     });
 
     // Create IE + others compatible event handler
