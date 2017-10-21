@@ -18,7 +18,7 @@ https://serviceworke.rs/
 
 // Update 'version' if you need to refresh the cache
 var staticCacheName = 'static';
-var version = 'v1.0.3::';
+var version = 'v1.0.5::';
 
 self.addEventListener('activate', function (event) {
   event.waitUntil(clearStaleCaches());
@@ -39,12 +39,15 @@ function updateStaticCache() {
   return caches.open(version + staticCacheName)
     .then(function (cache) {
       return cache.addAll([
-        'https://fonts.googleapis.com/css?family=Raleway:400,300,600',
+        './css/raleway.css',
         'https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js',
+        './css/flickity.css',
+        './css/bootstrap.3.3.4.min.css',
         './css/skeleton.css',
         './css/cents.css',
         './css/font-awesome.min.css',
-        //'/fonts/fontawesome-webfont.woff?v=4.4.0',
+        './fonts/fontawesome-webfont.woff?v=4.4.0',
+        './fonts/-_Ctzj9b56b8RgXW8FAriQzyDMXhdD8sAj6OAJTFsBI.woff2 ',
         './js/flickity.pkgd.js',
         './js/highcharts.4.2.2.js',
         './js/moment.2.18.1.min.js',
