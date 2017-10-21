@@ -327,7 +327,7 @@ function makeAccountContent($clickedRow){
     previousVersion.date = currentItem.date;
     previousVersion.note = currentItem.notes.replace(/</g, "&lt;").replace(/>/g, "&gt;");
     previousVersion.auto = currentItem.auto;
-    $.ajax({
+    jq.ajax({
       url: "./accounts",
       type: 'POST',
       contentType: 'application/json',
