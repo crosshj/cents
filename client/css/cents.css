@@ -301,6 +301,7 @@ a.button.selected {
   font-family: monospace;
   font-size: 12px;
   overflow-y: hidden;
+  resize: vertical;
 }
 
 .container.content button {
