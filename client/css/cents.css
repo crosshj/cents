@@ -428,3 +428,9 @@ a.button.selected {
   margin-left: 5px;
   margin-bottom: 1.5rem;
 }
+
+.div-fake-hidden {
+  width:0px;
+  height:0px;
+  overflow:hidden;
+}
