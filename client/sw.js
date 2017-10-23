@@ -18,7 +18,8 @@ https://serviceworke.rs/
 
 // Update 'version' if you need to refresh the cache
 var staticCacheName = 'static';
-var version = 'v1.0.5::';
+var version = 'v1.0.6::';
+var CACHE = version + staticCacheName;
 
 self.addEventListener('activate', function (event) {
   event.waitUntil(clearStaleCaches());
@@ -39,8 +40,8 @@ function updateStaticCache() {
   return caches.open(version + staticCacheName)
     .then(function (cache) {
       return cache.addAll([
+        './images/launcher-icon-3x.png',
         './css/raleway.css',
-        'https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js',
         './css/flickity.css',
         './css/bootstrap.3.3.4.min.css',
         './css/skeleton.css',
@@ -48,6 +49,7 @@ function updateStaticCache() {
         './css/font-awesome.min.css',
         './fonts/fontawesome-webfont.woff?v=4.4.0',
         './fonts/-_Ctzj9b56b8RgXW8FAriQzyDMXhdD8sAj6OAJTFsBI.woff2 ',
+        './js/jquery.2.1.3.min.js',
         './js/flickity.pkgd.js',
         './js/highcharts.4.2.2.js',
         './js/moment.2.18.1.min.js',
@@ -96,6 +98,13 @@ function offlineResponse(request){
 function fetchHandler(event){
   var request = event.request;
 
+  // ATLERNATIVE
+  // event.respondWith(fromCache(request));
+  // event.waitUntil(
+  //   update(request)
+  //   .then(refresh)
+  // );
+
   // non-GET requests, -> NETWORK -> OFFLINE
   if (request.method !== 'GET') {
     event.respondWith(
@@ -142,5 +151,52 @@ function fetchHandler(event){
           });
       })
   );
+}
+
+
+// https://serviceworke.rs/strategy-cache-update-and-refresh_demo.html
+
+// Open the cache where the assets were stored and search for the requested
+// resource. Notice that in case of no matching, the promise still resolves
+// but it does with `undefined` as value.
+function fromCache(request) {
+  return caches.open(CACHE)
+    .then(function (cache) {
+      return cache.match(request) || offlineResponse(request);
+  });
+}
+
+
+// Update consists in opening the cache, performing a network request and
+// storing the new response data.
+function update(request) {
+  return caches.open(CACHE).then(function (cache) {
+    return fetch(request).then(function (response) {
+      return cache.put(request, response.clone()).then(function () {
+        return response;
+      });
+    });
+  });
+}
+
+// Sends a message to the clients.
+function refresh(response) {
+  return self.clients.matchAll().then(function (clients) {
+    clients.forEach(function (client) {
+      // Encode which resource has been updated. By including the
+      // [ETag](https://en.wikipedia.org/wiki/HTTP_ETag) the client can
+      // check if the content has changed.
+      var message = {
+        type: 'refresh',
+        url: response.url,
+        // Notice not all servers return the ETag header. If this is not
+        // provided you should use other cache headers or rely on your own
+        // means to check if the content has changed.
+        eTag: response.headers.get('ETag')
+      };
+      // Tell the client about the update.
+      client.postMessage(JSON.stringify(message));
+    });
+  });
 }
 
