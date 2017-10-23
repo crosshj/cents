@@ -81,6 +81,8 @@ function saveAccounts(data, callback) {
 		const newTotal = data.liabilities
 			.filter(item => !JSON.parse(item.hidden))
 			.reduce((all, one) => all + Number(one.total_owed), 0);
+		
+		data.balance = data.balance.filter(x => x.title !== "Total Owed");
 		data.balance.push({
 			"title": "Total Owed",
 			"amount": newTotal

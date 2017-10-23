@@ -4,11 +4,14 @@ var getByName = function(data, title){
 }
 
 var formatMoney = function(amount){
+  if (!amount){
+    return "$0.00";
+  }
   amount = amount.toString().replace(/[$,]+/g,"");
   amount = (Number(amount) >= 0 ? "$" :"-$")
     + parseFloat(Math.abs(amount)).toFixed(2);
   amount = amount.replace(/\B(?=(\d{3})+(?!\d))/g, ","); //COMMAS
-  return amount
+  return amount;
 };
 
 var unFormatMoney = function(money){
