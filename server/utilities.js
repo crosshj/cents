@@ -48,6 +48,9 @@ function updateAccounts(accounts) {
   var today = new Date();
   var oneWeekAhead = new Date().setDate(today.getDate() + 7);
   u.liabilities = u.liabilities.map(function (item) {
+    if (!item.status){
+      return item;
+    }
     if (item.status.toLowerCase() === 'paid' && new Date(item.date) <= oneWeekAhead) {
       item.status = "due";
       //console.log(item);
@@ -60,17 +63,17 @@ function updateAccounts(accounts) {
 
   // SORT LIABILITIES
   var pending = u.liabilities.filter(function (a) {
-    return a.status.toLowerCase() === 'pending'
+    return a.status && a.status.toLowerCase() === 'pending'
   }).sort(function (a, b) {
     return new Date(a.date) - new Date(b.date);
   });
   var paid = u.liabilities.filter(function (a) {
-    return a.status.toLowerCase() === 'paid'
+    return a.status ? a.status.toLowerCase() === 'paid' : a.status
   }).sort(function (a, b) {
     return new Date(a.date) - new Date(b.date);
   });
   var due = u.liabilities.filter(function (a) {
-    return a.status.toLowerCase() === 'due'
+    return a.status && a.status.toLowerCase() === 'due'
   }).sort(function (a, b) {
     return new Date(a.date) - new Date(b.date);
   });
