@@ -37,12 +37,14 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 require('./routes')(app, passport);
+
 app.use('/', express.static(
   path.resolve(__dirname, '../client'),
   {
         setHeaders: (res) => {
             res.setHeader('x-powered-by', 'Foo')
-        }
+        },
+        redirect: false
     }
 ));
 

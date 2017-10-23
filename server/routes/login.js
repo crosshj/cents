@@ -6,6 +6,11 @@
 // };
 
 module.exports = function(app, passport){
+  app.get('/login$', function(req, res, next){
+    // handled by express.static after this
+    return res.redirect('../login/');
+  });
+
   app.post('/login', function(req, res, next) {
     passport.authenticate('local', function(err, user, info) {
       if (err) { return next(err); }
