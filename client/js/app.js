@@ -158,6 +158,9 @@ Element.prototype.remove = function() {
   }
 
   function createUI(data){
+    if(data.cached){
+      document.body.classList.add('offline');
+    }
     makeMenu(jq('div.menu'));
     var formattedData = formatAccountData(data);
 

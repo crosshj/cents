@@ -18,7 +18,7 @@ https://serviceworke.rs/
 
 // Update 'version' if you need to refresh the cache
 var staticCacheName = 'static';
-var version = 'v1.0.6::';
+var version = 'v1.0.7::';
 var CACHE = version + staticCacheName;
 
 self.addEventListener('activate', function (event) {
@@ -30,6 +30,7 @@ self.addEventListener('install', function (event) {
 });
 
 self.addEventListener('fetch', fetchHandler);
+//self.addEventListener('fetch', serveCacheAndUpdate); //alternate
 
 
 // --- FUNCTION DEFS -----------------------------------------------------------
@@ -98,13 +99,6 @@ function offlineResponse(request){
 function fetchHandler(event){
   var request = event.request;
 
-  // ATLERNATIVE
-  // event.respondWith(fromCache(request));
-  // event.waitUntil(
-  //   update(request)
-  //   .then(refresh)
-  // );
-
   // non-GET requests, -> NETWORK -> OFFLINE
   if (request.method !== 'GET') {
     event.respondWith(
@@ -116,18 +110,37 @@ function fetchHandler(event){
     return;
   }
 
+  const isHTMLRequest = !!~request.headers.get('Accept').indexOf('text/html');
+  const isJSONRequest = !!~request.headers.get('Accept').indexOf('application/json');
+
   // HTML requests, -> NETWORK -> CACHE -> OFFLINE
-  if (!!~request.headers.get('Accept').indexOf('text/html')
-    || !!~request.headers.get('Accept').indexOf('application/json')
-  ) {
+  if (isHTMLRequest || isJSONRequest) {
     event.respondWith(
       fetch(request)
         .then(function (response) {
           // Stash a copy of this page in the cache
-          var copy = response.clone();
+          // tag as cached if json
+          var clone = response.clone();
+
+          if(isJSONRequest){
+            clone.json().then(json => {
+              json.cached = true;
+              var jsonRes = new Response(JSON.stringify(json), { 
+                headers: {
+                  'content-type': 'application/json'
+                }
+              });
+              caches.open(version + staticCacheName)
+              .then(function (cache) {
+                cache.put(request, jsonRes);
+              });
+            });
+            return response;
+          }
+
           caches.open(version + staticCacheName)
             .then(function (cache) {
-              cache.put(request, copy);
+              cache.put(request, clone);
             });
           return response;
         })
@@ -154,7 +167,18 @@ function fetchHandler(event){
 }
 
 
+
+
 // https://serviceworke.rs/strategy-cache-update-and-refresh_demo.html
+function serveCacheAndUpdate(event){
+  var request = event.request;
+
+  event.respondWith(fromCache(request));
+  event.waitUntil(
+    update(request)
+    .then(refresh)
+  );
+}
 
 // Open the cache where the assets were stored and search for the requested
 // resource. Notice that in case of no matching, the promise still resolves
