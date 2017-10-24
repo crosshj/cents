@@ -2,6 +2,35 @@
   overflow-y: hidden;
 }
 
+body.offline {
+  background-color: rgb(97,97,97);
+}
+
+body.offline #add-new{
+  display: none;
+}
+
+body.offline a.button.menu.button-primary.debts.selected {
+  background-color: aliceblue !important;
+  color: black !important;
+}
+
+body.offline a.button.due.button-primary {
+  background-color: hsla(0, 75%, 58%, 1);
+  border-color: lightgrey;
+}
+
+body.offline a.button.pending.button-primary {
+  background-color: hsla(41, 58%, 60%, 1);
+  border-color: lightgrey;
+}
+
+body.offline a.button.paid {
+  background-color: hsla(52, 5%, 61%, 1);
+  border-color: lightgrey;
+}
+
+
 #login {
     position:absolute; left: 0; right: 0; bottom: 0; top: 0px;
     z-index: 999999; 
