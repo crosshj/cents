@@ -10,7 +10,9 @@ body.offline #add-new{
   display: none;
 }
 
-body.offline a.button.menu.button-primary.debts.selected {
+body.offline a.button.menu.button-primary.debts.selected,
+body.offline a.button.menu.button-primary.totals.selected,
+body.offline a.button.menu.button-primary.assets.selected {
   background-color: aliceblue !important;
   color: black !important;
 }
