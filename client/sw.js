@@ -98,82 +98,109 @@ function offlineResponse(request){
 
 function fetchHandler(event){
   var request = event.request;
-
-  // non-GET requests, -> NETWORK -> OFFLINE
-  if (request.method !== 'GET') {
-    event.respondWith(
-      fetch(request)
-        .catch(function () {
-          return offlineResponse(request);
-        })
-    );
-    return;
-  }
-
+  const isGetRequest = request.method !== 'GET';
   const isHTMLRequest = !!~request.headers.get('Accept').indexOf('text/html');
   const isJSONRequest = !!~request.headers.get('Accept').indexOf('application/json');
 
+  // non-GET requests, -> NETWORK -> OFFLINE
+  if (isGetRequest) {
+    netOffline(event);
+    return;
+  }
+
   // HTML requests, -> NETWORK -> CACHE -> OFFLINE
   if (isHTMLRequest || isJSONRequest) {
-    event.respondWith(
-      fetch(request)
-        .then(function (response) {
-          // Stash a copy of this page in the cache
-          // tag as cached if json
-          var clone = response.clone();
-
-          if(isJSONRequest){
-            clone.json().then(json => {
-              json.cached = true;
-              var jsonRes = new Response(JSON.stringify(json), { 
-                headers: {
-                  'content-type': 'application/json'
-                }
-              });
-              caches.open(version + staticCacheName)
-              .then(function (cache) {
-                cache.put(request, jsonRes);
-              });
-            });
-            return response;
-          }
-
-          caches.open(version + staticCacheName)
-            .then(function (cache) {
-              cache.put(request, clone);
-            });
-          return response;
-        })
-        .catch(function () {
-          return caches.match(request)
-            .then(function (response) {
-              return response || offlineResponse(request);
-            });
-        })
-    );
+    cacheNetUpdateNotify(event);
+    //netCacheOfflineUpdate(event);
     return;
   }
 
   // non-HTML requests, CACHE -> NETWORK -> OFFLINE
+  cacheNetOfflineUpdate(event);
+}
+
+function netOffline(event){
+  var request = event.request;
+  event.respondWith(
+    fetch(request)
+      .catch(function () {
+        return offlineResponse(request);
+      })
+  );
+}
+
+function cacheNetOfflineUpdate(event){
+  var request = event.request;
   event.respondWith(
     caches.match(request)
       .then(function (response) {
+        // CACHE -> NET
         return response || fetch(request)
+          .then((response) => {
+            return update(request);
+            // UPDATE
+            // if(response){
+            //   caches.open(version + staticCacheName)
+            //   .then(function (cache) {
+            //     cache.put(request, response.clone());
+            //   });
+            //   return response;
+            // }
+          })
           .catch(function () {
+            // OFFLINE
             return offlineResponse(request);
           });
       })
   );
 }
 
+function netCacheOfflineUpdate(event){
+  var request = event.request;
+  event.respondWith(
+    fetch(request)
+      .then(function (response) {
+        // Stash a copy of this page in the cache
+        // tag as cached if json
+        var clone = response.clone();
 
+        if(isJSONRequest){
+          clone.json().then(json => {
+            json.cached = true;
+            var jsonRes = new Response(JSON.stringify(json), { 
+              headers: {
+                'content-type': 'application/json'
+              }
+            });
+            caches.open(version + staticCacheName)
+            .then(function (cache) {
+              cache.put(request, jsonRes);
+            });
+          });
+          return response;
+        }
+
+        caches.open(version + staticCacheName)
+          .then(function (cache) {
+            cache.put(request, clone);
+          });
+        return response;
+      })
+      .catch(function () {
+        return caches.match(request)
+          .then(function (response) {
+            return response || offlineResponse(request);
+          });
+      })
+  );
+}
 
 
 // https://serviceworke.rs/strategy-cache-update-and-refresh_demo.html
-function serveCacheAndUpdate(event){
+function cacheNetUpdateNotify(event){
   var request = event.request;
 
-  event.respondWith(fromCache(request));
+  event.respondWith(fromCacheOrOffline(request));
   event.waitUntil(
     update(request)
     .then(refresh)
@@ -183,7 +210,7 @@ function serveCacheAndUpdate(event){
 // Open the cache where the assets were stored and search for the requested
 // resource. Notice that in case of no matching, the promise still resolves
 // but it does with `undefined` as value.
-function fromCache(request) {
+function fromCacheOrOffline(request) {
   return caches.open(CACHE)
     .then(function (cache) {
       return cache.match(request) || offlineResponse(request);
