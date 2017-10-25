@@ -32,6 +32,13 @@ body.offline a.button.paid {
   border-color: lightgrey;
 }
 
+body.offline .button-primary.save {
+  display: none;
+}
+
+ul.plain {
+  list-style-type: none;
+}
 
 #login {
     position:absolute; left: 0; right: 0; bottom: 0; top: 0px;
