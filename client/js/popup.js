@@ -186,6 +186,16 @@ function makeAccountContent($clickedRow){
   var isNewItem = !title; //TODO: better condition
   var autoIsChecked = JSON.parse($clickedRow.find('.auto').text() || 'false');
 
+  var account = MAIN_DATA.liabilities.getByName(title.trim().toLowerCase());
+  var isGroup = account.type === "group";
+  var items = (account.items || []).reduce((all, item) => {
+    all += `<tr>
+      <td class="">${item.title}</td>
+      <td class="">${formatMoney(item.amount)}</td>
+    </tr>`;
+    return all;
+  }, '')
+
   var content = jq(`
     <div>
       <div class="container content history">
@@ -220,16 +230,23 @@ function makeAccountContent($clickedRow){
           <label for="auto-checkbox">AUTO</label>
           <input type="checkbox" id="auto-checkbox" ${autoIsChecked ? 'checked' : ''}>
         </div>
+        ${isGroup ? `
+          <div class="form-group">
+            <label>Items</label>
+            <table class="u-full-width">${items}</table>
+            <br/>
+          </div>`
+        : ''}
         <div class="form-group">
           <label>Payment Amount</label>
-          <input class="amount" type="number" step="0.01" value="${amount}"/>
+          <input class="amount" type="number" step="0.01" value="${amount}" ${isGroup ? 'disabled' : ''}/>
           ${!isNewItem ? `
             <button class="graph" data-title="Amount"><i class="fa fa-bar-chart"></i></button>
           ` : ''}
         </div>
         <div class="form-group">
           <label>Total Owed</label>
-          <input  class="total" type="number" value="${total}" id="total"/>
+          <input  class="total" type="number" value="${total}" id="total" ${isGroup ? 'disabled' : ''}/>
           ${!isNewItem ? `
             <button class="graph" data-title="Total Owed"><i class="fa fa-bar-chart"></i></button>
           ` : ''}
