@@ -368,7 +368,7 @@ Element.prototype.remove = function() {
           const logInIframe = document.querySelector('iframe');
           logInIframe.location = './login';
           const functionFromQueue = GLOBAL_FUNCTION_QUEUE.pop();
-          functionFromQueue();
+          functionFromQueue && functionFromQueue();
         }
 
         ajaxLogin(username, password, callback);
