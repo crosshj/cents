@@ -15,6 +15,7 @@ var cron = require('../service/cron');
 cron();
 
 var app = express();
+app.enable('etag', 'strong');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
