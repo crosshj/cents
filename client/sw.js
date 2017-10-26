@@ -103,20 +103,8 @@ function offlineResponse(request){
 
 function fetchHandler(event){
   var request = event.request;
-
   const isHTMLRequest = !!~request.headers.get('Accept').indexOf('text/html');
   const isJSONRequest = !!~request.headers.get('Accept').indexOf('application/json');
-
-  const staticCacheMatches = staticCacheList
-    .map(item => item.replace(/^./, ''))
-    .filter(x => x !== '/');
-  const urlInStatic = request.url === `${self.location.origin}/` || staticCacheMatches.some(m => {
-    return request.url.includes(m);
-  });
-  if(urlInStatic){
-    event.respondWith(fromCache(request));
-    return;
-  }
 
   // non-GET requests, -> NETWORK -> OFFLINE
   if (request.method !== 'GET') {
@@ -126,6 +114,18 @@ function fetchHandler(event){
           return offlineResponse(request);
         })
     );
+    return;
+  }
+
+  // always return cached static GETs
+  const staticCacheMatches = staticCacheList
+  .map(item => item.replace(/^./, ''))
+  .filter(x => x !== '/');
+  const urlInStatic = request.url === `${self.location.origin}/` || staticCacheMatches.some(m => {
+    return request.url.includes(m);
+  });
+  if(urlInStatic){
+    event.respondWith(fromCache(request));
     return;
   }
 
