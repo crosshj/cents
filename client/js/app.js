@@ -32,9 +32,16 @@ Element.prototype.remove = function() {
 }
 
   function makeRow (data){
-    var primary = data.status.toLowerCase() !== "paid" ? " button-primary" : "";
+    var primary = data.status.toLowerCase() !== "paid"
+      && data.status.toLowerCase() !== "pending"
+      && data.status.toLowerCase() !== "due"
+      ? " button-primary"
+      : "";
+    // ^^^ ???
+
+    const isGroup = data.type === "group";
     const row = jq(`
-      <a class="button ${data.status.toLowerCase() + primary}">
+      <a class="button ${data.status.toLowerCase() + primary}${isGroup ? " group" : ""}">
           <table class="u-full-width">
             <tbody>
               <tr class="header">
