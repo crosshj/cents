@@ -20,6 +20,29 @@ https://serviceworke.rs/
 var staticCacheName = 'static';
 var version = 'v1.0.7::';
 var CACHE = version + staticCacheName;
+var timeout = 1500;
+
+var staticCacheList = [
+  './',
+  './login/',
+  './images/launcher-icon-3x.png',
+  './css/raleway.css',
+  './css/flickity.css',
+  './css/bootstrap.3.3.4.min.css',
+  './css/skeleton.css',
+  './css/cents.css',
+  './css/font-awesome.min.css',
+  './fonts/fontawesome-webfont.woff?v=4.4.0',
+  './fonts/-_Ctzj9b56b8RgXW8FAriQzyDMXhdD8sAj6OAJTFsBI.woff2 ',
+  './js/jquery.2.1.3.min.js',
+  './js/flickity.pkgd.js',
+  './js/highcharts.4.2.2.js',
+  './js/moment.2.18.1.min.js',
+  './js/accountData.js',
+  './js/popup.js',
+  './js/app.js',
+  './offline.html'
+];
 
 self.addEventListener('activate', function (event) {
   event.waitUntil(clearStaleCaches());
@@ -40,25 +63,7 @@ self.addEventListener('fetch', fetchHandler);
 function updateStaticCache() {
   return caches.open(version + staticCacheName)
     .then(function (cache) {
-      return cache.addAll([
-        './images/launcher-icon-3x.png',
-        './css/raleway.css',
-        './css/flickity.css',
-        './css/bootstrap.3.3.4.min.css',
-        './css/skeleton.css',
-        './css/cents.css',
-        './css/font-awesome.min.css',
-        './fonts/fontawesome-webfont.woff?v=4.4.0',
-        './fonts/-_Ctzj9b56b8RgXW8FAriQzyDMXhdD8sAj6OAJTFsBI.woff2 ',
-        './js/jquery.2.1.3.min.js',
-        './js/flickity.pkgd.js',
-        './js/highcharts.4.2.2.js',
-        './js/moment.2.18.1.min.js',
-        './js/accountData.js',
-        './js/popup.js',
-        './js/app.js',
-        './offline.html'
-      ]);
+      return cache.addAll(staticCacheList);
     });
 }
 
@@ -99,10 +104,24 @@ function offlineResponse(request){
 function fetchHandler(event){
   var request = event.request;
 
+  const isHTMLRequest = !!~request.headers.get('Accept').indexOf('text/html');
+  const isJSONRequest = !!~request.headers.get('Accept').indexOf('application/json');
+
+  const staticCacheMatches = staticCacheList
+    .map(item => item.replace(/^./, ''))
+    .filter(x => x !== '/');
+  const urlInStatic = request.url === `${self.location.origin}/` || staticCacheMatches.some(m => {
+    return request.url.includes(m);
+  });
+  if(urlInStatic){
+    event.respondWith(fromCache(request));
+    return;
+  }
+
   // non-GET requests, -> NETWORK -> OFFLINE
   if (request.method !== 'GET') {
     event.respondWith(
-      fetch(request)
+      fromNetwork(request, timeout)
         .catch(function () {
           return offlineResponse(request);
         })
@@ -110,45 +129,12 @@ function fetchHandler(event){
     return;
   }
 
-  const isHTMLRequest = !!~request.headers.get('Accept').indexOf('text/html');
-  const isJSONRequest = !!~request.headers.get('Accept').indexOf('application/json');
-
   // HTML requests, -> NETWORK -> CACHE -> OFFLINE
   if (isHTMLRequest || isJSONRequest) {
     event.respondWith(
-      fetch(request)
-        .then(function (response) {
-          // Stash a copy of this page in the cache
-          // tag as cached if json
-          var clone = response.clone();
-
-          if(isJSONRequest){
-            clone.json().then(json => {
-              json.cached = true;
-              var jsonRes = new Response(JSON.stringify(json), { 
-                headers: {
-                  'content-type': 'application/json'
-                }
-              });
-              caches.open(version + staticCacheName)
-              .then(function (cache) {
-                cache.put(request, jsonRes);
-              });
-            });
-            return response;
-          }
-
-          caches.open(version + staticCacheName)
-            .then(function (cache) {
-              cache.put(request, clone);
-            });
-          return response;
-        })
+      fromNetwork(request, timeout)
         .catch(function () {
-          return caches.match(request)
-            .then(function (response) {
-              return response || offlineResponse(request);
-            });
+          return fromCache(request);
         })
     );
     return;
@@ -158,16 +144,56 @@ function fetchHandler(event){
   event.respondWith(
     caches.match(request)
       .then(function (response) {
-        return response || fetch(request)
+        return response || fromNetwork(request, timeout)
           .catch(function () {
             return offlineResponse(request);
-          });
+          })
       })
   );
 }
 
+function fromNetwork(request, timeout) {
+  return new Promise(function (fulfill, reject) {
+    var timeoutId = setTimeout(reject, timeout);
+
+    fetch(request).then(function (response) {
+      clearTimeout(timeoutId);
+      // Stash a copy of this page in the cache
+      // tag as cached if json
+      var clone = response.clone();
+      const isJSONRequest = !!~request.headers.get('Accept').indexOf('application/json');
+
+      if(request.method !== 'GET'){
+        fulfill(response);
+        return;
+      }
+
+      if(isJSONRequest){
+        clone.json().then(json => {
+          json.cached = true;
+          var jsonRes = new Response(JSON.stringify(json), { 
+            headers: {
+              'content-type': 'application/json'
+            }
+          });
+          caches.open(version + staticCacheName)
+          .then(function (cache) {
+            cache.put(request, jsonRes);
+          });
+          fulfill(response);
+        });
+        return;
+      }
 
 
+      caches.open(version + staticCacheName)
+        .then(function (cache) {
+          cache.put(request, clone);
+        });
+      fulfill(response);
+    }, reject);
+  });
+}
 
 // https://serviceworke.rs/strategy-cache-update-and-refresh_demo.html
 function serveCacheAndUpdate(event){
