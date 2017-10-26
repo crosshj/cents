@@ -164,6 +164,17 @@ a.button.pending, button.selected.pending {
   border-color: rgba(255, 255, 255, 1);
 }
 
+a.button.paid.group {
+  width: 99%;
+  margin-left: 1%;
+  border-left-width: 4px;
+  border-left-color: #888;
+  border-top-width: 0px;
+  border-bottom-width: 0px;
+  border-right-width: 0px;
+  border-radius: 2px;
+}
+
 a.button.totals:not(.menu) {
   background-color: rgba(0, 0, 0, 0.09);
   border-color: rgba(0, 0, 0, 0);
