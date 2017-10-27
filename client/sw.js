@@ -18,7 +18,7 @@ https://serviceworke.rs/
 
 // Update 'version' if you need to refresh the cache
 var staticCacheName = 'static';
-var version = 'v1.0.7::';
+var version = 'v1.0.8::';
 var CACHE = version + staticCacheName;
 var timeout = 1500;
 
@@ -97,8 +97,8 @@ function offlineResponse(request){
     });
     return jsonResponse;
   }
-  const htmlResponse = caches.match('./offline.html');
-  return htmlResponse;
+  //const htmlResponse = caches.match('./offline.html');
+  return new Response('offline');
 }
 
 function fetchHandler(event){
@@ -106,6 +106,12 @@ function fetchHandler(event){
   const isHTMLRequest = !!~request.headers.get('Accept').indexOf('text/html');
   const isJSONRequest = !!~request.headers.get('Accept').indexOf('application/json');
 
+  const isLoginRequest = request.url.includes('login') && request.method === 'POST';
+  if(isLoginRequest){
+    event.respondWith(fetch(event.request));
+    return;
+  }
+  
   // non-GET requests, -> NETWORK -> OFFLINE
   if (request.method !== 'GET') {
     event.respondWith(
@@ -129,7 +135,16 @@ function fetchHandler(event){
     return;
   }
 
-  // HTML requests, -> NETWORK -> CACHE -> OFFLINE
+  // JSON
+  const isAccountsRequest = request.url.match(/\/accounts$/i);
+  const isMainDataRequest = request.url.match(/\/json$/i);
+  const requestToNotifyLater = isAccountsRequest || isMainDataRequest;
+  if (isJSONRequest && requestToNotifyLater){
+    serveCacheAndUpdate(event);
+    return;
+  }
+
+  // HTML requests, -> NETWORK(timeout) -> CACHE -> OFFLINE
   if (isHTMLRequest || isJSONRequest) {
     event.respondWith(
       fromNetwork(request, timeout)
@@ -203,6 +218,9 @@ function serveCacheAndUpdate(event){
   event.waitUntil(
     update(request)
     .then(refresh)
+    .catch(function () {
+      return offlineResponse(request);
+    })
   );
 }
 
@@ -212,7 +230,9 @@ function serveCacheAndUpdate(event){
 function fromCache(request) {
   return caches.open(CACHE)
     .then(function (cache) {
-      return cache.match(request) || offlineResponse(request);
+      return cache.match(request).then(matching => {
+        return matching || Promise.resolve(offlineResponse(request));
+      });
   });
 }
 

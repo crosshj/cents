@@ -17,14 +17,22 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('sw.js', {scope: './'}).then(function(registration) {
       // Registration was successful
       console.log('ServiceWorker registration successful with scope: ', registration.scope); //eslint-disable-line no-console
-      navigator.serviceWorker.addEventListener('message', event => {
-        console.log(event.data.msg, event.data.url);
-      });
     }).catch(function(err) {
       // registration failed :(
       console.log('ServiceWorker registration failed: ', err); //eslint-disable-line no-console
     });
   });
+  navigator.serviceWorker.onmessage = event => {
+    let data = undefined;
+    try {
+      data = JSON.parse(event.data);
+      if(data.type === 'refresh'){
+        console.log('TODO: do something good with new data');
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 }
 
 Element.prototype.remove = function() {
@@ -375,7 +383,9 @@ Element.prototype.remove = function() {
           const logInIframe = document.querySelector('iframe');
           logInIframe.location = './login';
           const functionFromQueue = GLOBAL_FUNCTION_QUEUE.pop();
-          functionFromQueue && functionFromQueue();
+          if(functionFromQueue && typeof functionFromQueue === "function"){
+            functionFromQueue();
+          }
         }
 
         ajaxLogin(username, password, callback);
