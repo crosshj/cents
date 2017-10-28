@@ -26,7 +26,7 @@ function getJSON(req, res) {
 	const accountsFileName = getAccountsFileName();
 	let accounts = JSON.parse(fs.readFileSync(accountsFileName));
 	accounts = updateAccounts(accounts);
-	res.send(JSON.stringify(accounts));
+	res.json(accounts);
 }
 
 function getAccounts(req, res) {
@@ -36,7 +36,7 @@ function getAccounts(req, res) {
 			db.read({
 				query: '',
 				callback: (err, result) => {
-					res.send(
+					res.json(
 						result.length === 0
 							? {
 								error: 'no accounts info available from DB',
@@ -116,10 +116,10 @@ function saveAccounts(data, callback) {
 function postAccounts(req, res) {
 	try {
 		saveAccounts(req.body, () => {
-			res.send({status: 'accounts saved'});
+			res.json({status: 'accounts saved'});
 		});
 	} catch (error) {
-		res.send(error.toString());
+		res.json(error.toString());
 	}
 }
 
