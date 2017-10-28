@@ -16,7 +16,7 @@ module.exports = function(app, passport){
       if (err) { return next(err); }
       if (!user) {
         if (/json/.test(req.headers.accept)) {
-          res.send({ status: 'no user' });
+          res.json({ status: 'no user' });
           return;
         }
         return res.redirect('./login');
@@ -25,7 +25,7 @@ module.exports = function(app, passport){
         if (err) { return next(err); }
 
         if (/json/.test(req.headers.accept)) {
-          res.send({ status: 'logged in' });
+          res.json({ status: 'logged in' });
           return;
         }
 

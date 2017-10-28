@@ -41,7 +41,7 @@ function filterDiffs(lines, type, fields, account){
 function getDiffs(req, res) {
   fs.readFile(DIFF_LOG_LOCATION, 'utf-8', (err, file) => {
     if (err) {
-      return res.send(err);
+      return res.json(err);
     }
 
     try {
@@ -55,10 +55,10 @@ function getDiffs(req, res) {
       const account = req.query.account;
       const type = req.query.type || 'liabilities';
       const diffs = filterDiffs(lines, type, fields, account);
-      res.send(diffs);
+      res.json(diffs);
     } catch (e) {
       //console.log(`error with sending lines from ${DIFF_LOG_LOCATION}: ${e}`);
-      res.send(e);
+      res.json(e);
     }
   });
 }
