@@ -32,8 +32,7 @@ function getJSON(req, res) {
 
 	res.writeHead(200, headers);
 	accounts = updateAccounts(accounts);
-	res.send(JSON.stringify(accounts));
-	return;
+	res.end(JSON.stringify(accounts));
 }
 
 function getAccounts(req, res) {
