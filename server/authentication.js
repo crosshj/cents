@@ -10,8 +10,7 @@ const authenticationMiddleware = function authenticationMiddleware () {
       return next();
     }
     if (/json/.test(req.headers.accept)) {
-      //next({ error: 'not logged in' });
-      res.end("{ error: 'not logged in' }");
+      res.send({ error: 'not logged in' });
       return;
     }
 
