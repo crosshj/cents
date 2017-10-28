@@ -19,8 +19,20 @@ var unFormatMoney = function(money){
   return amount;
 }
 
+var safeAccess = (fn) => {
+  var response = undefined;
+  try {
+    response = fn();
+  } catch (error) {
+    // nothing
+  }
+  return response;
+};
+
 function formatAccountData(data){
-    window.MAIN_DATA = data;
+    window.MAIN_DATA = data || {};
+    window.MAIN_DATA.liabilities = window.MAIN_DATA.liabilities || [];
+    window.MAIN_DATA.assets = window.MAIN_DATA.assets || [];
 
     MAIN_DATA.liabilities.getByName = title => getByName(MAIN_DATA.liabilities, title);
     MAIN_DATA.assets.getByName = title => getByName(MAIN_DATA.assets, title);
@@ -29,12 +41,12 @@ function formatAccountData(data){
     var assets = MAIN_DATA.assets;
 
     var totals = {
-      balance: data.scraped.data.accounts[0].balance,
-      pending: MAIN_DATA.totals.pendingTotal,
-      due: MAIN_DATA.totals.dueTotal,
-      assets: MAIN_DATA.totals.assetsTotal,
-      debts: MAIN_DATA.totals.debts,
-      debtTotal: MAIN_DATA.totals.debtsTotal
+      balance: safeAccess(() => data.scraped.data.accounts[0].balance) || 0,
+      pending: safeAccess(() => MAIN_DATA.totals.pendingTotal) || 0,
+      due: safeAccess(() => MAIN_DATA.totals.dueTotal) || 0,
+      assets: safeAccess(() => MAIN_DATA.totals.assetsTotal) || [],
+      debts: safeAccess(() => MAIN_DATA.totals.debts) || [],
+      debtTotal: safeAccess(() => MAIN_DATA.totals.debtsTotal) || 0
     };
     return {liabilities, assets, totals};
 }
