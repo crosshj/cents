@@ -24,16 +24,9 @@ var db = require('../../service/database');
 
 function getJSON(req, res) {
 	const accountsFileName = getAccountsFileName();
-	accounts = JSON.parse(fs.readFileSync(accountsFileName));
-	var headers = {
-		'Content-Type': 'application/json',
-		'Access-Control-Allow-Origin': '*'
-	};
-
-	res.writeHead(200, headers);
+	let accounts = JSON.parse(fs.readFileSync(accountsFileName));
 	accounts = updateAccounts(accounts);
 	res.send(JSON.stringify(accounts));
-	return;
 }
 
 function getAccounts(req, res) {
@@ -64,11 +57,11 @@ function saveAccounts(data, callback) {
 		&& data.hasOwnProperty('assets')
 		&& data.hasOwnProperty('liabilities');
 	if (dataOkayToSave) {
-		var oldData = {};
+		var oldData = undefined;
 		try {
 			oldData = JSON.parse(fs.readFileSync(jsonFile, 'utf8'));
 		} catch (e) {
-			// nothing to do
+			oldData = {};
 		}
 
 		const oldTotal = oldData.liabilities
@@ -82,7 +75,7 @@ function saveAccounts(data, callback) {
 		const newTotal = data.liabilities
 			.filter(item => !JSON.parse(item.hidden))
 			.reduce((all, one) => all + Number(one.total_owed), 0);
-		
+
 		data.balance = data.balance.filter(x => x.title !== "Total Owed");
 		data.balance.push({
 			"title": "Total Owed",
@@ -120,17 +113,13 @@ function saveAccounts(data, callback) {
 	}
 }
 
-// TODO: use express body parsing to get json instead of node style
-// already tried this and failed because (I think) the proxied call
 function postAccounts(req, res) {
 	try {
 		saveAccounts(req.body, () => {
-			res.writeHead(200, { 'Content-Type': 'text/html' });
-			res.end('post received');
+			res.send({status: 'accounts saved'});
 		});
 	} catch (error) {
-		res.writeHead(400, { 'Content-Type': 'text/html' });
-		res.end(error.toString());
+		res.send(error.toString());
 	}
 }
 
