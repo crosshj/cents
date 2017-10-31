@@ -106,7 +106,9 @@ function offlineResponse(request){
     return jsonResponse;
   }
   //const htmlResponse = caches.match('./offline.html');
-  return new Response('offline');
+  return new Response(offlineHTML(),{
+    headers: {'Content-Type': 'text/html'}
+  });
 }
 
 function fetchHandler(event){
@@ -114,6 +116,19 @@ function fetchHandler(event){
   const isHTMLRequest = !!~request.headers.get('Accept').indexOf('text/html');
   const isJSONRequest = !!~request.headers.get('Accept').indexOf('application/json');
 
+  const isKillCache = request.url.includes('killCache');
+  if(isKillCache){
+    const fallbackResponse = {
+      status: "okay"
+    };
+    const jsonResponse = new Response(JSON.stringify(fallbackResponse), {
+      headers: {'Content-Type': 'application/json'}
+    });
+    event.respondWith(jsonResponse);
+    event.waitUntil(updateStaticCache());
+    return;
+  }
+  
   const isLoginRequest = request.url.includes('login') && request.method === 'POST';
   if(isLoginRequest){
     event.respondWith(fetch(event.request));
@@ -276,5 +291,61 @@ function refresh(response) {
       client.postMessage(JSON.stringify(message));
     });
   });
+}
+
+function offlineHTML(){
+  const html = `
+    <style>
+    .btn {
+        font-size: 1em;
+        display: inline-block;
+        padding: 6px 12px;
+        margin-bottom: 0;
+        line-height: 1.42857143;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: middle;
+        touch-action: manipulation;
+        cursor: pointer;
+        user-select: none;
+        background-image: none;
+        border: 1px solid transparent;
+        border-radius: 4px;
+    }
+    div {
+        text-align: center;
+        font-size: 5rem;
+        font-weight: 400;
+        font-family: arial;
+    }
+    span {
+        color: white;
+        margin: 18px;
+        display: inline-block;
+    }
+    body {
+        background-color: rgba(91,89,77,1);
+    }
+    </style>
+
+    <script>
+    function killCache(){
+        fetch('./killCache')
+          .then(res => res.json)
+          .then(json => {
+            document.location.reload();
+          });
+        return false;
+    }
+    </script>
+
+    <div>
+    <span>Offline Mode</span>
+    <form onsubmit="return killCache()">
+        <input type="submit" value="RELOAD" class="btn"/>
+    </form>
+    </div>
+  `;
+  return html;
 }
 

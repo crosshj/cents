@@ -1,1 +1,44 @@
-offline
+<style>
+    .btn {
+        font-size: 1em;
+        display: inline-block;
+        padding: 6px 12px;
+        margin-bottom: 0;
+        line-height: 1.42857143;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: middle;
+        touch-action: manipulation;
+        cursor: pointer;
+        user-select: none;
+        background-image: none;
+        border: 1px solid transparent;
+        border-radius: 4px;
+    }
+    div {
+        text-align: center;
+        font-size: 21px;
+        font-weight: 400;
+        font-family: arial;
+    }
+    span {
+        color: white;
+    }
+    body {
+        background-color: rgba(91,89,77,1);
+    }
+</style>
+
+<script>
+    function killCache(){
+        fetch('./killCache')
+        return false;
+    }
+</script>
+
+<div>
+    <span>Offline Mode</span>
+    <form onsubmit="return killCache()">
+        <input type="submit" value="RELOAD" class="btn"/>
+    </form>
+</div>
