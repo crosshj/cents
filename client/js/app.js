@@ -35,6 +35,16 @@ if ('serviceWorker' in navigator) {
             .then(cached => cached.json())
             .then(json => updateUI(undefined, json));
         }
+        if (/\/accounts$/i.test(data.url)){
+          caches.match(data.url)
+            .then(cached => cached.json())
+            .then(json => {
+              const data = window.MAIN_DATA;
+              debugger;
+              data.scraped = json;
+              updateUI(undefined, data);
+            });
+        }
       }
     } catch (error) {
       console.error(error);
@@ -370,7 +380,7 @@ Element.prototype.remove = function() {
       }
       jq.getJSON("./accounts", scrapedData => {
         var data = mainData;
-        
+
         data.scraped = scrapedData;
         createUI(data);
       });
