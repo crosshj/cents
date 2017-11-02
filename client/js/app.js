@@ -222,6 +222,7 @@ Element.prototype.remove = function() {
     jq('.column.totals .button.totals').remove();
     jq('div.totals .row').append(makeTotalsRow(formattedData.totals || {}));
 
+    jq('a.button:not(.menu)').unbind();
     jq('a.button:not(.menu)').on("click", function(e){
       switch (true){
         case jq(this).is('.paid, .pending, .due'):
@@ -249,12 +250,14 @@ Element.prototype.remove = function() {
       }
     });
 
+    jq('#popup-modal').unbind();
     jq('#popup-modal').on('click', function(e){
       if(e.target !== e.currentTarget) return;
       typeof popUpModal === "function" && popUpModal();
       jq('a.button.selected:not(".menu")').removeClass('selected')
     });
 
+    jq('#popup-modal .content').unbind();
     jq('#popup-modal .content').on('click', function(e){
       e.stopPropagation();
       return false;
@@ -275,6 +278,9 @@ Element.prototype.remove = function() {
   }
 
   function setupSwipe(){
+    if(window.flkty){
+      return;
+    }
     if (!window.Flickity){
       console.log('No swipe library found');
       return;
