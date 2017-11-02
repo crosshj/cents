@@ -18,7 +18,7 @@ https://serviceworke.rs/
 
 // Update 'version' if you need to refresh the cache
 var staticCacheName = 'static';
-var version = 'v1.0.12::';
+var version = 'v1.0.13::';
 var CACHE = version + staticCacheName;
 var timeout = 1500;
 
