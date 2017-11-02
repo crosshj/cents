@@ -186,7 +186,10 @@ function makeAccountContent($clickedRow){
   var isNewItem = !title; //TODO: better condition
   var autoIsChecked = JSON.parse($clickedRow.find('.auto').text() || 'false');
 
-  var account = MAIN_DATA.liabilities.getByName(title.trim().toLowerCase());
+
+  // potential bug when title of asset and liability the same
+  var account = MAIN_DATA.liabilities.getByName(title.trim().toLowerCase())
+    || MAIN_DATA.assets.getByName(title.trim().toLowerCase());
   var isGroup = account.type === "group";
   var items = (account.items || []).reduce((all, item) => {
     all += `<tr>
@@ -318,12 +321,11 @@ function makeAccountContent($clickedRow){
       auto: item.find('#auto-checkbox').is(":checked")
     };
   };
-  var getPopupItem = function(item){
 
-  };
   content.find('button.cancel').on('click', function (e){
     jq('#popup-modal').click();
   });
+
   content.find('button.save').on('click', function (e){
 
     var currentItem = getCurrentItem(jq(this).parent().parent());
