@@ -128,13 +128,13 @@ function fetchHandler(event){
     event.waitUntil(updateStaticCache());
     return;
   }
-  
+
   const isLoginRequest = request.url.includes('login') && request.method === 'POST';
   if(isLoginRequest){
     event.respondWith(fetch(event.request));
     return;
   }
-  
+
   // non-GET requests, -> NETWORK -> OFFLINE
   if (request.method !== 'GET') {
     event.respondWith(
@@ -159,8 +159,8 @@ function fetchHandler(event){
   }
 
   // JSON
-  const isAccountsRequest = request.url.match(/\/accounts$/i);
-  const isMainDataRequest = request.url.match(/\/json$/i);
+  const isAccountsRequest = /\/accounts$/i.test(request.url);
+  const isMainDataRequest = /\/json$/i.test(request.url);
   const requestToNotifyLater = isAccountsRequest || isMainDataRequest;
   if (isJSONRequest && requestToNotifyLater){
     serveCacheAndUpdate(event);
@@ -185,7 +185,7 @@ function fetchHandler(event){
         return response || fromNetwork(request, timeout)
           .catch(function () {
             return offlineResponse(request);
-          })
+          });
       })
   );
 }

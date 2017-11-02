@@ -29,6 +29,12 @@ if ('serviceWorker' in navigator) {
       if(data.type === 'refresh'){
         console.log('ETag: ', data.eTag)
         console.log('TODO: do something good with new data');
+
+        if (/\/json$/i.test(data.url)){
+          caches.match(data.url)
+            .then(cached => cached.json())
+            .then(json => updateUI(undefined, json));
+        }
       }
     } catch (error) {
       console.error(error);
@@ -163,6 +169,10 @@ Element.prototype.remove = function() {
   }
 
   function makeMenu ($menuContainer){
+    const menuAlreadyExists = $menuContainer.find('.button').length > 0;
+    if (menuAlreadyExists){
+      return;
+    }
     var menu = ["debts", "totals", "assets"];
     menu.forEach(function(item, i){
       var $button = makeMenuButton({ name: item, count: i});
@@ -173,6 +183,17 @@ Element.prototype.remove = function() {
     });
   }
 
+  function updateUI(oldData, newData){
+    document.querySelector('#login').className = 'hidden';
+
+    // identify what needs to be updated
+
+    // update it
+
+    // until this is implemented, just use createUI
+    createUI(newData);
+  }
+
   function createUI(data){
     if(data.cached){
       document.body.classList.add('offline');
@@ -180,6 +201,7 @@ Element.prototype.remove = function() {
     makeMenu(jq('div.menu'));
     var formattedData = formatAccountData(data);
 
+    jq('div.liabilities').find('.button').remove();
     formattedData.liabilities.forEach(function(item){
       if (item.hidden === "true") return;
       var row = JSON.parse(JSON.stringify(item));
@@ -189,6 +211,7 @@ Element.prototype.remove = function() {
 
     jq('div.liabilities').append(makeAddNew());
 
+    jq('div.assets').find('.button').remove();
     formattedData.assets.forEach(function(item){
       if (item.hidden === "true") return;
       var row = JSON.parse(JSON.stringify(item));
@@ -196,6 +219,7 @@ Element.prototype.remove = function() {
       jq('div.assets').append(makeRow(row));
     });
 
+    jq('.column.totals .button.totals').remove();
     jq('div.totals .row').append(makeTotalsRow(formattedData.totals || {}));
 
     jq('a.button:not(.menu)').on("click", function(e){
