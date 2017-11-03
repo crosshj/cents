@@ -236,6 +236,11 @@ Element.prototype.remove = function() {
 
     jq('a.button:not(.menu)').unbind();
     jq('a.button:not(.menu)').on("click", function(e){
+      if (navigator.onLine){
+        document.body.classList.remove('offline');
+      } else {
+        document.body.classList.add('offline');
+      }
       switch (true){
         case jq(this).is('.paid, .pending, .due'):
           jq('a.button.selected:not(".menu")').removeClass('selected')
@@ -283,6 +288,11 @@ Element.prototype.remove = function() {
   }
 
   function handleTouchMove(e){
+    if (navigator.onLine){
+      document.body.classList.remove('offline');
+    } else {
+      document.body.classList.add('offline');
+    }
     if(jq('div#popup-modal.show').length){
       e.preventDefault();
       return false;
@@ -404,6 +414,12 @@ Element.prototype.remove = function() {
     });
 
     jq(window).on("focus", () => {
+      if (navigator.onLine){
+        document.body.classList.remove('offline');
+      } else {
+        document.body.classList.add('offline');
+      }
+
       if (!window.blurredTime){
         return;
       }
