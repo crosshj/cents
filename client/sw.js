@@ -95,6 +95,11 @@ function offlineResponse(request){
   // if (!!~request.headers.get('Accept').indexOf('image')) {
   //   return new Response('<svg width="400" height="300" role="img" aria-labelledby="offline-title" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg"><title id="offline-title">Offline</title><g fill="none" fill-rule="evenodd"><path fill="#D8D8D8" d="M0 0h400v300H0z"/><text fill="#9B9B9B" font-family="Helvetica Neue,Arial,Helvetica,sans-serif" font-size="72" font-weight="bold"><tspan x="93" y="172">offline</tspan></text></g></svg>', { headers: { 'Content-Type': 'image/svg+xml' } });
   // }
+  const isJSRequest = /\.js$/i.test(request.url);
+  if(isJSRequest){
+    const blankJS = new Response('');
+    return blankJS;
+  }
 
   if(!!~request.headers.get('Accept').indexOf('application/json')){ 
     const fallbackResponse = {
@@ -161,14 +166,17 @@ function fetchHandler(event){
   // JSON
   const isAccountsRequest = /\/accounts$/i.test(request.url);
   const isMainDataRequest = /\/json$/i.test(request.url);
-  const requestToNotifyLater = isAccountsRequest || isMainDataRequest;
+  const isJSRequest = /\.js$/i.test(request.url);
+  const requestToNotifyLater = isAccountsRequest || isMainDataRequest || isJSRequest;
+  const isCSSRequest = /\.css$/i.test(request.url);
+
   if (isJSONRequest && requestToNotifyLater){
     serveCacheAndUpdate(event);
     return;
   }
 
   // HTML requests, -> NETWORK(timeout) -> CACHE -> OFFLINE
-  if (isHTMLRequest || isJSONRequest) {
+  if (!isCSSRequest && isHTMLRequest || isJSONRequest) {
     event.respondWith(
       fromNetwork(request, timeout)
         .catch(function () {
