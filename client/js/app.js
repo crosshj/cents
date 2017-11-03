@@ -33,14 +33,16 @@ if ('serviceWorker' in navigator) {
         if (/\/json$/i.test(data.url)){
           caches.match(data.url)
             .then(cached => cached.json())
-            .then(json => updateUI(undefined, json));
+            .then(json => !json.error && updateUI(undefined, json));
         }
         if (/\/accounts$/i.test(data.url)){
           caches.match(data.url)
             .then(cached => cached.json())
             .then(json => {
               const data = window.MAIN_DATA;
-              debugger;
+              if (json.error){
+                return;
+              }
               data.scraped = json;
               updateUI(undefined, data);
             });
@@ -397,14 +399,23 @@ Element.prototype.remove = function() {
     lockOrientation("portrait-primary");
     jq(window).on("touchmove", handleTouchMove);
 
-    jq(window).on("focus", () => {
-      console.log('TODO: when focused, refresh if needed');
-      //jq('#corner-circle').text(Number(jq('#corner-circle').text()) + 1); 
-    });
     jq(window).on("blur", () => {
-      console.log('TODO: on blur save current time');
-      //jq('#corner-circle').text(Number(jq('#corner-circle').text()) + 1); 
+      window.blurredTime = new Date();
     });
+
+    jq(window).on("focus", () => {
+      if (!window.blurredTime){
+        return;
+      }
+      var now = new Date();
+      var timeDiffSecs = Math.abs(now.getTime() - window.blurredTime.getTime()) / 1000;
+      //var diffDays = Math.ceil(timeDiffSecs / (3600 * 24));
+      if(timeDiffSecs > 5 * 60){ // 5 minutes
+        // could probably do better than this (just update view with new data call)
+        window.location.reload();
+      }
+    });
+
 
     // Create IE + others compatible event handler
     var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
