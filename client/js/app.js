@@ -460,8 +460,9 @@ Element.prototype.remove = function() {
       }
     }, false);
 
-    document.body.addEventListener('long-press', function(e) {
-      console.log(e.target);
+    document.addEventListener('contextmenu', function(event){
+      console.log(event.target);
+      event.stopPropagation();
+      return false;
     });
-
   });
