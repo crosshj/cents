@@ -18,7 +18,7 @@ https://serviceworke.rs/
 
 // Update 'version' if you need to refresh the cache
 var staticCacheName = 'static';
-var version = 'v1.0.14::';
+var version = 'v1.0.13::';
 var CACHE = version + staticCacheName;
 var timeout = 1500;
 
@@ -44,7 +44,6 @@ var staticCacheList = [
   './fonts/glyphicons-halflings-regular.ttf',
   './js/jquery.2.1.3.min.js',
   './js/flickity.pkgd.2.0.9.js',
-  './js/long-press.1.0.1.min.js',
   './js/highcharts.4.2.2.js',
   './js/moment.2.18.1.min.js',
   './js/accountData.js',
