@@ -459,4 +459,9 @@ Element.prototype.remove = function() {
         ajaxLogin(username, password, callback);
       }
     }, false);
+
+    document.addEventListener('long-press', function(e) {
+      console.log(e.target);
+    });
+
   });
