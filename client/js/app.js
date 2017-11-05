@@ -460,7 +460,7 @@ Element.prototype.remove = function() {
       }
     }, false);
 
-    document.addEventListener('long-press', function(e) {
+    document.body.addEventListener('long-press', function(e) {
       console.log(e.target);
     });
 
