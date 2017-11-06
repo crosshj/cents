@@ -236,8 +236,8 @@ a.button.menu.selected {
 
 a.button.selected {
   color: #FFF;
-  background-color: #1EAEDB;
-  border-color: #1EAEDB;
+  background-color: #1edbd4;
+  border-color: #1edbd4;
 }
 
 #popup-modal {
@@ -407,7 +407,7 @@ a.button.selected {
   background-color: rgba(91,89,77,1);
 }*/
 
-#add-new {
+#add-new, #add-group {
   color: rgba(255, 255, 255, 0.5);
   line-height: 65px;
   border: 2px dashed rgba(255, 255, 255, 0.5);
@@ -416,7 +416,7 @@ a.button.selected {
   padding: 0px;
 }
 
-#add-new:hover {
+#add-new:hover, #add-group:hover {
   color: white;
   border-style: solid;
   border-color:  rgb(0, 125, 125);
