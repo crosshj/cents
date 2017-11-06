@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 /*
   global formatMoney, formatAccountData, makeAccountContent, popUpModal,
-  showHistoryPopup, Flickity
+  showHistoryPopup, Flickity, makeGroupContent
 */
 
 /*
@@ -104,6 +104,12 @@ Element.prototype.remove = function() {
   function makeAddNew(){
     return jq(`
       <a id="add-new" class="button">Add New</a>
+    `);
+  }
+
+  function makeAddGroup(){
+    return jq(`
+      <a id="add-group" class="button">Group Accounts</a>
     `);
   }
 
@@ -241,7 +247,7 @@ Element.prototype.remove = function() {
     jq('div.totals .row').append(makeTotalsRow(formattedData.totals || {}));
 
     jq('a.button:not(.menu)').unbind();
-    jq('a.button:not(.menu)').on("click", function(/*e*/){
+    function accountsClickHandler(/*e*/){
       if (navigator.onLine){
         document.body.classList.remove('offline');
       } else {
@@ -255,13 +261,19 @@ Element.prototype.remove = function() {
           typeof popUpModal === "function" && popUpModal(jq(this), content);
           break;
         case jq(this).is('#add-new'):
-          console.log('clicked add new');
-          jq('a.button.selected:not(".menu")').removeClass('selected')
+          //console.log('clicked add new');
+          jq('a.button.selected:not(".menu")').removeClass('selected');
           content = typeof makeAccountContent === "function" && makeAccountContent(jq(this));
-          typeof popUpModal === "function" && popUpModal(jq(this), content);
+          content && typeof popUpModal === "function" && popUpModal(jq(this), content);
+          break;
+        case jq(this).is('#add-group'):
+          //console.log('clicked add group');
+          var $selected = jq('a.button.selected:not(".menu")');
+          content = typeof makeGroupContent === "function" && makeGroupContent($selected);
+          content && typeof popUpModal === "function" && popUpModal(jq(this), content);
           break;
         case jq(this).is('#totals_history'):
-          console.log('totals history');
+          //console.log('totals history');
           typeof showHistoryPopup === "function" && showHistoryPopup(jq(this), {
             type: 'balance',
             title: 'Total Owed',
@@ -272,6 +284,32 @@ Element.prototype.remove = function() {
           console.log('--- some other case', jq(this));
           break;
       }
+    }
+    jq('a.button:not(.menu)').on("click", accountsClickHandler);
+    jq('a.button:not(.menu):not(#add-new):not(#add-group)').on('contextmenu', function(event){
+      if(jq(this).hasClass('selected')){
+        jq(this).removeClass('selected');
+        if(jq('.selected:not(.menu)').length === 0){
+          jq('#add-group').hide();
+          jq('#add-new').show();
+        }
+        return false;
+      }
+      jq(this).addClass('selected');
+      if(jq('.selected:not(.menu)').length < 2){
+        return false;
+      }
+
+      if(jq('#add-group').length === 0){
+        var $addGroupButton = makeAddGroup();
+        $addGroupButton.on('click', accountsClickHandler)
+        jq('div.liabilities').append($addGroupButton);
+      }
+      jq('#add-new').hide();
+      jq('#add-group').show();
+
+      event.stopPropagation();
+      return false;
     });
 
     jq('#popup-modal').unbind();
@@ -318,7 +356,7 @@ Element.prototype.remove = function() {
     initialIndex = initialIndex || 0;
 
     // setup column swipe
-    var flkty = new Flickity('#main-carousel', {
+    window.flkty = new Flickity('#main-carousel', {
       // options
       initialIndex,
       setGallerySize: false,
@@ -334,13 +372,13 @@ Element.prototype.remove = function() {
       if (selectedTab){
         selectedTab.className = selectedTab.className.replace(/selected/,'').trim();
       }
-      var tabToSelect = document.querySelectorAll('.menu .button')[flkty.selectedIndex];
+      var tabToSelect = document.querySelectorAll('.menu .button')[window.flkty.selectedIndex];
       if (tabToSelect){
         tabToSelect.className += ' selected';
-        localStorage.setItem('selectedTab', flkty.selectedIndex);
+        localStorage.setItem('selectedTab', window.flkty.selectedIndex);
       }
     }
-    flkty.on( 'select', selectListener );
+    window.flkty.on( 'select', selectListener );
 
     // function scrollListener(progress) {
     //   var someProg = Math.max( 0, Math.min( 1, progress ))
@@ -466,10 +504,4 @@ Element.prototype.remove = function() {
         ajaxLogin(username, password, callback);
       }
     }, false);
-
-    document.addEventListener('contextmenu', function(event){
-      console.log(event.target);
-      event.stopPropagation();
-      return false;
-    });
   });

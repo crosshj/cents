@@ -372,3 +372,8 @@ function makeAccountContent($clickedRow){
   return content;
 }
 
+function makeGroupContent($selected){
+  console.log($selected);
+  return false;
+}
+
