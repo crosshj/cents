@@ -1,16 +1,22 @@
-  /*
-    TODO:
-      - DO NOT open popup if x scrolling
-      - DO NOT x scroll if popup is opening
-      - DO NOT x scroll if y is scrolling
-      - DO NOT y scroll if x is scrolling
-      - dirty form controls
-      - account history
-      - integrate with DB service
-      - new account / restore / demo account
-  */
+/* eslint-disable no-console */
+/*
+  global formatMoney, formatAccountData, makeAccountContent, popUpModal,
+  showHistoryPopup, Flickity
+*/
 
-jq = window.jQuery.noConflict();
+/*
+  TODO:
+    - DO NOT open popup if x scrolling
+    - DO NOT x scroll if popup is opening
+    - DO NOT x scroll if y is scrolling
+    - DO NOT y scroll if x is scrolling
+    - dirty form controls
+    - account history
+    - integrate with DB service
+    - new account / restore / demo account
+*/
+
+var jq = window.jQuery.noConflict();
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
@@ -235,22 +241,23 @@ Element.prototype.remove = function() {
     jq('div.totals .row').append(makeTotalsRow(formattedData.totals || {}));
 
     jq('a.button:not(.menu)').unbind();
-    jq('a.button:not(.menu)').on("click", function(e){
+    jq('a.button:not(.menu)').on("click", function(/*e*/){
       if (navigator.onLine){
         document.body.classList.remove('offline');
       } else {
         document.body.classList.add('offline');
       }
+      var content = undefined;
       switch (true){
         case jq(this).is('.paid, .pending, .due'):
           jq('a.button.selected:not(".menu")').removeClass('selected')
-          var content = typeof makeAccountContent === "function" && makeAccountContent(jq(this));
+          content = typeof makeAccountContent === "function" && makeAccountContent(jq(this));
           typeof popUpModal === "function" && popUpModal(jq(this), content);
           break;
         case jq(this).is('#add-new'):
           console.log('clicked add new');
           jq('a.button.selected:not(".menu")').removeClass('selected')
-          var content = typeof makeAccountContent === "function" && makeAccountContent(jq(this));
+          content = typeof makeAccountContent === "function" && makeAccountContent(jq(this));
           typeof popUpModal === "function" && popUpModal(jq(this), content);
           break;
         case jq(this).is('#totals_history'):
@@ -311,7 +318,7 @@ Element.prototype.remove = function() {
     initialIndex = initialIndex || 0;
 
     // setup column swipe
-    window.flkty = new Flickity('#main-carousel', {
+    var flkty = new Flickity('#main-carousel', {
       // options
       initialIndex,
       setGallerySize: false,
@@ -402,8 +409,8 @@ Element.prototype.remove = function() {
   getMainData.bind(getMainData)();
 
   jq(document).ready(function(){
-    var colorsList = [];
-    var bgColor = "rgba(81, 84, 17, 0.46)";
+    //var colorsList = [];
+    //var bgColor = "rgba(81, 84, 17, 0.46)";
     //backgroundGradient(colorsList, 3, 3, bgColor);
     var lockOrientation = screen.lockOrientation || screen.mozLockOrientation || screen.msLockOrientation || function(){};
     lockOrientation("portrait-primary");
