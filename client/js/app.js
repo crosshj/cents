@@ -33,9 +33,6 @@ if ('serviceWorker' in navigator) {
     try {
       data = JSON.parse(event.data);
       if(data.type === 'refresh'){
-        console.log('ETag: ', data.eTag)
-        console.log('TODO: do something good with new data');
-
         if (/\/json$/i.test(data.url)){
           caches.match(data.url)
             .then(cached => cached.json())

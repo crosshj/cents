@@ -373,7 +373,18 @@ function makeAccountContent($clickedRow){
 }
 
 function makeGroupContent($selected){
-  console.log($selected);
+  const selectedTitles = $selected.toArray().map(
+    x => jq(x).find('.title').text().trim()
+  );
+  const selectedAccounts = selectedTitles.map(
+    x =>  MAIN_DATA.liabilities.getByName(x.toLowerCase())
+  ).filter(x => !!x);
+  
+  //TODO: add to group here
+  console.log(selectedAccounts);
+
+  //TODO: make group content here
+
   return false;
 }
 
