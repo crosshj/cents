@@ -15,12 +15,6 @@
 # goals
 The aim of this project is to create an application with a simple, responsive interface for personal finance with an emphasis on automation, mobility, and ubiquity.   
 
-# required files
-
-### ./accounts.json (see accounts.default.json)
-
-### ./_private/access_token.json 
-
 ### TODO
 - [ ] auto-mark next pay day
 - [ ] site scrapers (phantom, nightmare, newman)
