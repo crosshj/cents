@@ -1,27 +1,47 @@
 var async = require('async');
 
-function getLevelOne(data, callback){
-    callback(null, [1, 2, 3, 4, 5]);
+function getLevelOne(callback){
+    callback(null, this.items);
 }
 
-function getLevelTwoItem(item, callback){
-    console.log('---- L2 item', item);
+function getLevelTwoItem(callback){
+    var item = this.item;
+    //console.log('---- L2 item', item);
+    const results = new Array(item).fill().map(x => item);
+    //results.parent = this.parent;
     setTimeout(function(){
-        callback(null, new Array(2*item||1).fill().map((x,i)=>i));
-    }, item*100)
+        callback(null, results);
+    }, [1, 2000, 200, 5000, 300][item]);
 }
 
-function getLevelThreeItem(item, callback){
+function getLevelThreeItem(callback){
+    var item = this.item;
     //console.log('---- L3 item', item);
     setTimeout(function(){
-        callback(null, new Array(2*item||1).fill().map((x,i)=>2*i));
-    }, item*500)
+        const results = new Array(item).fill().map(x => item);
+        //results.parent = this.parent;
+        callback(null, results);
+    }, [300, 1, 50, 1000, 30, 300, 1, 50, 1000, 30][item]);
+}
+
+var finalResultsArray = [];
+function finalResults(callback){
+    const {getLevelOne, getLevelTwoItem, item} = this;
+    const results = {
+        levelOneItem: getLevelOne,
+        levelTwoItem: getLevelTwoItem,
+        levelThreeItem: item
+    };
+    //console.log('--------', JSON.stringify(results));
+    finalResultsArray.push(results);
+    callback();
 }
 
 var fnArray = [
     getLevelOne,
     getLevelTwoItem,
-    getLevelThreeItem
+    getLevelThreeItem,
+    finalResults
 ];
 
 var concurrency = 2;
@@ -29,34 +49,36 @@ var concurrency = 2;
 // -------------------------------------------------------------------
 
 var q = async.queue(function (task, callback) {
-    console.log('task name: ', task.name);
-    console.log('task data: ', task.data)
-    task.fn(callback);
+    //console.log('task name: ', task.name);
+    //console.log('task data: ', task.data);
+    task.fn.bind(task.data)(callback);
 }, concurrency);
 
-// assign a callback
 q.drain = function() {
     console.log('all items have been processed');
-}
+    console.log(finalResultsArray.length);
+};
 
-function eachOfItem(fnList, index, data, callback){
-    fnList[index](data, function(err, items){
-        console.log(`---- ${fnList[index+1].name} items`, items);
+function eachOfItem(fnList, index, callback){
+    var parent = this;
+    fnList[index].bind(this)(function(err, items){
+        //console.log(`---- ${fnList[index+1].name} items`, items);
         var nextfn = index+2 === fnList.length
             ? function(cb){
-                var item = this.item;
-                fnList[index+1]({item}, callback);
+                fnList[index+1].bind(this)(cb);
               }
             : function(cb){
-                var item = this.item;
-                return eachOfItem(fnList, index+1, { item }, cb);
+                return eachOfItem.bind(this)(fnList, index+1, cb);
               };
         items.forEach(item => {
-            q.push({
+            var task = {
                 name: fnList[index+1].name,
-                fn: nextfn.bind({ item }),
+                fn: nextfn,
                 data: { item }
-            });
+            };
+            (parent.item === 0 || parent.item) && (task.data[fnList[index-1].name] = parent.item);
+            index > 0 && (task.data = Object.assign({}, parent, task.data));
+            q.push(task);
         });
         callback();
     });
@@ -64,53 +86,6 @@ function eachOfItem(fnList, index, data, callback){
 
 q.push({
     name: fnArray[0].name,
-    fn: callback => eachOfItem(fnArray, 0, undefined, callback),
-    data: { items: [1, 2, 3, 4, 5]}
+    fn: function(callback){ eachOfItem.bind(this)(fnArray, 0, callback); },
+    data: { items: [1, 2, 3, 4, 5] }
 });
-
-
-
-
-
-
-
-
-
-
-// function eachL3Item(cb3){
-//     getLevelThreeItem(function(errL3, itemsL3){
-//         itemsL3.forEach(itemL3 => q.push({
-//             name: "lastStep",
-//             fn: function(callback){
-//                 var item = this.item;
-//                 console.log('Result: ', item);
-//                 callback();
-//             },
-//             data: { item: itemL3 }
-//         }));
-//     });
-//     cb3();
-// }
-
-// function eachL2Item(cb2){
-//     getLevelTwoItem(function(errL2, itemsL2){
-//         itemsL2.forEach(itemL2 => q.push({
-//             name: getLevelThreeItem.name,
-//             fn: eachL3Item,
-//             data: { item: itemL2 }
-//         }));
-//         cb2();
-//     })
-// }
-
-// function eachL1Item(callback){
-//     getLevelOne(function(err, items){
-//         items.forEach(item => q.push({
-//             name: getLevelTwoItem.name,
-//             fn: eachL2Item,
-//             data: { item }
-//         }));
-//         cb1();
-//     })
-// }
-// -----------------------------------------
