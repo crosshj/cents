@@ -5,6 +5,7 @@
   "description": "Personal finance done with node.js.  Some DropBox integration.  WIP.",
   "main": "node cents.node.server.js",
   "dependencies": {
+    "async": "^2.6.0",
     "body-parser": "^1.16.0",
     "connect-tingo": "^1.0.3",
     "cookie-parser": "^1.4.3",
