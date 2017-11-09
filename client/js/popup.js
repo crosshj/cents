@@ -171,34 +171,86 @@ function showHistoryPopup(target, h){
   updateDiffs.bind(updateDiffs)();
 }
 
-function makeAccountContent($clickedRow){
-  var statusItems = ['due', 'pending', 'paid'];
-  var dueDate = new Date(Date.now());
-  dueDate.setMonth(dueDate.getMonth()+1);
-  var defaultDateString = dueDate.toISOString().substring(0, 10);
-  var originalDateString = $clickedRow.find('.date').text() || defaultDateString;
-  var originalStatus = $clickedRow.find('.status').text();
-  var notes = $clickedRow.find('.notes').text();
-  var website = $clickedRow.find('.website').text();
-  var title = $clickedRow.find('.title').text();
-  var amount = $clickedRow.find('.amount').text().replace(/[$,]+/g,"");
-  var total = $clickedRow.find('.total').text().replace(/[$,]+/g,"");
-  var isNewItem = !title; //TODO: better condition
-  var autoIsChecked = JSON.parse($clickedRow.find('.auto').text() || 'false');
+function statusHandler(content, originalStatus, originalDateString, getStatus){
+  content.find('.status.row button').on('click', function (e){
+    var currentSelectedStatus = getStatus(content.find('.selected'));
+    var clickedStatus = getStatus(jq(this));
 
+    if(clickedStatus.toLowerCase() === 'paid' && originalStatus.toLowerCase() !== 'paid'){
+      var day = Number(originalDateString.replace(/.*-/g,''));
+      var month = Number(originalDateString.replace(/-..$/g,'').replace(/.*-/g,''));
+      var year = Number(originalDateString.replace(/-.*/g,''));
+      if (month === 12) {
+        year += 1;
+        month = 1;
+      } else {
+        month += 1;
+      }
+      day = (day < 10) ? '0'+day : day;
+      month = (month < 10) ? '0'+month : month;
+      content.find('input[type="date"]').val(year + '-' + month + '-' + day)
+    } else {
+      content.find('input[type="date"]').val(originalDateString);
+    }
+    content.find('.status.row button').removeClass('selected');
+    jq(this).addClass('selected');
+  });
+  return content;
+}
 
-  // potential bug when title of asset and liability the same
-  var account = MAIN_DATA.liabilities.getByName(title.trim().toLowerCase())
-    || MAIN_DATA.assets.getByName(title.trim().toLowerCase());
-  var isGroup = account.type === "group";
-  var items = (account.items || []).reduce((all, item) => {
-    all += `<tr>
-      <td class="">${item.title}</td>
-      <td class="">${formatMoney(item.amount)}</td>
-    </tr>`;
-    return all;
-  }, '')
+function saveHandler(content, getStatus){
+  var getCurrentItem = function(item){
+    var status = getStatus(item.find('.selected'));
+    return {
+      name: (item.find('#title').val() || item.find('h2').text() || '').trim(),
+      status,
+      website: (item.find('#website').val() || '').trim(),
+      amount: item.find('.amount').val(),
+      occurence: item.find('#occurence').val(),
+      total: item.find('#total').val(),
+      date: item.find('input[type="date"]').val(),
+      notes: item.find('textarea#notes').val(),
+      auto: item.find('#auto-checkbox').is(":checked")
+    };
+  };
 
+  content.find('button.save').on('click', function (e){
+    var currentItem = getCurrentItem(jq(this).parent().parent());
+    //TODO: are we writing to liab or assets?
+    var previousVersion = MAIN_DATA.liabilities.getByName(currentItem.name.toLowerCase())
+      || MAIN_DATA.assets.getByName(currentItem.name.toLowerCase());
+    if (!previousVersion){
+      previousVersion = {};
+      MAIN_DATA.liabilities.push(previousVersion);
+      previousVersion.occurence = currentItem.occurence;
+      previousVersion.website = currentItem.website;
+      previousVersion.hidden = false;
+    }
+    previousVersion.title = currentItem.name;
+    previousVersion.status = currentItem.status;
+    previousVersion.amount = currentItem.amount;
+    previousVersion.total_owed = currentItem.total || '0.00';
+    previousVersion.date = currentItem.date;
+    previousVersion.note = currentItem.notes.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    previousVersion.auto = currentItem.auto;
+    jq.ajax({
+      url: "./accounts",
+      type: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify(MAIN_DATA),
+      success: function( data ) {
+        console.log( "SERVER RESPONSE", data );
+        location.reload();
+      }
+    });
+  });
+  return content;
+}
+
+function accountUI({
+  isNewItem, isGroup, items, statusItems, 
+  originalDateString, website, title, originalStatus, notes, autoIsChecked, amount, total
+}){
   var content = jq(`
     <div>
       <div class="container content history">
@@ -283,79 +335,11 @@ function makeAccountContent($clickedRow){
     return status;
   };
 
-  content.find('.status.row button').on('click', function (e){
-    var currentSelectedStatus = getStatus(content.find('.selected'));
-    var clickedStatus = getStatus(jq(this));
-
-    if(clickedStatus.toLowerCase() === 'paid' && originalStatus.toLowerCase() !== 'paid'){
-      var day = Number(originalDateString.replace(/.*-/g,''));
-      var month = Number(originalDateString.replace(/-..$/g,'').replace(/.*-/g,''));
-      var year = Number(originalDateString.replace(/-.*/g,''));
-      if (month === 12) {
-        year += 1;
-        month = 1;
-      } else {
-        month += 1;
-      }
-      day = (day < 10) ? '0'+day : day;
-      month = (month < 10) ? '0'+month : month;
-      content.find('input[type="date"]').val(year + '-' + month + '-' + day)
-    } else {
-      content.find('input[type="date"]').val(originalDateString);
-    }
-    content.find('.status.row button').removeClass('selected');
-    jq(this).addClass('selected');
-  });
-
-  var getCurrentItem = function(item){
-    var status = getStatus(item.find('.selected'));
-    return {
-      name: (item.find('#title').val() || item.find('h2').text() || '').trim(),
-      status,
-      website: (item.find('#website').val() || '').trim(),
-      amount: item.find('.amount').val(),
-      occurence: item.find('#occurence').val(),
-      total: item.find('#total').val(),
-      date: item.find('input[type="date"]').val(),
-      notes: item.find('textarea#notes').val(),
-      auto: item.find('#auto-checkbox').is(":checked")
-    };
-  };
+  content = statusHandler(content, originalStatus, originalDateString, getStatus);
+  content = saveHandler(content, getStatus);
 
   content.find('button.cancel').on('click', function (e){
     jq('#popup-modal').click();
-  });
-
-  content.find('button.save').on('click', function (e){
-
-    var currentItem = getCurrentItem(jq(this).parent().parent());
-    //TODO: are we writing to liab or assets?
-    var previousVersion = MAIN_DATA.liabilities.getByName(currentItem.name.toLowerCase())
-      || MAIN_DATA.assets.getByName(currentItem.name.toLowerCase());
-    if (!previousVersion){
-      previousVersion = {};
-      MAIN_DATA.liabilities.push(previousVersion);
-      previousVersion.occurence = currentItem.occurence;
-      previousVersion.website = currentItem.website;
-      previousVersion.hidden = false;
-    }
-    previousVersion.title = currentItem.name;
-    previousVersion.status = currentItem.status;
-    previousVersion.amount = currentItem.amount;
-    previousVersion.total_owed = currentItem.total || '0.00';
-    previousVersion.date = currentItem.date;
-    previousVersion.note = currentItem.notes.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    previousVersion.auto = currentItem.auto;
-    jq.ajax({
-      url: "./accounts",
-      type: 'POST',
-      contentType: 'application/json',
-      data: JSON.stringify(MAIN_DATA),
-      success: function( data ) {
-        console.log( "SERVER RESPONSE", data );
-        location.reload();
-      }
-    });
   });
 
   //graph click handler
@@ -372,6 +356,60 @@ function makeAccountContent($clickedRow){
   return content;
 }
 
+function makeAccountContent($clickedRow){
+  var statusItems = ['due', 'pending', 'paid'];
+  var dueDate = new Date(Date.now());
+  dueDate.setMonth(dueDate.getMonth()+1);
+  var defaultDateString = dueDate.toISOString().substring(0, 10);
+  var originalDateString = $clickedRow.find('.date').text() || defaultDateString;
+  var originalStatus = $clickedRow.find('.status').text();
+  var notes = $clickedRow.find('.notes').text();
+  var website = $clickedRow.find('.website').text();
+  var title = $clickedRow.find('.title').text();
+  var amount = $clickedRow.find('.amount').text().replace(/[$,]+/g,"");
+  var total = $clickedRow.find('.total').text().replace(/[$,]+/g,"");
+  var isNewItem = !title; //TODO: better condition
+  var autoIsChecked = JSON.parse($clickedRow.find('.auto').text() || 'false');
+
+  // potential bug when title of asset and liability the same
+  var account = MAIN_DATA.liabilities.getByName(title.trim().toLowerCase())
+    || MAIN_DATA.assets.getByName(title.trim().toLowerCase());
+  var isGroup = account.type === "group";
+  var items = (account.items || []).reduce((all, item) => {
+    all += `<tr>
+      <td class="">${item.title}</td>
+      <td class="">${formatMoney(item.amount)}</td>
+    </tr>`;
+    return all;
+  }, '')
+
+  var content = accountUI({
+    isNewItem, isGroup, items, statusItems, 
+    originalDateString, website, title, originalStatus, notes, autoIsChecked, amount, total
+  });
+
+  return content;
+}
+
+function makeNewGroup(selected){
+  var group = {
+    type: "group",
+    hidden: false,
+    title: "New Group",
+    note: "",
+    items: selected.map(g => {
+      var { title, amount, date, status } = g;
+      return { title, amount, date, status };
+     }),
+    status: "paid",
+    date: "2017-10-18",
+    amount: selected.reduce((all, g) => { return all+Number(g.amount); }, 0),
+    total_owed: selected.reduce((all, g) => { return all+Number(g.total_owed||0); }, 0),
+    auto: false
+  };
+  return group;
+}
+
 function makeGroupContent($selected){
   const selectedTitles = $selected.toArray().map(
     x => jq(x).find('.title').text().trim()
@@ -379,12 +417,35 @@ function makeGroupContent($selected){
   const selectedAccounts = selectedTitles.map(
     x =>  MAIN_DATA.liabilities.getByName(x.toLowerCase())
   ).filter(x => !!x);
-  
+
+
   //TODO: add to group here
-  console.log(selectedAccounts);
+  var newGroup = makeNewGroup(selectedAccounts);
 
-  //TODO: make group content here
+  var isNewItem = true;
+  var isGroup = true;
+  var autoIsChecked = false;
+  var items = (newGroup.items || []).reduce((all, item) => {
+    all += `<tr>
+      <td class="">${item.title}</td>
+      <td class="">${formatMoney(item.amount)}</td>
+    </tr>`;
+    return all;
+  }, '');
+  var statusItems = ['due', 'pending', 'paid'];
+  var originalDateString = newGroup.date;
+  var website = '';
+  var { title, note, total_owed, amount } = newGroup;
 
-  return false;
+  var content = accountUI({
+    isNewItem, isGroup, items, statusItems, 
+    originalDateString, website, title, originalStatus:status, notes: note, autoIsChecked, amount, total: total_owed
+  });
+
+  content.find('.form-group:contains(AUTO)').hide();
+  content.find('.form-group:contains(Website)').hide();
+  content.find('.container.content.account h2').hide();
+
+  return content;
 }
 
