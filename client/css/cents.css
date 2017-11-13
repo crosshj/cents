@@ -164,7 +164,7 @@ a.button.pending, button.selected.pending {
   border-color: rgba(255, 255, 255, 1);
 }
 
-a.button.paid.group {
+a.button.group {
   width: 99%;
   margin-left: 1%;
   border-left-width: 4px;

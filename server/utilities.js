@@ -48,7 +48,7 @@ function updateAccounts(accounts) {
   var today = new Date();
   var oneWeekAhead = new Date().setDate(today.getDate() + 7);
   u.liabilities = u.liabilities.map(function (item) {
-    if (!item.status){
+    if (!item.status || item.type === 'group'){
       return item;
     }
     if (item.status.toLowerCase() === 'paid' && new Date(item.date) <= oneWeekAhead) {
@@ -62,16 +62,6 @@ function updateAccounts(accounts) {
   });
 
   // SORT LIABILITIES
-  u.liabilities.forEach(function(x) {
-    if(x.type === 'group'){
-      x.status = 'paid';
-      x.date = x.items[0].date;
-      x.amount = x.items.reduce((prev, curr) => {
-        return prev + Number(curr.amount);
-      }, 0)
-    }
-  });
-
   var pending = u.liabilities.filter(function (a) {
     return a.status && a.status.toLowerCase() === 'pending'
   }).sort(function (a, b) {
