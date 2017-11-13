@@ -201,7 +201,7 @@ function statusHandler(content, originalStatus, originalDateString, getStatus){
 function saveHandler(content, getStatus){
   var getCurrentItem = function(item){
     var status = getStatus(item.find('.selected'));
-    return {
+    var currentItem = {
       name: (item.find('#title').val() || item.find('h2').text() || '').trim(),
       status,
       website: (item.find('#website').val() || '').trim(),
@@ -212,6 +212,18 @@ function saveHandler(content, getStatus){
       notes: item.find('textarea#notes').val(),
       auto: item.find('#auto-checkbox').is(":checked")
     };
+    var popupHeadingText = item.find('.popup-heading').text();
+    if(popupHeadingText.toLowerCase().includes('group')){
+      currentItem.type='group';
+      currentItem.items=jq('.form-group:contains(Items) tr').get().map(tr => {
+        var item = {
+       title: tr.children[0].innerText,
+         amount: Number(tr.children[1].innerText.replace('$','').replace(',',''))
+        };
+        return item;
+     });
+    }
+    return currentItem;
   };
 
   content.find('button.save').on('click', function (e){
@@ -233,6 +245,12 @@ function saveHandler(content, getStatus){
     previousVersion.date = currentItem.date;
     previousVersion.note = currentItem.notes.replace(/</g, "&lt;").replace(/>/g, "&gt;");
     previousVersion.auto = currentItem.auto;
+    if(currentItem.type){
+      previousVersion.type = currentItem.type;
+    }
+    if(currentItem.items){
+      previousVersion.items = currentItem.items;
+    }
     jq.ajax({
       url: "./accounts",
       type: 'POST',
@@ -258,7 +276,7 @@ function accountUI({
       <div class="container content account">
         ${ isNewItem
           ? `
-            <h2><a>New Item</a></h2>
+            <h2><a class='popup-heading'>New ${ isGroup ? 'Group' : 'Item'}</a></h2>
             <div class="form-group">
               <label for="title">Title</label>
               <input class="u-full-width form-control" id="title" type="text"/>
