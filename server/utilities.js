@@ -41,6 +41,22 @@ function getAccountsFileName() {
     : accountsFile;
 }
 
+function updateGroups(accounts){
+    var groupedLiabs = accounts.liabilities
+      .filter(x => x.type === 'group')
+      .reduce((all, one) => all.concat(one.items.map(i=>i.title)), []);
+    accounts.liabilities.forEach(function(element) {
+      if(element.type === 'group'){
+        return;
+      }
+      element.type = undefined;
+      if(groupedLiabs.includes(element.title)){
+        element.type = 'grouped';
+      }
+    });
+    return accounts;
+}
+
 function updateAccounts(accounts) {
   var u = JSON.parse(JSON.stringify(accounts));
 
@@ -81,20 +97,22 @@ function updateAccounts(accounts) {
 
   u.totals = {};
   u.totals.pendingTotal = pending
-    .filter(item => !JSON.parse(item.hidden))
+    .filter(item => !(JSON.parse(item.hidden) || item.type === 'group'))
     .reduce((all, one) => all + Number(one.amount), 0);
   u.totals.dueTotal = due
-    .filter(item => !JSON.parse(item.hidden))
+    .filter(item => !(JSON.parse(item.hidden) || item.type === 'group'))
     .reduce((all, one) => all + Number(one.amount), 0);
   u.totals.assetsTotal = u.assets
     .filter(item => !JSON.parse(item.hidden))
     .reduce((all, one) => all + Number(one.amount), 0);
   u.totals.debts = u.liabilities
-    .filter(item => !JSON.parse(item.hidden))
+    .filter(item => !(JSON.parse(item.hidden) || item.type === 'group'))
     .reduce((all, one) => all + Number(one.amount), 0);
   u.totals.debtsTotal = u.liabilities
-    .filter(item => !JSON.parse(item.hidden))
+    .filter(item => !(JSON.parse(item.hidden) || item.type === 'group'))
     .reduce((all, one) => all - Number(one.total_owed), 0);
+
+  u = updateGroups(u);
 
   return u;
 }

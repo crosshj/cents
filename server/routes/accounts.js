@@ -66,7 +66,7 @@ function saveAccounts(data, callback) {
 		}
 
 		const oldTotal = oldData.liabilities
-			.filter(item => !JSON.parse(item.hidden))
+			.filter(item => !JSON.parse(item.hidden) && item.type !== 'group')
 			.reduce((all, one) => all + Number(one.total_owed), 0);
 		oldData.balance.push({
 			"title": "Total Owed",
@@ -74,7 +74,7 @@ function saveAccounts(data, callback) {
 		});
 
 		const newTotal = data.liabilities
-			.filter(item => !JSON.parse(item.hidden))
+			.filter(item => !JSON.parse(item.hidden) && item.type !== 'group')
 			.reduce((all, one) => all + Number(one.total_owed), 0);
 
 		data.balance = data.balance.filter(x => x.title !== "Total Owed");
