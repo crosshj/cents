@@ -224,7 +224,7 @@ Element.prototype.remove = function() {
 
     jq('div.liabilities').find('.button').remove();
     formattedData.liabilities.forEach(function(item){
-      if (item.hidden === "true") return;
+      if (item.hidden === "true" || item.type === 'grouped') return;
       var row = JSON.parse(JSON.stringify(item));
       row.totalOwed = item.total_owed > 0 ? '$'+item.total_owed : '';
       jq('div.liabilities').append(makeRow(row));
