@@ -165,14 +165,24 @@ a.button.pending, button.selected.pending {
 }
 
 a.button.group {
-  width: 99%;
-  margin-left: 1%;
+  width: 100%;
+  margin-left: 0%;
   border-left-width: 4px;
   border-left-color: #888;
   border-top-width: 0px;
   border-bottom-width: 0px;
   border-right-width: 0px;
-  border-radius: 2px;
+  border-radius: 0px;
+}
+
+a.button.grouped {
+  width: 99%;
+  margin-left: 1%;
+  border: 0px;
+  border-left: 4px solid !important;
+  border-left-color: #888 !important;
+  margin-top: -17px;
+  border-radius: 0px;
 }
 
 a.button.totals:not(.menu) {

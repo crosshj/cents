@@ -215,6 +215,80 @@ Element.prototype.remove = function() {
     createUI(newData);
   }
 
+  function openGroup($this){
+    var isOpen = false;
+    if($this.hasClass('open')){
+      $this.removeClass('open');
+      isOpen = true;
+    }
+    const groupTitle = $this.find('.title').text().trim();
+    const group = MAIN_DATA.liabilities.getByName(groupTitle.toLowerCase());
+
+    const items = group.items.reduce((all, i) => {
+        if(isOpen){
+          jq(`a:contains(${i.title})`).remove();
+          return;
+        }
+        const item = MAIN_DATA.liabilities.getByName(i.title.toLowerCase());
+        var row = JSON.parse(JSON.stringify(item));
+        row.totalOwed = item.total_owed > 0 ? '$'+item.total_owed : '';
+
+        var $row = makeRow(row);
+        $row.addClass('grouped');
+        $row.on("click", accountsClickHandler);
+        $this.after($row);
+        //all.push(makeRow(item));
+        //return all;
+    }, []);
+    if (!isOpen) {
+      $this.addClass('open');
+    }
+  }
+
+  function accountsClickHandler(/*e*/){
+    if (navigator.onLine){
+      document.body.classList.remove('offline');
+    } else {
+      document.body.classList.add('offline');
+    }
+    var content = undefined;
+    switch (true){
+      case jq(this).is('.paid, .pending, .due'):
+        jq('a.button.selected:not(".menu")').removeClass('selected')
+        const isGroup = jq(this).hasClass('group');
+        if(isGroup){
+            openGroup(jq(this));
+            break;
+        }
+        content = typeof makeAccountContent === "function" && makeAccountContent(jq(this));
+        typeof popUpModal === "function" && popUpModal(jq(this), content);
+        break;
+      case jq(this).is('#add-new'):
+        //console.log('clicked add new');
+        jq('a.button.selected:not(".menu")').removeClass('selected');
+        content = typeof makeAccountContent === "function" && makeAccountContent(jq(this));
+        content && typeof popUpModal === "function" && popUpModal(jq(this), content);
+        break;
+      case jq(this).is('#add-group'):
+        //console.log('clicked add group');
+        var $selected = jq('a.button.selected:not(".menu")');
+        content = typeof makeGroupContent === "function" && makeGroupContent($selected);
+        content && typeof popUpModal === "function" && popUpModal(jq(this), content);
+        break;
+      case jq(this).is('#totals_history'):
+        //console.log('totals history');
+        typeof showHistoryPopup === "function" && showHistoryPopup(jq(this), {
+          type: 'balance',
+          title: 'Total Owed',
+          field: 'Amount'
+        });
+        break;
+      default:
+        console.log('--- some other case', jq(this));
+        break;
+    }
+  }
+
   function createUI(data){
     if(data.cached){
       document.body.classList.add('offline');
@@ -244,46 +318,23 @@ Element.prototype.remove = function() {
     jq('div.totals .row').append(makeTotalsRow(formattedData.totals || {}));
 
     jq('a.button:not(.menu)').unbind();
-    function accountsClickHandler(/*e*/){
+
+    jq('a.button:not(.menu)').on("click", accountsClickHandler);
+    jq('a.button.group:not(.menu)').on("contextmenu", function(event){
       if (navigator.onLine){
         document.body.classList.remove('offline');
       } else {
         document.body.classList.add('offline');
       }
       var content = undefined;
-      switch (true){
-        case jq(this).is('.paid, .pending, .due'):
-          jq('a.button.selected:not(".menu")').removeClass('selected')
-          content = typeof makeAccountContent === "function" && makeAccountContent(jq(this));
-          typeof popUpModal === "function" && popUpModal(jq(this), content);
-          break;
-        case jq(this).is('#add-new'):
-          //console.log('clicked add new');
-          jq('a.button.selected:not(".menu")').removeClass('selected');
-          content = typeof makeAccountContent === "function" && makeAccountContent(jq(this));
-          content && typeof popUpModal === "function" && popUpModal(jq(this), content);
-          break;
-        case jq(this).is('#add-group'):
-          //console.log('clicked add group');
-          var $selected = jq('a.button.selected:not(".menu")');
-          content = typeof makeGroupContent === "function" && makeGroupContent($selected);
-          content && typeof popUpModal === "function" && popUpModal(jq(this), content);
-          break;
-        case jq(this).is('#totals_history'):
-          //console.log('totals history');
-          typeof showHistoryPopup === "function" && showHistoryPopup(jq(this), {
-            type: 'balance',
-            title: 'Total Owed',
-            field: 'Amount'
-          });
-          break;
-        default:
-          console.log('--- some other case', jq(this));
-          break;
-      }
-    }
-    jq('a.button:not(.menu)').on("click", accountsClickHandler);
-    jq('a.button:not(.menu):not(#add-new):not(#add-group)').on('contextmenu', function(event){
+      jq('a.button.selected:not(".menu")').removeClass('selected')
+      content = typeof makeAccountContent === "function" && makeAccountContent(jq(this));
+      typeof popUpModal === "function" && popUpModal(jq(this), content);
+      event.stopPropagation();
+      return false;
+    });
+  
+    jq('a.button:not(.menu):not(#add-new):not(#add-group):not(.group):not(.grouped)').on('contextmenu', function(event){
       if(jq(this).hasClass('selected')){
         jq(this).removeClass('selected');
         if(jq('.selected:not(.menu)').length === 0){
