@@ -341,6 +341,9 @@ function accountUI({
         ` : ''}
         <div class="row actions">
           <button class="button-primary cancel" onClick="">Cancel</button>
+          ${isGroup && !isNewItem ?
+            '<button class="button-primary remove" onClick="">Remove</button>'
+            : ''}
           <button class="button-primary save" onClick="">${isNewItem ? 'Add' : 'Save'}</button>
         </div>
       </div>
