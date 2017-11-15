@@ -1,0 +1,15 @@
+{
+  "name": "newman-test",
+  "version": "1.0.0",
+  "description": "test newman for scraping",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Harrison Cross <code@crosshj.com> (https://crosshj.com)",
+  "license": "MIT",
+  "dependencies": {
+    "newman": "^3.8.3"
+  }
+}
