@@ -348,7 +348,8 @@ a.button.selected {
 
 #popup-modal div.actions button{
   float: none;
-  min-width: 120px;
+  width: 100px;
+  
 }
 
 #popup-modal h2 a {
@@ -472,10 +473,16 @@ a.button.selected {
   border: 0px;
 }
 
-.form-group input.amount,
-.form-group input.total {
+.form-group input.amount:not(.group),
+.form-group input.total:not(.group) {
   display: inline-flex;
   width: 80%;
+}
+
+.form-group input.amount.group,
+.form-group input.total.group {
+  display: inline-flex;
+  width: 100%;
 }
 
 .checkbox-group > label{

@@ -156,7 +156,7 @@ function showHistoryPopup(target, h){
 
         if(json.error === "offline"){
           graphContainer.innerHTML = 'offline';
-          graphContainer.className = "offline"
+          graphContainer.className = "offline";
           return;
         }
 
@@ -312,15 +312,15 @@ function accountUI({
         : ''}
         <div class="form-group">
           <label>Payment Amount</label>
-          <input class="amount" type="number" step="0.01" value="${amount}" ${isGroup ? 'disabled' : ''}/>
-          ${!isNewItem ? `
+          <input class="amount${isGroup? ` group`:''}" type="number" step="0.01" value="${amount}" ${isGroup ? 'disabled' : ''}/>
+          ${!isNewItem && !isGroup ? `
             <button class="graph" data-title="Amount"><i class="fa fa-bar-chart"></i></button>
           ` : ''}
         </div>
         <div class="form-group">
           <label>Total Owed</label>
-          <input  class="total" type="number" value="${total}" id="total" ${isGroup ? 'disabled' : ''}/>
-          ${!isNewItem ? `
+          <input  class="total${isGroup? ` group`:''}" type="number" value="${total}" id="total" ${isGroup ? 'disabled' : ''}/>
+          ${!isNewItem && !isGroup  ? `
             <button class="graph" data-title="Total Owed"><i class="fa fa-bar-chart"></i></button>
           ` : ''}
         </div>
@@ -361,6 +361,15 @@ function accountUI({
 
   content.find('button.cancel').on('click', function (e){
     jq('#popup-modal').click();
+  });
+
+  content.find('button.remove').on('click', function (e){
+    var groupTitle = jq(this).parent().parent().find('h2 a').text().trim().toLowerCase();
+    var backupGet = MAIN_DATA.liabilities.getByName;
+    MAIN_DATA.liabilities = MAIN_DATA.liabilities.filter(x => x.title !== groupTitle);
+    MAIN_DATA.liabilities.getByName = backupGet;
+    //debugger;
+    //removeGroup(group);
   });
 
   //graph click handler
