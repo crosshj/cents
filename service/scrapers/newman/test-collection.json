@@ -1,0 +1,32 @@
+{
+	"info": {
+		"name": "usaa",
+		"_postman_id": "7ad9305a-299e-a9ac-75c8-47e41a077d01",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "cookied",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "https://www.usaa.com/",
+					"protocol": "https",
+					"host": [
+						"www",
+						"usaa",
+						"com"
+					],
+					"path": [
+						""
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
