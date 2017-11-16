@@ -4,16 +4,19 @@ const newman = require('newman');
 newman.run({
   //https://github.com/postmanlabs/newman#newmanrunoptions-object--callback-function--run-eventemitter
   collection: require('./test-collection.json'),
-  reporters: 'cli'
+  insecure: true,
+  ignoreRedirects: true,
+  //reporters: 'cli',
+  // reporter: {
+  //   silent: true
+  // }
 })
   .on('start', function (err, args) {
     if (err) { return; }
 
-    console.info(`Running ${args.cursor.length} request(s) and ${args.cursor.cycles} iteration(s)`);
+    //console.info(`Running ${args.cursor.length} request(s) and ${args.cursor.cycles} iteration(s)`);
   })
   .on('request', function (err, args) {
-    if (err) { return; }
-
     var url = args.request.url.toString();
     console.log(url);
 
@@ -22,10 +25,11 @@ newman.run({
     // var urls = Object.keys(uniqueUrls); // get list of all unique urls as an array from the object hash
 
     // now output the result to console
-    console.info(`The collection run completed ${err ? 'with' : 'without'} error(s).`);
-    console.info(`Total ${urls.length} unique URLs requested.`);
+//console.info(`The collection run completed ${err ? 'with' : 'without'} error(s).`);
+    //console.info(`Total ${urls.length} unique URLs requested.`);
 
     // urls.forEach(function (url) {
     //     console.info(`${uniqueUrls[url]}: ${url}`);
     // });
+    console.log('----- done')
   });
