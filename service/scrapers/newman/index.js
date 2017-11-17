@@ -5,11 +5,11 @@ newman.run({
   //https://github.com/postmanlabs/newman#newmanrunoptions-object--callback-function--run-eventemitter
   collection: require('./test-collection.json'),
   insecure: true,
-  ignoreRedirects: true,
-  //reporters: 'cli',
-  // reporter: {
-  //   silent: true
-  // }
+  ignoreRedirects: false,
+  reporters: 'cli',
+  reporter: {
+    silent: true
+  }
 })
   .on('start', function (err, args) {
     if (err) { return; }
