@@ -1,29 +1,33 @@
 {
+	"variables": [],
 	"info": {
 		"name": "usaa",
-		"_postman_id": "7ad9305a-299e-a9ac-75c8-47e41a077d01",
+		"_postman_id": "695d5661-d1fe-77e2-ca4f-3748eb7ac1d7",
 		"description": "",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
 	},
 	"item": [
 		{
-			"name": "cookied",
+			"name": "mobile login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"console.log(postman.getResponseHeader(\"Set-Cookie\"));",
+							"console.log(responseCode.code);",
+							"console.log('location = ' + postman.getResponseHeader(\"location\"))",
+							"console.log(postman.getResponseCookie(\"akmachineid\").value)"
+						]
+					}
+				}
+			],
 			"request": {
+				"url": "https://mobile.usaa.com/inet/ent_logon/Logon",
 				"method": "GET",
 				"header": [],
 				"body": {},
-				"url": {
-					"raw": "https://www.usaa.com/",
-					"protocol": "https",
-					"host": [
-						"www",
-						"usaa",
-						"com"
-					],
-					"path": [
-						""
-					]
-				},
 				"description": ""
 			},
 			"response": []
