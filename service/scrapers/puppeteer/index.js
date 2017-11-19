@@ -3,7 +3,7 @@ const getPrivateInfo = require('../../utilities/getPrivateInfo').usaa();
 
 (async () => {
   const browser = await puppeteer.launch({
-      headless: false,
+      headless: true,
       slowMo: 0 // slow down by 250ms
   });
 
@@ -46,9 +46,32 @@ const getPrivateInfo = require('../../utilities/getPrivateInfo').usaa();
   myAccountsMenuHandle.tap();
 
   // sixth
-  // await page.waitFor('#menu #ma');
-  // const myAccountsMenuHandle = await page.$('#menu #ma');
-  // myAccountsMenuHandle.tap();
+  await page.waitFor('.acct-group-list .acct-group-row:first-child .acct-name');
+  const firstAccountHandle = await page.$('.acct-group-list .acct-group-row:first-child .acct-name');
+  firstAccountHandle.tap();
 
-  //await browser.close();
+  // seventh
+  // all transactions
+  await page.waitFor('.details:nth-of-type(n+8)');
+  const transactions = await page.evaluate(() =>
+    Array.from(document.querySelectorAll('.details:nth-of-type(n+8)'))
+      .map(el => ({
+        date: el.querySelector('strong').childNodes[0].nodeValue.trim(),
+        title: el.querySelector('a').innerText.trim(),
+        amount: el.querySelector('font')
+          ? el.querySelector('font').innerText
+          : el.childNodes[2].nodeValue.trim()
+      })
+  ));
+
+  // balance
+  const balance = await page.evaluate(() =>
+    document.querySelector('.details:nth-of-type(n+2)')
+      .childNodes[2].nodeValue.trim()
+  );
+
+  console.log('--- balance: ', balance)
+  console.log('--- transactions: ', transactions.length);
+
+  await browser.close();
 })();
