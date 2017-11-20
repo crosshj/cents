@@ -36,4 +36,4 @@ service/utilities/getPrivateInfo.js
 
 .npmrc
 
-service/scrapers/puppeteer/index.es6.js
+service/scrapers/puppeteer/**/*.es6.js

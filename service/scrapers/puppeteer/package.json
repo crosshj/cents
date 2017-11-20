@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "babel index.js > index.es6.js && DEBUG=usaa  node index.es6.js"
+    "start": "babel ./scrapers/usaa.js > ./scrapers/usaa.es6.js && DEBUG=usaa  node index.js"
   },
   "author": "",
   "license": "ISC",
