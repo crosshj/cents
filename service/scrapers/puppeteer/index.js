@@ -1,56 +1,58 @@
 const puppeteer = require('puppeteer');
 const getPrivateInfo = require('../../utilities/getPrivateInfo').usaa();
+var debug = require('debug')('usaa');
 
+debug('usaa scrape start');
 (async () => {
   const browser = await puppeteer.launch({
-      headless: true,
+      headless: false,
       slowMo: 0 // slow down by 250ms
   });
 
-  // first page
+  debug('first page');
   const page = await browser.newPage();
   await page.goto('https://mobile.usaa.com');
   const loginButtonHandle = await page.$('.button-logon');
-  await loginButtonHandle.tap();
+  await loginButtonHandle.click();
 
-  // second page
+  debug('second page');  
   await page.waitFor('#input_onlineid');
   const usernameHandle = await page.$('#input_onlineid');
-  await usernameHandle.tap();
+  await usernameHandle.click();
   await usernameHandle.type(getPrivateInfo.username(), {delay: 100});
 
   const passwordHandle = await page.$('#input_password');
-  await passwordHandle.tap();
+  await passwordHandle.click();
   await passwordHandle.type(getPrivateInfo.password(), {delay: 100});
   await passwordHandle.press('Enter');
 
-  // third page
+  debug('third page');  
   await page.waitFor('#pinTextField');
   const pinHandle = await page.$('#pinTextField');
-  await pinHandle.tap();
+  await pinHandle.click();
   await pinHandle.type(getPrivateInfo.pin(), {delay: 100});
   await pinHandle.press('Enter');
 
-  // fourth page
+  debug('fourth page');  
   await page.waitFor('#securityQuestionTextField');
   const question = await page.$eval('label[for=securityQuestionTextField]', el => el.innerText)
   const answer = getPrivateInfo.answer(question);
   const questionFieldHandle = await page.$('#securityQuestionTextField');
-  await questionFieldHandle.tap();
+  await questionFieldHandle.click();
   await questionFieldHandle.type(answer, {delay: 100});
   await questionFieldHandle.press('Enter');
 
-  // fifth
+  debug('fifth page');  
   await page.waitFor('#menu #ma');
   const myAccountsMenuHandle = await page.$('#menu #ma');
-  myAccountsMenuHandle.tap();
+  myAccountsMenuHandle.click();
 
-  // sixth
-  await page.waitFor('.acct-group-list .acct-group-row:first-child .acct-name');
+  debug('sixth page');  
+  await page.waitFor('ul.acct-group-list li.acct-group-row:first-child .acct-name');
   const firstAccountHandle = await page.$('.acct-group-list .acct-group-row:first-child .acct-name');
-  firstAccountHandle.tap();
+  firstAccountHandle.click();
 
-  // seventh
+  debug('seventh page');  
   // all transactions
   await page.waitFor('.details:nth-of-type(n+8)');
   const transactions = await page.evaluate(() =>
