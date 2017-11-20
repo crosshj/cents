@@ -4,11 +4,16 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "babel index.js > index.es6.js && DEBUG=usaa  node index.es6.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "puppeteer": "^0.13.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-plugin-transform-async-to-generator": "^6.24.1"
   }
 }
