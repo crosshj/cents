@@ -1,5 +1,5 @@
 const puppeteer = require('puppeteer');
-var debug = require('debug')('usaa');
+var debug = require('debug')('scrape:usaa');
 
 var getPrivateInfo = undefined;
 
