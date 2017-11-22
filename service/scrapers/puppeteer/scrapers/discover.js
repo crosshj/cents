@@ -33,13 +33,36 @@ function scrapeDiscover(callback){
 
     debug('might be two-factor auth issue here');
 
-    //$('.current-balance.main-money')[0].innerText
-    const balance = 0;
+    const balanceSelector = '.current-balance.main-money';
+    await page.waitFor(balanceSelector);
+    var balance = await page.$eval(balanceSelector, el => el.innerText);
+    balance = balance.replace(',', '');
 
-    const transactions = [];
+    const pendingRowsSelector = '#pending-transction .row-details';
+    await page.waitFor(pendingRowsSelector);
+    const pendingTransactions = await page.$$eval(pendingRowsSelector, rows => 
+      rows.map(row => ({
+        date: row.children[1].innerText.trim(),
+        description: row.children[2].innerText.trim(),
+        status: row.children[3].innerText.trim(),
+        amount: row.children[4].innerText.trim().replace('$', '').replace(',', '')
+      })
+    ));
 
+    const postedRowsSelector = '#posted-transction .row-details';
+    await page.waitFor(postedRowsSelector);
+    const postedTransactions = await page.$$eval(postedRowsSelector, rows => 
+      rows.map(row => ({
+        date: row.children[1].innerText.trim(),
+        description: row.children[2].innerText.trim(),
+        status: row.children[3].innerText.trim(),
+        amount: row.children[4].innerText.trim().replace('$', '').replace(',', '')
+      })
+    ));
 
-    //await browser.close();
+    const transactions = pendingTransactions.concat(postedTransactions);
+
+    await browser.close();
     callback(undefined, {
         balance, transactions
     });
