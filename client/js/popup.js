@@ -288,7 +288,7 @@ function accountUI({
             </h2>
             `
           }
-        ${statusRow(statusItems, originalStatus, isNewItem)}
+        ${!isGroup ? statusRow(statusItems, originalStatus, isNewItem) : ''}
         ${isNewItem ? `
           <div class="form-group">
             <label for="website">Website</label>
@@ -299,10 +299,12 @@ function accountUI({
         <label for="notes">Notes</label>
         <textarea class="u-max-full-width u-full-width form-control" rows="5" id="notes">${notes}</textarea>
       </div>
-        <div class="form-group checkbox-group">
-          <label for="auto-checkbox">AUTO</label>
-          <input type="checkbox" id="auto-checkbox" ${autoIsChecked ? 'checked' : ''}>
-        </div>
+        ${isGroup ? `
+          <div class="form-group checkbox-group">
+            <label for="auto-checkbox">AUTO</label>
+            <input type="checkbox" id="auto-checkbox" ${autoIsChecked ? 'checked' : ''}>
+          </div>
+        ` : ''}
         ${isGroup ? `
           <div class="form-group">
             <label>Items</label>
