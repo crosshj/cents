@@ -265,6 +265,24 @@ function saveHandler(content, getStatus){
   return content;
 }
 
+function removeGroupHandler(content){
+  content.find('button.remove').on('click', function (e){
+    var groupTitle = jq(this).parent().parent().find('h2 a').text().trim().toLowerCase();
+    MAIN_DATA.liabilities = MAIN_DATA.liabilities.filter(x => x.title !== groupTitle);
+    jq.ajax({
+      url: "./accounts",
+      type: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify(MAIN_DATA),
+      success: function( data ) {
+        console.log( "SERVER RESPONSE", data );
+        location.reload();
+      }
+    });
+  });
+  return content;
+}
+
 function accountUI({
   isNewItem, isGroup, items, statusItems, 
   originalDateString, website, title, originalStatus, notes, autoIsChecked, amount, total
@@ -360,18 +378,10 @@ function accountUI({
 
   content = statusHandler(content, originalStatus, originalDateString, getStatus);
   content = saveHandler(content, getStatus);
+  content = removeGroupHandler(content);
 
   content.find('button.cancel').on('click', function (e){
     jq('#popup-modal').click();
-  });
-
-  content.find('button.remove').on('click', function (e){
-    var groupTitle = jq(this).parent().parent().find('h2 a').text().trim().toLowerCase();
-    var backupGet = MAIN_DATA.liabilities.getByName;
-    MAIN_DATA.liabilities = MAIN_DATA.liabilities.filter(x => x.title !== groupTitle);
-    MAIN_DATA.liabilities.getByName = backupGet;
-    //debugger;
-    //removeGroup(group);
   });
 
   //graph click handler

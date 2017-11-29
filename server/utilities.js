@@ -65,6 +65,7 @@ function updateAccounts(accounts) {
   var oneWeekAhead = new Date().setDate(today.getDate() + 7);
   u.liabilities = u.liabilities.map(function (item) {
     if (!item.status || item.type === 'group'){
+      item.status = 'paid';
       return item;
     }
     if (item.status.toLowerCase() === 'paid' && new Date(item.date) <= oneWeekAhead) {
