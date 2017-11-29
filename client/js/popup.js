@@ -267,7 +267,7 @@ function saveHandler(content, getStatus){
 
 function removeGroupHandler(content){
   content.find('button.remove').on('click', function (e){
-    var groupTitle = jq(this).parent().parent().find('h2 a').text().trim().toLowerCase();
+    var groupTitle = jq(this).parent().parent().find('h2 a').text().trim();
     MAIN_DATA.liabilities = MAIN_DATA.liabilities.filter(x => x.title !== groupTitle);
     jq.ajax({
       url: "./accounts",
