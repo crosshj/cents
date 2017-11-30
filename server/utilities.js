@@ -68,6 +68,7 @@ function updateAccounts(accounts) {
       item.status = 'paid';
       return item;
     }
+
     if (item.status.toLowerCase() === 'paid' && new Date(item.date) <= oneWeekAhead) {
       item.status = "due";
       //console.log(item);
@@ -77,6 +78,35 @@ function updateAccounts(accounts) {
     }
     return item;
   });
+
+  // auto-mark group status based on child items
+  u.liabilities = u.liabilities.map(function (item) {
+    if (item.type !== 'group'){
+      return item;
+    }
+
+    const groupedItemsNames = item.items.map(x => x.title);
+    const groupedItems = u.liabilities.reduce((all, account) => {
+      if (groupedItemsNames.includes(account.title)){
+        all.push(account);
+      }
+      return all;
+    }, []);
+
+    console.log(JSON.stringify(groupedItems));
+    const groupStatus = groupedItems.reduce((status, g) => {
+      status = g.status.toLowerCase() === 'due' ? 'due' : status;
+      status = g.status.toLowerCase() === 'pending' && status !== 'due'
+        ? 'pending'
+        : status;
+      return status;
+    }, item.status);
+    item.status = groupStatus;
+
+    return item;
+  });
+
+
 
   // SORT LIABILITIES
   var pending = u.liabilities.filter(function (a) {
