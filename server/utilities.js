@@ -93,7 +93,6 @@ function updateAccounts(accounts) {
       return all;
     }, []);
 
-    console.log(JSON.stringify(groupedItems));
     const groupStatus = groupedItems.reduce((status, g) => {
       status = g.status.toLowerCase() === 'due' ? 'due' : status;
       status = g.status.toLowerCase() === 'pending' && status !== 'due'
