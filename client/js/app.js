@@ -224,14 +224,22 @@ Element.prototype.remove = function() {
     const groupTitle = $this.find('.title').text().trim();
     const group = MAIN_DATA.liabilities.getByName(groupTitle.toLowerCase());
 
-    const items = group.items.reduce((all, i) => {
+    var loadedItems = group.items.map((i) => {
+      const item = MAIN_DATA.liabilities.getByName(i.title.toLowerCase());
+      var clonedRow = JSON.parse(JSON.stringify(item));
+      return clonedRow;
+    });
+
+    loadedItems = loadedItems.sort(function (a, b) {
+      return new Date(b.date) - new Date(a.date);
+    });
+
+    loadedItems.forEach((row) => {
         if(isOpen){
-          jq(`a:contains(${i.title})`).remove();
+          jq(`a:contains(${row.title})`).remove();
           return;
         }
-        const item = MAIN_DATA.liabilities.getByName(i.title.toLowerCase());
-        var row = JSON.parse(JSON.stringify(item));
-        row.totalOwed = item.total_owed > 0 ? '$'+item.total_owed : '';
+        row.totalOwed = row.total_owed > 0 ? '$' + row.total_owed : '';
 
         var $row = makeRow(row);
         $row.addClass('grouped');
@@ -239,7 +247,8 @@ Element.prototype.remove = function() {
         $this.after($row);
         //all.push(makeRow(item));
         //return all;
-    }, []);
+    });
+
     if (!isOpen) {
       $this.addClass('open');
     }
