@@ -25,7 +25,9 @@ function scrapeCallback (err, result, results) {
   try {
     if (results[0].data) {
       const scrapedUSAABalance = results[0].data.accounts[0].balance;
-      const lastDBUSAABalance = result[result.length-1].data.accounts[0].balance;
+      const lastDBUSAABalance = result && result.length
+        ? result[result.length-1].data.accounts[0].balance
+        : 0;
       if (scrapedUSAABalance === lastDBUSAABalance){
         log.info('good scrape - already had data');
       } else {
