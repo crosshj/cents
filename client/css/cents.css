@@ -187,6 +187,7 @@ a.button.grouped {
   border-left-color: #888 !important;
   margin-top: -17px;
   border-radius: 0px;
+  border-top: 1px solid #00000033;
 }
 
 a.button.totals:not(.menu) {
