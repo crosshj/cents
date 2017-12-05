@@ -37,3 +37,5 @@ service/utilities/getPrivateInfo.js
 .npmrc
 
 service/scrapers/puppeteer/**/*.es6.js
+
+client/js/react/build
