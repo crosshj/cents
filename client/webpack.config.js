@@ -1,11 +1,14 @@
 //var webpack = require('webpack');
-var path = require('path');
+//var path = require('path');
 
 //var HtmlWebpackPlugin = require('html-webpack-plugin');
 //var CopyWebpackPlugin = require('copy-webpack-plugin');
 
-var BUILD_DIR = path.resolve(__dirname, 'js/react/build');
-var APP_DIR = path.resolve(__dirname, 'js/react');
+// var BUILD_DIR = path.resolve(__dirname, 'js/react/build');
+// var APP_DIR = path.resolve(__dirname, 'js/react');
+
+var BUILD_DIR = '/client/build';
+var APP_DIR = './client/js/react';
 
 var config = {
   entry: {
@@ -32,11 +35,13 @@ var config = {
     // ])
   ],
   module : {
-    loaders : [
+    rules : [
       {
         test : /\.jsx?/,
-        include : APP_DIR,
-        loader : 'babel-loader'
+        loader : 'babel-loader',
+        options: {
+          presets: ['babel-preset-env', 'babel-preset-react']
+        }
       }
     ]
   }
