@@ -21,7 +21,7 @@
     "passport-local": "^1.0.0",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
-    "react-flickity-component": "^1.1.3",
+    "react-flickity-component": "git+https://github.com/crosshj/react-flickity-component.git",
     "request": "^2.44.0",
     "sync-request": "^2.0.1",
     "xml2js": "^0.4.4"

@@ -2,20 +2,10 @@ import React from 'react';
 
 import Menu from './Menu';
 import Liabilities from './Liabilities';
+import Assets from './Assets';
+import Totals from './Totals';
 
 import Flickity from 'react-flickity-component/src/index';
-
-const flickityOptions = {
-  // options
-  initialIndex: localStorage && localStorage.getItem('selectedTab') || 0,
-  setGallerySize: false,
-  dragThreshold: 50,
-  prevNextButtons: false,
-  pageDots: false,
-  wrapAround: true,
-  draggable: true,
-  percentPosition: true
-}
 
 class AppContainer extends React.Component {
   constructor(props, context){
@@ -23,17 +13,17 @@ class AppContainer extends React.Component {
     p.selectedMenuIndex = localStorage && localStorage.getItem('selectedTab') || 0;
     super(props, context);
     this.state = p;
-    this.onSwipe = this.onSwipe.bind(this);
+    this.onMenuSelect = this.onMenuSelect.bind(this);
   }
 
   componentWillReceiveProps(nextProps){
     //console.log('--- got new props');
-    const props = JSON.parse(JSON.stringify(nextProps));
-    props.selectedMenuIndex = localStorage && localStorage.getItem('selectedTab') || 0;
-    this.setState(props);
+    //const props = JSON.parse(JSON.stringify(nextProps));
+    //props.selectedMenuIndex = localStorage && localStorage.getItem('selectedTab') || 0;
+    this.setState(nextProps);
   }
 
-  onSwipe(index){
+  onMenuSelect(index){
     localStorage.setItem('selectedTab', index);
     this.setState({selectedMenuIndex: index});
   }
@@ -41,34 +31,37 @@ class AppContainer extends React.Component {
   render () {
     //console.log('--- render');
     const props = this.state;
+    
+    const flickityOptions = {
+      // options
+      initialIndex: this.state.selectedMenuIndex || 0,
+      setGallerySize: false,
+      dragThreshold: 50,
+      prevNextButtons: false,
+      pageDots: false,
+      wrapAround: true,
+      draggable: true,
+      percentPosition: true
+    }
+    
     return (
       <div>
-        <Menu {...props}/>
+        <Menu
+          items={['Debts', 'Totals', 'Assets']}
+          selected={this.state.selectedMenuIndex}
+          onSelect={this.onMenuSelect}
+        />
         <Flickity
           className={ 'main-carousel' } 
           elementType={ 'div' } // default 'div' 
           options={ flickityOptions } // takes flickity options {} 
-          disableImagesLoaded={ false } // default false
+          disableImagesLoaded={ true } // default false
           reloadOnUpdate={false}
-          onSwipe={this.onSwipe}
+          onSwipe={this.onMenuSelect}
         >
             <Liabilities liabilities={this.state.liabilities}/>
-            <Liabilities liabilities={this.state.liabilities}/>
-            <Liabilities liabilities={this.state.liabilities}/>
-            {/* <div className="carousel-cell">
-              <div className="container">
-                  <div className="column totals">
-                    <div className="row"></div>
-                  </div>
-              </div>
-            </div>
-            <div className="carousel-cell">
-              <div className="container">
-                  <div className="column assets">
-                    <div className="row"></div>
-                  </div>
-              </div>
-            </div> */}
+            <Totals totals={this.state.totals}/>
+            <Assets assets={this.state.assets}/>
         </Flickity>
       </div>
     );

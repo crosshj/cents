@@ -25,20 +25,20 @@ function makeRow(data, key){
     );
 }
 
-function Liabilities({liabilities = []}){
-    const liabRows = liabilities.map(makeRow);
+function Assets({assets = []}){
+    const assetRows = assets.map(makeRow);
 
     return (
     <div className="carousel-cell">
         <div className="container">
-            <div className="column liabilities">
-            {liabRows}
+            <div className="column assets">
+            {assetRows}
             </div>
         </div>
     </div>
     );
 }
 
-Liabilities.propTypes = {};
+Assets.propTypes = {};
 
-export default Liabilities;
+export default Assets;
