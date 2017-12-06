@@ -3,6 +3,22 @@ import React from 'react';
 import Menu from './Menu';
 import Liabilities from './Liabilities';
 
+import Flickity from 'react-flickity-component/src/index'
+
+var initialIndex = localStorage && localStorage.getItem('selectedTab');
+initialIndex = initialIndex || 0;
+
+const flickityOptions = {
+  // options
+  initialIndex,
+  setGallerySize: false,
+  dragThreshold: 50,
+  prevNextButtons: false,
+  pageDots: false,
+  wrapAround: true,
+  draggable: true,
+  percentPosition: true
+}
 
 class AppContainer extends React.Component {
   constructor(props, context){
@@ -21,9 +37,14 @@ class AppContainer extends React.Component {
     return (
       <div>
         <Menu {...props}/>
-        <div id="main-carousel">
+        <Flickity
+          className={ 'main-carousel' } 
+          elementType={ 'div' } // default 'div' 
+          options={ flickityOptions } // takes flickity options {} 
+          disableImagesLoaded={ false } // default false
+          reloadOnUpdate={true}
+        >
             <Liabilities liabilities={this.state.liabilities}/>
-
             <div className="carousel-cell">
               <div className="container">
                   <div className="column totals">
@@ -38,7 +59,7 @@ class AppContainer extends React.Component {
                   </div>
               </div>
             </div>
-        </div>
+        </Flickity>
       </div>
     );
   }

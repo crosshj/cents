@@ -12,13 +12,12 @@ TODO:
 
 import React from 'react';
 import { render } from 'react-dom';
-const e = React.createElement;
 
 import AppContainer from './components/AppContainer';
 
 function renderApp(props) {
   render(
-    e(AppContainer, props, null),
+    React.createElement(AppContainer, props, null),
     document.querySelector('#app')
   );
 }
@@ -36,6 +35,7 @@ function getAccounts(callback) {
   fetch(url, config)
     .then(r => r.json())
     .then(body => {
+      // console.log(`Response from ${url} : ${JSON.stringify(body)}`);
       if(body.error){
         return callback(body.error);
       }
