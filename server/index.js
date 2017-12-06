@@ -67,5 +67,5 @@ app.use('/', express.static(
 ));
 
 app.listen(appPort, function () {
-  console.log('New server on port ' + appPort + '!');
+  console.log(`Server on port ${appPort}.  Wait for client build webpack...`);
 });

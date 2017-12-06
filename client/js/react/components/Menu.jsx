@@ -2,10 +2,11 @@ import React from 'react';
 
 //TODO: click handlers, selected, flickity?
 
-function Menu(){
+function Menu({selectedMenuIndex}){
     const menuItems = ['debts', 'totals', 'assets'].map((item, key) => {
+        const menuClass = "button menu button-primary" + (key === selectedMenuIndex ? ' selected' : '');
         return (
-            <a className="button menu button-primary" key={key}>{item}</a>
+            <a className={menuClass} key={key}>{item}</a>
         );
     });
 
