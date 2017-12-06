@@ -12,8 +12,9 @@ TODO:
 
 import React from 'react';
 import { render } from 'react-dom';
-import AppContainer from './components/AppContainer';
 const e = React.createElement;
+
+import AppContainer from './components/AppContainer';
 
 function renderApp(props) {
   render(

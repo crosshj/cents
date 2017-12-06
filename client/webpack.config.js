@@ -1,4 +1,4 @@
-//var webpack = require('webpack');
+var webpack = require('webpack');
 //var path = require('path');
 
 //var HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -12,7 +12,7 @@ var APP_DIR = './client/js/react';
 
 var config = {
   entry: {
-    app: APP_DIR + '/app.js'
+    app: APP_DIR + '/app'
   },
   output: {
     path: BUILD_DIR,
@@ -22,6 +22,13 @@ var config = {
     extensions: ['.js', '.jsx']
   },
   plugins: [
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'vendor',
+      minChunks: function (module) {
+        // this assumes your vendor imports exist in the node_modules directory
+        return module.context && module.context.includes("node_modules");
+      }
+    })
     // new HtmlWebpackPlugin({
     //   title: 'HA Bridge Configuration',
     //   template: 'index.ejs',
