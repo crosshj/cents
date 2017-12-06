@@ -3,14 +3,11 @@ import React from 'react';
 import Menu from './Menu';
 import Liabilities from './Liabilities';
 
-import Flickity from 'react-flickity-component/src/index'
-
-var initialIndex = localStorage && localStorage.getItem('selectedTab');
-initialIndex = initialIndex || 0;
+import Flickity from 'react-flickity-component/src/index';
 
 const flickityOptions = {
   // options
-  initialIndex,
+  initialIndex: localStorage && localStorage.getItem('selectedTab') || 0,
   setGallerySize: false,
   dragThreshold: 50,
   prevNextButtons: false,
@@ -22,9 +19,9 @@ const flickityOptions = {
 
 class AppContainer extends React.Component {
   constructor(props, context){
-    super(props, context);
     const p = JSON.parse(JSON.stringify(props));
-    p.selectedMenuIndex = initialIndex;
+    p.selectedMenuIndex = localStorage && localStorage.getItem('selectedTab') || 0;
+    super(props, context);
     this.state = p;
     this.onSwipe = this.onSwipe.bind(this);
   }
@@ -32,11 +29,12 @@ class AppContainer extends React.Component {
   componentWillReceiveProps(nextProps){
     //console.log('--- got new props');
     const props = JSON.parse(JSON.stringify(nextProps));
-    props.selectedMenuIndex = this.state.selectedMenuIndex;
+    props.selectedMenuIndex = localStorage && localStorage.getItem('selectedTab') || 0;
     this.setState(props);
   }
 
   onSwipe(index){
+    localStorage.setItem('selectedTab', index);
     this.setState({selectedMenuIndex: index});
   }
 
