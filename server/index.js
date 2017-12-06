@@ -11,7 +11,7 @@ var passport = require('passport');
 
 const webpack = require('webpack');
 const webpackDevMiddleware = require('webpack-dev-middleware');
-const webpackConfig = require('../client/webpack.config.js');
+const webpackConfig = require('../webpack.config.js');
 const webpackCompiler = webpack(webpackConfig);
 
 // const webpackCompiler = webpack(webpackConfig, function(err, stats) {
@@ -50,7 +50,10 @@ app.use(passport.session());
 require('./routes')(app, passport);
 
 app.use(webpackDevMiddleware(webpackCompiler, {
-  publicPath: '/js/react/build/'
+  publicPath: '/js/react/build/',
+  stats: {
+		colors: true
+	}
 }));
 
 app.use('/', express.static(
