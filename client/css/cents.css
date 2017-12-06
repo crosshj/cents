@@ -398,7 +398,7 @@ a.button.selected {
 }
 
 #main-carousel > .carousel-cell {
-  opacity: 0;
+  /* opacity: 0; TODO - UNCOMMENT ME (maybe?)!!! */
 }
 
 @media (min-width: 550px) {

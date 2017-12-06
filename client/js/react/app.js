@@ -36,7 +36,6 @@ function getAccounts(callback) {
   fetch(url, config)
     .then(r => r.json())
     .then(body => {
-      console.log(`Response from ${url} : ${body}`);
       if(body.error){
         return callback(body.error);
       }

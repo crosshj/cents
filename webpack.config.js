@@ -60,7 +60,7 @@ var config = {
     rules : [
       {
         test : /\.jsx?/,
-        loader : 'babel-loader',
+        loader : 'babel-loader?cacheDirectory=true',
         exclude: /(node_modules|bower_components)/,
         options: {
           presets: ['babel-preset-env', 'babel-preset-react']
