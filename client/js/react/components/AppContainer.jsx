@@ -66,6 +66,11 @@ class AppContainer extends React.Component {
           </Flickity>
         }
         { this.state.error &&
+          <div className="center-all">
+            <i className="fa fa-spinner fa-pulse fa-5x fa-fw white"></i>
+          </div>
+        }
+        { this.state.error &&
           <div id="login">
             <iframe width="100%" height="100%" frameBorder="0" src="./login/" />
           </div>

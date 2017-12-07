@@ -1,4 +1,26 @@
-﻿body {
+﻿.center-all {
+  display: flex;
+  top: 0px;
+  bottom: 0px;
+  position: absolute;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+.white {
+  color: white !important;
+}
+
+.yellow {
+  color: #FFEB3B !important;
+}
+
+.way-blurred {
+  filter: blur(5px);
+}
+
+body {
   overflow-y: hidden;
 }
 

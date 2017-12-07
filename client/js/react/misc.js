@@ -1,10 +1,5 @@
 var GLOBAL_FUNCTION_QUEUE = [];
 
-function login(){
-    document.querySelector('#login').className = '';
-    //window.location.replace("login/");
-}
-
 function getAccounts(callback) {
     const url = './json';
     const config = {
@@ -21,14 +16,11 @@ function getAccounts(callback) {
         // console.log(`Response from ${url} : ${JSON.stringify(body)}`);
         if(body.error){
             GLOBAL_FUNCTION_QUEUE.push(() => getAccounts(callback));
-            login();
-            return;
         }
-        callback(undefined, body)
+        callback(undefined, body);
       })
       .catch(e => {
-        GLOBAL_FUNCTION_QUEUE.push(() => getAccounts(callback));
-        //login();
+        callback(e);
       });
 }
 
@@ -51,7 +43,7 @@ function ajaxLogin(username, password, callback){
         return response.json();
     }).then(function(data) {
         console.log('login success -->', data);
-        if (callback) callback(null, data);
+        if (callback) callback(undefined, data);
     }).catch(function(error) {
         console.log('login error --> ', error);
         if (callback) callback(error);
