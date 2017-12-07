@@ -1,7 +1,7 @@
 import React from 'react';
 
 function makeRow(data, key){
-    const isGroup = false;
+    const isGroup = data.type === 'group';
     const rowClassName = `button ${data.status.toLowerCase()} primary${isGroup ? " group" : ""}`;
     return (
         <a className={rowClassName} key={key + '-' + data.title}>
@@ -26,7 +26,9 @@ function makeRow(data, key){
 }
 
 function Liabilities({liabilities = []}){
-    const liabRows = liabilities.map(makeRow);
+    const liabRows = liabilities
+        .filter(x => !x.hidden && x.type !== 'grouped')
+        .map(makeRow);
 
     return (
     <div className="carousel-cell">
