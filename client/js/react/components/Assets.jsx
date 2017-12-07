@@ -1,4 +1,5 @@
 import React from 'react';
+import {formatMoney} from '../utilities';
 
 function makeRow(data, key){
     const isGroup = false;
@@ -8,16 +9,15 @@ function makeRow(data, key){
             <table className="u-full-width">
             <tbody>
                 <tr className="header">
-                <td colSpan="2" className="title">{data.title}</td>
-                <td className="status">{data.status.toUpperCase()}</td>
+                    <td colSpan="2" className="title">{data.title}</td>
+                    <td className="status">{data.status.toUpperCase()}</td>
                 </tr>
                 <tr className="info">
-                <td className="amount">{data.amount}</td>
-                <td className="total">{Boolean(data.totalOwed) ? data.totalOwed : ''}</td>
-                <td className="date">{data.date}</td>
-                <td className="website hidden">{data.website}</td>
-                <td className="notes hidden">{data.note}</td>
-                <td className="auto hidden">{data.auto||'false'}</td>
+                    <td className="amount">{formatMoney(data.amount)}</td>
+                    <td className="total">
+                        {Boolean(Number(data.total_owed)) ? formatMoney(data.total_owed) : ''}
+                    </td>
+                    <td className="date">{data.date}</td>
                 </tr>
             </tbody>
             </table>

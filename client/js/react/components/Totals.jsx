@@ -1,4 +1,5 @@
 import React from 'react';
+import {formatMoney} from '../utilities';
 
 function makeTotalsRow(props){
     const {balance=0, pendingTotal=0, dueTotal=0, assetsTotal=0, debts=0, debtsTotal=0} = props;
@@ -9,23 +10,27 @@ function makeTotalsRow(props){
                 <table className="u-full-width">
                 <tbody>
                     <tr className="header">
-                    <td colSpan="2" className="title center">Current</td>
+                        <td colSpan="2" className="title center">Current</td>
                     </tr>
                     <tr className="header">
-                    <td className="title">Balance</td>
-                    <td className="status">{balance}</td>
+                        <td className="title">Balance</td>
+                        <td className="status">{formatMoney(balance)}</td>
                     </tr>
+                    { Boolean(Number(pendingTotal)) &&
                     <tr className="header">
-                    <td className="title">Pending</td>
-                    <td className="status">{pendingTotal}</td>
+                        <td className="title">Pending</td>
+                        <td className="status">{formatMoney(pendingTotal)}</td>
                     </tr>
+                    }
+                    { Boolean(Number(dueTotal)) &&
                     <tr className="header">
-                    <td className="title">Due</td>
-                    <td className="status">{dueTotal}</td>
+                        <td className="title">Due</td>
+                        <td className="status">{formatMoney(dueTotal)}</td>
                     </tr>
+                    }
                     <tr className="header">
-                    <td className="title"></td>
-                    <td className="status">{balance - pendingTotal - dueTotal}</td>
+                        <td className="title"></td>
+                        <td className="status">{formatMoney(balance - pendingTotal - dueTotal)}</td>
                     </tr>
                 </tbody>
                 </table>
@@ -38,15 +43,15 @@ function makeTotalsRow(props){
                     </tr>
                     <tr className="header">
                     <td className="title">Assets</td>
-                    <td className="status">{assetsTotal}</td>
+                    <td className="status">{formatMoney(assetsTotal)}</td>
                     </tr>
                     <tr className="header">
                     <td className="title">Debt</td>
-                    <td className="status">{debts}</td>
+                    <td className="status">{formatMoney(debts)}</td>
                     </tr>
                     <tr className="header">
                     <td className="title"></td>
-                    <td className="status">{assetsTotal - debts}</td>
+                    <td className="status">{formatMoney(assetsTotal - debts)}</td>
                     </tr>
                 </tbody>
                 </table>
@@ -56,7 +61,7 @@ function makeTotalsRow(props){
                 <tbody>
                     <tr className="header">
                     <td className="title">Debt Total</td>
-                    <td className="status">{debtsTotal}</td>
+                    <td className="status">{formatMoney(debtsTotal)}</td>
                     </tr>
                     <tr className="header history">
                     <td colSpan="2" className="title center">

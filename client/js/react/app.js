@@ -2,11 +2,8 @@
 
 TODO:
 
-- build system (webpack)
-- components
 - store
 - actions
-
 
 */
 
@@ -28,7 +25,13 @@ function renderApp(props) {
 
 setupLoginPageListener();
 getAccounts((err, res) => {
+  res.error = res.error || false;
   renderApp(res);
 });
 
-document.addEventListener("DOMContentLoaded", renderApp);
+document.addEventListener("DOMContentLoaded", () => {
+  const initialState = {
+    error: 'not initialized'
+  };
+  renderApp(initialState);
+});

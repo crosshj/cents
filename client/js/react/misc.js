@@ -28,7 +28,7 @@ function getAccounts(callback) {
       })
       .catch(e => {
         GLOBAL_FUNCTION_QUEUE.push(() => getAccounts(callback));
-        login();
+        //login();
       });
 }
 

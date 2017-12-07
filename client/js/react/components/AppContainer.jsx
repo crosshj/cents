@@ -9,10 +9,8 @@ import Flickity from 'react-flickity-component';
 
 class AppContainer extends React.Component {
   constructor(props, context){
-    const p = JSON.parse(JSON.stringify(props));
-    p.selectedMenuIndex = localStorage && localStorage.getItem('selectedTab') || 0;
     super(props, context);
-    this.state = p;
+    this.state = props;
     this.onMenuSelect = this.onMenuSelect.bind(this);
   }
 
@@ -46,26 +44,32 @@ class AppContainer extends React.Component {
     
     return (
       <React.Fragment>
-        <Menu
-          items={['Debts', 'Totals', 'Assets']}
-          selected={this.state.selectedMenuIndex}
-          onSelect={this.onMenuSelect}
-        />
-        <Flickity
-          className={ 'main-carousel' } 
-          elementType={ 'div' } // default 'div' 
-          options={ flickityOptions } // takes flickity options {} 
-          disableImagesLoaded={ true } // default false
-          reloadOnUpdate={false}
-          onSwipe={this.onMenuSelect}
-        >
-            <Liabilities liabilities={this.state.liabilities}/>
-            <Totals totals={this.state.totals}/>
-            <Assets assets={this.state.assets}/>
-        </Flickity>
-        <div id="login" className="hidden">
-          <iframe width="100%" height="100%" frameBorder="0" src="./login/" />
-        </div>
+        { !this.state.error &&
+          <Menu
+            items={['Debts', 'Totals', 'Assets']}
+            selected={this.state.selectedMenuIndex}
+            onSelect={this.onMenuSelect}
+          />
+        }
+        { !this.state.error &&
+          <Flickity
+            className={ 'main-carousel' } 
+            elementType={ 'div' } // default 'div' 
+            options={ flickityOptions } // takes flickity options {} 
+            disableImagesLoaded={ true } // default false
+            reloadOnUpdate={false}
+            onSwipe={this.onMenuSelect}
+          >
+              <Liabilities liabilities={this.state.liabilities}/>
+              <Totals totals={this.state.totals}/>
+              <Assets assets={this.state.assets}/>
+          </Flickity>
+        }
+        { this.state.error &&
+          <div id="login">
+            <iframe width="100%" height="100%" frameBorder="0" src="./login/" />
+          </div>
+        }
         <div id="popup-modal"></div>
         <div id="corner-circle">0</div>
         {/* This fake div hidden preloads our web font! */}
