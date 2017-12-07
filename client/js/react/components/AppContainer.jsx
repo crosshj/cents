@@ -45,7 +45,7 @@ class AppContainer extends React.Component {
     }
     
     return (
-      <div>
+      <React.Fragment>
         <Menu
           items={['Debts', 'Totals', 'Assets']}
           selected={this.state.selectedMenuIndex}
@@ -63,7 +63,7 @@ class AppContainer extends React.Component {
             <Totals totals={this.state.totals}/>
             <Assets assets={this.state.assets}/>
         </Flickity>
-      </div>
+      </React.Fragment>
     );
   }
 }
