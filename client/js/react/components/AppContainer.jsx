@@ -5,7 +5,7 @@ import Liabilities from './Liabilities';
 import Assets from './Assets';
 import Totals from './Totals';
 
-import Flickity from 'react-flickity-component/src/index';
+import Flickity from 'react-flickity-component';
 
 class AppContainer extends React.Component {
   constructor(props, context){
@@ -63,6 +63,15 @@ class AppContainer extends React.Component {
             <Totals totals={this.state.totals}/>
             <Assets assets={this.state.assets}/>
         </Flickity>
+        <div id="login" className="hidden">
+          <iframe width="100%" height="100%" frameBorder="0" src="./login/" />
+        </div>
+        <div id="popup-modal"></div>
+        <div id="corner-circle">0</div>
+        {/* This fake div hidden preloads our web font! */}
+        <div className="div-fake-hidden">
+          <i className="fa fa-square-o fa-3x"></i>
+        </div>
       </React.Fragment>
     );
   }

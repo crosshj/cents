@@ -14,6 +14,10 @@ import React from 'react';
 import { render } from 'react-dom';
 
 import AppContainer from './components/AppContainer';
+import {
+  getAccounts,
+  setupLoginPageListener
+} from './misc';
 
 function renderApp(props) {
   render(
@@ -22,31 +26,7 @@ function renderApp(props) {
   );
 }
 
-function getAccounts(callback) {
-  const url = './json';
-  const config = {
-    credentials: 'include',
-    method: 'GET',
-    headers: new Headers({
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    })
-  };
-  fetch(url, config)
-    .then(r => r.json())
-    .then(body => {
-      // console.log(`Response from ${url} : ${JSON.stringify(body)}`);
-      if(body.error){
-        return callback(body.error);
-      }
-      callback(undefined, body)
-    })
-    .catch(e => {
-      console.log('Error:\n', e);
-      callback(e);
-    });
-}
-
+setupLoginPageListener();
 getAccounts((err, res) => {
   renderApp(res);
 });
