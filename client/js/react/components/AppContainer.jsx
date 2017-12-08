@@ -18,7 +18,7 @@ class AppContainer extends React.Component {
     //console.log('--- got new props');
     //const props = JSON.parse(JSON.stringify(nextProps));
     //props.selectedMenuIndex = localStorage && localStorage.getItem('selectedTab') || 0;
-    this.setState(nextProps);
+    this.state = nextProps;
   }
 
   onMenuSelect(index){
@@ -67,7 +67,7 @@ class AppContainer extends React.Component {
         }
         { this.state.error &&
           <div className="center-all">
-            <i className="fa fa-spinner fa-pulse fa-5x fa-fw white"></i>
+            <i className="fa fa-spinner fa-pulse fa-5x fa-fw white  "></i>
           </div>
         }
         { this.state.error &&
