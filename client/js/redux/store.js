@@ -8,7 +8,8 @@ function counter (state, action) {
         case 'WOW':
             newState = Object.assign({}, state, {
                 count: state.count +1,
-                app: action.payload
+                app: action.payload,
+                error: undefined
             });
             break;
     }
@@ -16,8 +17,11 @@ function counter (state, action) {
 }
 
 const initialState = {
-    count: 1
-}
+    count: 1,
+    app: {
+        error: 'not initialized'
+    }
+};
 
 function setup(renderer){
     const store = createStore(

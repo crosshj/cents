@@ -22,7 +22,7 @@ const store = setupStore(renderApp);
 
 function renderApp(props) {
   const state = Object.assign({}, props, store.getState());
-  console.log(state);
+  //console.log(state);
   render(
     React.createElement(AppContainer, state.app, null),
     document.querySelector('#app')
@@ -30,15 +30,9 @@ function renderApp(props) {
 }
 
 setupLoginPageListener();
-getAccounts((err, res) => {
-  res.error = res.error || false;
-  //renderApp(res);
-  store.dispatch({type: 'WOW', payload: res})
-});
 
-document.addEventListener("DOMContentLoaded", () => {
-  const initialState = {
-    error: 'not initialized'
-  };
-  renderApp(initialState);
+getAccounts((err, res) => {
+  const payload = res || err;
+  payload.error = res.error || false;
+  store.dispatch({type: 'WOW', payload})
 });

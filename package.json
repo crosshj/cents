@@ -22,6 +22,7 @@
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-flickity-component": "git+https://github.com/crosshj/react-flickity-component.git",
+    "redux": "^3.7.2",
     "request": "^2.44.0",
     "sync-request": "^2.0.1",
     "xml2js": "^0.4.4"
