@@ -22,7 +22,7 @@ see this project's [trello board](https://trello.com/b/Y98Yz3jm/cents-personal-f
 - adding groups
 - perfecting service worker
 - redoing bank site scrapers
-- refactor using react (almost finished)
+- refactor using react/redux (maybe rxjs)
 	
 
 ### NOTES
