@@ -1,11 +1,19 @@
 import React from 'react';
 import {formatMoney} from '../utilities';
+import actions from '../../redux/actions';
+
+function rowClick(title){
+    actions({
+        type: 'POPUP_ACCOUNT',
+        payload: {title}
+    });
+}
 
 function makeRow(data, key){
     const isGroup = data.type === 'group';
     const rowClassName = `button ${data.status.toLowerCase()} primary${isGroup ? " group" : ""}`;
     return (
-        <a className={rowClassName} key={key + '-' + data.title}>
+        <a className={rowClassName} key={key + '-' + data.title} onClick={() => rowClick(data.title)}>
             <table className="u-full-width">
             <tbody>
                 <tr className="header">
@@ -26,9 +34,27 @@ function makeRow(data, key){
 }
 
 function Liabilities({liabilities = []}){
-    const liabRows = liabilities
+    let liabRows = liabilities
         .filter(x => !x.hidden && x.type !== 'grouped')
         .map(makeRow);
+
+    const selectedLiabs = liabilities
+        .reduce((total, item) => item.selected
+            ? total+1
+            : total, 0
+        );
+
+    if(selectedLiabs === 0){
+        liabRows = liabRows.concat(
+            <a id="add-new" className="button" key="liab-add-new">Add New</a>
+        );
+    }
+
+    if(selectedLiabs > 0){
+        liabRows = liabRows.concat(
+            <a id="add-group" class="button" key="liab-agg-group">Group Accounts</a>
+        );
+    }
 
     return (
     <div className="carousel-cell">

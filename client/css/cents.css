@@ -275,7 +275,7 @@ a.button.selected {
 
 #popup-modal {
   position: absolute;
-  display: none;
+  /* display: none; */
 /*  overflow: hidden;*/
   top: 100%;
   right: 23%;
@@ -301,7 +301,7 @@ a.button.selected {
 */
 
 #popup-modal.show {
-  top: -200;
+  top: 0;
   right: 0;
   bottom: 0;
   left: 0;

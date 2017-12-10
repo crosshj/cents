@@ -1,15 +1,26 @@
 import {createStore, combineReducers} from 'redux';
 import devToolsEnhancer from 'remote-redux-devtools';
 
+
 // Reducer
-function counter (state, action) {
+function reducer (state, action) {
     var newState = undefined;
     switch (action.type) {
-        case 'WOW':
+        case 'GET_ACCOUNTS':
             newState = Object.assign({}, state, {
                 count: state.count +1,
                 app: action.payload,
                 error: undefined
+            });
+            break;
+        case 'POPUP_ACCOUNT':
+            const account = state.app.liabilities
+                .filter(a => a.title.toLowerCase() === action.payload.title.toLowerCase());
+            newState = Object.assign({}, state, {
+                popup: {
+                    error: account[0] ? false : 'could not find account',
+                    account: JSON.parse(JSON.stringify(account[0] || false))
+                }
             });
             break;
     }
@@ -20,12 +31,15 @@ const initialState = {
     count: 1,
     app: {
         error: 'not initialized'
+    }, 
+    popup: {
+        error: 'not initialized'
     }
 };
 
 function setup(renderer){
     const store = createStore(
-        counter,
+        reducer,
         initialState,
         window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
     );

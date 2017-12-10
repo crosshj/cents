@@ -4,6 +4,7 @@ import Menu from './Menu';
 import Liabilities from './Liabilities';
 import Assets from './Assets';
 import Totals from './Totals';
+import Popup from './Popup';
 
 import Flickity from 'react-flickity-component';
 
@@ -75,7 +76,7 @@ class AppContainer extends React.Component {
             <iframe width="100%" height="100%" frameBorder="0" src="./login/" />
           </div>
         }
-        <div id="popup-modal"></div>
+        <Popup {...this.state.popup}/>
         <div id="corner-circle">0</div>
         {/* This fake div hidden preloads our web font! */}
         <div className="div-fake-hidden">
