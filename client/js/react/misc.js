@@ -58,6 +58,9 @@ function setupLoginPageListener(){
 
     // Listen to message from child window
     eventer(messageEvent,function(e) {
+        if(e.data && e.data.source.includes('@devtools')){
+            return;
+        }
         console.log('parent received message!:  ',e.data);
 
         if(e.data.name === "ajaxLoginRequest"){
