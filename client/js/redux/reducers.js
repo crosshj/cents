@@ -14,6 +14,14 @@ function app(state, action) {
             const selectedMenuIndex = action.payload;
             newState = Object.assign({}, state, {selectedMenuIndex});
             break;
+        case 'SELECT_ACCOUNT_CLICK':
+            newState = Object.assign({}, state, {});
+            newState.liabilities.forEach(liab => {
+                if(liab.title === action.payload.title){
+                    liab.selected = !liab.selected;
+                }
+            });
+            break;
         case 'GROUP_CLICK':
             newState = Object.assign({}, state, {});
             console.log('should insert inline grouped items here');
@@ -32,6 +40,44 @@ function popup(state, action) {
             newState = Object.assign({}, state, {
                 error: account[0] ? false : 'could not find account',
                 account: JSON.parse(JSON.stringify(account[0] || false))
+            });
+            break;
+        case 'POPUP_NEW_GROUP':
+            var selected = accounts.liabilities.filter(a => a.selected);
+            account = {
+                type: "group",
+                hidden: false,
+                title: "New Group",
+                note: "",
+                items: selected,
+                isNew: true,
+                status: "paid",
+                date: "2017-10-18",
+                amount: selected.reduce((all, g) => { return all+Number(g.amount); }, 0),
+                total_owed: selected.reduce((all, g) => { return all+Number(g.total_owed||0); }, 0),
+                auto: false
+            };
+            newState = Object.assign({}, state, {
+                error: false,
+                account: JSON.parse(JSON.stringify(account || false))
+            });
+            break;
+        case 'POPUP_NEW_ACCOUNT':
+            account = {
+                type: "",
+                hidden: false,
+                title: "New Group",
+                note: "",
+                isNew: true,
+                status: "paid",
+                date: "2017-10-18",
+                amount: 0,
+                total_owed: 0,
+                auto: false
+            };
+            newState = Object.assign({}, state, {
+                error: false,
+                account: JSON.parse(JSON.stringify(account || false))
             });
             break;
         case 'POPUP_CANCEL':

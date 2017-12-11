@@ -1,21 +1,22 @@
 import React from 'react';
 import {formatMoney} from '../utilities';
 import {
-    accountClick, groupClick, newAccountClick, newGroupClick
+    accountClick, selectAccountClick, groupClick, newAccountClick, newGroupClick
 } from '../../redux/actions';
 
 function makeRow(data, key){
     const isGroup = data.type === 'group';
-    const rowClassName = `button ${data.status.toLowerCase()} primary${isGroup ? " group" : ""}`;
-    const rowClick = isGroup ? groupClick : accountClick;
+    const rowClassName = `button ${data.status.toLowerCase()} primary${isGroup ? " group" : ""} ${data.selected ? " selected" : ""}`;
+    const rowClick = isGroup
+        ? () => groupClick(data.title)
+        : () => accountClick(data.title);
     const contextClick = isGroup
-        ? (e, title) => {e.preventDefault(); accountClick(title); return false; }
-        : () => {};
+        ? e => {e.preventDefault(); accountClick(data.title); return false; }
+        : e => {e.preventDefault(); selectAccountClick(data.title); return false; };
 
     return (
         <a className={rowClassName} key={key + '-' + data.title}
-            onClick={() => rowClick(data.title)}
-            onContextMenu={(e) => contextClick(e, data.title)}
+            onClick={rowClick} onContextMenu={contextClick}
         >
             <table className="u-full-width">
             <tbody>
@@ -55,7 +56,7 @@ function Liabilities({liabilities = []}){
 
     if(selectedLiabs > 0){
         liabRows = liabRows.concat(
-            <a id="add-group" class="button" key="liab-agg-group" onClick={newGroupClick}>Group Accounts</a>
+            <a id="add-group" className="button" key="liab-agg-group" onClick={newGroupClick}>Group Accounts</a>
         );
     }
 

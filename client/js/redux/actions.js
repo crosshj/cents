@@ -22,6 +22,13 @@ function accountClick(title){
     });
 }
 
+function selectAccountClick(title){
+    dispatch({
+        type: 'SELECT_ACCOUNT_CLICK',
+        payload: { title }
+    });
+}
+
 function groupClick(title){
     dispatch({
         type: 'GROUP_CLICK',
@@ -35,10 +42,9 @@ function newAccountClick(){
     });
 }
 
-function newGroupClick(items){
+function newGroupClick(){
     dispatch({
-        type: 'POPUP_NEW_GROUP',
-        paload: { items }
+        type: 'POPUP_NEW_GROUP'
     });
 }
 
@@ -53,6 +59,6 @@ function init(store){
 }
 
 export {
-    init, getAccounts, menuSelect,
+    init, getAccounts, menuSelect, selectAccountClick,
     accountClick, groupClick, newAccountClick, newGroupClick, popupCancel
 }

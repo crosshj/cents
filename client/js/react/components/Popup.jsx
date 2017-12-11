@@ -22,15 +22,11 @@ function Popup({error, account={}}){
     //console.log({error, account, group});
     // debugger;
     const popupClass = error ? 'hidden' : 'show';
-    const isNewItem = false;
+    const isNewItem = account.isNew;
     const isGroup = account.type === 'group';
     const statusItems = [];
     const originalStatus = 'pending';
     const originalDateString  = '';
-
-    if (!error){
-        document.getElementById('popup-modal').scrollTo(0,0);
-    }
 
     return (
         <div id="popup-modal" className={popupClass} ref={ref => ref && ref.scrollTo(0,0)}>
