@@ -1,6 +1,8 @@
+import {safeAccess} from './utilities';
+
 var GLOBAL_FUNCTION_QUEUE = [];
 
-function getAccounts(callback) {
+function fetchAccounts(callback) {
     const url = './json';
     const config = {
       credentials: 'include',
@@ -15,7 +17,7 @@ function getAccounts(callback) {
       .then(body => {
         // console.log(`Response from ${url} : ${JSON.stringify(body)}`);
         if(body.error){
-            GLOBAL_FUNCTION_QUEUE.push(() => getAccounts(callback));
+            GLOBAL_FUNCTION_QUEUE.push(() => fetchAccounts(callback));
         }
         callback(undefined, body);
       })
@@ -58,7 +60,8 @@ function setupLoginPageListener(){
 
     // Listen to message from child window
     eventer(messageEvent,function(e) {
-        if(e.data && e.data.source.includes('@devtools')){
+        const messageSource = safeAccess(() => e.data.source);
+        if(messageSource && messageSource.includes('@devtools')){
             return;
         }
         console.log('parent received message!:  ',e.data);
@@ -83,6 +86,6 @@ function setupLoginPageListener(){
 }
 
 export {
-    getAccounts,
+    fetchAccounts,
     setupLoginPageListener
 };

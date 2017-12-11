@@ -11,13 +11,13 @@ import React from 'react';
 import { render } from 'react-dom';
 
 import { setup as setupStore } from '../redux/store';
-import actions, { init as initActions } from '../redux/actions';
+import { init as initActions, getAccounts } from '../redux/actions';
 
 import AppContainer from './components/AppContainer';
 import Popup from './components/Popup';
 
 import {
-  getAccounts,
+  fetchAccounts,
   setupLoginPageListener
 } from './misc';
 
@@ -39,8 +39,8 @@ function renderApp(props) {
 
 setupLoginPageListener();
 
-getAccounts((err, res) => {
+fetchAccounts((err, res) => {
   const payload = res || {};
   payload.error = err || res.error || false;
-  actions({type: 'GET_ACCOUNTS', payload});
+  getAccounts(payload);
 });

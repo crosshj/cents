@@ -1,23 +1,36 @@
 import React from 'react';
 
+import {formatMoney} from '../utilities';
+import {
+    popupCancel
+  } from '../../redux/actions';
+
 function statusRow(){
     return <div></div>;
 }
 
-function Popup({error, account={}, group={}}){
-    //console.log({error, account, group});
+function groupItems(items){
+    return items.map((item, key) => 
+        <tr  key={'group_item'+key}>
+            <td className="">{item.title}</td>
+            <td className="">{formatMoney(item.amount)}</td>
+        </tr>
+    );
+}
 
+function Popup({error, account={}}){
+    //console.log({error, account, group});
+    // debugger;
     const popupClass = error ? 'hidden' : 'show';
     const isNewItem = false;
-    const isGroup = false;
+    const isGroup = account.type === 'group';
     const statusItems = [];
     const originalStatus = 'pending';
     const originalDateString  = '';
 
     return (
         <div id="popup-modal" className={popupClass}>
-            <div className="container content history">
-            </div>
+            <div className="container content history"></div>
             <div className="container content account">
                 <h2>
                 { isNewItem
@@ -42,7 +55,7 @@ function Popup({error, account={}, group={}}){
                 }
                 <div className="form-group">
                     <label htmlFor="notes">Notes</label>
-                    <textarea className="u-max-full-width u-full-width form-control" rows="5" id="notes">{account.notes}</textarea>
+                    <textarea className="u-max-full-width u-full-width form-control" rows="5" id="notes" value={account.note||''} />
                 </div>
                 {!isGroup &&
                 <div className="form-group checkbox-group">
@@ -53,22 +66,17 @@ function Popup({error, account={}, group={}}){
                 {isGroup &&
                 <div className="form-group">
                     <label>Items</label>
-                    <table className="u-full-width">{group.items}</table>
+                    <table className="u-full-width">
+                        <tbody>
+                            {groupItems(account.items)}
+                        </tbody>
+                    </table>
                     <br/>
                 </div>
                 }
                 <div className="form-group">
-                    <label>Payment Amount</label>
-                    <input className={'amount' + isGroup?' group':''} type="number" step="0.01" defaultValue={account.amount} disabled={isGroup} />
-                    {!isNewItem && !isGroup &&
-                    <button className="graph" data-title="Amount">
-                        <i className="fa fa-bar-chart"></i>
-                    </button>
-                    }
-                </div>
-                <div className="form-group">
                     <label>Total Owed</label>
-                    <input className={'total' + isGroup?' group':''} type="number" defaultValue={account.total} id="total" disabled={isGroup} />
+                    <input className={`total ${isGroup?' group':''}`} type="number" value={account.total_owed||''} id="total" disabled={isGroup} />
                     {!isNewItem && !isGroup &&
                         <button className="graph" data-title="Total Owed">
                             <i className="fa fa-bar-chart"></i>
@@ -76,8 +84,17 @@ function Popup({error, account={}, group={}}){
                     }
                 </div>
                 <div className="form-group">
+                    <label>Payment Amount</label>
+                    <input className={`amount ${isGroup?' group':''}`} type="number" step="0.01" value={account.amount||''} disabled={isGroup} />
+                    {!isNewItem && !isGroup &&
+                    <button className="graph" data-title="Amount">
+                        <i className="fa fa-bar-chart"></i>
+                    </button>
+                    }
+                </div>
+                <div className="form-group">
                     <label>Date Due</label>
-                    <input type="date" defaultValue={originalDateString}/>
+                    <input type="date" value={account.date||''}/>
                 </div>
                 {isNewItem &&
                 <div className="form-group">
@@ -91,7 +108,7 @@ function Popup({error, account={}, group={}}){
                 </div>
                 }
                 <div className="row actions">
-                    <button className="button-primary cancel">Cancel</button>
+                    <button className="button-primary cancel" onClick={popupCancel}>Cancel</button>
                     {isGroup && !isNewItem &&
                     <button className="button-primary remove">Remove</button>
                     }

@@ -1,19 +1,22 @@
 import React from 'react';
 import {formatMoney} from '../utilities';
-import actions from '../../redux/actions';
-
-function rowClick(title){
-    actions({
-        type: 'POPUP_ACCOUNT',
-        payload: {title}
-    });
-}
+import {
+    accountClick, groupClick, newAccountClick, newGroupClick
+} from '../../redux/actions';
 
 function makeRow(data, key){
     const isGroup = data.type === 'group';
     const rowClassName = `button ${data.status.toLowerCase()} primary${isGroup ? " group" : ""}`;
+    const rowClick = isGroup ? groupClick : accountClick;
+    const contextClick = isGroup
+        ? accountClick
+        : () => {};
+
     return (
-        <a className={rowClassName} key={key + '-' + data.title} onClick={() => rowClick(data.title)}>
+        <a className={rowClassName} key={key + '-' + data.title}
+            onClick={() => rowClick(data.title)}
+            onContextMenu={(e) => { contextClick(data.title); e.preventDefault(); e.stopPropagation(); return !isGroup;}}
+        >
             <table className="u-full-width">
             <tbody>
                 <tr className="header">
@@ -46,13 +49,13 @@ function Liabilities({liabilities = []}){
 
     if(selectedLiabs === 0){
         liabRows = liabRows.concat(
-            <a id="add-new" className="button" key="liab-add-new">Add New</a>
+            <a id="add-new" className="button" key="liab-add-new" onClick={newAccountClick}>Add New</a>
         );
     }
 
     if(selectedLiabs > 0){
         liabRows = liabRows.concat(
-            <a id="add-group" class="button" key="liab-agg-group">Group Accounts</a>
+            <a id="add-group" class="button" key="liab-agg-group" onClick={newGroupClick}>Group Accounts</a>
         );
     }
 

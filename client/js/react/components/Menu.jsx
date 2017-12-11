@@ -1,10 +1,13 @@
 import React from 'react';
+import {
+    menuSelect
+  } from '../../redux/actions';
 
-function Menu({items, selected, onSelect}){
+function Menu({items, selected}){
     const menuItems = items.map((item, key) => {
         const menuClass = "button menu button-primary" + (key === Number(selected) ? ' selected' : '');
         return (
-            <a className={menuClass} key={key} onClick={() => onSelect(key)}>{item}</a>
+            <a className={menuClass} key={key} onClick={() => menuSelect(key)}>{item}</a>
         );
     });
 

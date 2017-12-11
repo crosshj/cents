@@ -22,6 +22,11 @@ var config = {
     extensions: ['.js', '.jsx']
   },
   plugins: [
+    // new webpack.DefinePlugin({
+    //   'process.env': {
+    //     'NODE_ENV': '"production"'
+    //   }
+    // }),
     new webpack.optimize.CommonsChunkPlugin({
       name: 'vendor',
       minChunks: function (module) {
@@ -29,21 +34,21 @@ var config = {
         return module.context && module.context.includes("node_modules");
       }
     }),
-    new webpack.optimize.UglifyJsPlugin({
-      mangle: true,
-      compress: {
-        warnings: false, // Suppress uglification warnings
-        pure_getters: true,
-        unsafe: false,
-        unsafe_comps: false,
-        screw_ie8: true
-      },
-      output: {
-        comments: false,
-      },
-      exclude: [/\.min\.js$/gi], // skip pre-minified libs
-      test: /(vendor\.js)+/i
-    })
+    // new webpack.optimize.UglifyJsPlugin({
+    //   mangle: true,
+    //   compress: {
+    //     warnings: false, // Suppress uglification warnings
+    //     pure_getters: true,
+    //     unsafe: false,
+    //     unsafe_comps: false,
+    //     screw_ie8: true
+    //   },
+    //   output: {
+    //     comments: false,
+    //   },
+    //   exclude: [/\.min\.js$/gi], // skip pre-minified libs
+    //   test: /(vendor\.js)+/i
+    // })
     // new HtmlWebpackPlugin({
     //   title: 'HA Bridge Configuration',
     //   template: 'index.ejs',

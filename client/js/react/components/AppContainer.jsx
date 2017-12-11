@@ -11,29 +11,22 @@ import Flickity from 'react-flickity-component';
 class AppContainer extends React.Component {
   constructor(props, context){
     super(props, context);
-    this.state = props;
-    this.onMenuSelect = this.onMenuSelect.bind(this);
+    this.props = props;
   }
 
   componentWillReceiveProps(nextProps){
     //console.log('--- got new props');
     //const props = JSON.parse(JSON.stringify(nextProps));
     //props.selectedMenuIndex = localStorage && localStorage.getItem('selectedTab') || 0;
-    this.state = nextProps;
-  }
-
-  onMenuSelect(index){
-    localStorage.setItem('selectedTab', index);
-    this.setState({selectedMenuIndex: index});
+    //this.props = nextProps;
   }
 
   render () {
     //console.log('--- render');
-    const props = this.state;
-    
+
     const flickityOptions = {
       // options
-      initialIndex: this.state.selectedMenuIndex || 0,
+      initialIndex: this.props.selectedMenuIndex || 0,
       setGallerySize: false,
       dragThreshold: 50,
       prevNextButtons: false,
@@ -45,14 +38,13 @@ class AppContainer extends React.Component {
     
     return (
       <React.Fragment>
-        { !this.state.error &&
+        { !this.props.error &&
           <Menu
             items={['Debts', 'Totals', 'Assets']}
-            selected={this.state.selectedMenuIndex}
-            onSelect={this.onMenuSelect}
+            selected={this.props.selectedMenuIndex}
           />
         }
-        { !this.state.error &&
+        { !this.props.error &&
           <Flickity
             className={ 'main-carousel' } 
             elementType={ 'div' } // default 'div' 
@@ -61,22 +53,22 @@ class AppContainer extends React.Component {
             reloadOnUpdate={false}
             onSwipe={this.onMenuSelect}
           >
-              <Liabilities liabilities={this.state.liabilities}/>
-              <Totals totals={this.state.totals}/>
-              <Assets assets={this.state.assets}/>
+              <Liabilities liabilities={this.props.liabilities}/>
+              <Totals totals={this.props.totals}/>
+              <Assets assets={this.props.assets}/>
           </Flickity>
         }
-        { this.state.error &&
+        { this.props.error &&
           <div className="center-all">
             <i className="fa fa-spinner fa-pulse fa-5x fa-fw white  "></i>
           </div>
         }
-        { this.state.error &&
+        { this.props.error &&
           <div id="login">
             <iframe width="100%" height="100%" frameBorder="0" src="./login/" />
           </div>
         }
-        <Popup {...this.state.popup}/>
+        <Popup {...this.props.popup}/>
         <div id="corner-circle">0</div>
         {/* This fake div hidden preloads our web font! */}
         <div className="div-fake-hidden">
