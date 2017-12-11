@@ -16,6 +16,7 @@ function app(state, action) {
             break;
         case 'GROUP_CLICK':
             newState = Object.assign({}, state, {});
+            console.log('should insert inline grouped items here');
             break;
         }
     return newState || state || {};
