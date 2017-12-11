@@ -31,10 +31,6 @@ function renderApp(props) {
     React.createElement(AppContainer, Object.assign({}, state.app, {popup: state.popup}), null),
     document.querySelector('#app')
   );
-  // render(
-  //   React.createElement(Popup, state.popup, null),
-  //   document.querySelector('#popup-modal')
-  // );
 }
 
 setupLoginPageListener();
