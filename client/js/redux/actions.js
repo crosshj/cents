@@ -54,11 +54,23 @@ function popupCancel(){
     });
 }
 
+function groupRemove(){
+    dispatch({
+        type: 'GROUP_REMOVE'
+    });
+}
+
+function accountSave(){
+    dispatch({
+        type: 'ACCOUNT_SAVE'
+    });
+}
+
 function init(store){
     dispatch = store.dispatch;
 }
 
 export {
-    init, getAccounts, menuSelect, selectAccountClick,
+    init, getAccounts, menuSelect, selectAccountClick, groupRemove, accountSave,
     accountClick, groupClick, newAccountClick, newGroupClick, popupCancel
 }

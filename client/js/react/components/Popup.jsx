@@ -2,7 +2,9 @@ import React from 'react';
 
 import {formatMoney} from '../utilities';
 import {
-    popupCancel
+    popupCancel,
+    groupRemove,
+    accountSave
   } from '../../redux/actions';
 
 function statusRow(){
@@ -99,20 +101,20 @@ function Popup({error, account={}}){
                 {isNewItem &&
                 <div className="form-group">
                     <label>Occurence</label>
-                    <select className="u-full-width" id="occurence">
-                        <option defaultValue="once">Once</option>
-                        <option defaultValue="week">Weekly</option>
-                        <option defaultValue="bi-week">Bi-weekly</option>
-                        <option defaultValue="month" selected="selected">Monthly</option>
+                    <select className="u-full-width" id="occurence" defaultValue="month">
+                        <option value="once">Once</option>
+                        <option value="week">Weekly</option>
+                        <option value="bi-week">Bi-weekly</option>
+                        <option value="month">Monthly</option>
                     </select>
                 </div>
                 }
                 <div className="row actions">
                     <button className="button-primary cancel" onClick={popupCancel}>Cancel</button>
                     {isGroup && !isNewItem &&
-                    <button className="button-primary remove">Remove</button>
+                    <button className="button-primary remove" onClick={groupRemove}>Remove</button>
                     }
-                    <button className="button-primary save">{isNewItem ? 'Add' : 'Save'}</button>
+                    <button className="button-primary save" onClick={accountSave}>{isNewItem ? 'Add' : 'Save'}</button>
                 </div>
             </div>
         </div>

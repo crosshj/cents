@@ -1,5 +1,6 @@
 // Reducer
 var accounts = undefined;
+var account = undefined;
 
 function app(state, action) {
     var newState = undefined;
@@ -26,20 +27,30 @@ function app(state, action) {
             newState = Object.assign({}, state, {});
             console.log('should insert inline grouped items here');
             break;
+        case 'GROUP_REMOVE':
+            console.log('Remove group here: ', account.title);
+
+            break;
+        case 'ACCOUNT_SAVE':
+            console.log('Save account here: ', account.title);
+            account=undefined;
+            break;
         }
+        
     return newState || state || {};
 }
 
 function popup(state, action) {
     var newState = undefined;
-    var account = undefined;
+
     switch (action.type) {
         case 'POPUP_ACCOUNT':
             account = accounts.liabilities
                 .filter(a => a.title.toLowerCase() === action.payload.title.toLowerCase());
+            account = account[0];
             newState = Object.assign({}, state, {
-                error: account[0] ? false : 'could not find account',
-                account: JSON.parse(JSON.stringify(account[0] || false))
+                error: account ? false : 'could not find account',
+                account: JSON.parse(JSON.stringify(account || false))
             });
             break;
         case 'POPUP_NEW_GROUP':
@@ -82,6 +93,13 @@ function popup(state, action) {
             break;
         case 'POPUP_CANCEL':
             account = undefined;
+            newState = Object.assign({}, state, {error: 'not initialized', account: undefined})
+            break;
+        case 'GROUP_REMOVE':
+            account=undefined;
+            newState = Object.assign({}, state, {error: 'not initialized', account: undefined})
+            break;
+        case 'ACCOUNT_SAVE':
             newState = Object.assign({}, state, {error: 'not initialized', account: undefined})
             break;
     }
