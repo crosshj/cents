@@ -28,8 +28,12 @@ function Popup({error, account={}}){
     const originalStatus = 'pending';
     const originalDateString  = '';
 
+    if (!error){
+        document.getElementById('popup-modal').scrollTo(0,0);
+    }
+
     return (
-        <div id="popup-modal" className={popupClass}>
+        <div id="popup-modal" className={popupClass} ref={ref => ref && ref.scrollTo(0,0)}>
             <div className="container content history"></div>
             <div className="container content account">
                 <h2>

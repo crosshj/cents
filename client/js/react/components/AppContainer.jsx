@@ -11,14 +11,6 @@ import Flickity from 'react-flickity-component';
 class AppContainer extends React.Component {
   constructor(props, context){
     super(props, context);
-    this.props = props;
-  }
-
-  componentWillReceiveProps(nextProps){
-    //console.log('--- got new props');
-    //const props = JSON.parse(JSON.stringify(nextProps));
-    //props.selectedMenuIndex = localStorage && localStorage.getItem('selectedTab') || 0;
-    //this.props = nextProps;
   }
 
   render () {
