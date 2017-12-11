@@ -95,6 +95,11 @@ function popup(state, action) {
             account = undefined;
             newState = Object.assign({}, state, {error: 'not initialized', account: undefined})
             break;
+        case 'POPUP_HISTORY':
+            const { field } = action.payload;
+            console.log(`show history for ${ account ? account.title : 'overall'} ${field ? ` field: ${field}` : ''}`);
+            newState = Object.assign({}, state, {account})
+            break;
         case 'GROUP_REMOVE':
             account=undefined;
             newState = Object.assign({}, state, {error: 'not initialized', account: undefined})

@@ -1,5 +1,8 @@
 import React from 'react';
 import {formatMoney} from '../utilities';
+import {
+    popupHistory
+  } from '../../redux/actions';
 
 function makeTotalsRow(props){
     const {balance=0, pendingTotal=0, dueTotal=0, assetsTotal=0, debts=0, debtsTotal=0} = props;
@@ -65,7 +68,7 @@ function makeTotalsRow(props){
                     </tr>
                     <tr className="header history">
                     <td colSpan="2" className="title center">
-                        <button>History</button>
+                        <button onClick={() => popupHistory('total_owed')}>History</button>
                     </td>
                     </tr>
                 </tbody>

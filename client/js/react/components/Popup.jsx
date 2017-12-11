@@ -4,7 +4,8 @@ import {formatMoney} from '../utilities';
 import {
     popupCancel,
     groupRemove,
-    accountSave
+    accountSave,
+    popupHistory
   } from '../../redux/actions';
 
 function statusRow(){
@@ -29,6 +30,12 @@ function Popup({error, account={}}){
     const statusItems = [];
     const originalStatus = 'pending';
     const originalDateString  = '';
+    const totalHistory = () => {
+        popupHistory('total_owed');
+    };
+    const amountHistory = () => {
+        popupHistory('amount');
+    };
 
     return (
         <div id="popup-modal" className={popupClass} ref={ref => ref && ref.scrollTo(0,0)}>
@@ -80,7 +87,7 @@ function Popup({error, account={}}){
                     <label>Total Owed</label>
                     <input className={`total ${isGroup?' group':''}`} type="number" value={account.total_owed||''} id="total" disabled={isGroup} />
                     {!isNewItem && !isGroup &&
-                        <button className="graph" data-title="Total Owed">
+                        <button className="graph" data-title="Total Owed"  onClick={totalHistory}>
                             <i className="fa fa-bar-chart"></i>
                         </button>
                     }
@@ -89,7 +96,7 @@ function Popup({error, account={}}){
                     <label>Payment Amount</label>
                     <input className={`amount ${isGroup?' group':''}`} type="number" step="0.01" value={account.amount||''} disabled={isGroup} />
                     {!isNewItem && !isGroup &&
-                    <button className="graph" data-title="Amount">
+                    <button className="graph" data-title="Amount" onClick={amountHistory}>
                         <i className="fa fa-bar-chart"></i>
                     </button>
                     }

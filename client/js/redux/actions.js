@@ -54,6 +54,13 @@ function popupCancel(){
     });
 }
 
+function popupHistory(field){
+    dispatch({
+        type: 'POPUP_HISTORY',
+        payload: field && { field }
+    });
+}
+
 function groupRemove(){
     dispatch({
         type: 'GROUP_REMOVE'
@@ -72,5 +79,6 @@ function init(store){
 
 export {
     init, getAccounts, menuSelect, selectAccountClick, groupRemove, accountSave,
-    accountClick, groupClick, newAccountClick, newGroupClick, popupCancel
+    accountClick, groupClick, newAccountClick, newGroupClick, popupCancel,
+    popupHistory
 }
