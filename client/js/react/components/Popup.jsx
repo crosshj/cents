@@ -47,7 +47,7 @@ function Popup({error, account={}}){
                 { !isGroup &&
                 statusRow(statusItems, originalStatus, isNewItem)
                 }
-                {isNewItem &&
+                {isNewItem && !isGroup &&
                 <div className="form-group">
                     <label htmlFor="website">Website</label>
                     <input className="u-full-width form-control" type="text" id="website"/>
