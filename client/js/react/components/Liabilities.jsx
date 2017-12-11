@@ -9,13 +9,12 @@ function makeRow(data, key){
     const rowClassName = `button ${data.status.toLowerCase()} primary${isGroup ? " group" : ""}`;
     const rowClick = isGroup ? groupClick : accountClick;
     const contextClick = isGroup
-        ? accountClick
         : () => {};
 
     return (
         <a className={rowClassName} key={key + '-' + data.title}
             onClick={() => rowClick(data.title)}
-            onContextMenu={(e) => { contextClick(data.title); e.preventDefault(); e.stopPropagation(); return !isGroup;}}
+            onContextMenu={(e) => contextClick(e, data.title)}
         >
             <table className="u-full-width">
             <tbody>
