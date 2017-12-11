@@ -9,6 +9,7 @@ function makeRow(data, key){
     const rowClassName = `button ${data.status.toLowerCase()} primary${isGroup ? " group" : ""}`;
     const rowClick = isGroup ? groupClick : accountClick;
     const contextClick = isGroup
+        ? (e, title) => {e.preventDefault(); accountClick(title); return false; }
         : () => {};
 
     return (
