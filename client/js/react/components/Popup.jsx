@@ -5,21 +5,9 @@ import {
     popupCancel,
     groupRemove,
     accountSave,
-    popupHistory
+    popupHistory,
+    popupUpdate
   } from '../../redux/actions';
-
-function statusRow(){
-    return <div></div>;
-}
-
-function groupItems(items){
-    return items.map((item, key) => 
-        <tr  key={'group_item'+key}>
-            <td className="">{item.title}</td>
-            <td className="">{formatMoney(item.amount)}</td>
-        </tr>
-    );
-}
 
 function Popup({error, account={}}){
     //console.log({error, account, group});
@@ -37,6 +25,41 @@ function Popup({error, account={}}){
         popupHistory('amount');
     };
 
+    function update(field, event){
+        var update = {};
+        update[field] = event.target.value;
+        if (field === 'auto'){
+            update[field] = event.target.checked;
+        }
+        popupUpdate(update);
+    }
+
+    function statusRow(status){
+        return (
+            <div className="row status">
+                <button className={"due" + (status==='due'?' selected':'')}
+                    onClick={() => popupUpdate({ status: 'due'})}
+                >due</button>
+                <button className={"pending" + (status==='pending' ? ' selected':'')}
+                    onClick={() => popupUpdate({ status: 'pending'})}
+                >pending</button>
+                <button className={"paid" + (status==='paid' ? ' selected':'')}
+                    onClick={() => popupUpdate({ status: 'paid'})}
+                >paid</button>
+            </div>
+        );
+    }
+
+    function groupItems(items){
+        return items.map((item, key) => 
+            <tr  key={'group_item'+key}>
+                <td className="">{item.title}</td>
+                <td className="">{formatMoney(item.amount)}</td>
+            </tr>
+        );
+    }
+    
+
     return (
         <div id="popup-modal" className={popupClass} ref={ref => ref && ref.scrollTo(0,0)}>
             <div className="container content history"></div>
@@ -50,26 +73,35 @@ function Popup({error, account={}}){
                 { isNewItem &&
                 <div className="form-group">
                     <label htmlFor="title">Title</label>
-                    <input className="u-full-width form-control" id="title" type="text"/>
+                    <input className="u-full-width form-control" id="title" type="text"
+                        onChange={(event) => update('title', event)}
+                    />
                 </div>
                 }  
                 { !isGroup &&
-                statusRow(statusItems, originalStatus, isNewItem)
+                statusRow(account.status && account.status.toLowerCase())
                 }
                 {isNewItem && !isGroup &&
                 <div className="form-group">
                     <label htmlFor="website">Website</label>
-                    <input className="u-full-width form-control" type="text" id="website"/>
+                    <input className="u-full-width form-control" type="text" id="website"
+                        value={account.website} onChange={(event) => update('website', event)}
+                    />
                 </div>
                 }
                 <div className="form-group">
                     <label htmlFor="notes">Notes</label>
-                    <textarea className="u-max-full-width u-full-width form-control" rows="5" id="notes" value={account.note||''} />
+                    <textarea className="u-max-full-width u-full-width form-control"
+                        rows="5" id="notes" value={account.note||''}
+                        onChange={(event) => update('note', event)}
+                    />
                 </div>
                 {!isGroup &&
                 <div className="form-group checkbox-group">
                     <label htmlFor="auto-checkbox">AUTO</label>
-                    <input type="checkbox" id="auto-checkbox" checked={!!account.auto} />
+                    <input type="checkbox" id="auto-checkbox" checked={!!account.auto}
+                        onChange={(event) => update('auto', event)}
+                    />
                 </div>
                 }
                 {isGroup &&
@@ -85,16 +117,22 @@ function Popup({error, account={}}){
                 }
                 <div className="form-group">
                     <label>Total Owed</label>
-                    <input className={`total ${isGroup?' group':''}`} type="number" value={account.total_owed||''} id="total" disabled={isGroup} />
+                    <input className={`total ${isGroup?' group':''}`} type="number"
+                        value={account.total_owed||'0.00'} id="total" disabled={isGroup}
+                        onChange={(event) => update('total_owed', event)}
+                    />
                     {!isNewItem && !isGroup &&
-                        <button className="graph" data-title="Total Owed"  onClick={totalHistory}>
+                        <button className="graph" data-title="Total Owed" onClick={totalHistory}>
                             <i className="fa fa-bar-chart"></i>
                         </button>
                     }
                 </div>
                 <div className="form-group">
                     <label>Payment Amount</label>
-                    <input className={`amount ${isGroup?' group':''}`} type="number" step="0.01" value={account.amount||''} disabled={isGroup} />
+                    <input className={`amount ${isGroup?' group':''}`} type="number"
+                        step="0.01" value={account.amount||''} disabled={isGroup}
+                        onChange={(event) => update('amount', event)}
+                    />
                     {!isNewItem && !isGroup &&
                     <button className="graph" data-title="Amount" onClick={amountHistory}>
                         <i className="fa fa-bar-chart"></i>
@@ -103,12 +141,16 @@ function Popup({error, account={}}){
                 </div>
                 <div className="form-group">
                     <label>Date Due</label>
-                    <input type="date" value={account.date||''}/>
+                    <input type="date" value={account.date||''}
+                        onChange={(event) => update('date', event)}
+                    />
                 </div>
                 {isNewItem &&
                 <div className="form-group">
                     <label>Occurence</label>
-                    <select className="u-full-width" id="occurence" defaultValue="month">
+                    <select className="u-full-width" id="occurence" value={ account.occurence || "month"}
+                        onChange={(event) => update('occurence', event)}
+                    >
                         <option value="once">Once</option>
                         <option value="week">Weekly</option>
                         <option value="bi-week">Bi-weekly</option>

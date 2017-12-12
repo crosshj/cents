@@ -53,6 +53,11 @@ function popup(state, action) {
                 account: JSON.parse(JSON.stringify(account || false))
             });
             break;
+        case 'POPUP_UPDATE':
+            newState = JSON.parse(JSON.stringify(state));
+            Object.keys(action.payload)
+                .forEach(fieldName => newState.account[fieldName] = action.payload[fieldName]);
+            break;
         case 'POPUP_NEW_GROUP':
             var selected = accounts.liabilities.filter(a => a.selected);
             account = {

@@ -73,6 +73,13 @@ function accountSave(){
     });
 }
 
+function popupUpdate(updates){
+    dispatch({
+        type: 'POPUP_UPDATE',
+        payload: updates
+    });
+}
+
 function init(store){
     dispatch = store.dispatch;
 }
@@ -80,5 +87,5 @@ function init(store){
 export {
     init, getAccounts, menuSelect, selectAccountClick, groupRemove, accountSave,
     accountClick, groupClick, newAccountClick, newGroupClick, popupCancel,
-    popupHistory
+    popupHistory, popupUpdate
 }
