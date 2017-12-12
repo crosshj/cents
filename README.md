@@ -23,7 +23,7 @@ TLDR; almost done - maybe 2 days left
 - adding groups
 - perfecting service worker
 - redoing bank site scrapers
-- refactor UI - react/redux (maybe rxjs later)
+- refactoring UI - react/redux (maybe rxjs later)
 	
 
 ### NOTES
