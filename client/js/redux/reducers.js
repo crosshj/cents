@@ -80,6 +80,7 @@ function app(state, action) {
 
 function popup(state, action) {
     var newState = undefined;
+    var history = undefined;
 
     switch (action.type) {
         case 'POPUP_ACCOUNT':
@@ -140,8 +141,12 @@ function popup(state, action) {
             break;
         case 'POPUP_HISTORY':
             const { field } = action.payload;
-            console.log(`show history for ${ account ? account.title : 'overall'} ${field ? ` field: ${field}` : ''}`);
-            newState = Object.assign({}, state, {account})
+            history = { field, title: (account||{}).title };
+            newState = Object.assign({}, state, {account, history, error: false})
+            break;
+        case 'POPUP_HISTORY_BACK':
+            history = undefined;
+            newState = Object.assign({}, state, {account, history, error: false})
             break;
         case 'GROUP_REMOVE':
             account=undefined;
