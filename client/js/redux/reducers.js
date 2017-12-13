@@ -17,6 +17,7 @@ function app(state, action) {
             localStorage.setItem('selectedTab', action.payload);
             const selectedMenuIndex = action.payload;
             newState = Object.assign({}, state, {selectedMenuIndex});
+            newState.liabilities.forEach(x => x.selected = false);
             break;
         case 'SELECT_ACCOUNT_CLICK':
             newState = Object.assign({}, state, {});
@@ -29,6 +30,7 @@ function app(state, action) {
         case 'GROUP_CLICK':
             newState = JSON.parse(JSON.stringify(state));
             const group = (newState.liabilities.filter(x => x.title === action.payload.title)||[])[0];
+            newState.liabilities.forEach(x => x.selected = false);
             newState.liabilities = newState.liabilities.filter(x => x.type !== 'grouped');
             if(group.open){
                 group.open = false;
@@ -67,8 +69,12 @@ function app(state, action) {
             console.log('Save account here: ', account.title);
             account=undefined;
             break;
+        default:
+            // de-select account if selected
+            newState = JSON.parse(JSON.stringify(state||{}));
+            (newState.liabilities||[]).forEach(x => x.selected = false);
         }
-        
+
     return newState || state || {};
 }
 
