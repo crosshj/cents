@@ -32,21 +32,32 @@ function app(state, action) {
             newState.liabilities = newState.liabilities.filter(x => x.type !== 'grouped');
             if(group.open){
                 group.open = false;
-            } else {
-                const groupedItems = group.items
-                    .map(item => (accounts.liabilities.filter(x => x.title === item.title)||[])[0]);
-                var newLiabs = [];
-                newState.liabilities.forEach(item => {
-                    newLiabs.push(item);
-                    if(item.title === action.payload.title){
-                        newLiabs = newLiabs.concat(groupedItems);
-                        item.open = true;
-                    }
+                break;
+            } 
+            
+            const statToNumber = {
+                due: 0,
+                pending: 1,
+                paid: 2
+            };
+            const groupedItems = group.items
+                .map(item => (accounts.liabilities.filter(x => x.title === item.title)||[])[0])
+                .sort(function (a, b) {
+                    var statCompare = 0;
+                    if (statToNumber[a.status] > statToNumber[b.status]) statCompare = 1;
+                    if (statToNumber[a.status] < statToNumber[b.status]) statCompare = -1;
+                
+                    return statCompare || new Date(a.date) - new Date(b.date);
                 });
-                newState.liabilities = newLiabs;
-            }
-            debugger;
-            console.log('should insert inline grouped items here');
+            var newLiabs = [];
+            newState.liabilities.forEach(item => {
+                newLiabs.push(item);
+                if(item.title === action.payload.title){
+                    newLiabs = newLiabs.concat(groupedItems);
+                    item.open = true;
+                }
+            });
+            newState.liabilities = newLiabs;
             break;
         case 'GROUP_REMOVE':
             console.log('Remove group here: ', account.title);
