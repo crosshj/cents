@@ -6,9 +6,12 @@ function app(state, action) {
     var newState = undefined;
     switch (action.type) {
         case 'GET_ACCOUNTS':
-            accounts = JSON.parse(JSON.stringify(action.payload));
-            accounts.selectedMenuIndex = localStorage && localStorage.getItem('selectedTab') || 0;
-            newState = Object.assign({}, state, accounts);
+            accounts = action.payload;
+            var stateAccounts = JSON.parse(JSON.stringify(action.payload))
+            stateAccounts.liabilities = stateAccounts.liabilities
+                .filter(x => !x.hidden && x.type !== 'grouped');
+            stateAccounts.selectedMenuIndex = localStorage && localStorage.getItem('selectedTab') || 0;
+            newState = stateAccounts;
             break;
         case 'MENU_SELECT':
             localStorage.setItem('selectedTab', action.payload);
@@ -24,7 +27,25 @@ function app(state, action) {
             });
             break;
         case 'GROUP_CLICK':
-            newState = Object.assign({}, state, {});
+            newState = JSON.parse(JSON.stringify(state));
+            const group = (newState.liabilities.filter(x => x.title === action.payload.title)||[])[0];
+            newState.liabilities = newState.liabilities.filter(x => x.type !== 'grouped');
+            if(group.open){
+                group.open = false;
+            } else {
+                const groupedItems = group.items
+                    .map(item => (accounts.liabilities.filter(x => x.title === item.title)||[])[0]);
+                var newLiabs = [];
+                newState.liabilities.forEach(item => {
+                    newLiabs.push(item);
+                    if(item.title === action.payload.title){
+                        newLiabs = newLiabs.concat(groupedItems);
+                        item.open = true;
+                    }
+                });
+                newState.liabilities = newLiabs;
+            }
+            debugger;
             console.log('should insert inline grouped items here');
             break;
         case 'GROUP_REMOVE':

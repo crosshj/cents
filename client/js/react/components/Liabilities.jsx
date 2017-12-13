@@ -6,7 +6,7 @@ import {
 
 function makeRow(data, key){
     const isGroup = data.type === 'group';
-    const rowClassName = `button ${data.status.toLowerCase()} primary${isGroup ? " group" : ""} ${data.selected ? " selected" : ""}`;
+    const rowClassName = `button ${data.status.toLowerCase()} primary ${data.type} ${data.selected ? " selected" : ""}`;
     const rowClick = isGroup
         ? () => groupClick(data.title)
         : () => accountClick(data.title);
@@ -39,7 +39,6 @@ function makeRow(data, key){
 
 function Liabilities({liabilities = []}){
     let liabRows = liabilities
-        .filter(x => !x.hidden && x.type !== 'grouped')
         .map(makeRow);
 
     const selectedLiabs = liabilities
