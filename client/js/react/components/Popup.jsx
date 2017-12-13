@@ -11,7 +11,7 @@ import {
   } from '../../redux/actions';
 
 function Popup({error, account, history}){
-    console.log({error, account, history});
+    //console.log({error, account, history});
     // debugger;
     const popupClass = error ? 'hidden' : 'show';
     const isNewItem = (account||{}).isNew;
