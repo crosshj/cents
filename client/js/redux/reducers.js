@@ -1,3 +1,7 @@
+import {
+    fetchHistory
+} from './services';
+
 // Reducer
 var accounts = undefined;
 var account = undefined;
@@ -5,10 +9,10 @@ var account = undefined;
 function app(state, action) {
     var newState = undefined;
     switch (action.type) {
-        case 'GET_ACCOUNTS':
+        case 'RECEIVE_ACCOUNTS':
             accounts = action.payload;
             var stateAccounts = JSON.parse(JSON.stringify(action.payload))
-            stateAccounts.liabilities = stateAccounts.liabilities
+            stateAccounts.liabilities = (stateAccounts.liabilities||[])
                 .filter(x => !x.hidden && x.type !== 'grouped');
             stateAccounts.selectedMenuIndex = localStorage && localStorage.getItem('selectedTab') || 0;
             newState = stateAccounts;
@@ -83,6 +87,12 @@ function popup(state, action) {
     var history = undefined;
 
     switch (action.type) {
+        case 'RECEIVE_HISTORY':
+            debugger;
+            newState = JSON.parse(JSON.stringify(state));
+            newState.history.error = false;
+            newState.history.data = action.payload;
+            break;
         case 'POPUP_ACCOUNT':
             account = accounts.liabilities
                 .filter(a => a.title.toLowerCase() === action.payload.title.toLowerCase());
@@ -137,12 +147,16 @@ function popup(state, action) {
             break;
         case 'POPUP_CANCEL':
             account = undefined;
-            newState = Object.assign({}, state, {error: 'not initialized', account: undefined})
+            history = undefined;
+            newState = Object.assign({}, state, {error: 'not initialized', account, history})
             break;
         case 'POPUP_HISTORY':
             const { field } = action.payload;
-            history = { field, title: (account||{}).title };
-            newState = Object.assign({}, state, {account, history, error: false})
+            const title = (account||{}).title || 'Total Owed';
+            history = { error: 'loading', field, title };
+            newState = Object.assign({}, state, {account, history, error: false});
+            const type = account ? 'liabilities' : 'balance'; //TODO: get type in a better way
+            fetchHistory({ type, title, field });
             break;
         case 'POPUP_HISTORY_BACK':
             history = undefined;

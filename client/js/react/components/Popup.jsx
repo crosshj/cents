@@ -1,5 +1,6 @@
 import React from 'react';
 
+import History from './History';
 import {formatMoney} from '../utilities';
 import {
     popupCancel,
@@ -70,10 +71,14 @@ function Popup({error, account, history}){
                             <a>{history.title} {history.field} History</a>
                         </h4>
                         <div id="history-graph">
-                            <div className="loading-spinner">
-                                <i className="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
-                            </div>
-                            <div className="graph-container"></div>
+                            { history.error &&
+                                <div className="loading-spinner">
+                                    <i className="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                                </div>
+                            }
+                            { history.data &&
+                                <History data={history.data}></History>
+                            }
                         </div>
                         <div className="row actions">
                             <button className="button-primary close" onClick={popupCancel}>Close</button>

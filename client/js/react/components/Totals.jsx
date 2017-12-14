@@ -68,7 +68,7 @@ function makeTotalsRow(props){
                     </tr>
                     <tr className="header history">
                     <td colSpan="2" className="title center">
-                        <button onClick={() => popupHistory('total_owed')}>History</button>
+                        <button onClick={() => popupHistory('amount')}>History</button>
                     </td>
                     </tr>
                 </tbody>

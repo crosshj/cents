@@ -1,37 +1,10 @@
 import {safeAccess} from './utilities';
+import { popFunctionQueue } from '../redux/services';
 
 var GLOBAL_FUNCTION_QUEUE = [];
 
-function fetchAccounts(callback) {
-    const url = './json';
-    const config = {
-      credentials: 'include',
-      method: 'GET',
-      headers: new Headers({
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      })
-    };
-    fetch(url, config)
-      .then(r => r.json())
-      .then(body => {
-        // console.log(`Response from ${url} : ${JSON.stringify(body)}`);
-        if(body.error){
-            GLOBAL_FUNCTION_QUEUE.push(() => fetchAccounts(callback));
-        }
-        callback(undefined, body);
-      })
-      .catch(e => {
-        callback(e);
-      });
-}
-
-function serializeLogin(username, password){
-    return `username=${username}&password=${password}`;
-}
-
 function ajaxLogin(username, password, callback){
-    const loginBody = serializeLogin(username, password);
+    const loginBody = `username=${username}&password=${password}`;
 
     fetch('./login/', {
         method: 'POST',
@@ -74,7 +47,7 @@ function setupLoginPageListener(){
             document.querySelector('#login').className = 'hidden';
             const logInIframe = document.querySelector('iframe');
             logInIframe.location = './login';
-            const functionFromQueue = GLOBAL_FUNCTION_QUEUE.pop();
+            const functionFromQueue = popFunctionQueue();
             if(functionFromQueue && typeof functionFromQueue === "function"){
             functionFromQueue();
             }
@@ -85,7 +58,48 @@ function setupLoginPageListener(){
     }, false);
 }
 
+function registerServiceWorker(){
+    var updateUI = () => console.log('TODO: do something different');
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('sw.js', {scope: './'}).then(function(registration) {
+            // Registration was successful
+            console.log('ServiceWorker registration successful with scope: ', registration.scope); //eslint-disable-line no-console
+          }).catch(function(err) {
+            // registration failed :(
+            console.log('ServiceWorker registration failed: ', err); //eslint-disable-line no-console
+          });
+        });
+        navigator.serviceWorker.onmessage = event => {
+          let data = undefined;
+          try {
+            data = JSON.parse(event.data);
+            if(data.type === 'refresh'){
+              if (/\/json$/i.test(data.url)){
+                caches.match(data.url)
+                  .then(cached => cached.json())
+                  .then(json => !json.error && updateUI(undefined, json));
+              }
+              if (/\/accounts$/i.test(data.url)){
+                caches.match(data.url)
+                  .then(cached => cached.json())
+                  .then(json => {
+                    const data = window.MAIN_DATA;
+                    if (json.error){
+                      return;
+                    }
+                    data.scraped = json;
+                    updateUI(undefined, data);
+                  });
+              }
+            }
+          } catch (error) {
+            console.error(error);
+          }
+        };
+      }
+}
+
 export {
-    fetchAccounts,
     setupLoginPageListener
 };

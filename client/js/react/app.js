@@ -17,9 +17,12 @@ import AppContainer from './components/AppContainer';
 import Popup from './components/Popup';
 
 import {
-  fetchAccounts,
   setupLoginPageListener
 } from './misc';
+
+import {
+  fetchAccounts
+} from '../redux/services';
 
 const store = setupStore(renderApp);
 initActions(store);
@@ -35,8 +38,4 @@ function renderApp(props) {
 
 setupLoginPageListener();
 
-fetchAccounts((err, res) => {
-  const payload = res || {};
-  payload.error = err || res.error || false;
-  getAccounts(payload);
-});
+fetchAccounts();

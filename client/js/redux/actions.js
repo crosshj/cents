@@ -1,9 +1,16 @@
 
 var dispatch = undefined;
 
-function getAccounts(payload){
+function receiveAccounts(payload){
     dispatch({
-        type: 'GET_ACCOUNTS',
+        type: 'RECEIVE_ACCOUNTS',
+        payload
+    });
+}
+
+function receiveHistory(payload){
+    dispatch({
+        type: 'RECEIVE_HISTORY',
         payload
     });
 }
@@ -91,7 +98,7 @@ function init(store){
 }
 
 export {
-    init, getAccounts, menuSelect, selectAccountClick, groupRemove, accountSave,
+    init, receiveAccounts, menuSelect, selectAccountClick, groupRemove, accountSave,
     accountClick, groupClick, newAccountClick, newGroupClick, popupCancel,
-    popupHistory, popupHistoryBack, popupUpdate
+    popupHistory, popupHistoryBack, popupUpdate, receiveHistory
 }
