@@ -74,7 +74,7 @@ function app(state, action) {
             newState.liabilities = newLiabs;
             break;
         case 'GROUP_REMOVE':
-            console.log('Remove group here: ', account.title);
+            // console.log('Remove group here: ', account.title);
             groupedItems = account.items
                 .map(item => (accounts.liabilities.filter(x => x.title.toLowerCase() === item.title.toLowerCase())||[])[0]);
             groupedItems.forEach(x=> x.type = undefined);
@@ -89,10 +89,8 @@ function app(state, action) {
                 .filter(x => !x.hidden && x.type !== 'grouped');
             break;
         case 'ACCOUNT_SAVE':
-            // TODO!!! only handles removing, not adding!
             const liabs = accounts.liabilities.map(x=>x.title.toLowerCase());
-
-            // update account state to accounts state
+            // add account/group, or remove group
             if(account.isNew){
                 const newAccount = JSON.parse(JSON.stringify(account));
                 delete newAccount.isNew;
@@ -108,22 +106,18 @@ function app(state, action) {
                     }
                 });
             }
-            // QUESTION: will this always be processed before popup reducer?
             newState = JSON.parse(JSON.stringify(state));
             newState.liabilities = accounts.liabilities
                 .filter(x => !x.hidden && x.type !== 'grouped');
-            // TODO: sort accounts
-                // console.log('Save account here: ', account.title);
-            // TODO: cleanup accounts before posting
             saveAccounts({
                 assets: accounts.assets,
                 liabilities: accounts.liabilities,
                 balance: accounts.balance
             });
+            // QUESTION: will this always be processed before popup reducer?
             account=undefined;
             break;
         default:
-            // de-select account if selected
             newState = JSON.parse(JSON.stringify(state||{}));
             (newState.liabilities||[]).forEach(x => x.selected = false);
         }
@@ -193,7 +187,7 @@ function popup(state, action) {
                 note: "",
                 isNew: true,
                 status: "paid",
-                date: "2017-10-18",
+                date: "2017-10-18", //TODO: a month from now?
                 amount: 0,
                 total_owed: 0,
                 auto: false
