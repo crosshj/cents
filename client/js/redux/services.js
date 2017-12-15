@@ -1,5 +1,5 @@
 import {
-    receiveAccounts, receiveLogin, receiveHistory
+    receiveAccounts, receiveLogin, receiveHistory, receiveAccountsSave
 } from './actions';
 
 
@@ -49,7 +49,7 @@ function login({ username, password }) {
             //console.log('login success -->', data);
             receiveLogin(undefined, data);
         }).catch(function (error) {
-            console.log('login error --> ', error);
+            //console.log('login error --> ', error);
             receiveLogin(error);
         });
 }
@@ -101,10 +101,33 @@ function fetchHistory({ type, title, field }) {
     updateDiffs.bind(updateDiffs)();
 }
 
+function saveAccounts(accounts) {
+    const url = './accounts';
+    const config = {
+        method: 'POST',
+        body: JSON.stringify(accounts),
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        credentials: 'same-origin'
+    };
+    fetch(url, config)
+        .then(r => r.json())
+        .then(function (data) {
+            //console.log('accounts save success -->', data);
+            receiveAccountsSave(undefined, data);
+        }).catch(function (error) {
+            //console.log('accounts save error --> ', error);
+            receiveAccountsSave(error);
+        });
+}
+
 function popFunctionQueue() {
     return GLOBAL_FUNCTION_QUEUE.pop();
 }
 
 export {
-    fetchAccounts, login, fetchAccountsData, fetchHistory, popFunctionQueue
+    fetchAccounts, login, fetchAccountsData, fetchHistory, saveAccounts,
+    popFunctionQueue
 }

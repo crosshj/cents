@@ -8,6 +8,13 @@ function receiveAccounts(payload){
     });
 }
 
+function receiveAccountsSave(error, payload){
+    dispatch({
+        type: 'RECEIVE_ACCOUNTS_SAVE',
+        payload: Object.assign({}, payload, {error})
+    });
+}
+
 function receiveHistory(payload){
     dispatch({
         type: 'RECEIVE_HISTORY',
@@ -98,7 +105,7 @@ function init(store){
 }
 
 export {
-    init, receiveAccounts, menuSelect, selectAccountClick, groupRemove, accountSave,
+    init, receiveAccounts, receiveAccountsSave, menuSelect, selectAccountClick, groupRemove, accountSave,
     accountClick, groupClick, newAccountClick, newGroupClick, popupCancel,
     popupHistory, popupHistoryBack, popupUpdate, receiveHistory
 }

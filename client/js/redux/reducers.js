@@ -1,5 +1,6 @@
 import {
-    fetchHistory
+    fetchHistory,
+    saveAccounts
 } from './services';
 
 // Reducer
@@ -16,6 +17,10 @@ function app(state, action) {
                 .filter(x => !x.hidden && x.type !== 'grouped');
             stateAccounts.selectedMenuIndex = localStorage && localStorage.getItem('selectedTab') || 0;
             newState = stateAccounts;
+            break;
+        case 'RECEIVE_ACCOUNTS_SAVE':
+            console.log('got accounts save, notify if an error');
+            newState = JSON.parse(JSON.stringify(state));
             break;
         case 'MENU_SELECT':
             localStorage.setItem('selectedTab', action.payload);
@@ -67,10 +72,52 @@ function app(state, action) {
             break;
         case 'GROUP_REMOVE':
             console.log('Remove group here: ', account.title);
-
+            account.items
+                .map(item => (accounts.liabilities.filter(x => x.title === item.title)||[])[0]);
+            
+            accounts.liabilities.forEach(x => {
+                if ((account.items||[])
+                    .map(item => item.title.toLowerCase())
+                    .includes(x.title.toLowerCase())
+                ){
+                    x.type = undefined;
+                }
+            });
+            saveAccounts({
+                assets: accounts.assets,
+                liabilities: accounts.liabilities.filter(x => x.title !== account.title),
+                balance: accounts.balance
+            });
+            newState = JSON.parse(JSON.stringify(state));
+            newState.liabilities = accounts.liabilities
+                .filter(x => x.title !== account.title)
+                .map(x => {
+                    if ((account.items||[])
+                        .map(item => item.title.toLowerCase())
+                        .includes(x.title.toLowerCase())
+                    ){
+                        x.type = undefined;
+                    }
+                    return x;
+                })
+                .filter(x => x.type !== 'grouped');
             break;
         case 'ACCOUNT_SAVE':
+            // TODO: update account state to accounts state
+            accounts.liabilities.forEach(a => {
+                if(a.title.toLowerCase() === account.title.toLowerCase()){
+                    Object.keys(account).forEach(key => a[key] = account[key]);
+                }
+            });
+            // QUESTION: will this always be processed before popup reducer?
+            newState = JSON.parse(JSON.stringify(state));
             console.log('Save account here: ', account.title);
+            // TODO: cleanup accounts before posting
+            saveAccounts({
+                assets: accounts.assets,
+                liabilities: accounts.liabilities,
+                balance: accounts.balance
+            });
             account=undefined;
             break;
         default:
@@ -106,6 +153,7 @@ function popup(state, action) {
             newState = JSON.parse(JSON.stringify(state));
             Object.keys(action.payload)
                 .forEach(fieldName => newState.account[fieldName] = action.payload[fieldName]);
+            account = newState.account;
             break;
         case 'POPUP_NEW_GROUP':
             var selected = accounts.liabilities.filter(a => a.selected);
@@ -167,7 +215,7 @@ function popup(state, action) {
             newState = Object.assign({}, state, {error: 'not initialized', account: undefined})
             break;
         case 'ACCOUNT_SAVE':
-            newState = Object.assign({}, state, {error: 'not initialized', account: undefined})
+            newState = Object.assign({}, state, {error: 'not initialized', account: undefined});
             break;
     }
     return newState || state || {};
