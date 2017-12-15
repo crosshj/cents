@@ -9,6 +9,7 @@ var account = undefined;
 
 function app(state, action) {
     var newState = undefined;
+    var groupedItems = undefined;
     switch (action.type) {
         case 'RECEIVE_ACCOUNTS':
             accounts = action.payload;
@@ -51,7 +52,7 @@ function app(state, action) {
                 pending: 1,
                 paid: 2
             };
-            const groupedItems = group.items
+            groupedItems = group.items
                 .map(item => (accounts.liabilities.filter(x => x.title === item.title)||[])[0])
                 .sort(function (a, b) {
                     var statCompare = 0;
@@ -72,35 +73,18 @@ function app(state, action) {
             break;
         case 'GROUP_REMOVE':
             console.log('Remove group here: ', account.title);
-            account.items
-                .map(item => (accounts.liabilities.filter(x => x.title === item.title)||[])[0]);
-            
-            accounts.liabilities.forEach(x => {
-                if ((account.items||[])
-                    .map(item => item.title.toLowerCase())
-                    .includes(x.title.toLowerCase())
-                ){
-                    x.type = undefined;
-                }
-            });
+            groupedItems = account.items
+                .map(item => (accounts.liabilities.filter(x => x.title.toLowerCase() === item.title.toLowerCase())||[])[0]);
+            groupedItems.forEach(x=> x.type = undefined);
+            accounts.liabilities = accounts.liabilities.filter(x => x.title.toLowerCase() !== account.title.toLowerCase());
             saveAccounts({
                 assets: accounts.assets,
-                liabilities: accounts.liabilities.filter(x => x.title !== account.title),
+                liabilities: accounts.liabilities,
                 balance: accounts.balance
             });
             newState = JSON.parse(JSON.stringify(state));
             newState.liabilities = accounts.liabilities
-                .filter(x => x.title !== account.title)
-                .map(x => {
-                    if ((account.items||[])
-                        .map(item => item.title.toLowerCase())
-                        .includes(x.title.toLowerCase())
-                    ){
-                        x.type = undefined;
-                    }
-                    return x;
-                })
-                .filter(x => x.type !== 'grouped');
+                .filter(x => !x.hidden && x.type !== 'grouped');
             break;
         case 'ACCOUNT_SAVE':
             // TODO: update account state to accounts state
