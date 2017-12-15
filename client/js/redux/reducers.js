@@ -50,16 +50,16 @@ function app(state, action) {
             } 
             
             const statToNumber = {
-                due: 0,
-                pending: 1,
-                paid: 2
+                due: 1,
+                pending: 2,
+                paid: 3
             };
             groupedItems = group.items
                 .map(item => (accounts.liabilities.filter(x => x.title === item.title)||[])[0])
                 .sort(function (a, b) {
                     var statCompare = 0;
-                    if (statToNumber[a.status] > statToNumber[b.status]) statCompare = 1;
-                    if (statToNumber[a.status] < statToNumber[b.status]) statCompare = -1;
+                    if (statToNumber[a.status.toLowerCase()] > statToNumber[b.status.toLowerCase()]) statCompare = 1;
+                    if (statToNumber[a.status.toLowerCase()] < statToNumber[b.status.toLowerCase()]) statCompare = -1;
                 
                     return statCompare || new Date(a.date) - new Date(b.date);
                 });
@@ -96,9 +96,9 @@ function app(state, action) {
             if(account.isNew){
                 const newAccount = JSON.parse(JSON.stringify(account));
                 delete newAccount.isNew;
-                newAccount.items = newAccount.items.map(x => ({ title: x.title}));
+                newAccount.items = (newAccount.items||[]).map(x => ({ title: x.title}));
                 accounts.liabilities.push(newAccount);
-                groupedItems = account.items
+                (account.items||[])
                     .map(item => (accounts.liabilities.filter(x => x.title === item.title)||[])[0])
                     .forEach(x => x.type = 'grouped');
             } else {
@@ -112,7 +112,8 @@ function app(state, action) {
             newState = JSON.parse(JSON.stringify(state));
             newState.liabilities = accounts.liabilities
                 .filter(x => !x.hidden && x.type !== 'grouped');
-            console.log('Save account here: ', account.title);
+            // TODO: sort accounts
+                // console.log('Save account here: ', account.title);
             // TODO: cleanup accounts before posting
             saveAccounts({
                 assets: accounts.assets,
@@ -157,6 +158,15 @@ function popup(state, action) {
             account = newState.account;
             break;
         case 'POPUP_NEW_GROUP':
+            var selectedAmount = selected.reduce((all, g) => { return all+Number(g.amount); }, 0);
+            selectedAmount = parseFloat(selectedAmount).toFixed(2);
+            var selectedOwed = selected.reduce((all, g) => { return all+Number(g.total_owed||0); }, 0);
+            selectedOwed = parseFloat(selectedOwed).toFixed(2);
+            var selectedLatestDate = selected
+                .map(x=>x.date)
+                .sort(function (a, b) {
+                    return new Date(a.date) - new Date(b.date);
+                })[0];
             account = {
                 type: "group",
                 hidden: false,
@@ -164,9 +174,9 @@ function popup(state, action) {
                 note: "",
                 items: selected,
                 isNew: true,
-                status: "paid",
-                date: "2017-10-18",
-                amount: selected.reduce((all, g) => { return all+Number(g.amount); }, 0),
+                status: "paid", // TODO: update from selected accounts
+                date: selectedLatestDate,
+                amount: selectedAmount,
                 total_owed: selected.reduce((all, g) => { return all+Number(g.total_owed||0); }, 0),
                 auto: false
             };
