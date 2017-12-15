@@ -6,6 +6,7 @@ import {
 // Reducer
 var accounts = undefined;
 var account = undefined;
+var selected = undefined;
 
 function app(state, action) {
     var newState = undefined;
@@ -36,6 +37,7 @@ function app(state, action) {
                     liab.selected = !liab.selected;
                 }
             });
+            selected = newState.liabilities.filter( x=> x.selected);
             break;
         case 'GROUP_CLICK':
             newState = JSON.parse(JSON.stringify(state));
@@ -87,14 +89,29 @@ function app(state, action) {
                 .filter(x => !x.hidden && x.type !== 'grouped');
             break;
         case 'ACCOUNT_SAVE':
-            // TODO: update account state to accounts state
-            accounts.liabilities.forEach(a => {
-                if(a.title.toLowerCase() === account.title.toLowerCase()){
-                    Object.keys(account).forEach(key => a[key] = account[key]);
-                }
-            });
+            // TODO!!! only handles removing, not adding!
+            const liabs = accounts.liabilities.map(x=>x.title.toLowerCase());
+
+            // update account state to accounts state
+            if(account.isNew){
+                const newAccount = JSON.parse(JSON.stringify(account));
+                delete newAccount.isNew;
+                newAccount.items = newAccount.items.map(x => ({ title: x.title}));
+                accounts.liabilities.push(newAccount);
+                groupedItems = account.items
+                    .map(item => (accounts.liabilities.filter(x => x.title === item.title)||[])[0])
+                    .forEach(x => x.type = 'grouped');
+            } else {
+                accounts.liabilities.forEach(a => {
+                    if(a.title.toLowerCase() === account.title.toLowerCase()){
+                        Object.keys(account).forEach(key => a[key] = account[key]);
+                    }
+                });
+            }
             // QUESTION: will this always be processed before popup reducer?
             newState = JSON.parse(JSON.stringify(state));
+            newState.liabilities = accounts.liabilities
+                .filter(x => !x.hidden && x.type !== 'grouped');
             console.log('Save account here: ', account.title);
             // TODO: cleanup accounts before posting
             saveAccounts({
@@ -140,7 +157,6 @@ function popup(state, action) {
             account = newState.account;
             break;
         case 'POPUP_NEW_GROUP':
-            var selected = accounts.liabilities.filter(a => a.selected);
             account = {
                 type: "group",
                 hidden: false,
