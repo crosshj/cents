@@ -22,6 +22,11 @@ function app(state, action) {
         case 'RECEIVE_ACCOUNTS':
             accounts = action.payload;
             var stateAccounts = JSON.parse(JSON.stringify(action.payload))
+            stateAccounts.liabilities.forEach(x => {
+                if (x.hidden === 'false'){
+                    x.hidden = false;
+                }
+            });
             stateAccounts.liabilities = (stateAccounts.liabilities||[])
                 .filter(x => !x.hidden && x.type !== 'grouped');
             stateAccounts.selectedMenuIndex = localStorage && localStorage.getItem('selectedTab') || 0;
