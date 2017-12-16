@@ -34,7 +34,7 @@ class AppContainer extends React.Component {
       <React.Fragment>
         { !this.props.error &&
           <Menu
-            items={['Debts', 'Totals', 'Assets']}
+            items={['-Debts-', 'Totals', 'Assets']}
             selected={this.props.selectedMenuIndex}
           />
         }
