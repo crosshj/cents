@@ -46,7 +46,7 @@
     "test": "",
     "build": "webpack",
     "start": "node server/index.js",
-    "watch": "nodemon server/index.js",
+    "watch": "export NODE_ENV=dev|| set NODE_ENV=dev&& nodemon server/index.js",
     "prestart": "touch ./accounts.json",
     "bundle.stats": "webpack --profile --json > webpack-stats.json",
     "//": "lint does not work - Can't open **.js",

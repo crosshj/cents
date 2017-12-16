@@ -2,6 +2,7 @@ import {
     fetchHistory,
     saveAccounts
 } from './services';
+import { safeAccess } from '../react/utilities';
 
 // Reducer
 var accounts = undefined;
@@ -25,6 +26,12 @@ function app(state, action) {
                 .filter(x => !x.hidden && x.type !== 'grouped');
             stateAccounts.selectedMenuIndex = localStorage && localStorage.getItem('selectedTab') || 0;
             newState = stateAccounts;
+            break;
+        case 'RECEIVE_ACCOUNTS_DATA':
+            newState = JSON.parse(JSON.stringify(state));
+            const balance = safeAccess(() => action.payload.data.accounts[0].balance);
+            newState.totals = newState.totals || {};
+            newState.totals.balance = Number(balance||0);
             break;
         case 'RECEIVE_ACCOUNTS_SAVE':
             // console.log('got accounts save, notify if an error');

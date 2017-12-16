@@ -56,13 +56,16 @@ app.use(passport.session());
 
 require('./routes')(app, passport);
 
-// app.use(webpackDevMiddleware(webpackCompiler, {
-//   publicPath: '/js/build/',
-//   //quiet: true,
-//   stats: {
-//     colors: true
-// 	}
-// }));
+const useWebpackDevMiddleware = process.env.NODE_ENV === 'dev';
+if (useWebpackDevMiddleware){
+  app.use(webpackDevMiddleware(webpackCompiler, {
+    publicPath: '/js/build/',
+    //quiet: true,
+    stats: {
+      colors: true
+    }
+  }));
+}
 
 app.use('/', express.static(
   path.resolve(__dirname, '../client'),

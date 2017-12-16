@@ -1,5 +1,5 @@
 import {
-    receiveAccounts, receiveLogin, receiveHistory, receiveAccountsSave
+    receiveAccounts, receiveLogin, receiveHistory, receiveAccountsSave, receiveAccountsData
 } from './actions';
 
 
@@ -25,6 +25,7 @@ function fetchAccounts() {
             const payload = body || {};
             payload.error = body.error || false;
             receiveAccounts(payload);
+            fetchAccountsData();
         })
         // .catch(error => {
         //     receiveAccounts({ error });
@@ -64,8 +65,10 @@ function fetchAccountsData() {
         .then(r => r.json())
         .then(function (data) {
             //console.log('get accounts data success -->', data);
+            receiveAccountsData(undefined, data);
         }).catch(function (error) {
             //console.log('get acccounts data error --> ', error);
+            receiveAccountsData(error);
         });
 }
 
