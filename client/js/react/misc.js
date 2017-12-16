@@ -17,10 +17,10 @@ function ajaxLogin(username, password, callback){
     }).then(function(response) {
         return response.json();
     }).then(function(data) {
-        console.log('login success -->', data);
+        // console.log('login success -->', data);
         if (callback) callback(undefined, data);
     }).catch(function(error) {
-        console.log('login error --> ', error);
+        // console.log('login error --> ', error);
         if (callback) callback(error);
     });
 }
