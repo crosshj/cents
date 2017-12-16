@@ -1,4 +1,26 @@
-﻿body {
+﻿.center-all {
+  display: flex;
+  top: 0px;
+  bottom: 0px;
+  position: absolute;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+.white {
+  color: white !important;
+}
+
+.yellow {
+  color: #FFEB3B !important;
+}
+
+.way-blurred {
+  filter: blur(5px);
+}
+
+body {
   overflow-y: hidden;
 }
 
@@ -253,7 +275,7 @@ a.button.selected {
 
 #popup-modal {
   position: absolute;
-  display: none;
+  /* display: none; */
 /*  overflow: hidden;*/
   top: 100%;
   right: 23%;
@@ -279,7 +301,7 @@ a.button.selected {
 */
 
 #popup-modal.show {
-  top: -200;
+  top: 0;
   right: 0;
   bottom: 0;
   left: 0;
@@ -288,10 +310,6 @@ a.button.selected {
   display: block;
   overflow-y: scroll;
   /*transition: bottom 0.3s ease-in, opacity 400ms ease-in;*/
-}
-
-#popup-modal .history {
-  display: none;
 }
 
 #popup-modal .content {
@@ -379,7 +397,7 @@ a.button.selected {
   /*position: fixed;*/
 }
 
-#main-carousel {
+.main-carousel {
   position: absolute;
   bottom: 0px;
   top: 80px;
@@ -397,7 +415,7 @@ a.button.selected {
   overflow-y: overlay;
 }
 
-#main-carousel > .carousel-cell {
+.main-carousel > .carousel-cell {
   opacity: 0;
 }
 

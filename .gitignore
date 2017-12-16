@@ -38,4 +38,5 @@ service/utilities/getPrivateInfo.js
 
 service/scrapers/puppeteer/**/*.es6.js
 
+webpack-stats.json
 client/js/react/build

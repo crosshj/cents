@@ -9,7 +9,24 @@ var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var passport = require('passport');
 
+const webpack = require('webpack');
+const webpackDevMiddleware = require('webpack-dev-middleware');
+const webpackConfig = require('../webpack.config.js');
+const webpackCompiler = webpack(webpackConfig);
+
 var appPort = 8080;
+// const webpackCompiler = webpack(webpackConfig, function(err, stats) {
+//   if (err) { return console.log(err); }
+//   console.log();
+//   console.log(stats.toString({
+//     chunks: false,
+//     modules: false,
+//     chunkOrigins: false,
+//     colors: true
+//   }));
+//   console.log(`\nDone. Server ready on port ${appPort}.`);
+//   return;
+// });
 
 var cron = require('../service/cron');
 cron();
@@ -39,6 +56,14 @@ app.use(passport.session());
 
 require('./routes')(app, passport);
 
+app.use(webpackDevMiddleware(webpackCompiler, {
+  publicPath: '/js/react/build/',
+  //quiet: true,
+  stats: {
+    colors: true
+	}
+}));
+
 app.use('/', express.static(
   path.resolve(__dirname, '../client'),
   {
@@ -49,6 +74,6 @@ app.use('/', express.static(
     }
 ));
 
-app.listen(appPort, function () {
-  console.log('New server on port ' + appPort + '!');
+app.listen(appPort, function(){
+  console.log(`\nDone. Server ready on port ${appPort}.`);
 });

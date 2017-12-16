@@ -13,19 +13,30 @@
     "diff-json": "^0.1.11",
     "express": "^4.15.2",
     "express-session": "^1.15.2",
+    "highcharts": "^6.0.3",
     "http-proxy": "^1.12.0",
     "lodash": "^4.12.0",
     "logger": "git+https://github.com/fatshotty/node-logger.git#5b80950",
     "moment": "^2.17.1",
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "react-flickity-component": "git+https://github.com/crosshj/react-flickity-component.git",
+    "react-highcharts": "^15.0.0",
+    "redux": "^3.7.2",
     "request": "^2.44.0",
     "sync-request": "^2.0.1",
     "xml2js": "^0.4.4"
   },
   "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-react": "^6.24.1",
     "nodemon": "^1.12.1",
-    "webpack": "^1.13.3"
+    "webpack": "3.10.0",
+    "webpack-dev-middleware": "^1.12.2"
   },
   "config": {
     "tester": "jest"
@@ -36,6 +47,7 @@
     "start": "node server/index.js",
     "watch": "nodemon server/index.js",
     "prestart": "touch ./accounts.json",
+    "bundle.stats": "webpack --profile --json > webpack-stats.json",
     "//": "lint does not work - Can't open **.js",
     "lint": "jshint **.js",
     "build": "browserify index.js > myproject.min.js"
