@@ -1,6 +1,5 @@
 import createStore from 'redux/es/createStore';
 import combineReducers from 'redux/es/combineReducers';
-//import devToolsEnhancer from 'remote-redux-devtools';
 
 import reducers from './reducers';
 
@@ -21,13 +20,6 @@ function setup(renderer){
     );
     store.subscribe(renderer);
 
-    // setInterval(function() {
-    //     store.dispatch({type: 'DECREMENT'});
-    // }, 1000);
-    
-    // document.addEventListener('click', function() {
-    // store.dispatch({type: 'INCREMENT'});
-    // });
     return store;
 }
 
