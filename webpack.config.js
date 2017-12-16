@@ -1,14 +1,14 @@
 var webpack = require('webpack');
-//var path = require('path');
+var path = require('path');
 
 //var HtmlWebpackPlugin = require('html-webpack-plugin');
 //var CopyWebpackPlugin = require('copy-webpack-plugin');
 
-// var BUILD_DIR = path.resolve(__dirname, 'js/react/build');
-// var APP_DIR = path.resolve(__dirname, 'js/react');
+var BUILD_DIR = path.resolve(__dirname, 'client/js/build');
+var APP_DIR = path.resolve(__dirname, 'client/js/react');
 
-var BUILD_DIR = '/client/build';
-var APP_DIR = './client/js/react';
+//var BUILD_DIR = '/client/build';
+//var APP_DIR = './client/js/react';
 
 var config = {
   entry: {
