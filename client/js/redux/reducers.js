@@ -8,6 +8,12 @@ var accounts = undefined;
 var account = undefined;
 var selected = undefined;
 
+const statToNumber = {
+    due: 1,
+    pending: 2,
+    paid: 3
+};
+
 function app(state, action) {
     var newState = undefined;
     var groupedItems = undefined;
@@ -48,12 +54,7 @@ function app(state, action) {
                 group.open = false;
                 break;
             } 
-            
-            const statToNumber = {
-                due: 1,
-                pending: 2,
-                paid: 3
-            };
+
             groupedItems = group.items
                 .map(item => (accounts.liabilities.filter(x => x.title === item.title)||[])[0])
                 .sort(function (a, b) {
@@ -95,9 +96,26 @@ function app(state, action) {
                 const newAccount = JSON.parse(JSON.stringify(account));
                 delete newAccount.isNew;
                 newAccount.items = (newAccount.items||[]).map(x => ({ title: x.title}));
+                groupedItems = (account.items||[])
+                    .map(item => (accounts.liabilities.filter(x => x.title === item.title)||[])[0]);
+                const groupStatus = groupedItems.reduce((status, g) => {
+                    status = g.status.toLowerCase() === 'due' ? 'due' : status;
+                    status = g.status.toLowerCase() === 'pending' && status !== 'due'
+                        ? 'pending'
+                        : status;
+                    return status;
+                    }, newAccount.status);
+                newAccount.status = groupStatus;
                 accounts.liabilities.push(newAccount);
-                (account.items||[])
-                    .map(item => (accounts.liabilities.filter(x => x.title === item.title)||[])[0])
+                accounts.liabilities = accounts.liabilities
+                    .sort(function (a, b) {
+                        var statCompare = 0;
+                        if (statToNumber[a.status.toLowerCase()] > statToNumber[b.status.toLowerCase()]) statCompare = 1;
+                        if (statToNumber[a.status.toLowerCase()] < statToNumber[b.status.toLowerCase()]) statCompare = -1;
+                    
+                        return statCompare || new Date(a.date) - new Date(b.date);
+                    });
+                groupedItems
                     .forEach(x => x.type = 'grouped');
             } else {
                 accounts.liabilities.forEach(a => {
