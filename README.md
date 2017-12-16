@@ -22,9 +22,7 @@ TLDR; almost done - need to connect net calls and do something with response (1 
 ### IN PROGRESS
 - adding groups
 - perfecting service worker
-- redoing bank site scrapers
-- refactoring UI - react/redux (maybe rxjs later)
-	
+- redoing bank site scrapers	
 
 ### NOTES
 
