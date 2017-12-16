@@ -37,3 +37,5 @@ service/utilities/getPrivateInfo.js
 .npmrc
 
 service/scrapers/puppeteer/**/*.es6.js
+
+webpack-stats.json

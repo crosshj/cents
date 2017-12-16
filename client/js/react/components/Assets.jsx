@@ -1,4 +1,5 @@
 import React from 'react';
+
 import {formatMoney} from '../utilities';
 
 function makeRow(data, key){

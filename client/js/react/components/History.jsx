@@ -2,13 +2,13 @@ import React from 'react';
 import moment from 'moment';
 import ReactHighcharts from 'react-highcharts';
 
-function formatGraphData(json){
-    if (json.error){
+function formatGraphData(json) {
+    if (json.error) {
         return [];
     }
-    var formattedData = (json||[]).map(x => [
-      moment(x.date.replace('_', ' ')).valueOf(),
-      Number(x.value)
+    var formattedData = (json || []).map(x => [
+        moment(x.date.replace('_', ' ')).valueOf(),
+        Number(x.value)
     ]);
     return formattedData;
 }
@@ -19,8 +19,8 @@ var chartConfig = (data) => ({
         marginTop: 30,
         height: 300
     },
-    title:{
-        text:''
+    title: {
+        text: ''
     },
     legend: {
         enabled: false
@@ -29,7 +29,7 @@ var chartConfig = (data) => ({
         enabled: false
     },
     tooltip: {
-        formatter: function() {
+        formatter: function () {
             return `
                 <b>$${this.y}</b>
                 <br/>
@@ -50,13 +50,13 @@ var chartConfig = (data) => ({
 });
 
 
-function History({data}){
+function History({ data }) {
     const formattedData = formatGraphData(data);
     return <React.Fragment>
-        { !data.error && 
+        {!data.error &&
             <ReactHighcharts config={chartConfig(formattedData)}></ReactHighcharts>
         }
-        { data.error &&
+        {data.error &&
             <div className="offline">offline</div>
         }
     </React.Fragment>;

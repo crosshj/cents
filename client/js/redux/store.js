@@ -1,5 +1,6 @@
-import {createStore, combineReducers} from 'redux';
-import devToolsEnhancer from 'remote-redux-devtools';
+import createStore from 'redux/es/createStore';
+import combineReducers from 'redux/es/combineReducers';
+//import devToolsEnhancer from 'remote-redux-devtools';
 
 import reducers from './reducers';
 

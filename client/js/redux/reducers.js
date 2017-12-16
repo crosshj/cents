@@ -21,7 +21,7 @@ function app(state, action) {
             newState = stateAccounts;
             break;
         case 'RECEIVE_ACCOUNTS_SAVE':
-            console.log('got accounts save, notify if an error');
+            // console.log('got accounts save, notify if an error');
             newState = JSON.parse(JSON.stringify(state));
             break;
         case 'MENU_SELECT':
@@ -131,7 +131,7 @@ function popup(state, action) {
 
     switch (action.type) {
         case 'RECEIVE_HISTORY':
-            debugger;
+            // debugger;
             newState = JSON.parse(JSON.stringify(state));
             newState.history.error = false;
             newState.history.data = action.payload;

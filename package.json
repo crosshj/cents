@@ -47,6 +47,7 @@
     "start": "node server/index.js",
     "watch": "nodemon server/index.js",
     "prestart": "touch ./accounts.json",
+    "bundle.stats": "webpack --profile --json > webpack-stats.json",
     "//": "lint does not work - Can't open **.js",
     "lint": "jshint **.js",
     "build": "browserify index.js > myproject.min.js"

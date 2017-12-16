@@ -7,8 +7,8 @@ TODO:
 
 */
 
-import React from 'react';
-import { render } from 'react-dom';
+import React from 'react/cjs/react.production.min.js';
+import { render } from 'react-dom/cjs/react-dom.production.min.js';
 
 import { setup as setupStore } from '../redux/store';
 import { init as initActions, getAccounts } from '../redux/actions';

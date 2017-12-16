@@ -19,7 +19,12 @@ var config = {
     filename: "[name].js"
   },
   resolve: {
-    extensions: ['.js', '.jsx']
+    extensions: ['.js', '.jsx'],
+    alias: {
+      // moment: 'moment/src/moment'
+      //'react': 'react-dom/cjs/react-dom.production.min.js',
+      //'react-dom': 'react/cjs/react.production.min.js'
+    }
   },
   plugins: [
     // new webpack.DefinePlugin({
@@ -27,6 +32,7 @@ var config = {
     //     'NODE_ENV': '"production"'
     //   }
     // }),
+    new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en/),
     new webpack.optimize.CommonsChunkPlugin({
       name: 'vendor',
       minChunks: function (module) {
@@ -34,21 +40,22 @@ var config = {
         return module.context && module.context.includes("node_modules");
       }
     }),
-    // new webpack.optimize.UglifyJsPlugin({
-    //   mangle: true,
-    //   compress: {
-    //     warnings: false, // Suppress uglification warnings
-    //     pure_getters: true,
-    //     unsafe: false,
-    //     unsafe_comps: false,
-    //     screw_ie8: true
-    //   },
-    //   output: {
-    //     comments: false,
-    //   },
-    //   exclude: [/\.min\.js$/gi], // skip pre-minified libs
-    //   test: /(vendor\.js)+/i
-    // })
+    new webpack.optimize.UglifyJsPlugin({
+      mangle: true,
+      compress: {
+        warnings: false, // Suppress uglification warnings
+        pure_getters: true,
+        unsafe: false,
+        unsafe_comps: false,
+        screw_ie8: true
+      },
+      output: {
+        comments: false,
+      },
+      exclude: [/\.min\.js$/gi], // skip pre-minified libs
+      test: /(vendor\.js)+/i
+    })
+
     // new HtmlWebpackPlugin({
     //   title: 'HA Bridge Configuration',
     //   template: 'index.ejs',
