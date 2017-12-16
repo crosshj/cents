@@ -26,7 +26,6 @@ see this project's [trello board](https://trello.com/b/Y98Yz3jm/cents-personal-f
 ### NOTES
 
 with ubuntu security policy, node will not run on port < 1024; fix:
-
 ```
 sudo setcap 'cap_net_bind_service=+ep' `which node`
 ```
