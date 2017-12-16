@@ -59,7 +59,6 @@ function setupLoginPageListener(){
 }
 
 function registerServiceWorker(){
-    var updateUI = () => console.log('TODO: do something different');
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {
           navigator.serviceWorker.register('sw.js', {scope: './'}).then(function(registration) {
@@ -70,36 +69,38 @@ function registerServiceWorker(){
             console.log('ServiceWorker registration failed: ', err); //eslint-disable-line no-console
           });
         });
-        navigator.serviceWorker.onmessage = event => {
-          let data = undefined;
-          try {
-            data = JSON.parse(event.data);
-            if(data.type === 'refresh'){
-              if (/\/json$/i.test(data.url)){
-                caches.match(data.url)
-                  .then(cached => cached.json())
-                  .then(json => !json.error && updateUI(undefined, json));
-              }
-              if (/\/accounts$/i.test(data.url)){
-                caches.match(data.url)
-                  .then(cached => cached.json())
-                  .then(json => {
-                    const data = window.MAIN_DATA;
-                    if (json.error){
-                      return;
-                    }
-                    data.scraped = json;
-                    updateUI(undefined, data);
-                  });
-              }
-            }
-          } catch (error) {
-            console.error(error);
-          }
-        };
+        // var updateUI = () => console.log('TODO: do something different');
+        // navigator.serviceWorker.onmessage = event => {
+        //   let data = undefined;
+        //   try {
+        //     data = JSON.parse(event.data);
+        //     if(data.type === 'refresh'){
+        //       if (/\/json$/i.test(data.url)){
+        //         caches.match(data.url)
+        //           .then(cached => cached.json())
+        //           .then(json => !json.error && updateUI(undefined, json));
+        //       }
+        //       if (/\/accounts$/i.test(data.url)){
+        //         caches.match(data.url)
+        //           .then(cached => cached.json())
+        //           .then(json => {
+        //             const data = window.MAIN_DATA;
+        //             if (json.error){
+        //               return;
+        //             }
+        //             data.scraped = json;
+        //             updateUI(undefined, data);
+        //           });
+        //       }
+        //     }
+        //   } catch (error) {
+        //     console.error(error);
+        //   }
+        // };
       }
 }
 
 export {
-    setupLoginPageListener
+    setupLoginPageListener,
+    registerServiceWorker
 };

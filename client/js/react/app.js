@@ -8,7 +8,8 @@ import AppContainer from './components/AppContainer';
 import Popup from './components/Popup';
 
 import {
-  setupLoginPageListener
+  setupLoginPageListener,
+  registerServiceWorker
 } from './misc';
 
 import {
@@ -28,5 +29,6 @@ function renderApp(props) {
 }
 
 setupLoginPageListener();
+registerServiceWorker();
 
 fetchAccounts();

@@ -18,7 +18,7 @@ https://serviceworke.rs/
 
 // Update 'version' if you need to refresh the cache
 var staticCacheName = 'static';
-var version = 'v1.0.14::';
+var version = 'v1.0.15::';
 var CACHE = version + staticCacheName;
 var timeout = 1500;
 
@@ -26,12 +26,14 @@ var staticCacheList = [
   './',
   './login/',
   './images/launcher-icon-3x.png',
+
   './css/raleway.css',
   './css/flickity.2.0.9.css',
   './css/bootstrap.3.3.4.min.css',
   './css/skeleton.css',
   './css/cents.css',
   './css/font-awesome.min.css',
+
   './fonts/fontawesome-webfont.woff?v=4.4.0',
   './fonts/-_Ctzj9b56b8RgXW8FAriQzyDMXhdD8sAj6OAJTFsBI.woff2 ',
   './fonts/ZKwULyCG95tk6mOqHQfRBAsYbbCjybiHxArTLjt7FRU.woff2',
@@ -42,13 +44,9 @@ var staticCacheList = [
   './fonts/glyphicons-halflings-regular.woff2',
   './fonts/glyphicons-halflings-regular.woff',
   './fonts/glyphicons-halflings-regular.ttf',
-  './js/jquery.2.1.3.min.js',
-  './js/flickity.pkgd.2.0.9.js',
-  './js/highcharts.4.2.2.js',
-  './js/moment.2.18.1.min.js',
-  './js/accountData.js',
-  './js/popup.js',
-  './js/app.js',
+
+  './js/build/app.js',
+  './js/build/vendor.js',
   './offline.html'
 ];
 
