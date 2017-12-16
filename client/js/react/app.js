@@ -1,12 +1,3 @@
-/*
-
-TODO:
-
-- store
-- actions
-
-*/
-
 import React from 'react/cjs/react.production.min.js';
 import { render } from 'react-dom/cjs/react-dom.production.min.js';
 
