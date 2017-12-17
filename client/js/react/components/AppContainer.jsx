@@ -7,8 +7,8 @@ import Totals from './Totals';
 import Popup from './Popup';
 
 import Flickity from 'react-flickity-component';
-import GlobalFlickity from 'flickity';
-window.Flickity = GlobalFlickity;
+//import GlobalFlickity from 'flickity';
+//window.Flickity = GlobalFlickity;
 
 class AppContainer extends React.Component {
   constructor(props, context){
