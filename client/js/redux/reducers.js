@@ -15,6 +15,42 @@ const statToNumber = {
     paid: 3
 };
 
+function fixGroups(accounts){
+    var newAccounts = JSON.parse(JSON.stringify(accounts));
+    var newLiabs = newAccounts.liabilities;
+    var groups = newLiabs.filter(x => x.type === 'group');
+    groups.forEach(g => {
+        const groupedItems = g.items
+            .map(item => (newLiabs
+                .filter(x => x.title.toLowerCase() === item.title.toLowerCase())||[]
+            )[0]);
+        if(!groupedItems[0]){
+            return;
+        }
+        g.total_owed = groupedItems
+            .map(x=>x.total_owed)
+            .reduce((total, z) => Number(total) + Number(z), 0);
+        g.status = groupedItems
+            .map(x=>x.status)
+            .reduce((status, z) => statToNumber[status.toLowerCase()] <  statToNumber[z.toLowerCase()]
+                ? status.toLowerCase()
+                : z.toLowerCase()
+            , 'paid');
+        g.amount = groupedItems
+            .map(x=>x.amount)
+            .reduce((total, z) => Number(total) + Number(z), 0);
+        g.date = groupedItems
+            .map(x=>x.date)
+            .sort(function (a, b) {
+                return new Date(b) - new Date(a);
+            })[0];
+    });
+    newAccounts.liabilities = newLiabs;
+
+    return newAccounts;
+}
+
+
 function app(state, action) {
     var newState = undefined;
     var groupedItems = undefined;
@@ -29,7 +65,9 @@ function app(state, action) {
             });
             stateAccounts.liabilities = (stateAccounts.liabilities||[])
                 .filter(x => !x.hidden && x.type !== 'grouped');
-            stateAccounts.selectedMenuIndex = localStorage && localStorage.getItem('selectedTab') || 0;
+            stateAccounts.selectedMenuIndex = window && window.localStorage
+                ? localStorage.getItem('selectedTab')
+                : 0;
             newState = stateAccounts;
             break;
         case 'RECEIVE_ACCOUNTS_DATA':
@@ -46,7 +84,7 @@ function app(state, action) {
             localStorage.setItem('selectedTab', action.payload);
             const selectedMenuIndex = action.payload;
             newState = Object.assign({}, state, {selectedMenuIndex});
-            newState.liabilities.forEach(x => x.selected = false);
+            //newState.liabilities.forEach(x => x.selected = false);
             break;
         case 'SELECT_ACCOUNT_CLICK':
             newState = Object.assign({}, state, {});
@@ -136,8 +174,9 @@ function app(state, action) {
                     }
                 });
             }
-            newState = JSON.parse(JSON.stringify(state));
-            newState.liabilities = accounts.liabilities
+            newState = JSON.parse(JSON.stringify(accounts));
+            newState = fixGroups(newState);
+            newState.liabilities = newState.liabilities
                 .filter(x => !x.hidden && x.type !== 'grouped');
             saveAccounts({
                 assets: accounts.assets,

@@ -2,106 +2,106 @@
 var dispatch = undefined;
 
 function receiveAccounts(payload){
-    dispatch({
+    return dispatch({
         type: 'RECEIVE_ACCOUNTS',
         payload
     });
 }
 
 function receiveAccountsSave(error, payload){
-    dispatch({
+    return dispatch({
         type: 'RECEIVE_ACCOUNTS_SAVE',
         payload: Object.assign({}, payload, {error})
     });
 }
 
 function receiveAccountsData(error, payload){
-    dispatch({
+    return dispatch({
         type: 'RECEIVE_ACCOUNTS_DATA',
         payload: Object.assign({}, payload, {error})
     });
 }
 
 function receiveHistory(payload){
-    dispatch({
+    return dispatch({
         type: 'RECEIVE_HISTORY',
         payload
     });
 }
 
 function menuSelect(payload){
-    dispatch({
+    return dispatch({
         type: 'MENU_SELECT',
         payload
     });
 }
 
 function accountClick(title){
-    dispatch({
+    return dispatch({
         type: 'POPUP_ACCOUNT',
         payload: { title }
     });
 }
 
 function selectAccountClick(title){
-    dispatch({
+    return dispatch({
         type: 'SELECT_ACCOUNT_CLICK',
         payload: { title }
     });
 }
 
 function groupClick(title){
-    dispatch({
+    return dispatch({
         type: 'GROUP_CLICK',
         payload: { title }
     });
 }
 
 function newAccountClick(){
-    dispatch({
+    return dispatch({
         type: 'POPUP_NEW_ACCOUNT'
     });
 }
 
 function newGroupClick(){
-    dispatch({
+    return dispatch({
         type: 'POPUP_NEW_GROUP'
     });
 }
 
 function popupCancel(){
-    dispatch({
+    return dispatch({
         type: 'POPUP_CANCEL'
     });
 }
 
 function popupHistory(field){
-    dispatch({
+    return dispatch({
         type: 'POPUP_HISTORY',
         payload: field && { field }
     });
 }
 
 function popupHistoryBack(){
-    dispatch({
+    return dispatch({
         type: 'POPUP_HISTORY_BACK'
     });
 }
 
 function groupRemove(){
-    dispatch({
+    return dispatch({
         type: 'GROUP_REMOVE'
     });
 }
 
 function accountSave(){
-    dispatch({
+    return dispatch({
         type: 'ACCOUNT_SAVE'
     });
 }
 
 function popupUpdate(updates){
-    dispatch({
+    return dispatch({
         type: 'POPUP_UPDATE',
         payload: updates
     });
