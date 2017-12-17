@@ -22,7 +22,7 @@ function app(state, action) {
         case 'RECEIVE_ACCOUNTS':
             accounts = action.payload;
             var stateAccounts = JSON.parse(JSON.stringify(action.payload))
-            stateAccounts.liabilities.forEach(x => {
+            (stateAccounts.liabilities||[]).forEach(x => {
                 if (x.hidden === 'false'){
                     x.hidden = false;
                 }
