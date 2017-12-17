@@ -40,5 +40,4 @@ service/scrapers/puppeteer/**/*.es6.js
 
 webpack-stats.json
 client/js/react/build
-client/js/build/vendor.js
-client/js/build/app.js
+client/js/build/
