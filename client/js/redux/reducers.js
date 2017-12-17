@@ -21,7 +21,7 @@ function app(state, action) {
     switch (action.type) {
         case 'RECEIVE_ACCOUNTS':
             accounts = action.payload;
-            var stateAccounts = JSON.parse(JSON.stringify(action.payload))
+            var stateAccounts = JSON.parse(JSON.stringify(action.payload)) || {};
             (stateAccounts.liabilities||[]).forEach(x => {
                 if (x.hidden === 'false'){
                     x.hidden = false;
