@@ -30,11 +30,18 @@ describe('app reducer', () => {
         var action = receiveAccounts({
             liabilities: []
         });
-        var expected = {"liabilities": [], "selectedMenuIndex": 0};
+        var expected = {
+            liabilities: [],
+            totals: {
+                assetsTotal: "0.00", debts: "0.00", debtsTotal: "0.00",
+                dueTotal: "0.00", pendingTotal: "0.00"
+            },
+            selectedMenuIndex: 0
+        };
         expect(appReducer(state, action)).toEqual(expected)
     });
 
-    it('should update group when child item changes', () => {
+    it('should update group and totals when child item changes', () => {
         var state = {
             liabilities: [{
                 title: 'group',
@@ -57,7 +64,7 @@ describe('app reducer', () => {
                 amount: 200,
                 total_owed: 400,
                 type: 'grouped',
-                status: 'paid'
+                status: 'pending'
             }]
         };
         var expected = JSON.parse(JSON.stringify(state));
@@ -67,6 +74,10 @@ describe('app reducer', () => {
         expected.liabilities[0].amount = 500;
         expected.liabilities[0].status = 'due';
         expected.liabilities[0].date= '2017-10-09';
+        expected.totals = {
+            assetsTotal: "0.00", debts: "500.00", debtsTotal: "1400.00",
+            dueTotal: "300.00", pendingTotal: "200.00"
+        };
 
         // has side effect of loading accounts into reducer state
         appReducer(state, receiveAccounts(state));

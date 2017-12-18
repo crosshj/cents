@@ -15,32 +15,36 @@ const statToNumber = {
     paid: 3
 };
 
-function fixGroups(accounts){
-    var newAccounts = JSON.parse(JSON.stringify(accounts));
-    var newLiabs = newAccounts.liabilities||[];
-    var groups = newLiabs.filter(x => x.type === 'group')||[];
+function clone(item) {
+    return JSON.parse(JSON.stringify(item));
+}
+
+function fixGroups(accounts) {
+    var newAccounts = clone(accounts);
+    var newLiabs = newAccounts.liabilities || [];
+    var groups = newLiabs.filter(x => x.type === 'group') || [];
     groups.forEach(g => {
         const groupedItems = g.items
             .map(item => (newLiabs
-                .filter(x => x.title.toLowerCase() === item.title.toLowerCase())||[]
+                .filter(x => x.title.toLowerCase() === item.title.toLowerCase()) || []
             )[0]);
-        if(!groupedItems[0]){
+        if (!groupedItems[0]) {
             return;
         }
         g.total_owed = groupedItems
-            .map(x=>x.total_owed)
+            .map(x => x.total_owed)
             .reduce((total, z) => Number(total) + Number(z), 0);
         g.status = groupedItems
-            .map(x=>x.status)
-            .reduce((status, z) => statToNumber[status.toLowerCase()] <  statToNumber[z.toLowerCase()]
+            .map(x => x.status)
+            .reduce((status, z) => statToNumber[status.toLowerCase()] < statToNumber[z.toLowerCase()]
                 ? status.toLowerCase()
                 : z.toLowerCase()
             , 'paid');
         g.amount = groupedItems
-            .map(x=>x.amount)
+            .map(x => x.amount)
             .reduce((total, z) => Number(total) + Number(z), 0);
         g.date = groupedItems
-            .map(x=>x.date)
+            .map(x => x.date)
             .sort(function (a, b) {
                 return new Date(a) - new Date(b);
             })[0];
@@ -48,6 +52,63 @@ function fixGroups(accounts){
     newAccounts.liabilities = newLiabs;
 
     return newAccounts;
+}
+
+function fixTotals(accounts) {
+    var u = clone(accounts);
+    (u.liabilities || []).forEach(x => {
+        if (x.hidden === 'false') {
+            x.hidden = false;
+        }
+    });
+
+    u.totals = u.totals || {};
+
+    var pending = (u.liabilities||[])
+        .filter(function (a) {
+            return a.status && a.status.toLowerCase() === 'pending';
+        }).sort(function (a, b) {
+            return new Date(a.date) - new Date(b.date);
+        });
+    var paid = (u.liabilities||[])
+        .filter(function (a) {
+            return a.status && a.status.toLowerCase() === 'paid';
+        }).sort(function (a, b) {
+            return new Date(a.date) - new Date(b.date);
+        });
+    var due = (u.liabilities||[])
+        .filter(function (a) {
+            return a.status && a.status.toLowerCase() === 'due';
+        }).sort(function (a, b) {
+            return new Date(a.date) - new Date(b.date);
+        });
+
+    u.totals.pendingTotal = pending
+        .filter(item => !(item.hidden || item.type === 'group'))
+        .reduce((all, one) => all + Number(one.amount), 0)
+        .toFixed(2);
+
+    u.totals.dueTotal = due
+        .filter(item => !(item.hidden || item.type === 'group'))
+        .reduce((all, one) => all + Number(one.amount), 0)
+        .toFixed(2);
+
+    u.totals.assetsTotal = (u.assets||[])
+        .filter(item => !JSON.parse(item.hidden))
+        .reduce((all, one) => all + Number(one.amount), 0)
+        .toFixed(2);
+
+    u.totals.debts = (u.liabilities||[])
+        .filter(item => !(item.hidden || item.type === 'group'))
+        .reduce((all, one) => all + Number(one.amount), 0)
+        .toFixed(2);
+
+    u.totals.debtsTotal = (u.liabilities||[])
+        .filter(item => !(item.hidden || item.type === 'group'))
+        .reduce((all, one) => all + Number(one.total_owed), 0)
+        .toFixed(2);
+
+    return u;
 }
 
 
@@ -58,13 +119,14 @@ function app(state, action) {
         case 'RECEIVE_ACCOUNTS':
             accounts = action.payload;
             var stateAccounts = JSON.parse(JSON.stringify(action.payload)) || {};
-            (stateAccounts.liabilities||[]).forEach(x => {
-                if (x.hidden === 'false'){
+            (stateAccounts.liabilities || []).forEach(x => {
+                if (x.hidden === 'false') {
                     x.hidden = false;
                 }
             });
             stateAccounts = fixGroups(stateAccounts);
-            stateAccounts.liabilities = (stateAccounts.liabilities||[])
+            stateAccounts = fixTotals(stateAccounts);
+            stateAccounts.liabilities = (stateAccounts.liabilities || [])
                 .filter(x => !x.hidden && x.type !== 'grouped');
             stateAccounts.selectedMenuIndex = window && window.localStorage
                 ? localStorage.getItem('selectedTab')
@@ -75,7 +137,8 @@ function app(state, action) {
             newState = JSON.parse(JSON.stringify(state));
             const balance = safeAccess(() => action.payload.data.accounts[0].balance);
             newState.totals = newState.totals || {};
-            newState.totals.balance = Number(balance||0);
+            newState.totals.balance = Number(balance || 0);
+            accounts.totals.balance = Number(balance || 0);
             break;
         case 'RECEIVE_ACCOUNTS_SAVE':
             // console.log('got accounts save, notify if an error');
@@ -84,41 +147,41 @@ function app(state, action) {
         case 'MENU_SELECT':
             localStorage.setItem('selectedTab', action.payload);
             const selectedMenuIndex = action.payload;
-            newState = Object.assign({}, state, {selectedMenuIndex});
+            newState = Object.assign({}, state, { selectedMenuIndex });
             //newState.liabilities.forEach(x => x.selected = false);
             break;
         case 'SELECT_ACCOUNT_CLICK':
             newState = Object.assign({}, state, {});
             newState.liabilities.forEach(liab => {
-                if(liab.title === action.payload.title){
+                if (liab.title === action.payload.title) {
                     liab.selected = !liab.selected;
                 }
             });
-            selected = newState.liabilities.filter( x=> x.selected);
+            selected = newState.liabilities.filter(x => x.selected);
             break;
         case 'GROUP_CLICK':
             newState = JSON.parse(JSON.stringify(state));
-            const group = (newState.liabilities.filter(x => x.title === action.payload.title)||[])[0];
+            const group = (newState.liabilities.filter(x => x.title === action.payload.title) || [])[0];
             newState.liabilities.forEach(x => x.selected = false);
             newState.liabilities = newState.liabilities.filter(x => x.type !== 'grouped');
-            if(group.open){
+            if (group.open) {
                 group.open = false;
                 break;
-            } 
+            }
 
             groupedItems = group.items
-                .map(item => (accounts.liabilities.filter(x => x.title === item.title)||[])[0])
+                .map(item => (accounts.liabilities.filter(x => x.title === item.title) || [])[0])
                 .sort(function (a, b) {
                     var statCompare = 0;
                     if (statToNumber[a.status.toLowerCase()] > statToNumber[b.status.toLowerCase()]) statCompare = 1;
                     if (statToNumber[a.status.toLowerCase()] < statToNumber[b.status.toLowerCase()]) statCompare = -1;
-                
+
                     return statCompare || new Date(a.date) - new Date(b.date);
                 });
             var newLiabs = [];
             newState.liabilities.forEach(item => {
                 newLiabs.push(item);
-                if(item.title === action.payload.title){
+                if (item.title === action.payload.title) {
                     newLiabs = newLiabs.concat(groupedItems);
                     item.open = true;
                 }
@@ -128,8 +191,8 @@ function app(state, action) {
         case 'GROUP_REMOVE':
             // console.log('Remove group here: ', account.title);
             groupedItems = account.items
-                .map(item => (accounts.liabilities.filter(x => x.title.toLowerCase() === item.title.toLowerCase())||[])[0]);
-            groupedItems.forEach(x=> x.type = undefined);
+                .map(item => (accounts.liabilities.filter(x => x.title.toLowerCase() === item.title.toLowerCase()) || [])[0]);
+            groupedItems.forEach(x => x.type = undefined);
             accounts.liabilities = accounts.liabilities.filter(x => x.title.toLowerCase() !== account.title.toLowerCase());
             saveAccounts({
                 assets: accounts.assets,
@@ -141,21 +204,21 @@ function app(state, action) {
                 .filter(x => !x.hidden && x.type !== 'grouped');
             break;
         case 'ACCOUNT_SAVE':
-            const liabs = accounts.liabilities.map(x=>x.title.toLowerCase());
+            const liabs = accounts.liabilities.map(x => x.title.toLowerCase());
             // add account/group, or remove group
-            if(account.isNew){
+            if (account.isNew) {
                 const newAccount = JSON.parse(JSON.stringify(account));
                 delete newAccount.isNew;
-                newAccount.items = (newAccount.items||[]).map(x => ({ title: x.title}));
-                groupedItems = (account.items||[])
-                    .map(item => (accounts.liabilities.filter(x => x.title === item.title)||[])[0]);
+                newAccount.items = (newAccount.items || []).map(x => ({ title: x.title }));
+                groupedItems = (account.items || [])
+                    .map(item => (accounts.liabilities.filter(x => x.title === item.title) || [])[0]);
                 const groupStatus = groupedItems.reduce((status, g) => {
                     status = g.status.toLowerCase() === 'due' ? 'due' : status;
                     status = g.status.toLowerCase() === 'pending' && status !== 'due'
                         ? 'pending'
                         : status;
                     return status;
-                    }, newAccount.status);
+                }, newAccount.status);
                 newAccount.status = groupStatus;
                 accounts.liabilities.push(newAccount);
                 accounts.liabilities = accounts.liabilities
@@ -163,20 +226,21 @@ function app(state, action) {
                         var statCompare = 0;
                         if (statToNumber[a.status.toLowerCase()] > statToNumber[b.status.toLowerCase()]) statCompare = 1;
                         if (statToNumber[a.status.toLowerCase()] < statToNumber[b.status.toLowerCase()]) statCompare = -1;
-                    
+
                         return statCompare || new Date(a.date) - new Date(b.date);
                     });
                 groupedItems
                     .forEach(x => x.type = 'grouped');
             } else {
                 accounts.liabilities.forEach(a => {
-                    if(a.title.toLowerCase() === account.title.toLowerCase()){
+                    if (a.title.toLowerCase() === account.title.toLowerCase()) {
                         Object.keys(account).forEach(key => a[key] = account[key]);
                     }
                 });
             }
-            newState = JSON.parse(JSON.stringify(accounts));
+            newState = clone(accounts);
             newState = fixGroups(newState);
+            newState = fixTotals(newState);
             newState.liabilities = newState.liabilities
                 .filter(x => !x.hidden && x.type !== 'grouped');
             saveAccounts({
@@ -185,12 +249,12 @@ function app(state, action) {
                 balance: accounts.balance
             });
             // QUESTION: will this always be processed before popup reducer?
-            account=undefined;
+            account = undefined;
             break;
         default:
-            newState = JSON.parse(JSON.stringify(state||{}));
-            (newState.liabilities||[]).forEach(x => x.selected = false);
-        }
+            newState = JSON.parse(JSON.stringify(state || {}));
+            (newState.liabilities || []).forEach(x => x.selected = false);
+    }
 
     return newState || state || {};
 }
@@ -222,12 +286,12 @@ function popup(state, action) {
             account = newState.account;
             break;
         case 'POPUP_NEW_GROUP':
-            var selectedAmount = selected.reduce((all, g) => { return all+Number(g.amount); }, 0);
+            var selectedAmount = selected.reduce((all, g) => { return all + Number(g.amount); }, 0);
             selectedAmount = parseFloat(selectedAmount).toFixed(2);
-            var selectedOwed = selected.reduce((all, g) => { return all+Number(g.total_owed||0); }, 0);
+            var selectedOwed = selected.reduce((all, g) => { return all + Number(g.total_owed || 0); }, 0);
             selectedOwed = parseFloat(selectedOwed).toFixed(2);
             var selectedLatestDate = selected
-                .map(x=>x.date)
+                .map(x => x.date)
                 .sort(function (a, b) {
                     return new Date(a.date) - new Date(b.date);
                 })[0];
@@ -241,7 +305,7 @@ function popup(state, action) {
                 status: "paid", // TODO: update from selected accounts
                 date: selectedLatestDate,
                 amount: selectedAmount,
-                total_owed: selected.reduce((all, g) => { return all+Number(g.total_owed||0); }, 0),
+                total_owed: selected.reduce((all, g) => { return all + Number(g.total_owed || 0); }, 0),
                 auto: false
             };
             newState = Object.assign({}, state, {
@@ -270,26 +334,26 @@ function popup(state, action) {
         case 'POPUP_CANCEL':
             account = undefined;
             history = undefined;
-            newState = Object.assign({}, state, {error: 'not initialized', account, history})
+            newState = Object.assign({}, state, { error: 'not initialized', account, history })
             break;
         case 'POPUP_HISTORY':
             const { field } = action.payload;
-            const title = (account||{}).title || 'Total Owed';
+            const title = (account || {}).title || 'Total Owed';
             history = { error: 'loading', field, title };
-            newState = Object.assign({}, state, {account, history, error: false});
+            newState = Object.assign({}, state, { account, history, error: false });
             const type = account ? 'liabilities' : 'balance'; //TODO: get type in a better way
             fetchHistory({ type, title, field });
             break;
         case 'POPUP_HISTORY_BACK':
             history = undefined;
-            newState = Object.assign({}, state, {account, history, error: false})
+            newState = Object.assign({}, state, { account, history, error: false })
             break;
         case 'GROUP_REMOVE':
-            account=undefined;
-            newState = Object.assign({}, state, {error: 'not initialized', account: undefined})
+            account = undefined;
+            newState = Object.assign({}, state, { error: 'not initialized', account: undefined })
             break;
         case 'ACCOUNT_SAVE':
-            newState = Object.assign({}, state, {error: 'not initialized', account: undefined});
+            newState = Object.assign({}, state, { error: 'not initialized', account: undefined });
             break;
     }
     return newState || state || {};
