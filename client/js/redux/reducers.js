@@ -17,8 +17,8 @@ const statToNumber = {
 
 function fixGroups(accounts){
     var newAccounts = JSON.parse(JSON.stringify(accounts));
-    var newLiabs = newAccounts.liabilities;
-    var groups = newLiabs.filter(x => x.type === 'group');
+    var newLiabs = newAccounts.liabilities||[];
+    var groups = newLiabs.filter(x => x.type === 'group')||[];
     groups.forEach(g => {
         const groupedItems = g.items
             .map(item => (newLiabs
