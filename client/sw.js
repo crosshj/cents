@@ -58,7 +58,7 @@ self.addEventListener('install', function (event) {
   event.waitUntil(updateStaticCache());
 });
 
-self.addEventListener('fetch', fetchHandler);
+//self.addEventListener('fetch', fetchHandler);
 //self.addEventListener('fetch', serveCacheAndUpdate); //alternate
 
 
