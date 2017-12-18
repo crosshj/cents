@@ -42,7 +42,7 @@ function fixGroups(accounts){
         g.date = groupedItems
             .map(x=>x.date)
             .sort(function (a, b) {
-                return new Date(b) - new Date(a);
+                return new Date(a) - new Date(b);
             })[0];
     });
     newAccounts.liabilities = newLiabs;
@@ -63,6 +63,7 @@ function app(state, action) {
                     x.hidden = false;
                 }
             });
+            stateAccounts = fixGroups(stateAccounts);
             stateAccounts.liabilities = (stateAccounts.liabilities||[])
                 .filter(x => !x.hidden && x.type !== 'grouped');
             stateAccounts.selectedMenuIndex = window && window.localStorage
