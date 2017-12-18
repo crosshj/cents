@@ -138,6 +138,7 @@ function app(state, action) {
             const balance = safeAccess(() => action.payload.data.accounts[0].balance);
             newState.totals = newState.totals || {};
             newState.totals.balance = Number(balance || 0);
+            accounts.totals = accounts.totals || {};
             accounts.totals.balance = Number(balance || 0);
             break;
         case 'RECEIVE_ACCOUNTS_SAVE':
