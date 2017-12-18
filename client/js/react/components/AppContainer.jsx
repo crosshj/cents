@@ -6,6 +6,8 @@ import Assets from './Assets';
 import Totals from './Totals';
 import Popup from './Popup';
 
+import { menuSelect } from '../../redux/actions';
+
 import Flickity from 'react-flickity-component';
 //import GlobalFlickity from 'flickity';
 //window.Flickity = GlobalFlickity;
@@ -45,7 +47,7 @@ class AppContainer extends React.Component {
             options={ flickityOptions } // takes flickity options {} 
             disableImagesLoaded={ true } // default false
             reloadOnUpdate={false}
-            onSwipe={this.onMenuSelect}
+            onSwipe={menuSelect}
           >
               <Liabilities liabilities={this.props.liabilities}/>
               <Totals totals={this.props.totals}/>
