@@ -55,7 +55,7 @@
     "lint": "jshint **.js",
     "build.deprecate": "browserify index.js > myproject.min.js",
     "test": "jest",
-    "test:watch": "npm test -- --watch"
+    "test.watch": "npm test -- --watch"
   },
   "repository": {
     "type": "git",
