@@ -8,6 +8,7 @@ import { safeAccess } from '../react/utilities';
 var accounts = undefined;
 var account = undefined;
 var selected = undefined;
+var dateDirty = false;
 
 const statToNumber = {
     due: 1,
@@ -134,7 +135,7 @@ function app(state, action) {
             newState = stateAccounts;
             break;
         case 'RECEIVE_ACCOUNTS_DATA':
-            newState = JSON.parse(JSON.stringify(state));
+            newState = clone(state);
             const balance = safeAccess(() => action.payload.data.accounts[0].balance);
             newState.totals = newState.totals || {};
             newState.totals.balance = Number(balance || 0);
@@ -143,7 +144,7 @@ function app(state, action) {
             break;
         case 'RECEIVE_ACCOUNTS_SAVE':
             // console.log('got accounts save, notify if an error');
-            newState = JSON.parse(JSON.stringify(state));
+            newState = clone(state);
             break;
         case 'MENU_SELECT':
             localStorage.setItem('selectedTab', action.payload);
@@ -161,7 +162,7 @@ function app(state, action) {
             selected = newState.liabilities.filter(x => x.selected);
             break;
         case 'GROUP_CLICK':
-            newState = JSON.parse(JSON.stringify(state));
+            newState = clone(state);
             const group = (newState.liabilities.filter(x => x.title === action.payload.title) || [])[0];
             newState.liabilities.forEach(x => x.selected = false);
             newState.liabilities = newState.liabilities.filter(x => x.type !== 'grouped');
@@ -200,7 +201,7 @@ function app(state, action) {
                 liabilities: accounts.liabilities,
                 balance: accounts.balance
             });
-            newState = JSON.parse(JSON.stringify(state));
+            newState = clone(state);
             newState.liabilities = accounts.liabilities
                 .filter(x => !x.hidden && x.type !== 'grouped');
             break;
@@ -260,18 +261,49 @@ function app(state, action) {
     return newState || state || {};
 }
 
+function bumpDateOneMonth(date){
+    var day = Number(date.replace(/.*-/g,''));
+    var month = Number(date.replace(/-..$/g,'').replace(/.*-/g,''));
+    var year = Number(date.replace(/-.*/g,''));
+    if (month === 12) {
+        year += 1;
+        month = 1;
+    } else {
+        month += 1;
+    }
+    day = (day < 10) ? '0'+day : day;
+    month = (month < 10) ? '0'+month : month;
+    return year + '-' + month + '-' + day;
+}
+
+function bumpDateOneMonthBack(date){
+    var day = Number(date.replace(/.*-/g,''));
+    var month = Number(date.replace(/-..$/g,'').replace(/.*-/g,''));
+    var year = Number(date.replace(/-.*/g,''));
+    if (month === 1) {
+        year -= 1;
+        month = 12;
+    } else {
+        month -= 1;
+    }
+    day = (day < 10) ? '0'+day : day;
+    month = (month < 10) ? '0'+month : month;
+    return year + '-' + month + '-' + day;
+}
+
+
 function popup(state, action) {
     var newState = undefined;
     var history = undefined;
 
     switch (action.type) {
         case 'RECEIVE_HISTORY':
-            // debugger;
-            newState = JSON.parse(JSON.stringify(state));
+            newState = clone(state);
             newState.history.error = false;
             newState.history.data = action.payload;
             break;
         case 'POPUP_ACCOUNT':
+            dateDirty = false;
             account = accounts.liabilities
                 .filter(a => a.title.toLowerCase() === action.payload.title.toLowerCase());
             account = account[0];
@@ -281,12 +313,28 @@ function popup(state, action) {
             });
             break;
         case 'POPUP_UPDATE':
-            newState = JSON.parse(JSON.stringify(state));
+            newState = clone(state);
             Object.keys(action.payload)
-                .forEach(fieldName => newState.account[fieldName] = action.payload[fieldName]);
+                .forEach(fieldName => {
+                    const isStatusUpdate = fieldName === 'status';
+                    const isNewPendingOrDue = newState.account.status === 'pending'
+                        || newState.account.status === 'due';
+                    const isOldPendingOrDue = state.account.status === 'pending'
+                        || state.account.status === 'due';
+                    const switching = (isNewPendingOrDue && !isOldPendingOrDue)
+                        || (!isNewPendingOrDue && isOldPendingOrDue);
+                    if(isStatusUpdate && (dateDirty || isNewPendingOrDue)){
+                        newState.account.date = dateDirty
+                            ? bumpDateOneMonthBack(newState.account.date)
+                            : bumpDateOneMonth(newState.account.date);
+                        dateDirty = switching ? !dateDirty : dateDirty;
+                    }
+                    newState.account[fieldName] = action.payload[fieldName]
+                });
             account = newState.account;
             break;
         case 'POPUP_NEW_GROUP':
+            dateDirty = false;
             var selectedAmount = selected.reduce((all, g) => { return all + Number(g.amount); }, 0);
             selectedAmount = parseFloat(selectedAmount).toFixed(2);
             var selectedOwed = selected.reduce((all, g) => { return all + Number(g.total_owed || 0); }, 0);
@@ -315,6 +363,7 @@ function popup(state, action) {
             });
             break;
         case 'POPUP_NEW_ACCOUNT':
+            dateDirty = false;
             account = {
                 type: "",
                 hidden: false,
@@ -335,6 +384,7 @@ function popup(state, action) {
         case 'POPUP_CANCEL':
             account = undefined;
             history = undefined;
+            dateDirty = false;
             newState = Object.assign({}, state, { error: 'not initialized', account, history })
             break;
         case 'POPUP_HISTORY':
@@ -354,6 +404,7 @@ function popup(state, action) {
             newState = Object.assign({}, state, { error: 'not initialized', account: undefined })
             break;
         case 'ACCOUNT_SAVE':
+            dateDirty = false;
             newState = Object.assign({}, state, { error: 'not initialized', account: undefined });
             break;
     }
