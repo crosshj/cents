@@ -71,12 +71,12 @@ function fixTotals(accounts) {
         }).sort(function (a, b) {
             return new Date(a.date) - new Date(b.date);
         });
-    var paid = (u.liabilities||[])
-        .filter(function (a) {
-            return a.status && a.status.toLowerCase() === 'paid';
-        }).sort(function (a, b) {
-            return new Date(a.date) - new Date(b.date);
-        });
+    // var paid = (u.liabilities||[])
+    //     .filter(function (a) {
+    //         return a.status && a.status.toLowerCase() === 'paid';
+    //     }).sort(function (a, b) {
+    //         return new Date(a.date) - new Date(b.date);
+    //     });
     var due = (u.liabilities||[])
         .filter(function (a) {
             return a.status && a.status.toLowerCase() === 'due';
@@ -134,7 +134,7 @@ function app(state, action) {
                 : 0;
             newState = stateAccounts;
             break;
-        case 'RECEIVE_ACCOUNTS_DATA':
+        case 'RECEIVE_ACCOUNTS_DATA': {
             newState = clone(state);
             const balance = safeAccess(() => action.payload.data.accounts[0].balance);
             newState.totals = newState.totals || {};
@@ -142,16 +142,18 @@ function app(state, action) {
             accounts.totals = accounts.totals || {};
             accounts.totals.balance = Number(balance || 0);
             break;
+        }
         case 'RECEIVE_ACCOUNTS_SAVE':
             // console.log('got accounts save, notify if an error');
             newState = clone(state);
             break;
-        case 'MENU_SELECT':
+        case 'MENU_SELECT': {
             localStorage.setItem('selectedTab', action.payload);
             const selectedMenuIndex = action.payload;
             newState = Object.assign({}, state, { selectedMenuIndex });
             //newState.liabilities.forEach(x => x.selected = false);
             break;
+        }
         case 'SELECT_ACCOUNT_CLICK':
             newState = Object.assign({}, state, {});
             newState.liabilities.forEach(liab => {
@@ -161,7 +163,7 @@ function app(state, action) {
             });
             selected = newState.liabilities.filter(x => x.selected);
             break;
-        case 'GROUP_CLICK':
+        case 'GROUP_CLICK': {
             newState = clone(state);
             const group = (newState.liabilities.filter(x => x.title === action.payload.title) || [])[0];
             newState.liabilities.forEach(x => x.selected = false);
@@ -190,6 +192,7 @@ function app(state, action) {
             });
             newState.liabilities = newLiabs;
             break;
+        }
         case 'GROUP_REMOVE':
             // console.log('Remove group here: ', account.title);
             groupedItems = account.items
@@ -205,8 +208,7 @@ function app(state, action) {
             newState.liabilities = accounts.liabilities
                 .filter(x => !x.hidden && x.type !== 'grouped');
             break;
-        case 'ACCOUNT_SAVE':
-            const liabs = accounts.liabilities.map(x => x.title.toLowerCase());
+        case 'ACCOUNT_SAVE': {
             // add account/group, or remove group
             if (account.isNew) {
                 const newAccount = JSON.parse(JSON.stringify(account));
@@ -253,6 +255,7 @@ function app(state, action) {
             // QUESTION: will this always be processed before popup reducer?
             account = undefined;
             break;
+        }
         default:
             newState = JSON.parse(JSON.stringify(state || {}));
             (newState.liabilities || []).forEach(x => x.selected = false);
@@ -316,21 +319,23 @@ function popup(state, action) {
             newState = clone(state);
             Object.keys(action.payload)
                 .forEach(fieldName => {
-                    const isStatusUpdate = fieldName === 'status';
-                    const isNewPendingOrDue = newState.account.status === 'pending'
-                        || newState.account.status === 'due';
-                    const isOldPendingOrDue = state.account.status === 'pending'
-                        || state.account.status === 'due';
-                    const switching = (isNewPendingOrDue && !isOldPendingOrDue)
-                        || (!isNewPendingOrDue && isOldPendingOrDue);
-                    if(isStatusUpdate && (dateDirty || isNewPendingOrDue)){
-                        newState.account.date = dateDirty
-                            ? bumpDateOneMonthBack(newState.account.date)
-                            : bumpDateOneMonth(newState.account.date);
-                        dateDirty = switching ? !dateDirty : dateDirty;
-                    }
                     newState.account[fieldName] = action.payload[fieldName]
                 });
+            // change date based on status change
+            if (action.payload.status){
+                const isNewPaid = action.payload.status.toLowerCase() === 'paid';
+                const isOldPaid = state.account.status.toLowerCase() === 'paid';
+
+                if (isOldPaid && dateDirty){
+                    newState.account.date = bumpDateOneMonthBack(newState.account.date);
+                    dateDirty = false;
+                }
+
+                if (!isOldPaid && isNewPaid){
+                    newState.account.date = bumpDateOneMonth(newState.account.date);
+                    dateDirty = true;
+                }
+            }
             account = newState.account;
             break;
         case 'POPUP_NEW_GROUP':
@@ -354,7 +359,7 @@ function popup(state, action) {
                 status: "paid", // TODO: update from selected accounts
                 date: selectedLatestDate,
                 amount: selectedAmount,
-                total_owed: selected.reduce((all, g) => { return all + Number(g.total_owed || 0); }, 0),
+                total_owed: selectedOwed,
                 auto: false
             };
             newState = Object.assign({}, state, {

@@ -1,13 +1,21 @@
+/* global
+    describe:false,
+    beforeAll:false,
+    it:false,
+    expect:false
+*/
 import reducer from './reducers';
 const {popup:popupReducer, app:appReducer} = reducer;
 
 import {
     init as actionsInit,
+    accountClick,
     receiveAccounts,
     accountSave,
-    accountClick,
     popupUpdate
 } from './actions';
+
+const clone = x => JSON.parse(JSON.stringify(x));
 
 
 describe('app reducer', () => {
@@ -89,6 +97,43 @@ describe('app reducer', () => {
         // simulate child save
         var result = appReducer(state, accountSave('child'));
         expect(result).toEqual(expected)
+
+        // cleanup
+        popupReducer(state, accountSave('child'));
+    });
+
+    it('should update date when status changes', () => {
+        var state = {
+            account: {
+                date: '2017-10-08',
+                status: 'paid'
+            }
+        };
+
+        // init as paid
+        // appReducer({}, receiveAccounts(state));
+        // state = popupReducer({}, accountClick('foo'));
+
+        // move status to due
+        var expected = clone(state);
+        expected.account.status = 'due';
+        state = popupReducer(state, popupUpdate({ status: 'due' }));
+        expect(state).toEqual(expected);
+
+        // move status to paid
+        expected = clone(state);
+        expected.account.status = 'paid';
+        expected.account.date = '2017-11-08';
+        state = popupReducer(state, popupUpdate({ status: 'paid' }));
+        expect(state).toEqual(expected);
+
+        // move status to due
+        expected = clone(state);
+        expected.account.status = 'pending';
+        expected.account.date = '2017-10-08';
+        state = popupReducer(state, popupUpdate({ status: 'pending' }));
+        expect(state).toEqual(expected);
+
     });
 
 });
