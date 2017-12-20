@@ -236,7 +236,7 @@ function app(state, action) {
                 groupedItems
                     .forEach(x => x.type = 'grouped');
             } else {
-                [].concat(accounts.liabilities, accounts.assets).forEach(a => {
+                [].concat((accounts.liabilities||[]), (accounts.assets||[])).forEach(a => {
                     if (a.title.toLowerCase() === account.title.toLowerCase()) {
                         Object.keys(account).forEach(key => a[key] = account[key]);
                     }
@@ -309,7 +309,7 @@ function popup(state, action) {
             break;
         case 'POPUP_ACCOUNT':
             dateDirty = false;
-            account = [].concat(accounts.liabilities, accounts.assets)
+            account = [].concat((accounts.liabilities||[]), (accounts.assets||[]))
                 .filter(a => a.title.toLowerCase() === action.payload.title.toLowerCase());
             account = account[0];
             newState = Object.assign({}, state, {
