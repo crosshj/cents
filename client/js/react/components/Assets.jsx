@@ -1,12 +1,20 @@
 import React from 'react';
 
+import {
+    accountClick
+} from '../../redux/actions';
+
 import {formatMoney} from '../utilities';
 
 function makeRow(data, key){
     const isGroup = false;
     const rowClassName = `button ${data.status.toLowerCase()} primary${isGroup ? " group" : ""}`;
+    const rowClick = () => accountClick(data.title);
+
     return (
-        <a className={rowClassName} key={key + '-' + data.title}>
+        <a className={rowClassName} key={key + '-' + data.title}
+            onClick={rowClick} 
+        >
             <table className="u-full-width">
             <tbody>
                 <tr className="header">

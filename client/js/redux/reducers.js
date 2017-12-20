@@ -236,7 +236,7 @@ function app(state, action) {
                 groupedItems
                     .forEach(x => x.type = 'grouped');
             } else {
-                accounts.liabilities.forEach(a => {
+                [].concat(accounts.liabilities, accounts.assets).forEach(a => {
                     if (a.title.toLowerCase() === account.title.toLowerCase()) {
                         Object.keys(account).forEach(key => a[key] = account[key]);
                     }
@@ -247,6 +247,8 @@ function app(state, action) {
             newState = fixTotals(newState);
             newState.liabilities = newState.liabilities
                 .filter(x => !x.hidden && x.type !== 'grouped');
+            newState.selectedMenuIndex = state.selectedMenuIndex;
+
             saveAccounts({
                 assets: accounts.assets,
                 liabilities: accounts.liabilities,
@@ -307,7 +309,7 @@ function popup(state, action) {
             break;
         case 'POPUP_ACCOUNT':
             dateDirty = false;
-            account = accounts.liabilities
+            account = [].concat(accounts.liabilities, accounts.assets)
                 .filter(a => a.title.toLowerCase() === action.payload.title.toLowerCase());
             account = account[0];
             newState = Object.assign({}, state, {
@@ -392,7 +394,7 @@ function popup(state, action) {
             dateDirty = false;
             newState = Object.assign({}, state, { error: 'not initialized', account, history })
             break;
-        case 'POPUP_HISTORY':
+        case 'POPUP_HISTORY': {
             const { field } = action.payload;
             const title = (account || {}).title || 'Total Owed';
             history = { error: 'loading', field, title };
@@ -400,6 +402,7 @@ function popup(state, action) {
             const type = account ? 'liabilities' : 'balance'; //TODO: get type in a better way
             fetchHistory({ type, title, field });
             break;
+        }
         case 'POPUP_HISTORY_BACK':
             history = undefined;
             newState = Object.assign({}, state, { account, history, error: false })
