@@ -110,10 +110,6 @@ describe('app reducer', () => {
             }
         };
 
-        // init as paid
-        // appReducer({}, receiveAccounts(state));
-        // state = popupReducer({}, accountClick('foo'));
-
         // move status to due
         var expected = clone(state);
         expected.account.status = 'due';

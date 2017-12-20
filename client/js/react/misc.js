@@ -34,7 +34,7 @@ function setupLoginPageListener(){
     // Listen to message from child window
     eventer(messageEvent,function(e) {
         const messageSource = safeAccess(() => e.data.source);
-        if(messageSource && messageSource.includes('@devtools')){
+        if(messageSource && messageSource.includes('devtools')){
             return;
         }
         console.log('parent received message!:  ',e.data);
