@@ -3,9 +3,12 @@ import {formatMoney} from '../utilities';
 import {
     popupHistory
   } from '../../redux/actions';
+import {
+    fetchAccounts
+} from '../../redux/services';
 
 function makeTotalsRow(props){
-    const {balance=0, pendingTotal=0, dueTotal=0, assetsTotal=0, debts=0, debtsTotal=0} = props;
+    const {balance=0, pendingTotal=0, dueTotal=0, assetsTotal=0, debts=0, debtsTotal=0, updating} = props;
     //console.log(props);
     return (
         <div className="column totals">
@@ -35,6 +38,15 @@ function makeTotalsRow(props){
                         <td className="title"></td>
                         <td className="status">{formatMoney(balance - pendingTotal - dueTotal)}</td>
                     </tr>
+                    <tr className="header">
+                        <td colSpan="2" className="title center">
+                            <button onClick={updating ? ()=>{} : fetchAccounts}>{
+                                updating
+                                    ? <i className="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                                    : 'Update'
+                            }</button> 
+                        </td>
+                    </tr>
                 </tbody>
                 </table>
             </a>
@@ -42,19 +54,19 @@ function makeTotalsRow(props){
                 <table className="u-full-width">
                 <tbody>
                     <tr className="header">
-                    <td colSpan="2" className="title center">Monthly</td>
+                        <td colSpan="2" className="title center">Monthly</td>
                     </tr>
                     <tr className="header">
-                    <td className="title">Assets</td>
-                    <td className="status">{formatMoney(assetsTotal)}</td>
+                        <td className="title">Assets</td>
+                        <td className="status">{formatMoney(assetsTotal)}</td>
                     </tr>
                     <tr className="header">
-                    <td className="title">Debt</td>
-                    <td className="status">{formatMoney(debts)}</td>
+                        <td className="title">Debt</td>
+                        <td className="status">{formatMoney(debts)}</td>
                     </tr>
                     <tr className="header">
-                    <td className="title"></td>
-                    <td className="status">{formatMoney(assetsTotal - debts)}</td>
+                        <td className="title"></td>
+                        <td className="status">{formatMoney(assetsTotal - debts)}</td>
                     </tr>
                 </tbody>
                 </table>
@@ -63,13 +75,13 @@ function makeTotalsRow(props){
                 <table className="u-full-width">
                 <tbody>
                     <tr className="header">
-                    <td className="title">Debt Total</td>
-                    <td className="status">{formatMoney(debtsTotal)}</td>
+                        <td className="title">Debt Total</td>
+                        <td className="status">{formatMoney(debtsTotal)}</td>
                     </tr>
                     <tr className="header history">
-                    <td colSpan="2" className="title center">
-                        <button onClick={() => popupHistory('amount')}>History</button>
-                    </td>
+                        <td colSpan="2" className="title center">
+                            <button onClick={updating ? ()=>{} : () => popupHistory('amount')}>History</button>
+                        </td>
                     </tr>
                 </tbody>
                 </table>

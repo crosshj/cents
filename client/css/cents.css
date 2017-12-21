@@ -487,9 +487,16 @@ a.button.selected {
   color: lightgrey;
 }
 
-.totals .history button {
+.totals button {
   background: #aaa;
   border: 0px;
+  min-width: 111px;
+}
+
+.totals button i {
+  font-size: 25px;
+  vertical-align: middle;
+  margin-top: -3px;
 }
 
 .form-group input.amount:not(.group),

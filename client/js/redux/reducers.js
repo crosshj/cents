@@ -119,13 +119,16 @@ function app(state, action) {
     switch (action.type) {
         case 'RECEIVE_ACCOUNTS':
             accounts = action.payload;
-            var stateAccounts = JSON.parse(JSON.stringify(action.payload)) || {};
+            var stateAccounts = clone(action.payload) || {};
             (stateAccounts.liabilities || []).forEach(x => {
                 if (x.hidden === 'false') {
                     x.hidden = false;
                 }
             });
             stateAccounts = fixGroups(stateAccounts);
+            stateAccounts.totals = safeAccess(() => state.totals) || {};
+            stateAccounts.totals.balance = safeAccess(() => state.totals.balance) || 0;
+            stateAccounts.totals.updating = true;
             stateAccounts = fixTotals(stateAccounts);
             stateAccounts.liabilities = (stateAccounts.liabilities || [])
                 .filter(x => !x.hidden && x.type !== 'grouped');
@@ -139,8 +142,11 @@ function app(state, action) {
             const balance = safeAccess(() => action.payload.data.accounts[0].balance);
             newState.totals = newState.totals || {};
             newState.totals.balance = Number(balance || 0);
+            newState.totals.updating = false;
+
             accounts.totals = accounts.totals || {};
             accounts.totals.balance = Number(balance || 0);
+            accounts.totals.updating = false;
             break;
         }
         case 'RECEIVE_ACCOUNTS_SAVE':

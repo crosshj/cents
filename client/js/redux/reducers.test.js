@@ -42,7 +42,9 @@ describe('app reducer', () => {
             liabilities: [],
             totals: {
                 assetsTotal: "0.00", debts: "0.00", debtsTotal: "0.00",
-                dueTotal: "0.00", pendingTotal: "0.00"
+                dueTotal: "0.00", pendingTotal: "0.00",
+                balance: 0,
+                updating: true
             },
             selectedMenuIndex: 0
         };
