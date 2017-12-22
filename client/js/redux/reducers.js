@@ -118,6 +118,9 @@ function openGroupedAccounts(initialState, viewState){
     // remove grouped items
     outputState.liabilities = outputState.liabilities.filter(x => x.type !== 'grouped');
 
+    // remove hidden items
+    outputState.liabilities = outputState.liabilities.filter(x => !x.hidden);
+
     // add grouped items back if group open
     var newLiabs = [];
     outputState.liabilities.forEach(group => {
