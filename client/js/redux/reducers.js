@@ -167,12 +167,12 @@ function app(state, action) {
             stateAccounts = fixTotals(stateAccounts);
             stateAccounts.liabilities = (stateAccounts.liabilities || [])
                 .filter(x => !x.hidden && x.type !== 'grouped');
-            if(typeof state.selectedMenuIndex === "undefined"){
+            if(state && typeof state.selectedMenuIndex === "undefined"){
                 stateAccounts.selectedMenuIndex = window && window.localStorage
                     ? Number(localStorage.getItem('selectedTab'))
                     : 0;
             } else {
-                stateAccounts.selectedMenuIndex = state.selectedMenuIndex;
+                stateAccounts.selectedMenuIndex = state ? state.selectedMenuIndex : 0;
             }
             newState = stateAccounts;
             break;
