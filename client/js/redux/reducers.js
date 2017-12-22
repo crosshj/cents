@@ -20,7 +20,7 @@ function clone(item) {
     return JSON.parse(JSON.stringify(item));
 }
 
-function fixGroups(accounts) {
+function updateGroupFromChildren(accounts) {
     var newAccounts = clone(accounts);
     var newLiabs = newAccounts.liabilities || [];
     var groups = newLiabs.filter(x => x.type === 'group') || [];
@@ -112,41 +112,34 @@ function fixTotals(accounts) {
     return u;
 }
 
-// TODO: should open/close all groups based on open property
-function switchGroup(group, state, initialState, open){
-    const switchedState = clone(state);
-    switchedState.liabilities.forEach(x => x.selected = false);
-    switchedState.liabilities = switchedState.liabilities.filter(x => x.type !== 'grouped');
+function openGroupedAccounts(initialState, viewState){
+    const outputState = clone(viewState);
 
-    // closed
-    if (!open) {
-        switchedState.liabilities.forEach(x => x.open = false);
-        return switchedState;
-    }
+    // remove grouped items
+    outputState.liabilities = outputState.liabilities.filter(x => x.type !== 'grouped');
 
-    // open
-    const groupedItems = group.items
-        .map(item => (initialState.liabilities.filter(x => x.title === item.title) || [])[0])
-        .sort(function (a, b) {
-            var statCompare = 0;
-            if (statToNumber[a.status.toLowerCase()] > statToNumber[b.status.toLowerCase()]) statCompare = 1;
-            if (statToNumber[a.status.toLowerCase()] < statToNumber[b.status.toLowerCase()]) statCompare = -1;
-
-            return statCompare || new Date(a.date) - new Date(b.date);
-        });
+    // add grouped items back if group open
     var newLiabs = [];
-    switchedState.liabilities.forEach(item => {
-        newLiabs.push(item);
-        if (item.title === group.title) {
-            newLiabs = newLiabs.concat(groupedItems);
-            item.open = true;
-        }
+    outputState.liabilities.forEach(group => {
+        newLiabs.push(group);
+        if(!group.open || group.type !== 'group') return;
+
+        const groupedItems = group.items
+            .map(item => (initialState.liabilities.filter(x => x.title === item.title) || [])[0])
+            .sort(function (a, b) {
+                var statCompare = 0;
+                if (statToNumber[a.status.toLowerCase()] > statToNumber[b.status.toLowerCase()]) statCompare = 1;
+                if (statToNumber[a.status.toLowerCase()] < statToNumber[b.status.toLowerCase()]) statCompare = -1;
+
+                return statCompare || new Date(a.date) - new Date(b.date);
+            });
+
+        newLiabs = newLiabs.concat(groupedItems);
     });
-    switchedState.liabilities = newLiabs;
 
-    return switchedState;
+    outputState.liabilities = newLiabs;
+    return outputState;
 }
-
 
 function app(state, action) {
     var newState = undefined;
@@ -160,13 +153,13 @@ function app(state, action) {
                     x.hidden = false;
                 }
             });
-            stateAccounts = fixGroups(stateAccounts);
+            stateAccounts = updateGroupFromChildren(stateAccounts);
             stateAccounts.totals = safeAccess(() => state.totals) || {};
             stateAccounts.totals.balance = safeAccess(() => state.totals.balance) || 0;
             stateAccounts.totals.updating = true;
             stateAccounts = fixTotals(stateAccounts);
-            stateAccounts.liabilities = (stateAccounts.liabilities || [])
-                .filter(x => !x.hidden && x.type !== 'grouped');
+            stateAccounts = openGroupedAccounts(accounts, state && !state.error ? state : stateAccounts);
+
             if(state && typeof state.selectedMenuIndex === "undefined"){
                 stateAccounts.selectedMenuIndex = window && window.localStorage
                     ? Number(localStorage.getItem('selectedTab'))
@@ -210,10 +203,19 @@ function app(state, action) {
             break;
         case 'GROUP_CLICK': {
             const groupTitle = action.payload.title;
-            const group = (state.liabilities.filter(x => x.title === groupTitle) || [])[0];
+            //const group = (state.liabilities.filter(x => x.title === groupTitle) || [])[0];
+
+            var alteredState = clone(state);
+            alteredState.liabilities = alteredState.liabilities.map(x =>{
+                if (x.title.toLowerCase() === groupTitle.toLowerCase()){
+                    x.open = typeof x.open !== 'undefined' ? !x.open : true;
+                }
+                return x;
+            });
+            newState = openGroupedAccounts(accounts, alteredState);
 
             // toggle open/closed
-            newState = switchGroup(group, state, accounts, !group.open)
+            //newState = switchGroup(group, state, accounts, !group.open)
             break;
         }
         case 'GROUP_REMOVE':
@@ -263,14 +265,22 @@ function app(state, action) {
                     if (a.title.toLowerCase() === account.title.toLowerCase()) {
                         Object.keys(account).forEach(key => a[key] = account[key]);
                     }
+                    a.type === 'group' && [].concat((state.liabilities||[]), (state.assets||[])).forEach(b => {
+                        if(a.title.toLowerCase() === b.title.toLowerCase()){
+                            a.open = b.open;
+                        }
+                    });
                 });
             }
             newState = clone(accounts);
-            newState = fixGroups(newState);
+            newState = updateGroupFromChildren(newState);
             newState = fixTotals(newState);
-            newState.liabilities = newState.liabilities
-                .filter(x => !x.hidden && x.type !== 'grouped');
+            // newState.liabilities = newState.liabilities
+            //     .filter(x => !x.hidden && x.type !== 'grouped');
             newState.selectedMenuIndex = state.selectedMenuIndex;
+            newState = openGroupedAccounts(accounts, newState);
+
+            [].concat((accounts.liabilities||[]), (accounts.assets||[])).forEach(a => delete a.open);
 
             saveAccounts({
                 assets: accounts.assets,
