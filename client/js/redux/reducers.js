@@ -175,7 +175,8 @@ function app(state, action) {
             break;
         case 'GROUP_CLICK': {
             newState = clone(state);
-            const group = (newState.liabilities.filter(x => x.title === action.payload.title) || [])[0];
+            const groupTitle = action.payload.title;
+            const group = (newState.liabilities.filter(x => x.title === groupTitle) || [])[0];
             newState.liabilities.forEach(x => x.selected = false);
             newState.liabilities = newState.liabilities.filter(x => x.type !== 'grouped');
             if (group.open) {
@@ -195,7 +196,7 @@ function app(state, action) {
             var newLiabs = [];
             newState.liabilities.forEach(item => {
                 newLiabs.push(item);
-                if (item.title === action.payload.title) {
+                if (item.title === groupTitle) {
                     newLiabs = newLiabs.concat(groupedItems);
                     item.open = true;
                 }
