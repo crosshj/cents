@@ -132,9 +132,13 @@ function app(state, action) {
             stateAccounts = fixTotals(stateAccounts);
             stateAccounts.liabilities = (stateAccounts.liabilities || [])
                 .filter(x => !x.hidden && x.type !== 'grouped');
-            stateAccounts.selectedMenuIndex = window && window.localStorage
-                ? localStorage.getItem('selectedTab')
-                : 0;
+            if(typeof state.selectedMenuIndex === "undefined"){
+                stateAccounts.selectedMenuIndex = window && window.localStorage
+                    ? Number(localStorage.getItem('selectedTab'))
+                    : 0;
+            } else {
+                stateAccounts.selectedMenuIndex = state.selectedMenuIndex;
+            }
             newState = stateAccounts;
             break;
         case 'RECEIVE_ACCOUNTS_DATA': {
