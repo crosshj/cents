@@ -112,6 +112,41 @@ function fixTotals(accounts) {
     return u;
 }
 
+// TODO: should open/close all groups based on open property
+function switchGroup(group, state, initialState, open){
+    const switchedState = clone(state);
+    switchedState.liabilities.forEach(x => x.selected = false);
+    switchedState.liabilities = switchedState.liabilities.filter(x => x.type !== 'grouped');
+
+    // closed
+    if (!open) {
+        switchedState.liabilities.forEach(x => x.open = false);
+        return switchedState;
+    }
+
+    // open
+    const groupedItems = group.items
+        .map(item => (initialState.liabilities.filter(x => x.title === item.title) || [])[0])
+        .sort(function (a, b) {
+            var statCompare = 0;
+            if (statToNumber[a.status.toLowerCase()] > statToNumber[b.status.toLowerCase()]) statCompare = 1;
+            if (statToNumber[a.status.toLowerCase()] < statToNumber[b.status.toLowerCase()]) statCompare = -1;
+
+            return statCompare || new Date(a.date) - new Date(b.date);
+        });
+    var newLiabs = [];
+    switchedState.liabilities.forEach(item => {
+        newLiabs.push(item);
+        if (item.title === group.title) {
+            newLiabs = newLiabs.concat(groupedItems);
+            item.open = true;
+        }
+    });
+    switchedState.liabilities = newLiabs;
+
+    return switchedState;
+}
+
 
 function app(state, action) {
     var newState = undefined;
@@ -174,34 +209,11 @@ function app(state, action) {
             selected = newState.liabilities.filter(x => x.selected);
             break;
         case 'GROUP_CLICK': {
-            newState = clone(state);
             const groupTitle = action.payload.title;
-            const group = (newState.liabilities.filter(x => x.title === groupTitle) || [])[0];
-            newState.liabilities.forEach(x => x.selected = false);
-            newState.liabilities = newState.liabilities.filter(x => x.type !== 'grouped');
-            if (group.open) {
-                group.open = false;
-                break;
-            }
+            const group = (state.liabilities.filter(x => x.title === groupTitle) || [])[0];
 
-            groupedItems = group.items
-                .map(item => (accounts.liabilities.filter(x => x.title === item.title) || [])[0])
-                .sort(function (a, b) {
-                    var statCompare = 0;
-                    if (statToNumber[a.status.toLowerCase()] > statToNumber[b.status.toLowerCase()]) statCompare = 1;
-                    if (statToNumber[a.status.toLowerCase()] < statToNumber[b.status.toLowerCase()]) statCompare = -1;
-
-                    return statCompare || new Date(a.date) - new Date(b.date);
-                });
-            var newLiabs = [];
-            newState.liabilities.forEach(item => {
-                newLiabs.push(item);
-                if (item.title === groupTitle) {
-                    newLiabs = newLiabs.concat(groupedItems);
-                    item.open = true;
-                }
-            });
-            newState.liabilities = newLiabs;
+            // toggle open/closed
+            newState = switchGroup(group, state, accounts, !group.open)
             break;
         }
         case 'GROUP_REMOVE':
