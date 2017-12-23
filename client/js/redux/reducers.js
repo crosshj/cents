@@ -112,6 +112,28 @@ function fixTotals(accounts) {
     return u;
 }
 
+function markGroupedItems(accounts){
+    const newAccounts = clone(accounts);
+    const groupedItems = Object.keys(newAccounts.liabilities
+        .reduce((all, x) => {
+            if(x.items){
+                x.items.forEach(y => {
+                    if(!all[y.title.toLowerCase()]){
+                        all[y.title.toLowerCase()] = y;
+                    }
+                });
+            }
+            return all;
+        }, {}));
+    newAccounts.liabilities.forEach(x => x.type !== 'group' ? delete x.type : undefined);
+    newAccounts.liabilities.forEach(x => 
+        x.type !== 'group' && groupedItems.includes(x.title.toLowerCase())
+            ? x.type = 'grouped'
+            : undefined
+    );
+    return newAccounts;
+}
+
 function openGroupedAccounts(initialState, viewState){
     const outputState = clone(viewState);
 
@@ -278,12 +300,18 @@ function app(state, action) {
             newState = clone(accounts);
             newState = updateGroupFromChildren(newState);
             newState = fixTotals(newState);
-            // newState.liabilities = newState.liabilities
-            //     .filter(x => !x.hidden && x.type !== 'grouped');
             newState.selectedMenuIndex = state.selectedMenuIndex;
+
+            //TODO: not sure that both of these are required
+            accounts = markGroupedItems(accounts); //this may be done on server
+            newState = markGroupedItems(newState);
+            
             newState = openGroupedAccounts(accounts, newState);
 
-            [].concat((accounts.liabilities||[]), (accounts.assets||[])).forEach(a => delete a.open);
+            // removes view state from save state
+            [].concat((accounts.liabilities||[]), (accounts.assets||[])).forEach(a => {
+                delete a.open
+            });
 
             saveAccounts({
                 assets: accounts.assets,
@@ -459,8 +487,28 @@ function popup(state, action) {
             const itemTitle = action.payload.title;
             newState.account.items = newState.account.items
                 .filter(x => x.title.toLowerCase() !== itemTitle.toLowerCase());
-            // TODO: update payment amount & total_owed for group
-            // TODO: change removed group items type from 'grouped'
+
+            // update amount / total_owed / date / status for group
+            newState.account.amount = newState.account.items
+                .map(x => x.amount)
+                .reduce((total, z) => Number(total) + Number(z), 0)
+                .toFixed(2);
+            newState.account.total_owed = newState.account.items
+                .map(x => x.total_owed)
+                .reduce((total, z) => Number(total) + Number(z), 0)
+                .toFixed(2);
+            newState.account.date = newState.account.items
+                .map(x => x.date)
+                .sort(function (a, b) {
+                    return new Date(a) - new Date(b);
+                })[0];
+            newState.account.status = newState.account.items
+                .map(x => x.status)
+                .reduce((status, z) => statToNumber[status.toLowerCase()] < statToNumber[z.toLowerCase()]
+                    ? status.toLowerCase()
+                    : z.toLowerCase()
+                , 'paid');
+
             account = newState.account;
             break;
         case 'ACCOUNT_SAVE':
