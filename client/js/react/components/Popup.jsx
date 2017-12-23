@@ -5,6 +5,7 @@ import {formatMoney} from '../utilities';
 import {
     popupCancel,
     groupRemove,
+    removeItem,
     accountSave,
     popupHistory,
     popupHistoryBack,
@@ -54,9 +55,11 @@ function Popup({error, account, history}){
 
     function groupItems(items){
         return items.map((item, key) => 
-            <tr  key={'group_item'+key}>
+            <tr className={`group${ key%2 === 1 ? ' even' : ''}`} key={'group_item'+key}>
                 <td className="">{item.title}</td>
-                <td className="">{formatMoney(item.amount)}</td>
+                <td className="amount">{Number(item.total_owed) ? formatMoney(item.total_owed) : ''}</td>
+                <td className="amount">{formatMoney(item.amount)}</td>
+                <td className="remove"><span onClick={()=>{ removeItem({title: item.title})}}>X</span></td>
             </tr>
         );
     }
@@ -144,18 +147,6 @@ function Popup({error, account, history}){
                     </div>
                     }
                     <div className="form-group">
-                        <label>Total Owed</label>
-                        <input className={`total ${isGroup?' group':''}`} type="number"
-                            value={account.total_owed||'0.00'} id="total" disabled={isGroup}
-                            onChange={(event) => update('total_owed', event)}
-                        />
-                        {!isNewItem && !isGroup &&
-                            <button className="graph" data-title="Total Owed" onClick={totalHistory}>
-                                <i className="fa fa-bar-chart"></i>
-                            </button>
-                        }
-                    </div>
-                    <div className="form-group">
                         <label>Payment Amount</label>
                         <input className={`amount ${isGroup?' group':''}`} type="number"
                             step="0.01" value={account.amount||''} disabled={isGroup}
@@ -165,6 +156,18 @@ function Popup({error, account, history}){
                         <button className="graph" data-title="Amount" onClick={amountHistory}>
                             <i className="fa fa-bar-chart"></i>
                         </button>
+                        }
+                    </div>
+                    <div className="form-group">
+                        <label>Total Owed</label>
+                        <input className={`total ${isGroup?' group':''}`} type="number"
+                            value={account.total_owed||'0.00'} id="total" disabled={isGroup}
+                            onChange={(event) => update('total_owed', event)}
+                        />
+                        {!isNewItem && !isGroup &&
+                            <button className="graph" data-title="Total Owed" onClick={totalHistory}>
+                                <i className="fa fa-bar-chart"></i>
+                            </button>
                         }
                     </div>
                     <div className="form-group">

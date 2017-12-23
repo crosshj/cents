@@ -487,6 +487,28 @@ a.button.selected {
   color: lightgrey;
 }
 
+#popup-modal .group .remove span {
+  background-color: #bfbfbf;
+  padding: 0px 5px;
+  border-radius: 20px;
+  font-weight: 900;
+  color: white;
+  cursor: pointer;
+}
+
+#popup-modal .group .remove span:hover {
+  background-color: #ababab;
+}
+
+#popup-modal .group .amount {
+  text-align: right;
+  padding-right: 10px;
+}
+
+#popup-modal .group.even {
+  background-color: #f3f3f3;
+}
+
 .totals button {
   background: #aaa;
   border: 0px;

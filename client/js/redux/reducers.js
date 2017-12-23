@@ -348,6 +348,13 @@ function popup(state, action) {
             account = [].concat((accounts.liabilities||[]), (accounts.assets||[]))
                 .filter(a => a.title.toLowerCase() === action.payload.title.toLowerCase());
             account = account[0];
+            if (account.items){
+                account.items = account.items
+                    .map(x => {
+                        return accounts.liabilities.filter(y => y.title === x.title)[0]
+                    })
+                    .sort((a, b) => b.total_owed - a.total_owed);
+            }
             newState = Object.assign({}, state, {
                 error: account ? false : 'could not find account',
                 account: JSON.parse(JSON.stringify(account || false))
@@ -446,6 +453,15 @@ function popup(state, action) {
         case 'GROUP_REMOVE':
             account = undefined;
             newState = Object.assign({}, state, { error: 'not initialized', account: undefined })
+            break;
+        case 'REMOVE_ITEM':
+            newState = clone(state);
+            const itemTitle = action.payload.title;
+            newState.account.items = newState.account.items
+                .filter(x => x.title.toLowerCase() !== itemTitle.toLowerCase());
+            // TODO: update payment amount & total_owed for group
+            // TODO: change removed group items type from 'grouped'
+            account = newState.account;
             break;
         case 'ACCOUNT_SAVE':
             dateDirty = false;

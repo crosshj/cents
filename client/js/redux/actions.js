@@ -94,6 +94,13 @@ function groupRemove(){
     });
 }
 
+function removeItem(payload){
+    return dispatch({
+        type: 'REMOVE_ITEM',
+        payload
+    });
+}
+
 function accountSave(){
     return dispatch({
         type: 'ACCOUNT_SAVE'
@@ -114,5 +121,6 @@ function init(store){
 export {
     init, receiveAccounts, receiveAccountsSave, menuSelect, selectAccountClick, groupRemove, accountSave,
     accountClick, groupClick, newAccountClick, newGroupClick, popupCancel,
-    popupHistory, popupHistoryBack, popupUpdate, receiveHistory, receiveAccountsData
+    popupHistory, popupHistoryBack, popupUpdate, receiveHistory, receiveAccountsData,
+    removeItem
 }
