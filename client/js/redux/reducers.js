@@ -137,6 +137,11 @@ function markGroupedItems(accounts){
 function openGroupedAccounts(initialState, viewState){
     const outputState = clone(viewState);
 
+    // stupid "false"
+    outputState.liabilities.forEach(
+        x => x.hidden === "false" ? x.hidden = false : undefined
+    );
+
     // remove grouped items
     outputState.liabilities = outputState.liabilities.filter(x => x.type !== 'grouped');
 
@@ -165,6 +170,49 @@ function openGroupedAccounts(initialState, viewState){
     outputState.liabilities = newLiabs;
     return outputState;
 }
+
+function bumpDateOneMonth(date){
+    var day = Number(date.replace(/.*-/g,''));
+    var month = Number(date.replace(/-..$/g,'').replace(/.*-/g,''));
+    var year = Number(date.replace(/-.*/g,''));
+    if (month === 12) {
+        year += 1;
+        month = 1;
+    } else {
+        month += 1;
+    }
+    day = (day < 10) ? '0'+day : day;
+    month = (month < 10) ? '0'+month : month;
+    return year + '-' + month + '-' + day;
+}
+
+function bumpDateOneMonthBack(date){
+    var day = Number(date.replace(/.*-/g,''));
+    var month = Number(date.replace(/-..$/g,'').replace(/.*-/g,''));
+    var year = Number(date.replace(/-.*/g,''));
+    if (month === 1) {
+        year -= 1;
+        month = 12;
+    } else {
+        month -= 1;
+    }
+    day = (day < 10) ? '0'+day : day;
+    month = (month < 10) ? '0'+month : month;
+    return year + '-' + month + '-' + day;
+}
+
+/*
+                                                
+   _  _  _       _  _  _  _    _  _  _  _       
+  (_)(_)(_) _   (_)(_)(_)(_)_ (_)(_)(_)(_)_     
+   _  _  _ (_)  (_)        (_)(_)        (_)    
+ _(_)(_)(_)(_)  (_)        (_)(_)        (_)    
+(_)_  _  _ (_)_ (_) _  _  _(_)(_) _  _  _(_)    
+  (_)(_)(_)  (_)(_)(_)(_)(_)  (_)(_)(_)(_)      
+                (_)           (_)               
+                (_)           (_)               
+
+*/
 
 function app(state, action) {
     var newState = undefined;
@@ -246,17 +294,22 @@ function app(state, action) {
         case 'GROUP_REMOVE':
             // console.log('Remove group here: ', account.title);
             groupedItems = account.items
-                .map(item => (accounts.liabilities.filter(x => x.title.toLowerCase() === item.title.toLowerCase()) || [])[0]);
-            groupedItems.forEach(x => x.type = undefined);
+                .map(item => (accounts.liabilities
+                    .filter(x => x.title.toLowerCase() === item.title.toLowerCase()) || [])[0]
+                );
+            groupedItems.forEach(x => delete x.type);
             accounts.liabilities = accounts.liabilities.filter(x => x.title.toLowerCase() !== account.title.toLowerCase());
             saveAccounts({
                 assets: accounts.assets,
                 liabilities: accounts.liabilities,
                 balance: accounts.balance
             });
-            newState = clone(state);
-            newState.liabilities = accounts.liabilities
-                .filter(x => !x.hidden && x.type !== 'grouped');
+            newState = Object.assign(clone(state), accounts);
+            newState.liabilities = newState.liabilities
+                .filter(x => x.title.toLowerCase() !== account.title.toLowerCase());
+            newState = markGroupedItems(newState);
+            newState = openGroupedAccounts(accounts, newState);
+
             break;
         case 'ACCOUNT_SAVE': {
             // add account/group, or remove group
@@ -330,36 +383,17 @@ function app(state, action) {
     return newState || state || {};
 }
 
-function bumpDateOneMonth(date){
-    var day = Number(date.replace(/.*-/g,''));
-    var month = Number(date.replace(/-..$/g,'').replace(/.*-/g,''));
-    var year = Number(date.replace(/-.*/g,''));
-    if (month === 12) {
-        year += 1;
-        month = 1;
-    } else {
-        month += 1;
-    }
-    day = (day < 10) ? '0'+day : day;
-    month = (month < 10) ? '0'+month : month;
-    return year + '-' + month + '-' + day;
-}
+/*
+ _  _  _  _       _  _  _     _  _  _  _    _         _    _  _  _  _       
+(_)(_)(_)(_)_  _ (_)(_)(_) _ (_)(_)(_)(_)_ (_)       (_)  (_)(_)(_)(_)_     
+(_)        (_)(_)         (_)(_)        (_)(_)       (_)  (_)        (_)    
+(_)        (_)(_)         (_)(_)        (_)(_)       (_)  (_)        (_)    
+(_) _  _  _(_)(_) _  _  _ (_)(_) _  _  _(_)(_)_  _  _(_)_ (_) _  _  _(_)    
+(_)(_)(_)(_)     (_)(_)(_)   (_)(_)(_)(_)    (_)(_)(_) (_)(_)(_)(_)(_)      
+(_)                          (_)                          (_)               
+(_)                          (_)                          (_)               
 
-function bumpDateOneMonthBack(date){
-    var day = Number(date.replace(/.*-/g,''));
-    var month = Number(date.replace(/-..$/g,'').replace(/.*-/g,''));
-    var year = Number(date.replace(/-.*/g,''));
-    if (month === 1) {
-        year -= 1;
-        month = 12;
-    } else {
-        month -= 1;
-    }
-    day = (day < 10) ? '0'+day : day;
-    month = (month < 10) ? '0'+month : month;
-    return year + '-' + month + '-' + day;
-}
-
+*/
 
 function popup(state, action) {
     var newState = undefined;
@@ -377,6 +411,9 @@ function popup(state, action) {
                 .filter(a => a.title.toLowerCase() === action.payload.title.toLowerCase());
             account = account[0];
             if (account.items){
+                if(selected){
+                    account.items = [].concat(account.items, selected);
+                }
                 account.items = account.items
                     .map(x => {
                         return accounts.liabilities.filter(y => y.title === x.title)[0]
