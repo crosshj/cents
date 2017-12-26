@@ -5,6 +5,7 @@ import Liabilities from './Liabilities';
 import Assets from './Assets';
 import Totals from './Totals';
 import Popup from './Popup';
+import Login from './Login';
 
 import { menuSelect } from '../../redux/actions';
 
@@ -60,9 +61,7 @@ class AppContainer extends React.Component {
           </div>
         }
         { this.props.error &&
-          <div id="login">
-            <iframe width="100%" height="100%" frameBorder="0" src="./login/" />
-          </div>
+          <Login />
         }
         <Popup {...this.props.popup}/>
         <div id="corner-circle">0</div>

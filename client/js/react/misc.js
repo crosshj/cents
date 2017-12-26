@@ -45,8 +45,8 @@ function setupLoginPageListener(){
 
         const callback = () => {
             document.querySelector('#login').className = 'hidden';
-            const logInIframe = document.querySelector('iframe');
-            logInIframe.location = './login';
+            //const logInIframe = document.querySelector('iframe');
+            //logInIframe.location = './login';
             const functionFromQueue = popFunctionQueue();
             if(functionFromQueue && typeof functionFromQueue === "function"){
             functionFromQueue();

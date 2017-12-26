@@ -62,11 +62,6 @@ ul.plain {
   list-style-type: none;
 }
 
-#login {
-    position:absolute; left: 0; right: 0; bottom: 0; top: 0px;
-    z-index: 999999; 
-}
-
 .flickity-enabled.is-draggable .flickity-viewport {
     cursor: all-scroll !important;
 }
@@ -548,3 +543,117 @@ a.button.selected {
   height:0px;
   overflow:hidden;
 }
+
+/* LOGIN VIEW ---------------*/
+
+
+#login {
+  position:absolute; left: 0; right: 0; bottom: 0; top: 0px;
+  background-color: rgba(91,89,77,1);
+  z-index: 999999;
+  background-color: rgba(91,89,77,1);
+  font-size: 1.5em; /* currently ems cause chrome bug misinterpreting rems on body element */
+  font-weight: 400;
+  font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.loginView {
+  text-align: center;
+  margin: 0px auto;
+  margin-top: 10%;
+  width: 23%;
+  min-width: 225px;
+}
+
+.header { margin-bottom: 10px; }
+
+.header img { width: 75%;}
+
+.loginView .button {
+  /*display: inline;*/
+  padding: 4px;
+}
+
+.loginView .button button { min-width: 85px; }
+
+/* .field {
+  padding-bottom: 10px;
+  padding-left: 5px;
+  padding-right: 5px;
+} */
+
+.transparent-bg {
+  background-color: transparent;
+}
+
+.transparent-bg:hover {
+  background-color: rgba(0, 0, 0, 0.08);
+}
+
+.btn {
+  border-color: rgba(255, 255, 255, 0) !important;
+  user-select: none;
+  font-weight: 500;
+  letter-spacing: .1rem;
+  text-transform: uppercase;
+}
+
+.button:focus, .btn:focus, .btn:active { outline: none; }
+
+.register {
+  color: #333;
+}
+
+#login input, #login button {
+  font-family: inherit;
+}
+
+
+/* --- BOOTSTRAP RIP -------------------------------------------------------- */
+
+#login .form-control {
+  display: block;
+  width: 100%;
+  height: 34px;
+  padding: 6px 12px;
+  font-size: 14px;
+  line-height: 1.42857143;
+  color: #555;
+  background-color: #fff;
+  background-image: none;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+  -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+  -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+  transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+}
+
+#login .btn-block {
+  display: block;
+  width: 100%;
+}
+
+#login .btn-lg {
+  padding: 10px 16px !important;
+  font-size: 18px !important;
+  line-height: 1.3333333 !important;
+  height: auto;
+  border-radius: 6px;
+}
+
+#login .btn-primary {
+  color: #fff;
+  background-color: #337ab7;
+  border-color: #2e6da4;
+}
+
+#login .input-lg {
+  height: 46px !important;
+  padding: 10px 16px;
+  font-size: 18px;
+  line-height: 1.3333333;
+  border-radius: 6px;
+}
+
