@@ -169,7 +169,7 @@ function Popup({error, account, history}){
                     <div className="form-group">
                         <label>Total Owed</label>
                         <input className={`total ${isGroup?' group':''}`} type="number"
-                            value={account.total_owed||'0.00'} id="total" disabled={isGroup}
+                            value={account.total_owed||''} id="total" disabled={isGroup}
                             onChange={(event) => update('total_owed', event)}
                         />
                         {!isNewItem && !isGroup &&
