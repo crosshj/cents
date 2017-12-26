@@ -219,6 +219,10 @@ function app(state, action) {
     var groupedItems = undefined;
     switch (action.type) {
         case 'RECEIVE_ACCOUNTS':
+            if(action.payload.error){
+                newState = Object.assign({}, state, action.payload);
+                break;
+            }
             accounts = action.payload;
             var stateAccounts = clone(action.payload) || {};
             (stateAccounts.liabilities || []).forEach(x => {
@@ -243,6 +247,10 @@ function app(state, action) {
             newState = stateAccounts;
             break;
         case 'RECEIVE_ACCOUNTS_DATA': {
+            if(action.payload.error){
+                newState = Object.assign({}, state, action.payload);
+                break;
+            }
             newState = clone(state);
             const balance = safeAccess(() => action.payload.data.accounts[0].balance);
             newState.totals = newState.totals || {};
@@ -255,6 +263,10 @@ function app(state, action) {
             break;
         }
         case 'RECEIVE_ACCOUNTS_SAVE':
+            if(action.payload.error){
+                newState = Object.assign({}, state, action.payload);
+                break;
+            }
             // console.log('got accounts save, notify if an error');
             newState = clone(state);
             break;
@@ -401,6 +413,11 @@ function popup(state, action) {
 
     switch (action.type) {
         case 'RECEIVE_HISTORY':
+            newState = clone(state);
+            if(action.payload.error){
+                newState.history = { error: action.payload.error };
+                break;
+            }
             newState = clone(state);
             newState.history.error = false;
             newState.history.data = action.payload;

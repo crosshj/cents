@@ -37,16 +37,13 @@ function setupLoginPageListener(){
         if(messageSource && messageSource.includes('devtools')){
             return;
         }
-        console.log('parent received message!:  ',e.data);
+        // console.log('parent received message!:  ',e.data);
 
         if(e.data.name === "ajaxLoginRequest"){
         const username = e.data.payload.username;
         const password = e.data.payload.password;
 
         const callback = () => {
-            document.querySelector('#login').className = 'hidden';
-            //const logInIframe = document.querySelector('iframe');
-            //logInIframe.location = './login';
             const functionFromQueue = popFunctionQueue();
             if(functionFromQueue && typeof functionFromQueue === "function"){
             functionFromQueue();

@@ -25,7 +25,7 @@ function fetchAccounts() {
             const payload = body || {};
             payload.error = body.error || false;
             receiveAccounts(payload);
-            fetchAccountsData();
+            if(!body.error) fetchAccountsData();
         })
         // .catch(error => {
         //     receiveAccounts({ error });

@@ -64,6 +64,11 @@ function Popup({error, account, history}){
         );
     }
     
+    const historyLoading = history && history.error
+        && typeof history.error === 'string'
+        && history.error.toLowerCase() === 'loading';
+    const historyError = history && history.error
+        && typeof history.error === 'object';
 
     return (
         <div id="popup-modal" className={popupClass} ref={ref => ref && ref.scrollTo(0,0)}>
@@ -74,10 +79,13 @@ function Popup({error, account, history}){
                             <a>{history.title} {history.field} History</a>
                         </h4>
                         <div id="history-graph">
-                            { history.error &&
+                            { historyLoading &&
                                 <div className="loading-spinner">
                                     <i className="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
                                 </div>
+                            }
+                            { historyError &&
+                                <div className="offline">error</div>
                             }
                             { history.data &&
                                 <History data={history.data}></History>
