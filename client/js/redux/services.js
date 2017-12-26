@@ -115,6 +115,7 @@ function saveAccounts(accounts) {
         .forEach(group => {
             group.items = group.items.map(item => ({title: item.title}));
         });
+    accountsToSave.liabilities.forEach(x => {
         delete x.selected;
     });
     const url = './accounts';
