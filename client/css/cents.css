@@ -370,6 +370,18 @@ a.button.selected {
   text-decoration: none;
 }
 
+#popup-modal .header {
+  display: flex;
+  justify-content: space-between;
+}
+
+#popup-modal .header i.fa.fa-pencil {
+  font-size: 27px;
+  color: #1faedb;
+  margin-right: 5px;
+  cursor: pointer;
+}
+
 #popup-modal textarea.notes {
   width: 100%;
   font-family: monospace;

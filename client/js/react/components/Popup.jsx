@@ -28,6 +28,10 @@ function Popup({error, account, history}){
         popupHistory('amount');
     };
 
+    function updateManual(field, value){
+        update(field, {target: { value }});
+    }
+
     function update(field, event){
         var update = {};
         update[field] = event.target.value;
@@ -103,20 +107,27 @@ function Popup({error, account, history}){
 
             { !history && account &&
                 <div className="container content account">
-                    <h2>
-                    { isNewItem
-                        ? <a className='popup-heading'>New { isGroup ? 'Group' : 'Item'}</a>
-                        : <a target="_blank" href={account.website}>{account.title}</a>
-                    }
-                    </h2>
-                    { isNewItem &&
-                    <div className="form-group">
-                        <label htmlFor="title">Title</label>
-                        <input className="u-full-width form-control" id="title" type="text"
-                            onChange={(event) => update('title', event)}
-                        />
+                    <div className='header'>
+                        <h2>
+                        { isNewItem
+                            ? <a className='popup-heading'>New { isGroup ? 'Group' : 'Item'}</a>
+                            : <a target="_blank" href={account.website}>{account.title}</a>
+                        }
+                        </h2>
+                        { !isNewItem &&
+                            <h2 onClick={() => updateManual('title', prompt('Edit Title:', account.title) || account.title)}>
+                                <i class="fa fa-pencil"></i>
+                            </h2>
+                        }
+                        { isNewItem &&
+                        <div className="form-group">
+                            <label htmlFor="title">Title</label>
+                            <input className="u-full-width form-control" id="title" type="text"
+                                onChange={(event) => update('title', event)}
+                            />
+                        </div>
+                        }
                     </div>
-                    }  
                     { !isGroup &&
                     statusRow(account.status && account.status.toLowerCase())
                     }
