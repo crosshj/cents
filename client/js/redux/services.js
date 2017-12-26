@@ -3,6 +3,10 @@ import {
 } from './actions';
 
 
+function clone(item) {
+    return JSON.parse(JSON.stringify(item));
+}
+
 var GLOBAL_FUNCTION_QUEUE = [];
 
 function fetchAccounts() {
@@ -105,10 +109,18 @@ function fetchHistory({ type, title, field }) {
 }
 
 function saveAccounts(accounts) {
+    const accountsToSave = clone(accounts);
+    accountsToSave.liabilities
+        .filter(x => x.type === 'group')
+        .forEach(group => {
+            group.items = group.items.map(item => ({title: item.title}));
+        });
+        delete x.selected;
+    });
     const url = './accounts';
     const config = {
         method: 'POST',
-        body: JSON.stringify(accounts),
+        body: JSON.stringify(accountsToSave),
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'

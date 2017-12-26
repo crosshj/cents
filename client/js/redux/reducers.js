@@ -352,8 +352,11 @@ function app(state, action) {
                     .forEach(x => x.type = 'grouped');
             } else {
                 [].concat((accounts.liabilities||[]), (accounts.assets||[])).forEach(a => {
-                    if (a.title.toLowerCase() === account.title.toLowerCase()) {
-                        Object.keys(account).forEach(key => a[key] = account[key]);
+                    if ((account.oldTitle && a.title.toLowerCase() === account.oldTitle.toLowerCase()) || a.title.toLowerCase() === account.title.toLowerCase()) {
+                        Object.keys(account).forEach(key => {
+                            if(key === 'oldTitle') return;
+                            a[key] = account[key];
+                        });
                     }
                     a.type === 'group' && [].concat((state.liabilities||[]), (state.assets||[])).forEach(b => {
                         if(a.title.toLowerCase() === b.title.toLowerCase()){
@@ -446,6 +449,9 @@ function popup(state, action) {
             newState = clone(state);
             Object.keys(action.payload)
                 .forEach(fieldName => {
+                    if(fieldName === 'title'){
+                        newState.account.oldTitle = newState.account.title;
+                    }
                     newState.account[fieldName] = action.payload[fieldName]
                 });
             // change date based on status change
