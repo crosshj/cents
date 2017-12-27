@@ -19,7 +19,6 @@ The aim of this project is to create an application with a simple, responsive in
 see this project's [trello board](https://trello.com/b/Y98Yz3jm/cents-personal-finance)
 
 ### IN PROGRESS
-- adding groups
 - perfecting service worker
 - redoing bank site scrapers	
 
