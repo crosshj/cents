@@ -431,8 +431,16 @@ function popup(state, action) {
                 .filter(a => a.title.toLowerCase() === action.payload.title.toLowerCase());
             account = account[0];
             if (account.items){
-                if(selected){
-                    account.items = [].concat(account.items, selected);
+                if(selected && selected.length){
+                    selected
+                        .forEach(x =>{
+                            if(!account.items
+                                .map(y => y.title.toLowerCase())
+                                .includes(x.title.toLowerCase())
+                            ){
+                                account.items.push(x)
+                            }
+                        })
                 }
                 account.items = account.items
                     .map(x => {
@@ -573,7 +581,8 @@ function popup(state, action) {
             break;
         case 'ACCOUNT_SAVE':
             dateDirty = false;
-            newState = Object.assign({}, state, { error: 'not initialized', account: undefined });
+            newState = Object.assign({}, state, { error: 'not initialized'});
+            delete newState.account;
             break;
     }
     return newState || state || {};

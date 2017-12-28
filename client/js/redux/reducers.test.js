@@ -165,25 +165,38 @@ describe('app reducer', () => {
                 debtsTotal: '800.00',
                 dueTotal: '0.00',
                 pendingTotal: '200.00'
-            }
+            },
+            selectedMenuIndex: 0
         };
 
         // has side effect of loading accounts into reducer state
-        appReducer(state, receiveAccounts(state));
+        var result = appReducer(state, receiveAccounts(state));
         // has side effect of loading account into reducer state
-        popupReducer(
-            Object.assign({}, {account: state.liabilities[0]}, state),
+        result = popupReducer(
+            result,
+            accountClick('group')
+        );
+        result = popupReducer(
+            result,
             popupUpdate({ title: 'new group title'})
         );
 
         // simulate group save
-        var result = appReducer(state, accountSave('new group title'));
+        result = appReducer(result, accountSave('new group title'));
+        //result = popupReducer(result, accountSave('new group title'));
 
         var expected = clone(state);
         expected.liabilities[0].title = 'new group title';
         expected.liabilities = [expected.liabilities[0]];
 
         expect(result).toEqual(expected);
+
+        // var again = popupReducer(
+        //     result,
+        //     accountClick('new group title')
+        // );
+
+        // console.log(result.liabilities[0].items);
     });
 
 });
