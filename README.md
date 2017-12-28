@@ -13,7 +13,7 @@
 
 
 # goals
-The aim of this project is to create an application with a simple, responsive interface for personal finance with an emphasis on automation, mobility, and ubiquity.   
+The aim of this project is to create an application with a simple, responsive solution for personal finance with an emphasis on automation, mobility, and ubiquity.   
 
 ### TODO
 see this project's [trello board](https://trello.com/b/Y98Yz3jm/cents-personal-finance)
