@@ -134,4 +134,56 @@ describe('app reducer', () => {
 
     });
 
+    it('should save group properly when updating group title', () => {
+        var state = {
+            liabilities: [{
+                title: 'group',
+                items: [{ title: 'child'}, { title: 'child2'}],
+                date: '2017-10-08',
+                amount: 400,
+                total_owed: 800,
+                type: 'group',
+                status: 'pending'
+            },{
+                title: 'child',
+                date: '2017-10-08',
+                amount: 200,
+                total_owed: 400,
+                type: 'grouped',
+                status: 'paid'
+            },{
+                title: 'child2',
+                date: '2017-10-09',
+                amount: 200,
+                total_owed: 400,
+                type: 'grouped',
+                status: 'pending'
+            }],
+            totals: {
+                assetsTotal: '0.00',
+                debts: '400.00',
+                debtsTotal: '800.00',
+                dueTotal: '0.00',
+                pendingTotal: '200.00'
+            }
+        };
+
+        // has side effect of loading accounts into reducer state
+        appReducer(state, receiveAccounts(state));
+        // has side effect of loading account into reducer state
+        popupReducer(
+            Object.assign({}, {account: state.liabilities[0]}, state),
+            popupUpdate({ title: 'new group title'})
+        );
+
+        // simulate group save
+        var result = appReducer(state, accountSave('new group title'));
+
+        var expected = clone(state);
+        expected.liabilities[0].title = 'new group title';
+        expected.liabilities = [expected.liabilities[0]];
+
+        expect(result).toEqual(expected);
+    });
+
 });
