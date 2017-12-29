@@ -438,7 +438,7 @@ function popup(state, action) {
                                 .map(y => y.title.toLowerCase())
                                 .includes(x.title.toLowerCase())
                             ){
-                                account.items.push(x)
+                                account.items.push(clone(x))
                             }
                         })
                 }
