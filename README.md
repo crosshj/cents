@@ -1,4 +1,4 @@
-> Personal finance done with node.js.  Some DropBox integration.  WIP. 
+> Personal finance done with node.js.   
 
 [![Join the chat at https://gitter.im/crosshj/Lobby](https://badges.gitter.im/crosshj/Lobby.svg)](https://gitter.im/crosshj/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Build Status](https://travis-ci.org/crosshj/cents.svg?branch=master)](https://travis-ci.org/crosshj/cents)
