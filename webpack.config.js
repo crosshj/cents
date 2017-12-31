@@ -1,5 +1,6 @@
 var webpack = require('webpack');
 var path = require('path');
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 //var HtmlWebpackPlugin = require('html-webpack-plugin');
 //var CopyWebpackPlugin = require('copy-webpack-plugin');
@@ -9,6 +10,11 @@ var APP_DIR = path.resolve(__dirname, 'client/js/react');
 
 //var BUILD_DIR = '/client/build';
 //var APP_DIR = './client/js/react';
+
+const extractSass = new ExtractTextPlugin({
+   filename: "bundle.css",
+   disable: false
+});
 
 var config = {
   entry: {
@@ -54,7 +60,8 @@ var config = {
       },
       exclude: [/\.min\.js$/gi], // skip pre-minified libs
       test: /(vendor\.js)+/i
-    })
+    }),
+    extractSass
 
     // new HtmlWebpackPlugin({
     //   title: 'HA Bridge Configuration',
@@ -79,6 +86,22 @@ var config = {
           presets: ['babel-preset-env', 'babel-preset-react'],
           plugins: []
         }
+      },
+      {
+        test: /\.scss$/,
+        use: extractSass.extract({
+            use: [{
+                loader: "css-loader"
+            }, {
+                loader: "sass-loader"
+            }],
+            // use style-loader in development 
+            fallback: "style-loader"
+        })
+      },
+      {
+        test   : /\.(ttf|eot|svg|woff(2)?)(\?[a-z0-9=&.]+)?$/,
+        loader : 'file-loader'
       }
     ]
   }

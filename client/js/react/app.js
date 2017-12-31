@@ -15,6 +15,8 @@ import {
   fetchAccounts
 } from '../redux/services';
 
+import '../../css/index.scss';
+
 const store = setupStore(renderApp);
 initActions(store);
 
