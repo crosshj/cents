@@ -44,15 +44,21 @@ function Popup({error, account, history}){
     function statusRow(status){
         return (
             <div className="row status">
-                <button className={"due" + (status==='due'?' selected':'')}
-                    onClick={() => popupUpdate({ status: 'due'})}
-                >due</button>
-                <button className={"pending" + (status==='pending' ? ' selected':'')}
-                    onClick={() => popupUpdate({ status: 'pending'})}
-                >pending</button>
-                <button className={"paid" + (status==='paid' ? ' selected':'')}
-                    onClick={() => popupUpdate({ status: 'paid'})}
-                >paid</button>
+                <div class="one-third column">
+                    <button className={"due" + (status==='due'?' selected':'')}
+                        onClick={() => popupUpdate({ status: 'due'})}
+                    >due</button>
+                </div>
+                <div class="one-third column">
+                    <button className={"pending" + (status==='pending' ? ' selected':'')}
+                        onClick={() => popupUpdate({ status: 'pending'})}
+                    >pending</button>
+                </div>
+                <div class="one-third column">
+                    <button className={"paid" + (status==='paid' ? ' selected':'')}
+                        onClick={() => popupUpdate({ status: 'paid'})}
+                    >paid</button>
+                </div>
             </div>
         );
     }
@@ -152,6 +158,7 @@ function Popup({error, account, history}){
                         <input type="checkbox" id="auto-checkbox" checked={!!account.auto}
                             onChange={(event) => update('auto', event)}
                         />
+                        <label htmlFor="auto-checkbox"></label>
                     </div>
                     }
                     {isGroup &&

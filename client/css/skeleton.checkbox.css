@@ -1,0 +1,23 @@
+input[type="checkbox"] {
+    display: none;
+}
+
+input[type="checkbox"] + label:after {
+    font-family: FontAwesome;
+    content: "\f096";
+}
+
+input[type=checkbox]:checked + label:after {
+    content: "\f046";
+    font-family: FontAwesome;
+}
+
+
+input[type="checkbox"][disabled] + label {
+    cursor: default;
+    color: #bbb;
+}
+
+input[type="checkbox"][disabled]:checked + label {
+    color: #bbb;
+}

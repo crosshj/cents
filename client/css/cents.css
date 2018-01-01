@@ -391,10 +391,14 @@ a.button.selected {
 }
 
 .container.content button {
-  float: left;
+  /* float: left; */
   margin-right: 1em;
   padding-left: 2em;
   padding-right: 2em;
+}
+
+.status button {
+  width: 95%;
 }
 
 .lock-screen {
@@ -531,7 +535,7 @@ a.button.selected {
 .form-group input.amount:not(.group),
 .form-group input.total:not(.group) {
   display: inline-flex;
-  width: 80%;
+  width: 84%;
 }
 
 .form-group input.amount.group,
@@ -558,6 +562,8 @@ a.button.selected {
 
 .checkbox-group > label{
   display: inline;
+  padding-right: 10px;
+  padding-bottom: 7px;
 }
 
 .checkbox-group > input[type="checkbox"]{
@@ -683,5 +689,24 @@ a.button.selected {
   font-size: 18px;
   line-height: 1.3333333;
   border-radius: 6px;
+}
+
+input[type="date"] {
+  font-family: raleway;
+  font-size: 15px;
+  width: 100%;
+}
+
+.row.status {
+  display: flex;
+}
+
+.column {
+  text-align: center;
+  width: 100%;
+}
+
+.form-group.checkbox-group {
+  margin-bottom: 10px;
 }
 
