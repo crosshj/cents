@@ -540,6 +540,22 @@ a.button.selected {
   width: 100%;
 }
 
+.input-dollar {
+  position: relative;
+}
+.input-dollar input {
+  padding-left:18px;
+}
+
+.input-dollar:before {
+  position: absolute;
+  padding-top: 7px;
+  content:"$";
+}
+.input-dollar:before {
+  left: 7px;
+}
+
 .checkbox-group > label{
   display: inline;
 }

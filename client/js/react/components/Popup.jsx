@@ -167,10 +167,12 @@ function Popup({error, account, history}){
                     }
                     <div className="form-group">
                         <label>Payment Amount</label>
-                        <input className={`amount ${isGroup?' group':''}`} type="number"
-                            step="0.01" value={account.amount||''} disabled={isGroup}
-                            onChange={(event) => update('amount', event)}
-                        />
+                        <span className={account.amount && Number(account.amount) >= 0 ? "input-dollar" : ''}>
+                            <input className={`amount ${isGroup?' group':''}`} type="number"
+                                step="0.01" value={account.amount||''} disabled={isGroup}
+                                onChange={(event) => update('amount', event)}
+                            />
+                        </span>
                         {!isNewItem && !isGroup &&
                         <button className="graph" data-title="Amount" onClick={amountHistory}>
                             <i className="fa fa-bar-chart"></i>
@@ -179,10 +181,12 @@ function Popup({error, account, history}){
                     </div>
                     <div className="form-group">
                         <label>Total Owed</label>
-                        <input className={`total ${isGroup?' group':''}`} type="number"
-                            value={account.total_owed||''} id="total" disabled={isGroup}
-                            onChange={(event) => update('total_owed', event)}
-                        />
+                        <span className={account.total_owed && Number(account.total_owed) >= 0 ? "input-dollar" : ''}>
+                            <input className={`total ${isGroup?' group':''}`} type="number"
+                                value={account.total_owed||''} id="total" disabled={isGroup}
+                                onChange={(event) => update('total_owed', event)}
+                            />
+                        </span>
                         {!isNewItem && !isGroup &&
                             <button className="graph" data-title="Total Owed" onClick={totalHistory}>
                                 <i className="fa fa-bar-chart"></i>
