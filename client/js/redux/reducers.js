@@ -466,15 +466,22 @@ function popup(state, action) {
             if (action.payload.status){
                 const isNewPaid = action.payload.status.toLowerCase() === 'paid';
                 const isOldPaid = state.account.status.toLowerCase() === 'paid';
+                const shouldAutoReduce = !!state.account.autoReduce;
 
                 if (isOldPaid && dateDirty){
                     newState.account.date = bumpDateOneMonthBack(newState.account.date);
                     dateDirty = false;
+                    if(shouldAutoReduce){
+                        newState.account.total_owed += Number(newState.account.amount);
+                    }
                 }
 
                 if (!isOldPaid && isNewPaid){
                     newState.account.date = bumpDateOneMonth(newState.account.date);
-                    dateDirty = true;
+                    dateDirty = true; //TODO: should not be dirty if original status was paid
+                    if(shouldAutoReduce){
+                        newState.account.total_owed -= Number(newState.account.amount);
+                    }
                 }
             }
             account = newState.account;
