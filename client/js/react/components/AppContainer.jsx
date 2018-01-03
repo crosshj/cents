@@ -9,9 +9,12 @@ import Login from './Login';
 
 import { menuSelect } from '../../redux/actions';
 
-import Flickity from 'react-flickity-component';
+//import Flickity from 'react-flickity-component';
 //import GlobalFlickity from 'flickity';
 //window.Flickity = GlobalFlickity;
+
+import { Carousel } from 'react-responsive-carousel';
+//import styles from 'react-responsive-carousel/lib/styles/carousel.min.css';
 
 class AppContainer extends React.Component {
   constructor(props, context){
@@ -42,18 +45,23 @@ class AppContainer extends React.Component {
           />
         }
         { !this.props.error &&
-          <Flickity
-            className={ 'main-carousel' } 
-            elementType={ 'div' } // default 'div' 
-            options={ flickityOptions } // takes flickity options {} 
-            disableImagesLoaded={ true } // default false
-            reloadOnUpdate={false}
-            onSwipe={menuSelect}
+          <Carousel
+            selectedItem={this.props.selectedMenuIndex || 0}
+            showArrows={false}
+            useKeyboardArrows
+            infiniteLoop
+            emulateTouch
+            dynamicHeight
+            showStatus={false}
+            showIndicators={false}
+            showThumbs={false}
+            onChange={menuSelect}
+            className='carousel-main'
           >
               <Liabilities liabilities={this.props.liabilities}/>
               <Totals totals={this.props.totals}/>
               <Assets assets={this.props.assets}/>
-          </Flickity>
+          </Carousel>
         }
         { this.props.error &&
           <div className="center-all">

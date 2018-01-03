@@ -198,7 +198,7 @@ a.button.grouped {
   border: 0px;
   border-left: 4px solid !important;
   border-left-color: #888 !important;
-  margin-top: -17px;
+  margin-top: -7px;
   border-radius: 0px;
   border-top: 1px solid #000000;
 }
@@ -710,3 +710,28 @@ input[type="date"] {
   margin-bottom: 10px;
 }
 
+.carousel .slide {
+  min-width: 100%;
+  margin: 0;
+  position: relative;
+  text-align: center;
+  background: none;
+}
+
+.carousel * {
+  margin: 0px auto;
+}
+
+.carousel.carousel-slider {
+  overflow: unset;
+}
+
+.carousel-main {
+  position: absolute;
+  top: 75px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  overflow-y: overlay;
+  overflow-x: hidden;
+}

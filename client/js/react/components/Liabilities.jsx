@@ -60,13 +60,10 @@ function Liabilities({liabilities = []}){
     }
 
     return (
-    <div className="carousel-cell">
-        <div className="container">
-            <div className="column liabilities">
-            {liabRows}
-            </div>
-        </div>
+    <div className="column liabilities">
+        {liabRows}
     </div>
+
     );
 }
 
