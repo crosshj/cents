@@ -20,7 +20,6 @@ class AppContainer extends React.Component {
 
   render () {
     //console.log('--- render');
-
     const flickityOptions = {
       // options
       initialIndex: this.props.selectedMenuIndex || 0,
