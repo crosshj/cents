@@ -10,8 +10,8 @@ import Login from './Login';
 import { menuSelect } from '../../redux/actions';
 
 import Flickity from 'react-flickity-component';
-//import GlobalFlickity from 'flickity';
-//window.Flickity = GlobalFlickity;
+import GlobalFlickity from 'flickity';
+window.Flickity = GlobalFlickity;
 
 class AppContainer extends React.Component {
   constructor(props, context){
