@@ -27,7 +27,8 @@ var config = {
   resolve: {
     extensions: ['.js', '.jsx'],
     alias: {
-      // moment: 'moment/src/moment'
+      jquery: 'jquery/dist/jquery.slim.min.js',
+      moment: 'moment/min/moment.min.js'
       //'react': 'react-dom/cjs/react-dom.production.min.js',
       //'react-dom': 'react/cjs/react.production.min.js'
     }
