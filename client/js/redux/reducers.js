@@ -325,7 +325,7 @@ function app(state, action) {
             break;
         case 'ACCOUNT_SAVE': {
             // add account/group, or remove group
-            if (account.isNew) {
+            if ((account || state.account).isNew) {
                 const newAccount = JSON.parse(JSON.stringify(account));
                 delete newAccount.isNew;
                 newAccount.items = (newAccount.items || []).map(x => ({ title: x.title }));
@@ -594,5 +594,7 @@ function popup(state, action) {
     }
     return newState || state || {};
 }
+
+//popup = require('../../reducers/popup').default;
 
 export default { app, popup };

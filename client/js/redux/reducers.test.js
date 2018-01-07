@@ -122,6 +122,7 @@ describe('app reducer', () => {
         expected = clone(state);
         expected.account.status = 'paid';
         expected.account.date = '2017-11-08';
+        //expected.dateDirty = true;
         state = popupReducer(state, popupUpdate({ status: 'paid' }));
         expect(state).toEqual(expected);
 
@@ -129,6 +130,7 @@ describe('app reducer', () => {
         expected = clone(state);
         expected.account.status = 'pending';
         expected.account.date = '2017-10-08';
+        //expected.dateDirty = false;
         state = popupReducer(state, popupUpdate({ status: 'pending' }));
         expect(state).toEqual(expected);
 

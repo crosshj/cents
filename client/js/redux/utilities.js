@@ -189,7 +189,7 @@ function bumpDateOneMonthBack(date){
   return year + '-' + month + '-' + day;
 }
 
-export default {
+export {
   clone, statToNumber, updateGroupFromChildren, fixTotals, markGroupedItems,
   openGroupedAccounts, bumpDateOneMonth, bumpDateOneMonthBack
 };
