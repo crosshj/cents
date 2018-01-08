@@ -12,9 +12,10 @@ import {
   bumpDateOneMonthBack,
   statToNumber
 } from '../js/redux/utilities.js';
+import { newGroupClick } from '../js/redux/actions';
 
 function receiveAccounts (state, action){
-  var newState = undefined;
+  var newState = {};
   if (action.payload.error) {
     newState = Object.assign({}, state, action.payload);
     return newState;
@@ -37,11 +38,17 @@ function receiveHistory(state, action){
 }
 
 function popupAccount(state, action){
-  var newState = {};
-  newState.account = [].concat(((state.accounts||{}).liabilities || []), ((state.accounts||{}).assets || []))
+  var newState = clone(state);
+  const liabilities = (state.liabilities || (state.accounts||{}).liabilities || []);
+  const assets = (state.assets || (state.accounts||{}).assets || []);
+
+  newState.account = [].concat(liabilities, assets)
     .filter(a => a.title.toLowerCase() === action.payload.title.toLowerCase());
-  newState.account = newState.account[0];
-  if ((newState.account||{}).items) {
+  newState.account = clone(newState.account[0] || {});
+
+  //console.log(liabilities);
+
+  if (newState.account.items) {
     if (newState.selected && newState.selected.length) {
       newState.selected
         .forEach(x => {
@@ -49,28 +56,47 @@ function popupAccount(state, action){
             .map(y => y.title.toLowerCase())
             .includes(x.title.toLowerCase())
           ) {
-            newState.account.items.push(clone(x))
+            newState.account.items.push(clone(x));
           }
         })
     }
-    newState.account.items = newState.account.items
-      .map(x => {
-        return state.accounts.liabilities.filter(y => y.title === x.title)[0]
-      })
-      .sort((a, b) => b.total_owed - a.total_owed);
+    // newState.account.items = newState.account.items
+    //   .map(x => {
+    //     return liabilities.filter(y => y.title.toLowerCase() === x.title.toLowerCase())[0]
+    //   })
+      //.sort((a, b) => b.total_owed - a.total_owed);
   }
-  newState = Object.assign({}, state, {
-    error: newState.account ? false : 'could not find account',
-    dateDirty: false,
-    account: clone(newState.account || false)
-  });
+  // newState = Object.assign({}, state, {
+  //   error: newState.account ? false : 'could not find account',
+  //   dateDirty: false,
+  //   account: clone(newState.account || false)
+  // });
+  newState.dateDirty = false;
+  newState.error = newState.account ? false : 'could not find account';
+
+  //console.log('^^^^^', newState)
+
   return newState;
 }
 
 function popupUpdate(state, action){
   var newState = undefined;
   newState = clone(state);
-  typeof newState.account === 'object' && Object.keys(action.payload)
+  ///console.log('!!!', newState);
+  if(typeof newState.account !== 'object'){
+    newState.error = 'could not update popup state';
+    return newState;
+  }
+
+  const liabilities = (state.liabilities || (state.accounts||{}).liabilities || []);
+  const assets = (state.assets || (state.accounts||{}).assets || []);
+
+  var oldAccount = [].concat(liabilities, assets)
+    .filter(a => a.title.toLowerCase() === newState.account.title.toLowerCase());
+  oldAccount = clone(oldAccount[0] || {});
+
+  //console.log('----', newState)
+  Object.keys(action.payload)
     .forEach(fieldName => {
       if (fieldName === 'title') {
         newState.account.oldTitle = newState.account.title;
@@ -80,7 +106,7 @@ function popupUpdate(state, action){
   // change date based on status change
   if (action.payload.status) {
     const isNewPaid = action.payload.status.toLowerCase() === 'paid';
-    const isOldPaid = state.account.status.toLowerCase() === 'paid';
+    const isOldPaid = oldAccount.status.toLowerCase() === 'paid';
     const shouldAutoReduce = !!state.account.autoReduce;
 
     if (isOldPaid && state.dateDirty) {
@@ -135,10 +161,112 @@ function popupNewGroup (state, action){
   return newState;
 }
 
+function popupNewAccount(state, action){
+  var newState = undefined;
+  var account = {
+    type: "",
+    hidden: false,
+    title: "New Group",
+    note: "",
+    isNew: true,
+    status: "paid",
+    date: "2017-10-18", //TODO: a month from now?
+    amount: 0,
+    total_owed: 0,
+    auto: false
+  };
+  newState = Object.assign({}, state, {
+    error: false,
+    account
+  });
+  newState.dateDirty = false;
+  return newState;
+}
+
+function popupCancel(state, action){
+  var newState = undefined;
+  newState = Object.assign({}, state, {
+    error: 'not initialized',
+    account: undefined,
+    history: undefined,
+    dateDirty: false
+  });
+  return newState;
+}
+
+function popupHistory(state, action){
+  var newState = undefined;
+  const { field } = action.payload;
+  const title = (state.account || {}).title || 'Total Owed';
+  history = { error: 'loading', field, title };
+  newState = Object.assign({}, state, {
+    account: state.account,
+    history,
+    error: false
+  });
+  const type = state.account ? 'liabilities' : 'balance'; //TODO: get type in a better way
+  fetchHistory({ type, title, field });
+  return newState;
+}
+
+function popupHistoryBack(state, action){
+  var newState = undefined;
+  newState = Object.assign({}, state, {
+    account: state.account,
+    history: undefined,
+    error: false
+  });
+  return newState;
+}
+
+function groupRemove(state, action){
+  var newState = undefined;
+  newState = Object.assign({}, state, { error: 'not initialized', account: undefined });
+  return newState;
+}
+
+function removeItem(state, action){
+  var newState = undefined;
+  newState = clone(state);
+  const itemTitle = action.payload.title;
+  newState.account.items = newState.account.items
+    .filter(x => x.title.toLowerCase() !== itemTitle.toLowerCase());
+
+  // update amount / total_owed / date / status for group
+  newState.account.amount = newState.account.items
+    .map(x => x.amount)
+    .reduce((total, z) => Number(total) + Number(z), 0)
+    .toFixed(2);
+  newState.account.total_owed = newState.account.items
+    .map(x => x.total_owed)
+    .reduce((total, z) => Number(total) + Number(z), 0)
+    .toFixed(2);
+  newState.account.date = newState.account.items
+    .map(x => x.date)
+    .sort(function (a, b) {
+      return new Date(a) - new Date(b);
+    })[0];
+  newState.account.status = newState.account.items
+    .map(x => x.status)
+    .reduce((status, z) => statToNumber[status.toLowerCase()] < statToNumber[z.toLowerCase()]
+      ? status.toLowerCase()
+      : z.toLowerCase()
+    , 'paid');
+  return newState;
+}
+
+function accountSave(state, action){
+  var newState = undefined;
+  console.log('------', state);
+  //return {};
+  newState = Object.assign({}, state, { error: 'not initialized' });
+  newState.account = undefined;
+  newState.dateDirty = false;
+  return newState;
+}
+
 function popup(state, action) {
   var newState = undefined;
-  var history = undefined;
-  var account = undefined;
 
   switch (action.type) {
     case 'RECEIVE_ACCOUNTS':
@@ -157,92 +285,33 @@ function popup(state, action) {
       newState = popupNewGroup(state, action);
       break;
     case 'POPUP_NEW_ACCOUNT':
-      account = {
-        type: "",
-        hidden: false,
-        title: "New Group",
-        note: "",
-        isNew: true,
-        status: "paid",
-        date: "2017-10-18", //TODO: a month from now?
-        amount: 0,
-        total_owed: 0,
-        auto: false
-      };
-      newState = Object.assign({}, state, {
-        error: false,
-        account: JSON.parse(JSON.stringify(account || false))
-      });
-      newState.dateDirty = false;
+      newState = popupNewAccount(state, action);
       break;
     case 'POPUP_CANCEL':
-      newState = Object.assign({}, state, {
-        error: 'not initialized',
-        account: undefined,
-        history: undefined
-      })
-      newState.dateDirty = false;
+      newState = popupCancel(state, action);
       break;
-    case 'POPUP_HISTORY': {
-      const { field } = action.payload;
-      const title = (state.account || {}).title || 'Total Owed';
-      history = { error: 'loading', field, title };
-      newState = Object.assign({}, state, {
-        account: state.account,
-        history,
-        error: false
-      });
-      const type = state.account ? 'liabilities' : 'balance'; //TODO: get type in a better way
-      fetchHistory({ type, title, field });
+    case 'POPUP_HISTORY':
+      newState = popupHistory(state, action);
       break;
-    }
     case 'POPUP_HISTORY_BACK':
-      history = undefined;
-      newState = Object.assign({}, state, {
-        account: state.account,
-        history,
-        error: false
-      })
+      newState = popupHistoryBack(state, action);
       break;
     case 'GROUP_REMOVE':
-      account = undefined;
-      newState = Object.assign({}, state, { error: 'not initialized', account: undefined })
+      newState = groupRemove(state, action);
       break;
-    case 'REMOVE_ITEM': {
-      newState = clone(state);
-      const itemTitle = action.payload.title;
-      newState.account.items = newState.account.items
-        .filter(x => x.title.toLowerCase() !== itemTitle.toLowerCase());
-
-      // update amount / total_owed / date / status for group
-      newState.account.amount = newState.account.items
-        .map(x => x.amount)
-        .reduce((total, z) => Number(total) + Number(z), 0)
-        .toFixed(2);
-      newState.account.total_owed = newState.account.items
-        .map(x => x.total_owed)
-        .reduce((total, z) => Number(total) + Number(z), 0)
-        .toFixed(2);
-      newState.account.date = newState.account.items
-        .map(x => x.date)
-        .sort(function (a, b) {
-          return new Date(a) - new Date(b);
-        })[0];
-      newState.account.status = newState.account.items
-        .map(x => x.status)
-        .reduce((status, z) => statToNumber[status.toLowerCase()] < statToNumber[z.toLowerCase()]
-          ? status.toLowerCase()
-          : z.toLowerCase()
-        , 'paid');
+    case 'REMOVE_ITEM':
+      newState = removeItem(state, action);
       break;
-    }
     case 'ACCOUNT_SAVE':
-      state.dateDirty = false;
-      newState = Object.assign({}, state, { error: 'not initialized' });
-      newState.account = undefined;
+      newState = accountSave(state, action);
       break;
   }
   return newState || state || {};
 }
 
 export default popup;
+export {
+  receiveAccounts, receiveHistory, popupAccount, popupUpdate, popupNewGroup,
+  popupNewAccount, popupCancel, popupHistory, popupHistoryBack, groupRemove,
+  removeItem, accountSave
+};

@@ -2,7 +2,10 @@ import {
     fetchHistory,
     saveAccounts
 } from './services';
+
 import { safeAccess } from '../react/utilities';
+
+import { popupAccount, popupUpdate } from '../../reducers/popup';
 
 // Reducer
 var accounts = undefined;
@@ -324,12 +327,13 @@ function app(state, action) {
 
             break;
         case 'ACCOUNT_SAVE': {
+            //console.log('~~~~~', state)
             // add account/group, or remove group
             if ((account || state.account).isNew) {
                 const newAccount = JSON.parse(JSON.stringify(account));
                 delete newAccount.isNew;
                 newAccount.items = (newAccount.items || []).map(x => ({ title: x.title }));
-                groupedItems = (account.items || [])
+                groupedItems = ((account || state.account).items || [])
                     .map(item => (accounts.liabilities.filter(x => x.title === item.title) || [])[0]);
                 const groupStatus = groupedItems.reduce((status, g) => {
                     status = g.status.toLowerCase() === 'due' ? 'due' : status;
@@ -352,10 +356,10 @@ function app(state, action) {
                     .forEach(x => x.type = 'grouped');
             } else {
                 [].concat((accounts.liabilities||[]), (accounts.assets||[])).forEach(a => {
-                    if ((account.oldTitle && a.title.toLowerCase() === account.oldTitle.toLowerCase()) || a.title.toLowerCase() === account.title.toLowerCase()) {
-                        Object.keys(account).forEach(key => {
+                    if (((account || state.account).oldTitle && a.title.toLowerCase() === (account || state.account).oldTitle.toLowerCase()) || a.title.toLowerCase() === (account || state.account).title.toLowerCase()) {
+                        Object.keys((account || state.account)).forEach(key => {
                             if(key === 'oldTitle') return;
-                            a[key] = account[key];
+                            a[key] = (account || state.account)[key];
                         });
                     }
                     a.type === 'group' && [].concat((state.liabilities||[]), (state.assets||[])).forEach(b => {
@@ -387,9 +391,18 @@ function app(state, action) {
                 balance: accounts.balance
             });
             // QUESTION: will this always be processed before popup reducer?
-            account = undefined;
+            //account = undefined;
             break;
         }
+        // case 'POPUP_ACCOUNT': {
+        //     //console.log('=====', { action, state })
+        //     newState = popupAccount(state, action);
+        //     break;
+        // }
+        // case 'POPUP_UPDATE': {
+        //     newState = popupUpdate(state, action);
+        //     break;
+        // }
         default:
             newState = JSON.parse(JSON.stringify(state || {}));
             (newState.liabilities || []).forEach(x => x.selected = false);
