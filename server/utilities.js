@@ -63,13 +63,18 @@ function updateAccounts(accounts) {
   // AUTO MARK DUE and PAID
   var today = new Date();
   var oneWeekAhead = new Date().setDate(today.getDate() + 7);
+  var paycheck = accounts.assets
+    .filter(x => x.title.toLowerCase() === 'paycheck')[0];
+  var payDate = new Date(paycheck.date);
   u.liabilities = u.liabilities.map(function (item) {
     if (!item.status || item.type === 'group'){
       item.status = 'paid';
       return item;
     }
 
-    if (item.status.toLowerCase() === 'paid' && new Date(item.date) <= oneWeekAhead) {
+    if (item.status.toLowerCase() === 'paid' && new Date(item.date) <= oneWeekAhead && new Date(item.date) < payDate) {
+      console.log('item.date', item.date);
+      console.log('paycheck.date', paycheck.date);
       item.status = "due";
       //console.log(item);
       if(item.auto){
