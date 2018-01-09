@@ -15,7 +15,7 @@ import {
 import { newGroupClick } from '../js/redux/actions';
 
 function receiveAccounts (state, action){
-  var newState = {};
+  var newState = clone(state);
   if (action.payload.error) {
     newState = Object.assign({}, state, action.payload);
     return newState;
@@ -95,7 +95,6 @@ function popupUpdate(state, action){
     .filter(a => a.title.toLowerCase() === newState.account.title.toLowerCase());
   oldAccount = clone(oldAccount[0] || {});
 
-  //console.log('----', newState)
   Object.keys(action.payload)
     .forEach(fieldName => {
       if (fieldName === 'title') {
@@ -106,10 +105,10 @@ function popupUpdate(state, action){
   // change date based on status change
   if (action.payload.status) {
     const isNewPaid = action.payload.status.toLowerCase() === 'paid';
-    const isOldPaid = oldAccount.status.toLowerCase() === 'paid';
+    const isPrevPaid = state.account.status.toLowerCase() === 'paid';
     const shouldAutoReduce = !!state.account.autoReduce;
 
-    if (isOldPaid && state.dateDirty) {
+    if (isPrevPaid && state.dateDirty) {
       newState.account.date = bumpDateOneMonthBack(newState.account.date);
       newState.dateDirty = false;
       if (shouldAutoReduce) {
@@ -117,9 +116,9 @@ function popupUpdate(state, action){
       }
     }
 
-    if (!isOldPaid && isNewPaid) {
+    if (!isPrevPaid && isNewPaid) {
       newState.account.date = bumpDateOneMonth(newState.account.date);
-      newState.dateDirty = true; //TODO: should not be dirty if original status was paid
+      newState.dateDirty = oldAccount.status !== 'paid'; //TODO: should not be dirty if original status was paid
       if (shouldAutoReduce) {
         newState.account.total_owed -= Number(newState.account.amount);
       }
@@ -257,8 +256,6 @@ function removeItem(state, action){
 
 function accountSave(state, action){
   var newState = undefined;
-  console.log('------', state);
-  //return {};
   newState = Object.assign({}, state, { error: 'not initialized' });
   newState.account = undefined;
   newState.dateDirty = false;
