@@ -118,7 +118,7 @@ function popupUpdate(state, action){
 
     if (!isPrevPaid && isNewPaid) {
       newState.account.date = bumpDateOneMonth(newState.account.date);
-      newState.dateDirty = oldAccount.status !== 'paid'; //TODO: should not be dirty if original status was paid
+      newState.dateDirty = oldAccount.status !== 'paid';
       if (shouldAutoReduce) {
         newState.account.total_owed -= Number(newState.account.amount);
       }
