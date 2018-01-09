@@ -197,7 +197,7 @@ function popupHistory(state, action){
   var newState = undefined;
   const { field } = action.payload;
   const title = (state.account || {}).title || 'Total Owed';
-  history = { error: 'loading', field, title };
+  const history = { error: 'loading', field, title };
   newState = Object.assign({}, state, {
     account: state.account,
     history,
