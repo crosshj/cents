@@ -293,6 +293,7 @@ function app(state, action) {
                 }
             });
             selected = newState.liabilities.filter(x => x.selected);
+            newState.selected = selected;
             break;
         case 'GROUP_CLICK': {
             const groupTitle = action.payload.title;

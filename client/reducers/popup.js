@@ -130,11 +130,11 @@ function popupUpdate(state, action){
 function popupNewGroup (state, action){
   var newState = undefined;
 
-  var selectedAmount = selected.reduce((all, g) => { return all + Number(g.amount); }, 0);
+  var selectedAmount = state.selected.reduce((all, g) => { return all + Number(g.amount); }, 0);
   selectedAmount = parseFloat(selectedAmount).toFixed(2);
-  var selectedOwed = selected.reduce((all, g) => { return all + Number(g.total_owed || 0); }, 0);
+  var selectedOwed = state.selected.reduce((all, g) => { return all + Number(g.total_owed || 0); }, 0);
   selectedOwed = parseFloat(selectedOwed).toFixed(2);
-  var selectedLatestDate = selected
+  var selectedLatestDate = state.selected
     .map(x => x.date)
     .sort(function (a, b) {
       return new Date(a.date) - new Date(b.date);
@@ -265,6 +265,17 @@ function accountSave(state, action){
   return newState;
 }
 
+function selectAccountClick(state, action){
+  var newState = clone(state);
+  newState.accounts.liabilities.forEach(liab => {
+      if (liab.title === action.payload.title) {
+          liab.selected = !liab.selected;
+      }
+  });
+  newState.selected = newState.accounts.liabilities.filter(x => x.selected);
+  return newState;
+}
+
 function popup(state, action) {
   var newState = undefined;
 
@@ -305,8 +316,11 @@ function popup(state, action) {
     case 'ACCOUNT_SAVE':
       newState = accountSave(state, action);
       break;
+    case 'SELECT_ACCOUNT_CLICK':
+      newState = selectAccountClick(state, action);
+      break;
   }
-  return newState || state || {};
+  return newState || clone(state);
 }
 
 export default popup;
