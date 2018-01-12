@@ -5,12 +5,15 @@
     expect:false
 */
 import reducer from './reducers';
+import { groupWithChildren } from './testExamples';
+
 const {popup:popupReducer, app:appReducer} = reducer;
 
 import {
     init as actionsInit,
     accountClick,
     groupClick,
+    removeItem,
     receiveAccounts,
     accountSave,
     popupUpdate
@@ -49,35 +52,14 @@ describe('app reducer', () => {
             },
             selectedMenuIndex: 0
         };
-        expect(appReducer(state, action)).toEqual(expected)
+        var result = appReducer(state, action);
+        delete result.accounts;
+        expect(result).toEqual(expected)
     });
 
     it('should update group and totals when child item changes', () => {
-        var state = {
-            liabilities: [{
-                title: 'group',
-                items: [{ title: 'child'}, { title: 'child2'}],
-                date: '2017-10-08',
-                amount: 200,
-                total_owed: 400,
-                type: 'group',
-                status: 'paid'
-            },{
-                title: 'child',
-                date: '2017-10-08',
-                amount: 200,
-                total_owed: 400,
-                type: 'grouped',
-                status: 'paid'
-            },{
-                title: 'child2',
-                date: '2017-10-09',
-                amount: 200,
-                total_owed: 400,
-                type: 'grouped',
-                status: 'pending'
-            }]
-        };
+        var state = groupWithChildren();
+
         var expected = JSON.parse(JSON.stringify(state));
         expected.liabilities.pop();
         expected.liabilities.pop();
@@ -86,11 +68,10 @@ describe('app reducer', () => {
         expected.liabilities[0].status = 'due';
         expected.liabilities[0].date= '2017-10-09';
         expected.liabilities[0].open = false;
-        expected.totals = {
-            assetsTotal: "0.00", debts: "500.00", debtsTotal: "1400.00",
-            dueTotal: "300.00", pendingTotal: "200.00"
-        };
-        expected.selectedMenuIndex = 0;
+        expected.totals.debts = '500.00';
+        expected.totals.debtsTotal = '1400.00';
+        expected.totals.dueTotal = '300.00';
+        expected.totals.updating = true;
 
         // receive all accounts
         var newState = appReducer(state, receiveAccounts(state));
@@ -150,43 +131,10 @@ describe('app reducer', () => {
     });
 
     it('should save group properly when updating group title', () => {
-        var state = {
-            liabilities: [{
-                title: 'group',
-                items: [{ title: 'child'}, { title: 'child2'}],
-                date: '2017-10-08',
-                amount: 400,
-                total_owed: 800,
-                type: 'group',
-                status: 'pending'
-            },{
-                title: 'child',
-                date: '2017-10-08',
-                amount: 200,
-                total_owed: 400,
-                type: 'grouped',
-                status: 'paid'
-            },{
-                title: 'child2',
-                date: '2017-10-09',
-                amount: 200,
-                total_owed: 400,
-                type: 'grouped',
-                status: 'pending'
-            }],
-            totals: {
-                assetsTotal: '0.00',
-                debts: '400.00',
-                debtsTotal: '800.00',
-                dueTotal: '0.00',
-                pendingTotal: '200.00'
-            },
-            selectedMenuIndex: 0
-        };
+        var state = groupWithChildren();
 
         // has side effect of loading accounts into reducer state
         var result = appReducer(state, receiveAccounts(state));
-        result = appReducer(result, receiveAccounts(state));
         // has side effect of loading account into reducer state
         result = appReducer(
             result,
@@ -215,4 +163,23 @@ describe('app reducer', () => {
         // console.log(result.liabilities[0].items);
     });
 
+    it('should remove child from group properly', () => {
+        var state = groupWithChildren();
+
+        var result = appReducer(state, receiveAccounts(state));
+        result = appReducer(
+            result,
+            accountClick('group')
+        );
+        result = appReducer(
+            result,
+            removeItem({title: 'child2'})
+        );
+
+        expect(result.account.items.length).toEqual(1);
+        expect(result.account.items[0].title).toEqual('child');
+        expect(result.account.total_owed).toEqual('400.00');
+        expect(result.account.date).toEqual('2017-10-08');
+        expect(result.account.status).toEqual('paid');
+    });
 });

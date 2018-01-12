@@ -5,7 +5,11 @@ import {
 
 import { safeAccess } from '../react/utilities';
 
-import { popupAccount, popupUpdate } from '../../reducers/popup';
+import {
+    popupAccount,
+    popupUpdate,
+    removeItem
+} from '../../reducers/popup';
 
 // Reducer
 var accounts = undefined;
@@ -248,6 +252,7 @@ function app(state, action) {
                 stateAccounts.selectedMenuIndex = state ? state.selectedMenuIndex : 0;
             }
             newState = stateAccounts;
+            newState.accounts = action.payload;
             break;
         case 'RECEIVE_ACCOUNTS_DATA': {
             if(action.payload.error){
@@ -402,6 +407,11 @@ function app(state, action) {
         }
         case 'POPUP_UPDATE': {
             newState = popupUpdate(state, action);
+            account = newState.account;
+            break;
+        }
+        case 'REMOVE_ITEM': {
+            newState = removeItem(state, action);
             account = newState.account;
             break;
         }

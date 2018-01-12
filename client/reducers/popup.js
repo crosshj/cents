@@ -225,11 +225,13 @@ function groupRemove(state, action){
 }
 
 function removeItem(state, action){
-  var newState = undefined;
-  newState = clone(state);
+  var newState = clone(state);
   const itemTitle = action.payload.title;
   newState.account.items = newState.account.items
-    .filter(x => x.title.toLowerCase() !== itemTitle.toLowerCase());
+    .filter(x => x.title.toLowerCase() !== itemTitle.toLowerCase())
+    .map(x => newState.accounts.liabilities
+      .filter(y => x.title.toLowerCase() === y.title.toLowerCase())[0]
+    );
 
   // update amount / total_owed / date / status for group
   newState.account.amount = newState.account.items
@@ -251,6 +253,7 @@ function removeItem(state, action){
       ? status.toLowerCase()
       : z.toLowerCase()
     , 'paid');
+  newState.account.items = newState.account.items.map(x => ({ title: x.title }));
   return newState;
 }
 
