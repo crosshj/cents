@@ -81,8 +81,8 @@ function popupUpdate(state, action){
     return newState;
   }
 
-  const liabilities = (state.liabilities || (state.accounts||{}).liabilities || []);
-  const assets = (state.assets || (state.accounts||{}).assets || []);
+  const liabilities = (state.accounts||{}).liabilities || [];
+  const assets = (state.accounts||{}).assets || [];
 
   var oldAccount = [].concat(liabilities, assets)
     .filter(a => a.title.toLowerCase() === newState.account.title.toLowerCase());
@@ -99,6 +99,7 @@ function popupUpdate(state, action){
   if (action.payload.status) {
     const isNewPaid = action.payload.status.toLowerCase() === 'paid';
     const isPrevPaid = state.account.status.toLowerCase() === 'paid';
+    const isOldAccountPaid = oldAccount && oldAccount.status === 'paid';
     const shouldAutoReduce = !!state.account.autoReduce;
 
     if (isPrevPaid && state.dateDirty) {
@@ -109,9 +110,9 @@ function popupUpdate(state, action){
       }
     }
 
-    if (!isPrevPaid && isNewPaid) {
+    if (!isPrevPaid && isNewPaid && !isOldAccountPaid) {
       newState.account.date = bumpDateOneMonth(newState.account.date);
-      newState.dateDirty = oldAccount.status !== 'paid';
+      newState.dateDirty = true;
       if (shouldAutoReduce) {
         newState.account.total_owed -= Number(newState.account.amount);
       }
@@ -220,7 +221,7 @@ function groupRemove(state, action){
 function removeItem(state, action){
   var newState = clone(state);
   const itemTitle = action.payload.title;
-  console.log(newState.account.items);
+
   newState.account.items = newState.account.items
     .filter(x => x.title.toLowerCase() !== itemTitle.toLowerCase())
     .map(x => newState.accounts.liabilities

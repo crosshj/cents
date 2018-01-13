@@ -391,11 +391,13 @@ function app(state, action) {
                 delete a.open
             });
 
-            saveAccounts({
+            var _accounts = {
                 assets: accounts.assets,
                 liabilities: accounts.liabilities,
                 balance: accounts.balance
-            });
+            };
+            newState.accounts = _accounts;
+            saveAccounts(_accounts);
             // QUESTION: will this always be processed before popup reducer?
             //account = undefined;
             break;

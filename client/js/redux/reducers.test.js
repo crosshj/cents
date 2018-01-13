@@ -93,7 +93,7 @@ describe('app reducer', () => {
         
         // close group
         newState = appReducer(newState, groupClick('group'));
-
+        delete newState.accounts;
         expect(newState).toEqual(expected)
     });
 
@@ -152,7 +152,7 @@ describe('app reducer', () => {
         var expected = clone(state);
         expected.liabilities[0].title = 'new group title';
         expected.liabilities = [expected.liabilities[0]];
-
+        delete result.accounts;
         expect(result).toEqual(expected);
 
         // var again = popupReducer(
