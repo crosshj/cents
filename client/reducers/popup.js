@@ -60,21 +60,14 @@ function popupAccount(state, action){
           }
         })
     }
-    // newState.account.items = newState.account.items
-    //   .map(x => {
-    //     return liabilities.filter(y => y.title.toLowerCase() === x.title.toLowerCase())[0]
-    //   })
-      //.sort((a, b) => b.total_owed - a.total_owed);
+    newState.account.items = newState.account.items
+      .map(x => {
+        return state.accounts.liabilities.filter(y => y.title.toLowerCase() === x.title.toLowerCase())[0]
+      })
+      .sort((a, b) => b.total_owed - a.total_owed);
   }
-  // newState = Object.assign({}, state, {
-  //   error: newState.account ? false : 'could not find account',
-  //   dateDirty: false,
-  //   account: clone(newState.account || false)
-  // });
   newState.dateDirty = false;
   newState.error = newState.account ? false : 'could not find account';
-
-  //console.log('^^^^^', newState)
 
   return newState;
 }
@@ -227,6 +220,7 @@ function groupRemove(state, action){
 function removeItem(state, action){
   var newState = clone(state);
   const itemTitle = action.payload.title;
+  console.log(newState.account.items);
   newState.account.items = newState.account.items
     .filter(x => x.title.toLowerCase() !== itemTitle.toLowerCase())
     .map(x => newState.accounts.liabilities
@@ -320,7 +314,7 @@ function popup(state, action) {
       newState = selectAccountClick(state, action);
       break;
   }
-  return newState || clone(state);
+  return newState || state || {};
 }
 
 export default popup;
