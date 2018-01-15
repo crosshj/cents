@@ -65,6 +65,9 @@ function popupAccount(state, action){
         return state.accounts.liabilities.filter(y => y.title.toLowerCase() === x.title.toLowerCase())[0]
       })
       .sort((a, b) => b.total_owed - a.total_owed);
+    newState.account.total_owed = newState.account.items.reduce((all, one) => {
+      return Number(one.total_owed) + all;
+    }, 0) || undefined;
   }
   newState.dateDirty = false;
   newState.error = newState.account ? false : 'could not find account';
@@ -248,7 +251,11 @@ function removeItem(state, action){
       ? status.toLowerCase()
       : z.toLowerCase()
     , 'paid');
-  newState.account.items = newState.account.items.map(x => ({ title: x.title }));
+  newState.account.items = newState.account.items.map(x => ({
+    title: x.title,
+    total_owed: x.total_owed,
+    amount: x.amount
+  }));
   return newState;
 }
 
@@ -257,6 +264,7 @@ function accountSave(state, action){
   newState = Object.assign({}, state, { error: 'not initialized' });
   newState.account = undefined;
   newState.dateDirty = false;
+  //TODO: update accounts! with this new account!
   return newState;
 }
 
