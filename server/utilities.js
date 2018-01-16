@@ -65,7 +65,7 @@ function updateAccounts(accounts) {
   var oneWeekAhead = new Date().setDate(today.getDate() + 7);
   var paycheck = accounts.assets
     .filter(x => x.title.toLowerCase() === 'paycheck')[0];
-  var payDate = new Date(paycheck.date);
+  var payDate = paycheck && new Date(paycheck.date);
   u.liabilities = u.liabilities.map(function (item) {
     if (!item.status || item.type === 'group'){
       item.status = 'paid';

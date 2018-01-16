@@ -62,8 +62,9 @@ function popupAccount(state, action){
     }
     newState.account.items = newState.account.items
       .map(x => {
-        return state.accounts.liabilities.filter(y => y.title.toLowerCase() === x.title.toLowerCase())[0]
+        return state.accounts.liabilities.filter(y => y.title.toLowerCase() === x.title.toLowerCase())[0];
       })
+      .filter(x=>!!x)
       .sort((a, b) => b.total_owed - a.total_owed);
     newState.account.total_owed = newState.account.items.reduce((all, one) => {
       return Number(one.total_owed) + all;

@@ -35,7 +35,8 @@ function updateGroupFromChildren(accounts) {
         const groupedItems = g.items
             .map(item => (newLiabs
                 .filter(x => x.title.toLowerCase() === item.title.toLowerCase()) || []
-            )[0]);
+            )[0])
+            .filter(x => !!x);
         if (!groupedItems[0]) {
             return;
         }
