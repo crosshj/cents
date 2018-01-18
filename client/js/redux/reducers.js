@@ -359,7 +359,10 @@ function app(state, action) {
                     .forEach(x => x.type = 'grouped');
             } else {
                 [].concat((newState.accounts.liabilities||[]), (newState.accounts.assets||[])).forEach(a => {
-                    if ((newState.account.oldTitle && a.title.toLowerCase() === newState.account.oldTitle.toLowerCase()) || a.title.toLowerCase() === newState.account.title.toLowerCase()) {
+                    //console.log(newState.account);
+                    if ((newState.account.oldTitle && a.title.toLowerCase() === newState.account.oldTitle.toLowerCase())
+                        || a.title.toLowerCase() === newState.account.title.toLowerCase()
+                    ) {
                         Object.keys(newState.account).forEach(key => {
                             if(key === 'oldTitle') return;
                             a[key] = newState.account[key];
@@ -369,6 +372,12 @@ function app(state, action) {
                         if(a.title.toLowerCase() === b.title.toLowerCase()){
                             a.open = b.open;
                         }
+                        // grouped account changed title
+                        a.items.forEach(i => {
+                            if(newState.account.oldTitle && i.title.toLowerCase() === newState.account.oldTitle.toLowerCase()){
+                                i.title = newState.account.title;
+                            }
+                        });
                     });
                 });
             }

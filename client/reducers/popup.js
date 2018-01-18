@@ -263,9 +263,19 @@ function removeItem(state, action){
 function accountSave(state, action){
   var newState = undefined;
   newState = Object.assign({}, state, { error: 'not initialized' });
+  //update accounts when making changes to account
+  [].concat((newState.accounts.liabilities||[]), (newState.accounts.assets||[])).forEach(a => {
+    if ((newState.account.oldTitle && a.title.toLowerCase() === newState.account.oldTitle.toLowerCase())
+        || a.title.toLowerCase() === newState.account.title.toLowerCase()
+    ) {
+        Object.keys(newState.account).forEach(key => {
+            if(key === 'oldTitle') return;
+            a[key] = newState.account[key];
+        });
+    }
+  });
   newState.account = undefined;
   newState.dateDirty = false;
-  //TODO: update accounts! with this new account!
   return newState;
 }
 

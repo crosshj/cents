@@ -63,6 +63,7 @@ describe('app reducer', () => {
         var expected = JSON.parse(JSON.stringify(state));
         expected.liabilities.pop();
         expected.liabilities.pop();
+        expected.liabilities[0].items[0].title = 'child1';
         expected.liabilities[0].total_owed = 1400;
         expected.liabilities[0].amount = 500;
         expected.liabilities[0].status = 'due';
@@ -86,12 +87,12 @@ describe('app reducer', () => {
         // make changes
         newState = appReducer(
             newState,
-            popupUpdate({ amount: 300, total_owed: 1000, status: 'due', date: '2020-10-10' })
+            popupUpdate({ title: 'child1', amount: 300, total_owed: 1000, status: 'due', date: '2020-10-10' })
         );
 
         // save child
         //console.log(newState);
-        newState = appReducer(newState, accountSave('child'));
+        newState = appReducer(newState, accountSave());
         
         // close group
         newState = appReducer(newState, groupClick('group'));
