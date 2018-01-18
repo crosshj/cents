@@ -72,6 +72,7 @@ describe('app reducer', () => {
         expected.totals.debtsTotal = '1400.00';
         expected.totals.dueTotal = '300.00';
         expected.totals.updating = true;
+        expected.error = false;
 
         // receive all accounts
         var newState = appReducer(state, receiveAccounts(state));
@@ -89,6 +90,7 @@ describe('app reducer', () => {
         );
 
         // save child
+        //console.log(newState);
         newState = appReducer(newState, accountSave('child'));
         
         // close group
@@ -152,6 +154,7 @@ describe('app reducer', () => {
         var expected = clone(state);
         expected.liabilities[0].title = 'new group title';
         expected.liabilities = [expected.liabilities[0]];
+        expected.error = false;
         delete result.accounts;
         expect(result).toEqual(expected);
 
