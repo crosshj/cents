@@ -1,0 +1,6 @@
+/*
+
+here will be a root reducer which keeps track of accounts and account
+these are shared between app and popup
+
+*/
