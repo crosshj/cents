@@ -1,7 +1,8 @@
 var Nightmare = require('nightmare');
-var nightmare = Nightmare({ show: false, frame: false });
+var nightmare = Nightmare({ show: false, frame: true, openDevTools: true });
 var path = require('path');
 var getPrivateInfo = require('../utilities/getPrivateInfo').usaa;
+var debug = require('debug')('nightmare');
 
 const getUSAA = callback => {
   var usaaOutput = {
@@ -10,15 +11,20 @@ const getUSAA = callback => {
   nightmare
     .goto(getPrivateInfo().url())
     .click('#logOnButton a')
+    .click('input#input_onlineid')
     .type('input#input_onlineid', getPrivateInfo().username())
+    .click('input#input_password')
     .type('input#input_password', getPrivateInfo().password())
     .click('input[type="submit"]')
+    //.screenshot('page1.png')
     .wait('input#pinTextField')
+    //.screenshot('page2.png', () => debug('screenshot page2'))
     .type('input#pinTextField', getPrivateInfo().pin())
     .click('button[type="submit"]')
     .wait('label[for="securityQuestionTextField"]')
     .evaluate(() => document.querySelector('label[for="securityQuestionTextField"]').innerHTML)
     .then(result => {
+      debug('security questions');
       return nightmare
         .type('#securityQuestionTextField', getPrivateInfo().answer(result.toLowerCase()))
         .click('button[type="submit"]')
@@ -30,7 +36,7 @@ const getUSAA = callback => {
         );
     })
     .then(result => {
-      // results of accounts overview
+      debug('results of accounts overview');
       result.forEach(string=>{
           if(!string.split('acct-bal">')[1]) return;
           const account = {
@@ -149,7 +155,7 @@ const getUSAA = callback => {
     .then(() => {
       callback(null, usaaOutput);
       return nightmare
-        .screenshot(path.join(__dirname, 'usaa.png'))
+        //.screenshot(path.join(__dirname, 'usaa.png'))
         .end();
     })
     .catch(function (error) {
