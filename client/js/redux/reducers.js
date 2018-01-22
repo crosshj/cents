@@ -217,221 +217,261 @@ function bumpDateOneMonthBack(date){
 
 */
 
+function receiveAccounts(state, action){
+    var newState;
+    if(action.payload.error){
+        newState = Object.assign({}, state, action.payload);
+        return newState;
+    }
+    newState = clone(action.payload) || {};
+    (newState.liabilities || []).forEach(x => {
+        if (x.hidden === 'false') {
+            x.hidden = false;
+        }
+    });
+    newState = updateGroupFromChildren(newState);
+    newState.totals = safeAccess(() => state.totals) || {};
+    newState.totals.balance = safeAccess(() => state.totals.balance) || 0;
+    newState.totals.updating = true;
+    newState = fixTotals(newState);
+    newState = openGroupedAccounts(newState.accounts, state && !state.error ? state : newState);
+
+    if(state && typeof state.selectedMenuIndex === "undefined"){
+        newState.selectedMenuIndex = window && window.localStorage
+            ? Number(localStorage.getItem('selectedTab'))
+            : 0;
+    } else {
+        newState.selectedMenuIndex = state ? state.selectedMenuIndex : 0;
+    }
+    newState.accounts = action.payload;
+    return newState;
+}
+
+function receiveAccountsData(state, action){
+    var newState;
+    if(action.payload.error){
+        newState = Object.assign({}, state, action.payload);
+        return newState;
+    }
+    newState = clone(state);
+    const balance = safeAccess(() => action.payload.data.accounts[0].balance);
+    newState.totals = newState.totals || {};
+    newState.totals.balance = Number(balance || 0);
+    newState.totals.updating = false;
+
+    newState.accounts.totals = newState.accounts.totals || {};
+    newState.accounts.totals.balance = Number(balance || 0);
+    newState.accounts.totals.updating = false;
+    newState.error = false;
+    return newState;
+}
+
+function receiveAccountsSave(state, action){
+    var newState;
+    if(action.payload.error){
+        newState = Object.assign({}, state, action.payload);
+        return newState;
+    }
+    // console.log('got accounts save, notify if an error');
+    newState = clone(state);
+    newState.error = false;
+    return newState;
+}
+
+function menuSelect(state, action){
+    var newState;
+    localStorage.setItem('selectedTab', action.payload);
+    const selectedMenuIndex = action.payload;
+    newState = clone(state);
+    newState.selectedMenuIndex = selectedMenuIndex;
+    //newState.liabilities.forEach(x => x.selected = false);
+    return newState;
+}
+
+function selectAccountClick(state, action){
+    var newState;
+    newState = clone(state);
+    newState.liabilities.forEach(liab => {
+        if (liab.title === action.payload.title) {
+            liab.selected = !liab.selected;
+        }
+    });
+    newState.selected = newState.liabilities.filter(x => x.selected);
+    return newState;
+}
+
+function groupClick(state, action){
+    var newState;
+    const groupTitle = action.payload.title;
+    //const group = (state.liabilities.filter(x => x.title === groupTitle) || [])[0];
+
+    newState = clone(state);
+    newState.liabilities = newState.liabilities.map(x =>{
+        if (x.title.toLowerCase() === groupTitle.toLowerCase()){
+            x.open = typeof x.open !== 'undefined' ? !x.open : true;
+        }
+        return x;
+    });
+    newState = openGroupedAccounts(newState.accounts, newState);
+
+    // toggle open/closed
+    //newState = switchGroup(group, state, accounts, !group.open)
+    return newState;
+}
+
+function groupRemove(state, action){
+    var newState;
+    var groupedItems;
+    // console.log('Remove group here: ', account.title);
+    newState = clone(state);
+    groupedItems = newState.account.items
+        .map(item => (newState.accounts.liabilities
+            .filter(x => x.title.toLowerCase() === item.title.toLowerCase()) || [])[0]
+        );
+    groupedItems.forEach(x => delete x.type);
+    newState.accounts.liabilities = accounts.liabilities.filter(x => x.title.toLowerCase() !== account.title.toLowerCase());
+    saveAccounts({
+        assets: newState.accounts.assets,
+        liabilities: newState.accounts.liabilities,
+        balance: newState.accounts.balance
+    });
+    newState.assets = clone(newState.accounts.assets);
+    newState.liabilities = newState.accounts.liabilities
+        .filter(x => x.title.toLowerCase() !== account.title.toLowerCase());
+    newState = markGroupedItems(newState);
+    newState = openGroupedAccounts(newState.accounts, newState);
+    return newState;
+}
+
+function accountSave(state, action){
+    var newState;
+    //console.log('~~~~~', state)
+    // add account/group, or remove group
+    newState = clone(state);
+    if (newState.account.isNew) {
+        const newAccount = clone(newState.account);
+        delete newAccount.isNew;
+        newAccount.items = (newAccount.items || []).map(x => ({ title: x.title }));
+        groupedItems = (newState.account.items || [])
+            .map(item => (newState.accounts.liabilities.filter(x => x.title === item.title) || [])[0]);
+        const groupStatus = groupedItems.reduce((status, g) => {
+            status = g.status.toLowerCase() === 'due' ? 'due' : status;
+            status = g.status.toLowerCase() === 'pending' && status !== 'due'
+                ? 'pending'
+                : status;
+            return status;
+        }, newAccount.status);
+        newAccount.status = groupStatus;
+        newState.accounts.liabilities.push(newAccount);
+        newState.accounts.liabilities = newState.accounts.liabilities
+            .sort(function (a, b) {
+                var statCompare = 0;
+                if (statToNumber[a.status.toLowerCase()] > statToNumber[b.status.toLowerCase()]) statCompare = 1;
+                if (statToNumber[a.status.toLowerCase()] < statToNumber[b.status.toLowerCase()]) statCompare = -1;
+
+                return statCompare || new Date(a.date) - new Date(b.date);
+            });
+        groupedItems
+            .forEach(x => x.type = 'grouped');
+    } else {
+        [].concat((newState.accounts.liabilities||[]), (newState.accounts.assets||[])).forEach(a => {
+            //console.log(newState.account);
+            if ((newState.account.oldTitle && a.title.toLowerCase() === newState.account.oldTitle.toLowerCase())
+                || a.title.toLowerCase() === newState.account.title.toLowerCase()
+            ) {
+                Object.keys(newState.account).forEach(key => {
+                    if(key === 'oldTitle') return;
+                    a[key] = newState.account[key];
+                });
+            }
+            a.type === 'group' && [].concat((newState.liabilities||[]), (newState.assets||[])).forEach(b => {
+                if(a.title.toLowerCase() === b.title.toLowerCase()){
+                    a.open = b.open;
+                }
+                // grouped account changed title
+                a.items.forEach(i => {
+                    if(newState.account.oldTitle && i.title.toLowerCase() === newState.account.oldTitle.toLowerCase()){
+                        i.title = newState.account.title;
+                    }
+                });
+            });
+        });
+    }
+    const accounts = clone(newState.accounts);
+    newState = clone(newState.accounts);
+    newState.accounts = accounts;
+    newState = updateGroupFromChildren(newState);
+    newState = fixTotals(newState);
+    newState.selectedMenuIndex = state.selectedMenuIndex;
+
+    //TODO: not sure that both of these are required
+    newState.accounts = markGroupedItems(newState.accounts); //this may be done on server
+    newState = markGroupedItems(newState);
+
+    newState = openGroupedAccounts(newState.accounts, newState);
+
+    // removes view state from save state
+    [].concat((newState.accounts.liabilities||[]), (newState.accounts.assets||[])).forEach(a => {
+        delete a.open
+    });
+
+    var _accounts = {
+        assets: newState.accounts.assets,
+        liabilities: newState.accounts.liabilities,
+        balance: newState.accounts.balance
+    };
+    newState.accounts = _accounts;
+    newState.error = false;
+    saveAccounts(_accounts);
+    newState.liabilities = newState.liabilities.filter(x=>!!x);
+    newState.liabilities.forEach(g => {
+        if(g.items && g.items.length){
+            g.items = g.items.map(i=> ({title: i.title}));
+        }
+    });
+    delete newState.account;
+    return newState;
+}
+
 function app(state, action) {
     var newState = undefined;
     var groupedItems = undefined;
     switch (action.type) {
         case 'RECEIVE_ACCOUNTS':
-            if(action.payload.error){
-                newState = Object.assign({}, state, action.payload);
-                break;
-            }
-            newState = clone(action.payload) || {};
-            (newState.liabilities || []).forEach(x => {
-                if (x.hidden === 'false') {
-                    x.hidden = false;
-                }
-            });
-            newState = updateGroupFromChildren(newState);
-            newState.totals = safeAccess(() => state.totals) || {};
-            newState.totals.balance = safeAccess(() => state.totals.balance) || 0;
-            newState.totals.updating = true;
-            newState = fixTotals(newState);
-            newState = openGroupedAccounts(newState.accounts, state && !state.error ? state : newState);
-
-            if(state && typeof state.selectedMenuIndex === "undefined"){
-                newState.selectedMenuIndex = window && window.localStorage
-                    ? Number(localStorage.getItem('selectedTab'))
-                    : 0;
-            } else {
-                newState.selectedMenuIndex = state ? state.selectedMenuIndex : 0;
-            }
-            newState.accounts = action.payload;
+            newState = receiveAccounts(state, action);
             break;
-        case 'RECEIVE_ACCOUNTS_DATA': {
-            if(action.payload.error){
-                newState = Object.assign({}, state, action.payload);
-                break;
-            }
-            newState = clone(state);
-            const balance = safeAccess(() => action.payload.data.accounts[0].balance);
-            newState.totals = newState.totals || {};
-            newState.totals.balance = Number(balance || 0);
-            newState.totals.updating = false;
-
-            newState.accounts.totals = newState.accounts.totals || {};
-            newState.accounts.totals.balance = Number(balance || 0);
-            newState.accounts.totals.updating = false;
-            newState.error = false;
+        case 'RECEIVE_ACCOUNTS_DATA':
+            newState = receiveAccountsData(state, action);
             break;
-        }
         case 'RECEIVE_ACCOUNTS_SAVE':
-            if(action.payload.error){
-                newState = Object.assign({}, state, action.payload);
-                break;
-            }
-            // console.log('got accounts save, notify if an error');
-            newState = clone(state);
-            newState.error = false;
+            newState = receiveAccountsSave(state, action);
             break;
-        case 'MENU_SELECT': {
-            localStorage.setItem('selectedTab', action.payload);
-            const selectedMenuIndex = action.payload;
-            newState = clone(state);
-            newState.selectedMenuIndex = selectedMenuIndex;
-            //newState.liabilities.forEach(x => x.selected = false);
+        case 'MENU_SELECT':
+            newState = menuSelect(state, action);
             break;
-        }
         case 'SELECT_ACCOUNT_CLICK':
-            newState = clone(state);
-            newState.liabilities.forEach(liab => {
-                if (liab.title === action.payload.title) {
-                    liab.selected = !liab.selected;
-                }
-            });
-            newState.selected = newState.liabilities.filter(x => x.selected);
+            newState = selectAccountClick(state, action);
             break;
-        case 'GROUP_CLICK': {
-            const groupTitle = action.payload.title;
-            //const group = (state.liabilities.filter(x => x.title === groupTitle) || [])[0];
-
-            newState = clone(state);
-            newState.liabilities = newState.liabilities.map(x =>{
-                if (x.title.toLowerCase() === groupTitle.toLowerCase()){
-                    x.open = typeof x.open !== 'undefined' ? !x.open : true;
-                }
-                return x;
-            });
-            newState = openGroupedAccounts(newState.accounts, newState);
-
-            // toggle open/closed
-            //newState = switchGroup(group, state, accounts, !group.open)
+        case 'GROUP_CLICK':
+            newState = groupClick(state, action);
             break;
-        }
         case 'GROUP_REMOVE':
-            // console.log('Remove group here: ', account.title);
-            newState = clone(state);
-            groupedItems = newState.account.items
-                .map(item => (newState.accounts.liabilities
-                    .filter(x => x.title.toLowerCase() === item.title.toLowerCase()) || [])[0]
-                );
-            groupedItems.forEach(x => delete x.type);
-            newState.accounts.liabilities = accounts.liabilities.filter(x => x.title.toLowerCase() !== account.title.toLowerCase());
-            saveAccounts({
-                assets: newState.accounts.assets,
-                liabilities: newState.accounts.liabilities,
-                balance: newState.accounts.balance
-            });
-            newState.assets = clone(newState.accounts.assets);
-            newState.liabilities = newState.accounts.liabilities
-                .filter(x => x.title.toLowerCase() !== account.title.toLowerCase());
-            newState = markGroupedItems(newState);
-            newState = openGroupedAccounts(newState.accounts, newState);
+            newState = groupRemove(state, action);
             break;
-        case 'ACCOUNT_SAVE': {
-            //console.log('~~~~~', state)
-            // add account/group, or remove group
-            newState = clone(state);
-            if (newState.account.isNew) {
-                const newAccount = clone(newState.account);
-                delete newAccount.isNew;
-                newAccount.items = (newAccount.items || []).map(x => ({ title: x.title }));
-                groupedItems = (newState.account.items || [])
-                    .map(item => (newState.accounts.liabilities.filter(x => x.title === item.title) || [])[0]);
-                const groupStatus = groupedItems.reduce((status, g) => {
-                    status = g.status.toLowerCase() === 'due' ? 'due' : status;
-                    status = g.status.toLowerCase() === 'pending' && status !== 'due'
-                        ? 'pending'
-                        : status;
-                    return status;
-                }, newAccount.status);
-                newAccount.status = groupStatus;
-                newState.accounts.liabilities.push(newAccount);
-                newState.accounts.liabilities = newState.accounts.liabilities
-                    .sort(function (a, b) {
-                        var statCompare = 0;
-                        if (statToNumber[a.status.toLowerCase()] > statToNumber[b.status.toLowerCase()]) statCompare = 1;
-                        if (statToNumber[a.status.toLowerCase()] < statToNumber[b.status.toLowerCase()]) statCompare = -1;
-
-                        return statCompare || new Date(a.date) - new Date(b.date);
-                    });
-                groupedItems
-                    .forEach(x => x.type = 'grouped');
-            } else {
-                [].concat((newState.accounts.liabilities||[]), (newState.accounts.assets||[])).forEach(a => {
-                    //console.log(newState.account);
-                    if ((newState.account.oldTitle && a.title.toLowerCase() === newState.account.oldTitle.toLowerCase())
-                        || a.title.toLowerCase() === newState.account.title.toLowerCase()
-                    ) {
-                        Object.keys(newState.account).forEach(key => {
-                            if(key === 'oldTitle') return;
-                            a[key] = newState.account[key];
-                        });
-                    }
-                    a.type === 'group' && [].concat((newState.liabilities||[]), (newState.assets||[])).forEach(b => {
-                        if(a.title.toLowerCase() === b.title.toLowerCase()){
-                            a.open = b.open;
-                        }
-                        // grouped account changed title
-                        a.items.forEach(i => {
-                            if(newState.account.oldTitle && i.title.toLowerCase() === newState.account.oldTitle.toLowerCase()){
-                                i.title = newState.account.title;
-                            }
-                        });
-                    });
-                });
-            }
-            const accounts = clone(newState.accounts);
-            newState = clone(newState.accounts);
-            newState.accounts = accounts;
-            newState = updateGroupFromChildren(newState);
-            newState = fixTotals(newState);
-            newState.selectedMenuIndex = state.selectedMenuIndex;
-
-            //TODO: not sure that both of these are required
-            newState.accounts = markGroupedItems(newState.accounts); //this may be done on server
-            newState = markGroupedItems(newState);
-            
-            newState = openGroupedAccounts(newState.accounts, newState);
-
-            // removes view state from save state
-            [].concat((newState.accounts.liabilities||[]), (newState.accounts.assets||[])).forEach(a => {
-                delete a.open
-            });
-
-            var _accounts = {
-                assets: newState.accounts.assets,
-                liabilities: newState.accounts.liabilities,
-                balance: newState.accounts.balance
-            };
-            newState.accounts = _accounts;
-            newState.error = false;
-            saveAccounts(_accounts);
-            newState.liabilities = newState.liabilities.filter(x=>!!x);
-            newState.liabilities.forEach(g => {
-                if(g.items && g.items.length){
-                    g.items = g.items.map(i=> ({title: i.title}));
-                }
-            });
-            // QUESTION: will this always be processed before popup reducer?
-            //account = undefined;
+        case 'ACCOUNT_SAVE':
+            newState = accountSave(state, action);
             break;
-        }
-        case 'POPUP_ACCOUNT': {
+        case 'POPUP_ACCOUNT':
             newState = popupAccount(state, action);
-            //console.log('=====', { account })
             break;
-        }
-        case 'POPUP_UPDATE': {
+        case 'POPUP_UPDATE':
             newState = popupUpdate(state, action);
             break;
-        }
-        case 'REMOVE_ITEM': {
+        case 'REMOVE_ITEM':
             newState = removeItem(state, action);
             break;
-        }
         default:
-            newState = JSON.parse(JSON.stringify(state || {}));
+            newState = clone(state || {});
             (newState.liabilities || []).forEach(x => x.selected = false);
     }
 
@@ -439,5 +479,6 @@ function app(state, action) {
 }
 
 import popup from '../../reducers/popup';
+import { newGroupClick } from './actions';
 
 export default { app, popup };
