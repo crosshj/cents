@@ -37,7 +37,9 @@ function groupWithChildren(){
         },
         selectedMenuIndex: 0
     };
-    return clone(example);
+    var _example = clone(example);
+    _example.accounts ={ liabilities: example.liabilities };
+    return _example;
 }
 
 export {

@@ -153,6 +153,7 @@ function openGroupedAccounts(initialState, viewState){
     outputState.liabilities = outputState.liabilities.filter(x => !x.hidden);
 
     // add grouped items back if group open
+    //console.log(initialState)
     var newLiabs = [];
     outputState.liabilities.forEach(group => {
         newLiabs.push(group);
@@ -218,7 +219,7 @@ function bumpDateOneMonthBack(date){
 
 */
 
-function receiveAccounts(state, action){
+function receiveAccounts(state, action, root){
     var newState;
     if(action.payload.error){
         newState = Object.assign({}, state, action.payload);
@@ -245,6 +246,7 @@ function receiveAccounts(state, action){
         newState.selectedMenuIndex = state ? state.selectedMenuIndex : 0;
     }
     newState.accounts = action.payload;
+    root.set({accounts: newState.accounts})
     return newState;
 }
 
@@ -301,7 +303,8 @@ function selectAccountClick(state, action){
     return newState;
 }
 
-function groupClick(state, action){
+function groupClick(state, action, root){
+    //console.log({state, action, root});
     var newState;
     const groupTitle = action.payload.title;
     //const group = (state.liabilities.filter(x => x.title === groupTitle) || [])[0];
@@ -313,7 +316,8 @@ function groupClick(state, action){
         }
         return x;
     });
-    newState = openGroupedAccounts(newState.accounts, newState);
+    //console.log(root)
+    newState = openGroupedAccounts(root.accounts, newState);
 
     // toggle open/closed
     //newState = switchGroup(group, state, accounts, !group.open)
@@ -434,12 +438,12 @@ function accountSave(state, action){
     return newState;
 }
 
-function app(state, action) {
+function app(state, action, root) {
     var newState = undefined;
     var groupedItems = undefined;
     switch (action.type) {
         case 'RECEIVE_ACCOUNTS':
-            newState = receiveAccounts(state, action);
+            newState = receiveAccounts(state, action, root);
             break;
         case 'RECEIVE_ACCOUNTS_DATA':
             newState = receiveAccountsData(state, action);
@@ -454,7 +458,7 @@ function app(state, action) {
             newState = selectAccountClick(state, action);
             break;
         case 'GROUP_CLICK':
-            newState = groupClick(state, action);
+            newState = groupClick(state, action, root);
             break;
         case 'GROUP_REMOVE':
             newState = groupRemove(state, action);
@@ -464,10 +468,10 @@ function app(state, action) {
             break;
         // from popup reducer
         case 'POPUP_ACCOUNT':
-            newState = popupAccount(state, action);
+            newState = popupAccount(state, action, root);
             break;
         case 'POPUP_UPDATE':
-            newState = popupUpdate(state, action);
+            newState = popupUpdate(state, action, root);
             break;
         case 'REMOVE_ITEM':
             newState = removeItem(state, action);

@@ -37,16 +37,17 @@ function receiveHistory(state, action){
   return newState;
 }
 
-function popupAccount(state, action){
+function popupAccount(state, action, root){
   var newState = clone(state);
-  const liabilities = (state.liabilities || (state.accounts||{}).liabilities || []);
-  const assets = (state.assets || (state.accounts||{}).assets || []);
+  const accounts = clone(root.accounts);
+  const liabilities = accounts.liabilities || [];
+  const assets = accounts.assets || [];
 
   newState.account = [].concat(liabilities, assets)
     .filter(a => a.title.toLowerCase() === action.payload.title.toLowerCase());
   newState.account = clone(newState.account[0] || {});
 
-  //console.log(liabilities);
+  //console.log(newState.account);
 
   if (newState.account.items) {
     if (newState.selected && newState.selected.length) {
@@ -76,7 +77,7 @@ function popupAccount(state, action){
   return newState;
 }
 
-function popupUpdate(state, action){
+function popupUpdate(state, action, root){
   var newState = undefined;
   newState = clone(state);
   ///console.log('!!!', newState);
@@ -290,18 +291,18 @@ function selectAccountClick(state, action){
   return newState;
 }
 
-function popup(state, action) {
+function popup(state, action, root) {
   var newState = undefined;
 
   switch (action.type) {
     case 'RECEIVE_ACCOUNTS':
-      newState = receiveAccounts(state, action);
+      newState = receiveAccounts(state, action, root);
       break;
     case 'RECEIVE_HISTORY':
       newState = receiveHistory(state, action);
       break;
     case 'POPUP_ACCOUNT':
-      newState = popupAccount(state, action);
+      newState = popupAccount(state, action, root);
       break;
     case 'POPUP_UPDATE':
       newState = popupUpdate(state, action);

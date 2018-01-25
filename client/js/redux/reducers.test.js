@@ -7,7 +7,9 @@
 import reducer from './reducers';
 import { groupWithChildren } from './testExamples';
 
-const {popup:popupReducer, app:appReducer} = reducer;
+import popupReducer from '../../reducers/popup'
+import appReducer from '../../reducers/app'
+//const {popup:popupReducer, app:appReducer} = reducer;
 
 import {
     init as actionsInit,
@@ -76,26 +78,27 @@ describe('app reducer', () => {
         expected.error = false;
 
         // receive all accounts
-        var newState = appReducer(state, receiveAccounts(state));
+        //var newState = appReducer(state, receiveAccounts(state), state);
 
         // open group
-        newState = appReducer(newState, groupClick('group'));
+        var newState = appReducer(state, groupClick('group'), { accounts: state.accounts });
 
         // load child account
-        newState = appReducer(newState, accountClick('child'));
+        newState = appReducer(newState, accountClick('child'), { accounts: state.accounts });
 
         // make changes
         newState = appReducer(
             newState,
-            popupUpdate({ title: 'child1', amount: 300, total_owed: 1000, status: 'due', date: '2020-10-10' })
+            popupUpdate({ title: 'child1', amount: 300, total_owed: 1000, status: 'due', date: '2020-10-10' }),
+            { accounts: state.accounts, account: newState.account }
         );
 
         // save child
         //console.log(newState);
-        newState = appReducer(newState, accountSave());
-        
+        newState = appReducer(newState, accountSave(), { accounts: state.accounts, account: newState.account });
+
         // close group
-        newState = appReducer(newState, groupClick('group'));
+        newState = appReducer(newState, groupClick('group'), { accounts: state.accounts });
         delete newState.accounts;
         expect(newState).toEqual(expected)
     });
