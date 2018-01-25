@@ -250,7 +250,7 @@ function receiveAccounts(state, action, root){
     return newState;
 }
 
-function receiveAccountsData(state, action){
+function receiveAccountsData(state, action, root){
     var newState;
     if(action.payload.error){
         newState = Object.assign({}, state, action.payload);
@@ -269,7 +269,7 @@ function receiveAccountsData(state, action){
     return newState;
 }
 
-function receiveAccountsSave(state, action){
+function receiveAccountsSave(state, action, root){
     var newState;
     if(action.payload.error){
         newState = Object.assign({}, state, action.payload);
@@ -281,7 +281,7 @@ function receiveAccountsSave(state, action){
     return newState;
 }
 
-function menuSelect(state, action){
+function menuSelect(state, action, root){
     var newState;
     localStorage.setItem('selectedTab', action.payload);
     const selectedMenuIndex = action.payload;
@@ -291,7 +291,7 @@ function menuSelect(state, action){
     return newState;
 }
 
-function selectAccountClick(state, action){
+function selectAccountClick(state, action, root){
     var newState;
     newState = clone(state);
     newState.liabilities.forEach(liab => {
@@ -324,7 +324,7 @@ function groupClick(state, action, root){
     return newState;
 }
 
-function groupRemove(state, action){
+function groupRemove(state, action, root){
     var newState;
     var groupedItems;
     // console.log('Remove group here: ', account.title);
@@ -348,7 +348,7 @@ function groupRemove(state, action){
     return newState;
 }
 
-function accountSave(state, action){
+function accountSave(state, action, root){
     var newState;
     //console.log('~~~~~', state)
     // add account/group, or remove group
@@ -446,25 +446,25 @@ function app(state, action, root) {
             newState = receiveAccounts(state, action, root);
             break;
         case 'RECEIVE_ACCOUNTS_DATA':
-            newState = receiveAccountsData(state, action);
+            newState = receiveAccountsData(state, action, root);
             break;
         case 'RECEIVE_ACCOUNTS_SAVE':
-            newState = receiveAccountsSave(state, action);
+            newState = receiveAccountsSave(state, action, root);
             break;
         case 'MENU_SELECT':
-            newState = menuSelect(state, action);
+            newState = menuSelect(state, action, root);
             break;
         case 'SELECT_ACCOUNT_CLICK':
-            newState = selectAccountClick(state, action);
+            newState = selectAccountClick(state, action, root);
             break;
         case 'GROUP_CLICK':
             newState = groupClick(state, action, root);
             break;
         case 'GROUP_REMOVE':
-            newState = groupRemove(state, action);
+            newState = groupRemove(state, action, root);
             break;
         case 'ACCOUNT_SAVE':
-            newState = accountSave(state, action);
+            newState = accountSave(state, action, root);
             break;
         // from popup reducer
         case 'POPUP_ACCOUNT':
@@ -474,7 +474,7 @@ function app(state, action, root) {
             newState = popupUpdate(state, action, root);
             break;
         case 'REMOVE_ITEM':
-            newState = removeItem(state, action);
+            newState = removeItem(state, action, root);
             break;
         // end popup reducer
         default:

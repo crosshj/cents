@@ -15,7 +15,7 @@ import {
 import { newGroupClick } from '../js/redux/actions';
 
 function receiveAccounts (state, action){
-  var newState = clone(state);
+  var newState = clone(state||{});
   if (action.payload.error) {
     newState = Object.assign({}, state, action.payload);
     return newState;
