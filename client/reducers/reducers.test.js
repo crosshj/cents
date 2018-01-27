@@ -80,6 +80,7 @@ describe('app reducer', () => {
         var expected = clone(state);
 
         var newState = reduce(state, groupClick('group'));
+        console.log(newState);
         //var result = reduce(state, accountSave());
         expect(newState.app).toEqual(expected.app);
     });
