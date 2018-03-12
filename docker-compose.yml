@@ -1,0 +1,19 @@
+version: "2"
+services:
+  cents:
+    image: "node:8-alpine"
+    user: "node"
+    working_dir: /home/harrison/repos/cents
+    container_name: cents
+    environment:
+      - NODE_ENV=production
+      - PORT=8080
+    volumes:
+      - ./:/home/harrison/repos/cents
+    ports:
+      - "8080:8080"
+    command: "node server/index.js"
+networks:
+  default:
+    external:
+      name: infrastructure_default

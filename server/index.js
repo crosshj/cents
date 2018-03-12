@@ -14,7 +14,7 @@ const webpackDevMiddleware = require('webpack-dev-middleware');
 const webpackConfig = require('../webpack.config.js');
 const webpackCompiler = webpack(webpackConfig);
 
-var appPort = 8080;
+var appPort = process.env.PORT || 8080;
 // const webpackCompiler = webpack(webpackConfig, function(err, stats) {
 //   if (err) { return console.log(err); }
 //   console.log();
