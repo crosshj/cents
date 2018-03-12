@@ -1,6 +1,7 @@
 version: "2"
 services:
   cents:
+    restart: always
     image: "node:8-alpine"
     user: "node"
     working_dir: /home/harrison/repos/cents
