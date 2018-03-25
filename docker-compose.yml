@@ -8,11 +8,11 @@ services:
     container_name: cents
     environment:
       - NODE_ENV=production
-      - PORT=8080
+      - PORT=8070
     volumes:
       - ./:/home/harrison/repos/cents
     ports:
-      - "8080:8080"
+      - "8070:8070"
     command: "node server/index.js"
 networks:
   default:
