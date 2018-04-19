@@ -72,17 +72,16 @@ describe('app reducer', () => {
         expect(result).toEqual(expected)
     });
 
-    it('should update group/totals when group child changes', () => {
-        var state = {
-            app: groupWithChildren(),
-            popup: groupWithChildren()
-        };
+    xit('should update group/totals when group child changes', () => {
+        var state =  groupWithChildren();
         var expected = clone(state);
+        delete state.accounts;
 
-        var newState = reduce(state, groupClick('group'));
-        console.log(newState);
+        var newState = reduce(state, receiveAccounts(state))
+        //var newState = reduce(state, groupClick('group'));
+        console.log(newState.app);
         //var result = reduce(state, accountSave());
-        expect(newState.app).toEqual(expected.app);
+        expect(newState.app).toEqual(expected);
     });
 
     xit('should update group and totals when child item changes', () => {
