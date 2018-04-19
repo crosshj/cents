@@ -138,52 +138,48 @@ describe('app reducer', () => {
     });
 
 
-    // TODO: should this use main reducer instead of popup reducer ??
     it('should update date when status changes', () => {
-        var state = {
-            accounts: {
-                liabilities: [{
-                    title: 'foo',
-                    status: 'due'
-                }]
-            },
-            account: {
-                title: 'foo',
-                date: '2017-10-08',
-                status: 'due'
-            }
-        };
+        //ARRANGE
+        var state = exampleInitial();
+        var result = reduce(state, accountClick('child2'));
+        var expected = clone(result);
+
+        // ACT / ASSERT
 
         // move status to paid
-        var expected = clone(state);
-        expected.account.status = 'paid';
-        expected.account.date = '2017-11-08';
-        expected.dateDirty = true;
-        state = popupReducer(state, popupUpdate({ status: 'paid' }));
-        expect(state).toEqual(expected);
+        result = reduce(result, popupUpdate({ status: 'paid' }));
 
-        // move status to due
-        expected = clone(state);
-        expected.account.status = 'pending';
-        expected.account.date = '2017-10-08';
-        expected.dateDirty = false;
-        state = popupReducer(state, popupUpdate({ status: 'pending' }));
-        expect(state).toEqual(expected);
+        expected.popup.account.status = 'paid';
+        expected.popup.account.date = '2017-11-09';
+        expected.popup.dateDirty = true;
+        expected.app.account = expected.popup.account;
+        expected.app.dateDirty = true;
 
+        expect(result).toEqual(expected);
+
+        // move status back to due
+        result = reduce(result, popupUpdate({ status: 'pending' }));
+
+        expected.popup.account.status = 'pending';
+        expected.popup.account.date = '2017-10-09';
+        expected.popup.dateDirty = false;
+        expected.app.account = expected.popup.account;
+        expected.app.dateDirty = false;
+        expect(result).toEqual(expected);
     });
 
     it('should save group properly when updating group title', () => {
+        //ARRANGE
         var state = exampleInitial();
         var expected = clone(state);
 
-        // has side effect of loading account into reducer state
+        // ACT
         var result = reduce(state, accountClick('group'));
         result = reduce(result, popupUpdate({ title: 'new group title' }));
-
-        // simulate group save
         result = reduce(result, accountSave());
 
 
+        // ASSERT
         // name should have changed in all places
         getAccountByName(expected.popup.accounts.liabilities, 'group').title = 'new group title';
         getAccountByName(expected.app.accounts.liabilities, 'group').title = 'new group title';
@@ -194,7 +190,7 @@ describe('app reducer', () => {
         expected.popup.dateDirty = false;
         expected.popup.account = undefined;
 
-        // ingore things
+        // ignore things
         expected = safeToIgnore(expected);
 
         //TODO: for some reason, expected shows thin items list for group and results show thick
