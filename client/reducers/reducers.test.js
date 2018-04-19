@@ -198,7 +198,7 @@ describe('app reducer', () => {
         expected = safeToIgnore(expected);
 
         //TODO: for some reason, expected shows thin items list for group and results show thick
-        // -- maybe do something about this, but ingore now
+        // -- maybe do something about this, but ignore now
         getAccountByName(expected.app.accounts.liabilities, 'new group title').items
             = getAccountByName(result.app.accounts.liabilities, 'new group title').items;
         getAccountByName(expected.popup.accounts.liabilities, 'new group title').items
