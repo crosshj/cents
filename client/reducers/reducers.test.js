@@ -222,7 +222,7 @@ describe('app reducer', () => {
         expect(result.popup.account.status).toEqual('paid');
     });
 
-    it('should expand group for UI properly', () => {
+    it('should expand group in UI properly', () => {
     });
 
     it('should update UI state when popup updates account', () => {
