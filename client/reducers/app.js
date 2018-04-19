@@ -417,7 +417,7 @@ function accountSave(state, action, root){
 
     // removes view state from save state
     [].concat((newState.accounts.liabilities||[]), (newState.accounts.assets||[])).forEach(a => {
-        delete a.open
+        delete a.open;
     });
 
     var _accounts = {
