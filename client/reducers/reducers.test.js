@@ -207,23 +207,25 @@ describe('app reducer', () => {
         expect(result).toEqual(expected);
     });
 
-    xit('should remove child from group properly', () => {
-        var state = groupWithChildren();
+    it('should remove child from group properly', () => {
+        var state = exampleInitial();
 
-        var result = appReducer(state, receiveAccounts(state));
-        result = appReducer(
-            result,
-            accountClick('group')
-        );
-        result = appReducer(
-            result,
-            removeItem({ title: 'child2' })
-        );
+        var result = reduce(state, accountClick('group'));
+        result = reduce(result, removeItem({ title: 'child2' }));
 
-        expect(result.account.items.length).toEqual(1);
-        expect(result.account.items[0].title).toEqual('child');
-        expect(result.account.total_owed).toEqual('400.00');
-        expect(result.account.date).toEqual('2017-10-08');
-        expect(result.account.status).toEqual('paid');
+        //TODO: ? test that this saved alright?
+
+        expect(result.popup.account.items.length).toEqual(1);
+        expect(result.popup.account.items[0].title).toEqual('child');
+        expect(result.popup.account.total_owed).toEqual('400.00');
+        expect(result.popup.account.date).toEqual('2017-10-08');
+        expect(result.popup.account.status).toEqual('paid');
     });
+
+    it('should expand group for UI properly', () => {
+    });
+
+    it('should update UI state when popup updates account', () => {
+    });
+
 });
