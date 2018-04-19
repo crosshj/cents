@@ -246,7 +246,7 @@ function receiveAccounts(state, action, root){
         newState.selectedMenuIndex = state ? state.selectedMenuIndex : 0;
     }
     newState.accounts = action.payload;
-    root.set({accounts: newState.accounts})
+    root.set({accounts: newState.accounts});
     return newState;
 }
 
@@ -266,6 +266,8 @@ function receiveAccountsData(state, action, root){
     newState.accounts.totals.balance = Number(balance || 0);
     newState.accounts.totals.updating = false;
     newState.error = false;
+
+    root.set({accounts: newState.accounts});
     return newState;
 }
 
@@ -345,6 +347,8 @@ function groupRemove(state, action, root){
         .filter(x => x.title.toLowerCase() !== account.title.toLowerCase());
     newState = markGroupedItems(newState);
     newState = openGroupedAccounts(newState.accounts, newState);
+
+    root.set({accounts: newState.accounts});
     return newState;
 }
 
@@ -435,12 +439,14 @@ function accountSave(state, action, root){
         }
     });
     delete newState.account;
+
+    root.set({accounts: newState.accounts, account: {}});
     return newState;
 }
 
 function app(state, action, root) {
     var newState = undefined;
-    var groupedItems = undefined;
+    //var groupedItems = undefined;
     switch (action.type) {
         case 'RECEIVE_ACCOUNTS':
             newState = receiveAccounts(state, action, root);

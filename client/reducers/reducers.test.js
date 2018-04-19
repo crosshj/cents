@@ -6,17 +6,14 @@
 */
 import { groupWithChildren } from './testExamples';
 
-import popupReducer from './popup';
-import appReducer from './app';
 import reducers from './index';
 import { combineReducers } from 'redux';
 const reduce = combineReducers(reducers);
-//const {popup:popupReducer, app:appReducer} = reducer;
 
 import {
     init as actionsInit,
     accountClick,
-    groupClick,
+    // groupClick,
     removeItem,
     receiveAccounts,
     receiveAccountsData,
@@ -47,7 +44,6 @@ function safeToIgnore(expected){
     return expected;
 }
 
-
 describe('app reducer', () => {
     beforeAll(() => {
         global.fetch = () => new Promise(() => { });
@@ -57,14 +53,12 @@ describe('app reducer', () => {
     });
 
     it('should return the initial state', () => {
-        var state = undefined;
         var action = {};
         var expected = { app: {}, popup: {}};
-        expect(reduce(state, action)).toEqual(expected)
+        expect(reduce(undefined, action)).toEqual(expected)
     });
 
     it('should handle basic receive accounts', () => {
-        var state = undefined;
         var action = receiveAccounts({
             liabilities: []
         });
@@ -89,7 +83,7 @@ describe('app reducer', () => {
             }
         };
 
-        var result = reduce(state, action);
+        var result = reduce(undefined, action);
         delete result.accounts;
         expect(result).toEqual(expected);
     });
@@ -99,14 +93,10 @@ describe('app reducer', () => {
         var currentState = exampleInitial();
         var expected = clone(currentState);
 
-
         // ACT
         var childName = 'child2';
-        // user selected account
         currentState = reduce(currentState, accountClick(childName));
-        // user changed account amount and total owed
         currentState = reduce(currentState, popupUpdate({ amount: 209.99, total_owed: 303.01 }));
-        // user saved the account
         currentState = reduce(currentState, accountSave());
 
 
@@ -132,7 +122,7 @@ describe('app reducer', () => {
         // group should be updated
         getAccountByName(expected.app.liabilities, 'group').amount = 409.99;
         getAccountByName(expected.app.liabilities, 'group')['total_owed'] = 703.01;
-        //probably should be more updates here !!!
+        //TODO: probably should be more updates here !!!
 
         expect(currentState).toEqual(expected);
     });
@@ -159,7 +149,6 @@ describe('app reducer', () => {
 
         // move status back to due
         result = reduce(result, popupUpdate({ status: 'pending' }));
-
         expected.popup.account.status = 'pending';
         expected.popup.account.date = '2017-10-09';
         expected.popup.dateDirty = false;
