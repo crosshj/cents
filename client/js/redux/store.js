@@ -1,5 +1,5 @@
 import createStore from 'redux/es/createStore';
-import combineReducers from 'redux/es/combineReducers';
+
 
 import reducers from '../../reducers';
 
@@ -14,7 +14,7 @@ const initialState = {
 
 function setup(renderer){
     const store = createStore(
-        combineReducers(reducers),
+        reducers,
         initialState,
         window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
     );

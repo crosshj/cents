@@ -6,9 +6,8 @@
 */
 import { groupWithChildren } from './testExamples';
 
-import reducers from './index';
-import { combineReducers } from 'redux';
-const reduce = combineReducers(reducers);
+import reduce from './index';
+
 import root from './root';
 
 import {
@@ -55,7 +54,7 @@ describe('app reducer', () => {
 
     it('should return the initial state', () => {
         var action = {};
-        var expected = { app: {}, popup: {}, root: null };
+        var expected = { app: {}, popup: {} };
         expect(reduce(undefined, action)).toEqual(expected)
     });
 
@@ -81,8 +80,7 @@ describe('app reducer', () => {
                 accounts: {
                     liabilities: []
                 },
-            },
-            root: null
+            }
         };
 
         var result = reduce(undefined, action);
