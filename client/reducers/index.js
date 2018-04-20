@@ -4,5 +4,6 @@ import root from './root';
 
 export default {
     app: root.bind(app),
-    popup: root.bind(popup)
+    popup: root.bind(popup),
+    root
 };

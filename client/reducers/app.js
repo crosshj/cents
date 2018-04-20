@@ -246,7 +246,6 @@ function receiveAccounts(state, action, root){
         newState.selectedMenuIndex = state ? state.selectedMenuIndex : 0;
     }
     newState.accounts = action.payload;
-    root.set({accounts: newState.accounts});
     return newState;
 }
 
@@ -267,7 +266,8 @@ function receiveAccountsData(state, action, root){
     newState.accounts.totals.updating = false;
     newState.error = false;
 
-    root.set({accounts: newState.accounts});
+    // TODO: this should be done in root reducer or not at all
+    root.set({accounts: Object.assign({}, root.accounts, newState.accounts)});
     return newState;
 }
 

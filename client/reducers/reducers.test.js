@@ -9,6 +9,7 @@ import { groupWithChildren } from './testExamples';
 import reducers from './index';
 import { combineReducers } from 'redux';
 const reduce = combineReducers(reducers);
+import root from './root';
 
 import {
     init as actionsInit,
@@ -54,7 +55,7 @@ describe('app reducer', () => {
 
     it('should return the initial state', () => {
         var action = {};
-        var expected = { app: {}, popup: {}};
+        var expected = { app: {}, popup: {}, root: null };
         expect(reduce(undefined, action)).toEqual(expected)
     });
 
@@ -80,7 +81,8 @@ describe('app reducer', () => {
                 accounts: {
                     liabilities: []
                 },
-            }
+            },
+            root: null
         };
 
         var result = reduce(undefined, action);
@@ -98,7 +100,6 @@ describe('app reducer', () => {
         currentState = reduce(currentState, accountClick(childName));
         currentState = reduce(currentState, popupUpdate({ amount: 209.99, total_owed: 303.01 }));
         currentState = reduce(currentState, accountSave());
-
 
         // ASSERT
         // totals should be updated
@@ -211,6 +212,21 @@ describe('app reducer', () => {
     });
 
     it('should update UI state when popup updates account', () => {
+    });
+
+    it('should keep track of useful info in root reducer', () => {
+        // ARRANGE
+        root.globalState().reset();
+        var exampleAccounts = groupWithChildren();
+        
+        // ACT / ASSERT
+        var currentState = reduce(undefined, receiveAccounts({ liabilities: exampleAccounts.liabilities }));
+        var rootState = root.globalState();
+        expect(rootState.accounts).toEqual(exampleAccounts.accounts);
+        expect(rootState.account).toEqual(undefined);
+
+        // TODO: each action that triggers a change in root state should be tested here
+
     });
 
 });
