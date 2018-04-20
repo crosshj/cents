@@ -4,7 +4,7 @@
     it:false,
     expect:false
 */
-import { groupWithChildren } from './testExamples';
+import { groupWithChildren, accountsData } from './testExamples';
 
 import reduce from './index';
 
@@ -30,7 +30,7 @@ var getAccountByName = function(data, title){
 function exampleInitial() {
     var exampleAccounts = groupWithChildren();
     var currentState = reduce(undefined, receiveAccounts({ liabilities: exampleAccounts.liabilities }));
-    var exampleAccountsData = { data: { accounts: [{ balance: '999.09' }] } };
+    var exampleAccountsData = accountsData();
     currentState = reduce(currentState, receiveAccountsData(null, exampleAccountsData));
     //delete currentState.app.accounts.totals;
     return currentState;
@@ -222,6 +222,10 @@ describe('app reducer', () => {
         var rootState = root.globalState();
         expect(rootState.accounts).toEqual(exampleAccounts.accounts);
         expect(rootState.account).toEqual(undefined);
+
+        var exampleAccountsData = accountsData();
+        currentState = reduce(currentState, receiveAccountsData(null, exampleAccountsData));
+        expect(rootState.accounts.totals.balance).toEqual(currentState.app.totals.balance);
 
         // TODO: each action that triggers a change in root state should be tested here
 

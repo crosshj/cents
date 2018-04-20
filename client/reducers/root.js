@@ -1,3 +1,5 @@
+import { safeAccess } from '../js/react/utilities';
+
 /*
 
 root reducer:
@@ -23,10 +25,18 @@ const globalState = () => ({
 });
 
 // -----------------------------------------------------------------------------
-
-function receiveAccounts(state, action, root){
+const receiveAccounts = (state, action) => {
     globalState().set({ accounts: action.payload });
 }
+
+const receiveAccountsData = (state, action) => {
+    globalState().accounts.totals
+        = safeAccess(() => globalState().accounts.totals) || {};
+    globalState().accounts.totals.balance
+        = Number(
+            safeAccess(() => action.payload.data.accounts[0].balance) || 0
+        );
+};
 
 function root(state = null, action) {
     switch (action.type) {
@@ -34,7 +44,7 @@ function root(state = null, action) {
             receiveAccounts(state, action);
             break;
         case 'RECEIVE_ACCOUNTS_DATA':
-            // receiveAccountsData(state, action);
+            receiveAccountsData(state, action);
             break;
         case 'RECEIVE_ACCOUNTS_SAVE':
             // receiveAccountsSave(state, action);

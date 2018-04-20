@@ -42,6 +42,15 @@ function groupWithChildren(){
     return _example;
 }
 
+const accountsData = () => ({
+    data: {
+        accounts: [{
+            balance: '999.09'
+        }] 
+    } 
+});
+
 export {
-    groupWithChildren
+    groupWithChildren,
+    accountsData
 };
