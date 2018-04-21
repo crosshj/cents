@@ -28,7 +28,12 @@ var unFormatMoney = function(money){
     return response;
 };
 
+function clone(item) {
+    return JSON.parse(JSON.stringify(item));
+}
+
 export {
+    clone,
     getByName,
     formatMoney,
     unFormatMoney,
