@@ -243,7 +243,16 @@ describe('app reducer', () => {
 
     });
 
-    it('should handle new group create and save properly', () => {});
+    it('should handle new group create and save properly', () => {
+        /*
+            1) select two accounts
+            2) create group from accounts
+            3) give group a name (sometimes messes up with login here)
+            4) save group
+            Expect: accounts should disappear in list and group shoud be there
+            Actual: same accounts are in list, nothing appears to change
+        */
+    });
 
     it('should update popup with new info once saved', () => {
         /*
