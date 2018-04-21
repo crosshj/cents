@@ -243,4 +243,17 @@ describe('app reducer', () => {
 
     });
 
+    it('should handle new group create and save properly', () => {});
+
+    it('should update popup with new info once saved', () => {
+        /*
+            1) open account popup
+            2) update something
+            3) open same account popup
+            Expect: new info should be in popup
+            Actual: old info in popup
+            This was fixed already
+        */
+    });
+
 });
