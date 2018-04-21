@@ -39,15 +39,8 @@ function receiveHistory(state, action){
 
 function popupAccount(state, action, root){
   var newState = clone(state);
-  const accounts = clone(root.accounts);
-  const liabilities = accounts.liabilities || [];
-  const assets = accounts.assets || [];
-
-  newState.account = [].concat(liabilities, assets)
-    .filter(a => a.title.toLowerCase() === action.payload.title.toLowerCase());
-  newState.account = clone(newState.account[0] || {});
-
-  //console.log(newState.account);
+  const accounts = root ? clone(root.accounts || []) : [];
+  newState.account = root ? clone(root.account || {}) : {};
 
   if (newState.account.items) {
     if (newState.selected && newState.selected.length) {
@@ -63,10 +56,11 @@ function popupAccount(state, action, root){
     }
     newState.account.items = newState.account.items
       .map(x => {
-        return state.accounts.liabilities.filter(y => y.title.toLowerCase() === x.title.toLowerCase())[0];
+        return accounts.liabilities.filter(y => y.title.toLowerCase() === x.title.toLowerCase())[0];
       })
       .filter(x=>!!x)
       .sort((a, b) => b.total_owed - a.total_owed);
+    
     newState.account.total_owed = newState.account.items.reduce((all, one) => {
       return Number(one.total_owed) + all;
     }, 0) || undefined;
@@ -261,20 +255,10 @@ function removeItem(state, action){
   return newState;
 }
 
-function accountSave(state, action){
+function accountSave(state, action, root){
   var newState = undefined;
   newState = Object.assign({}, state, { error: 'not initialized' });
-  //update accounts when making changes to account
-  [].concat((newState.accounts.liabilities||[]), (newState.accounts.assets||[])).forEach(a => {
-    if ((newState.account.oldTitle && a.title.toLowerCase() === newState.account.oldTitle.toLowerCase())
-        || a.title.toLowerCase() === newState.account.title.toLowerCase()
-    ) {
-        Object.keys(newState.account).forEach(key => {
-            if(key === 'oldTitle') return;
-            a[key] = newState.account[key];
-        });
-    }
-  });
+  newState.accounts = root ? root.accounts : undefined;
   newState.account = undefined;
   newState.dateDirty = false;
   return newState;
@@ -292,47 +276,47 @@ function selectAccountClick(state, action){
 }
 
 function popup(state, action, root) {
+  //console.log(`--- popup runs: ${action.type}`);
   var newState = undefined;
-
   switch (action.type) {
     case 'RECEIVE_ACCOUNTS':
       newState = receiveAccounts(state, action, root);
       break;
     case 'RECEIVE_HISTORY':
-      newState = receiveHistory(state, action);
+      newState = receiveHistory(state, action, root);
       break;
     case 'POPUP_ACCOUNT':
       newState = popupAccount(state, action, root);
       break;
     case 'POPUP_UPDATE':
-      newState = popupUpdate(state, action);
+      newState = popupUpdate(state, action, root);
       break;
     case 'POPUP_NEW_GROUP':
-      newState = popupNewGroup(state, action);
+      newState = popupNewGroup(state, action, root);
       break;
     case 'POPUP_NEW_ACCOUNT':
-      newState = popupNewAccount(state, action);
+      newState = popupNewAccount(state, action, root);
       break;
     case 'POPUP_CANCEL':
-      newState = popupCancel(state, action);
+      newState = popupCancel(state, action, root);
       break;
     case 'POPUP_HISTORY':
-      newState = popupHistory(state, action);
+      newState = popupHistory(state, action, root);
       break;
     case 'POPUP_HISTORY_BACK':
-      newState = popupHistoryBack(state, action);
+      newState = popupHistoryBack(state, action, root);
       break;
     case 'GROUP_REMOVE':
-      newState = groupRemove(state, action);
+      newState = groupRemove(state, action, root);
       break;
     case 'REMOVE_ITEM':
-      newState = removeItem(state, action);
+      newState = removeItem(state, action, root);
       break;
     case 'ACCOUNT_SAVE':
-      newState = accountSave(state, action);
+      newState = accountSave(state, action, root);
       break;
     case 'SELECT_ACCOUNT_CLICK':
-      newState = selectAccountClick(state, action);
+      newState = selectAccountClick(state, action, root);
       break;
   }
   return newState || state || {};

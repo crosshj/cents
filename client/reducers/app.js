@@ -2,7 +2,8 @@ import {
     saveAccounts
 } from '../js/redux/services';
 
-import { 
+import {
+    clone,
     safeAccess
 } from '../js/react/utilities';
 
@@ -18,10 +19,6 @@ const statToNumber = {
     pending: 2,
     paid: 3
 };
-
-function clone(item) {
-    return JSON.parse(JSON.stringify(item));
-}
 
 function updateGroupFromChildren(accounts) {
     var newAccounts = clone(accounts);
@@ -266,8 +263,6 @@ function receiveAccountsData(state, action, root){
     newState.accounts.totals.updating = false;
     newState.error = false;
 
-    // TODO: this should be done in root reducer or not at all
-    root.set({accounts: Object.assign({}, root.accounts, newState.accounts)});
     return newState;
 }
 
@@ -327,28 +322,27 @@ function groupClick(state, action, root){
 }
 
 function groupRemove(state, action, root){
-    var newState;
-    var groupedItems;
-    // console.log('Remove group here: ', account.title);
-    newState = clone(state);
-    groupedItems = newState.account.items
-        .map(item => (newState.accounts.liabilities
-            .filter(x => x.title.toLowerCase() === item.title.toLowerCase()) || [])[0]
-        );
-    groupedItems.forEach(x => delete x.type);
-    newState.accounts.liabilities = accounts.liabilities.filter(x => x.title.toLowerCase() !== account.title.toLowerCase());
+    var newState = clone(state);
+
+    newState.accounts = root ? clone(root.accounts) : {};
+
+    //TODO: should do this in root reducer
     saveAccounts({
         assets: newState.accounts.assets,
         liabilities: newState.accounts.liabilities,
         balance: newState.accounts.balance
     });
-    newState.assets = clone(newState.accounts.assets);
-    newState.liabilities = newState.accounts.liabilities
-        .filter(x => x.title.toLowerCase() !== account.title.toLowerCase());
+    newState.assets = root
+        ? clone(safeAccess(() => root.accounts.assets) || [])
+        : [];
+    newState.liabilities = root
+        ? clone(safeAccess(() => root.accounts.liabilities) || [])
+        : [];
+    newState.account = undefined;
+
     newState = markGroupedItems(newState);
     newState = openGroupedAccounts(newState.accounts, newState);
 
-    root.set({accounts: newState.accounts});
     return newState;
 }
 
@@ -439,12 +433,16 @@ function accountSave(state, action, root){
         }
     });
     delete newState.account;
+    // TODO: this is lame, fix it later
+    if(root){
+        root.set({ accounts: _accounts });
+    }
 
-    root.set({accounts: newState.accounts, account: {}});
     return newState;
 }
 
 function app(state, action, root) {
+    //console.log(`--- app runs: ${action.type}`);
     var newState = undefined;
     //var groupedItems = undefined;
     switch (action.type) {

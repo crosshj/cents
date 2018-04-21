@@ -14,6 +14,7 @@ import {
     init as actionsInit,
     accountClick,
     // groupClick,
+    groupRemove,
     removeItem,
     receiveAccounts,
     receiveAccountsData,
@@ -225,7 +226,18 @@ describe('app reducer', () => {
 
         var exampleAccountsData = accountsData();
         currentState = reduce(currentState, receiveAccountsData(null, exampleAccountsData));
+        rootState = root.globalState();
         expect(rootState.accounts.totals.balance).toEqual(currentState.app.totals.balance);
+
+        currentState = reduce(currentState, accountClick('group'));
+        expect((root.globalState().account || {}).title).toEqual('group');
+        
+        currentState = reduce(currentState, groupRemove());
+        expect(root.globalState().accounts.liabilities).toEqual(currentState.app.liabilities);
+        expect(root.globalState().account).toBeUndefined();
+        
+        //console.log(currentState.app.account);
+        //console.log(currentState.popup.account);
 
         // TODO: each action that triggers a change in root state should be tested here
 
