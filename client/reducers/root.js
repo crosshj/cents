@@ -100,6 +100,7 @@ function root(state = null, action) {
             popupAccount(state, action);
             break;
         case 'POPUP_UPDATE':
+            console.log('--------------------------');
             popupUpdate(state, action);
             break;
         case 'REMOVE_ITEM':

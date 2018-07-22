@@ -351,6 +351,11 @@ function accountSave(state, action, root){
     //console.log('~~~~~', state)
     // add account/group, or remove group
     newState = clone(state);
+    
+    if (!newState.account){
+        return state;
+    }
+    
     if (newState.account.isNew) {
         const newAccount = clone(newState.account);
         delete newAccount.isNew;
