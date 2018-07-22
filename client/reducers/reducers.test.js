@@ -15,9 +15,11 @@ import {
     accountClick,
     // groupClick,
     groupRemove,
+    newGroupClick,
     removeItem,
     receiveAccounts,
     receiveAccountsData,
+    selectAccountClick,
     accountSave,
     popupUpdate
 } from '../js/redux/actions';
@@ -252,6 +254,36 @@ describe('app reducer', () => {
             Expect: accounts should disappear in list and group shoud be there
             Actual: same accounts are in list, nothing appears to change
         */
+        // ARRANGE
+        // start: 2 items that are not grouped
+        root.globalState().reset();
+        var exampleAccounts = groupWithChildren();
+        exampleAccounts.liabilities = exampleAccounts.liabilities.filter(x => x.type !== 'group');
+        var currentState = reduce(undefined, receiveAccounts({ liabilities: exampleAccounts.liabilities }));
+        // end: 2 items that are not grouped
+
+        // select 2 items
+        currentState = reduce(currentState, selectAccountClick('child'));
+        currentState = reduce(currentState, selectAccountClick('child2'));
+        
+        // create a new group
+        currentState = reduce(currentState, newGroupClick());
+        // ??? app.selected should have 2 accounts in it, or app.accounts.liabilities accounts should be selected=true
+        // ^^^ popup state looks like this (seems redundant), but app state does not
+
+        // update group name
+        currentState = reduce(currentState, popupUpdate({ title: 'Group Creation Test Group' }));
+        // app state now has error: "could not update popup state" (probably why login is showing up)
+        // however, popup state is just fine
+        
+        // save group
+        currentState = reduce(currentState, accountSave());
+
+        var rootState = root.globalState();
+        console.log(JSON.stringify(currentState, null, '   '));
+
+
+        // NOTE: investigation still in progress here
     });
 
     it('should update popup with new info once saved', () => {
