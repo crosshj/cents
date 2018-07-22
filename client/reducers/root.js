@@ -1,5 +1,9 @@
 import { clone, safeAccess } from '../js/react/utilities';
 
+import { accountSave } from './helpers/account';
+
+import { popupUpdate } from './popup';
+
 /*
 
 root reducer:
@@ -74,9 +78,6 @@ const popupAccount = (state, action) => {
     globalState().set({ account });
 };
 
-const popupUpdate = (state, action) => {
-
-};
 
 // -----------------------------------------------------------------------------
 
@@ -93,15 +94,18 @@ function root(state = null, action) {
             groupRemove(state, action);
             break;
         case 'ACCOUNT_SAVE':
-            //accountSave(state, action);
+            const { accounts } = accountSave(state, action, globalState());
+            globalState().reset();
+            globalState().set({ accounts });
             break;
         // from popup reducer
         case 'POPUP_ACCOUNT':
             popupAccount(state, action);
             break;
         case 'POPUP_UPDATE':
-            console.log('--------------------------');
-            popupUpdate(state, action);
+            //console.log('--------------------------');
+            const { account } = popupUpdate(state, action, globalState());
+            globalState().set({ account })
             break;
         case 'REMOVE_ITEM':
             //removeItem(state, action);

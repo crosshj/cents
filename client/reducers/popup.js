@@ -13,6 +13,7 @@ import {
   statToNumber
 } from '../js/redux/utilities.js';
 import { newGroupClick } from '../js/redux/actions';
+import { safeClone } from '../js/react/utilities';
 
 function receiveAccounts (state, action){
   var newState = clone(state||{});
@@ -60,7 +61,7 @@ function popupAccount(state, action, root){
       })
       .filter(x=>!!x)
       .sort((a, b) => b.total_owed - a.total_owed);
-    
+
     newState.account.total_owed = newState.account.items.reduce((all, one) => {
       return Number(one.total_owed) + all;
     }, 0) || undefined;
@@ -76,7 +77,7 @@ function popupUpdate(state, action, root){
   newState = clone(state);
   ///console.log('!!!', newState);
   if(typeof newState.account !== 'object'){
-    newState.error = 'could not update popup state';
+    //newState.error = 'could not update popup state';
     return newState;
   }
 
@@ -122,6 +123,7 @@ function popupUpdate(state, action, root){
 
 function popupNewGroup (state, action){
   var newState = undefined;
+  return state;
 
   var selectedAmount = state.selected.reduce((all, g) => { return all + Number(g.amount); }, 0);
   selectedAmount = parseFloat(selectedAmount).toFixed(2);
@@ -217,41 +219,40 @@ function groupRemove(state, action){
   return newState;
 }
 
-function removeItem(state, action){
+function removeItem(state, action, root){
   var newState = clone(state);
   const itemTitle = action.payload.title;
+  console.log('--- -- - -- -  --- ', itemTitle);
 
-  newState.account.items = newState.account.items
+  var accountItems = safeClone(() => newState.account.items) || [];
+
+  accountItems = accountItems
     .filter(x => x.title.toLowerCase() !== itemTitle.toLowerCase())
-    .map(x => newState.accounts.liabilities
-      .filter(y => x.title.toLowerCase() === y.title.toLowerCase())[0]
-    );
+    // .map(x => root.accounts.liabilities
+    //   .filter(y => x.title.toLowerCase() === y.title.toLowerCase())[0]
+    // );
 
   // update amount / total_owed / date / status for group
-  newState.account.amount = newState.account.items
+  newState.account.amount = accountItems
     .map(x => x.amount)
     .reduce((total, z) => Number(total) + Number(z), 0)
     .toFixed(2);
-  newState.account.total_owed = newState.account.items
+  newState.account.total_owed = accountItems
     .map(x => x.total_owed)
     .reduce((total, z) => Number(total) + Number(z), 0)
     .toFixed(2);
-  newState.account.date = newState.account.items
+  newState.account.date = accountItems
     .map(x => x.date)
     .sort(function (a, b) {
       return new Date(a) - new Date(b);
     })[0];
-  newState.account.status = newState.account.items
+  newState.account.status = accountItems
     .map(x => x.status)
     .reduce((status, z) => statToNumber[status.toLowerCase()] < statToNumber[z.toLowerCase()]
       ? status.toLowerCase()
       : z.toLowerCase()
     , 'paid');
-  newState.account.items = newState.account.items.map(x => ({
-    title: x.title,
-    total_owed: x.total_owed,
-    amount: x.amount
-  }));
+  newState.account.items = accountItems;
   return newState;
 }
 
@@ -264,24 +265,24 @@ function accountSave(state, action, root){
   return newState;
 }
 
-function selectAccountClick(state, action){
-  var newState = clone(state);
-  newState.accounts.liabilities.forEach(liab => {
-      if (liab.title === action.payload.title) {
-          liab.selected = !liab.selected;
-      }
-  });
-  newState.selected = newState.accounts.liabilities.filter(x => x.selected);
-  return newState;
-}
+// function selectAccountClick(state, action){
+//   var newState = clone(state);
+//   newState.liabilities.forEach(liab => {
+//       if (liab.title === action.payload.title) {
+//           liab.selected = !liab.selected;
+//       }
+//   });
+//   newState.selected = newState.accounts.liabilities.filter(x => x.selected);
+//   return newState;
+// }
 
 function popup(state, action, root) {
   //console.log(`--- popup runs: ${action.type}`);
   var newState = undefined;
   switch (action.type) {
-    case 'RECEIVE_ACCOUNTS':
-      newState = receiveAccounts(state, action, root);
-      break;
+    // case 'RECEIVE_ACCOUNTS':
+    //   newState = receiveAccounts(state, action, root);
+    //   break;
     case 'RECEIVE_HISTORY':
       newState = receiveHistory(state, action, root);
       break;
@@ -313,11 +314,13 @@ function popup(state, action, root) {
       newState = removeItem(state, action, root);
       break;
     case 'ACCOUNT_SAVE':
-      newState = accountSave(state, action, root);
+      //newState = accountSave(state, action, root);
+      newState = safeClone(() => state);
+      delete newState.account;
       break;
-    case 'SELECT_ACCOUNT_CLICK':
-      newState = selectAccountClick(state, action, root);
-      break;
+    // case 'SELECT_ACCOUNT_CLICK':
+    //   newState = selectAccountClick(state, action, root);
+    //   break;
   }
   return newState || state || {};
 }

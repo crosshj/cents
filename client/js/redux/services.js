@@ -110,14 +110,15 @@ function fetchHistory({ type, title, field }) {
 
 function saveAccounts(accounts) {
     const accountsToSave = clone(accounts);
-    accountsToSave.liabilities
+    (accountsToSave.liabilities || [])
         .filter(x => x.type === 'group')
         .forEach(group => {
             group.items = group.items.map(item => ({title: item.title}));
         });
-    accountsToSave.liabilities.forEach(x => {
-        delete x.selected;
-    });
+    (accountsToSave.liabilities || [])
+        .forEach(x => {
+            delete x.selected;
+        });
     const url = './accounts';
     const config = {
         method: 'POST',

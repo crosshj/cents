@@ -18,7 +18,7 @@ var unFormatMoney = function(money){
     return amount;
     };
 
-    var safeAccess = (fn) => {
+var safeAccess = (fn) => {
     var response = undefined;
     try {
         response = fn();
@@ -32,8 +32,13 @@ function clone(item) {
     return JSON.parse(JSON.stringify(item));
 }
 
+function safeClone(fn){
+    return clone(safeAccess(fn) || '');
+}
+
 export {
     clone,
+    safeClone,
     getByName,
     formatMoney,
     unFormatMoney,
