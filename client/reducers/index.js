@@ -14,6 +14,6 @@ const reducers = {
 const rootReducer = (state, action) => {
     root(state, action);
     return combineReducers(reducers)(state, action);
-}
+};
 
 export default rootReducer;

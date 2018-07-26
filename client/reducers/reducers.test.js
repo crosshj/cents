@@ -26,7 +26,7 @@ import {
 
 const clone = x => JSON.parse(JSON.stringify(x));
 
-var getAccountByName = function(data, title){
+var getAccountByName = function (data, title) {
     return data.filter(val => val.title.toLowerCase().indexOf(title) >= 0)[0];
 };
 
@@ -39,7 +39,7 @@ function exampleInitial() {
     return currentState;
 }
 
-function safeToIgnore(expected){
+function safeToIgnore(expected) {
     // doesn't matter (?), but causes test fail
     expected.app.accounts.assets = undefined;
     expected.app.accounts.balance = undefined;
@@ -79,11 +79,7 @@ describe('app reducer', () => {
                 },
                 selectedMenuIndex: 0
             },
-            popup: {
-                accounts: {
-                    liabilities: []
-                },
-            }
+            popup: {}
         };
 
         var result = reduce(undefined, action);
@@ -110,9 +106,7 @@ describe('app reducer', () => {
 
         // accounts should be updated
         getAccountByName(expected.app.accounts.liabilities, childName).amount = 209.99;
-        getAccountByName(expected.popup.accounts.liabilities, childName).amount = 209.99;
-        getAccountByName(expected.app.accounts.liabilities, childName)['total_owed'] =  303.01;
-        getAccountByName(expected.popup.accounts.liabilities, childName)['total_owed'] = 303.01;
+        getAccountByName(expected.app.accounts.liabilities, childName)['total_owed'] = 303.01;
 
         // popup should be blank
         expected.popup.account = undefined;
@@ -172,7 +166,6 @@ describe('app reducer', () => {
 
         // ASSERT
         // name should have changed in all places
-        getAccountByName(expected.popup.accounts.liabilities, 'group').title = 'new group title';
         getAccountByName(expected.app.accounts.liabilities, 'group').title = 'new group title';
         getAccountByName(expected.app.liabilities, 'group').title = 'new group title';
 
@@ -188,8 +181,6 @@ describe('app reducer', () => {
         // -- maybe do something about this, but ignore now
         getAccountByName(expected.app.accounts.liabilities, 'new group title').items
             = getAccountByName(result.app.accounts.liabilities, 'new group title').items;
-        getAccountByName(expected.popup.accounts.liabilities, 'new group title').items
-            = getAccountByName(result.popup.accounts.liabilities, 'new group title').items;
 
         expect(result).toEqual(expected);
     });
@@ -219,7 +210,7 @@ describe('app reducer', () => {
         // ARRANGE
         root.globalState().reset();
         var exampleAccounts = groupWithChildren();
-        
+
         // ACT / ASSERT
         var currentState = reduce(undefined, receiveAccounts({ liabilities: exampleAccounts.liabilities }));
         var rootState = root.globalState();
@@ -233,11 +224,11 @@ describe('app reducer', () => {
 
         currentState = reduce(currentState, accountClick('group'));
         expect((root.globalState().account || {}).title).toEqual('group');
-        
+
         currentState = reduce(currentState, groupRemove());
         expect(root.globalState().accounts.liabilities).toEqual(currentState.app.liabilities);
         expect(root.globalState().account).toBeUndefined();
-        
+
         //console.log(currentState.app.account);
         //console.log(currentState.popup.account);
 
@@ -255,32 +246,32 @@ describe('app reducer', () => {
             Actual: same accounts are in list, nothing appears to change
         */
         // ARRANGE
-        // start: 2 items that are not grouped
+        // 2 items that are not grouped
         root.globalState().reset();
         var exampleAccounts = groupWithChildren();
         exampleAccounts.liabilities = exampleAccounts.liabilities.filter(x => x.type !== 'group');
         var currentState = reduce(undefined, receiveAccounts({ liabilities: exampleAccounts.liabilities }));
-        // end: 2 items that are not grouped
 
         // select 2 items
         currentState = reduce(currentState, selectAccountClick('child'));
         currentState = reduce(currentState, selectAccountClick('child2'));
-        
-        // create a new group
+
+        // create group from accounts
         currentState = reduce(currentState, newGroupClick());
-        // ??? app.selected should have 2 accounts in it, or app.accounts.liabilities accounts should be selected=true
-        // ^^^ popup state looks like this (seems redundant), but app state does not
 
         // update group name
         currentState = reduce(currentState, popupUpdate({ title: 'Group Creation Test Group' }));
+
+        //NOTE:  GOOD UP TO BEFORE HERE
+        console.log(JSON.stringify(currentState, null, '   '));
+        console.log(JSON.stringify(root.globalState(), null, '   '));
+
         // app state now has error: "could not update popup state" (probably why login is showing up)
         // however, popup state is just fine
-        
+
         // save group
         currentState = reduce(currentState, accountSave());
 
-        var rootState = root.globalState();
-        console.log(JSON.stringify(currentState, null, '   '));
 
 
         // NOTE: investigation still in progress here

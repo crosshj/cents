@@ -10,13 +10,16 @@ root reducer:
 */
 var _account = undefined;
 var _accounts = undefined;
+var _selected = undefined;
 
 const globalState = () => ({
     accounts: (() => _accounts)(),
     account: (() => _account)(),
-    set: ({account, accounts}) => {
+    selected: (() => _selected)(),
+    set: ({ account, accounts, selected }) => {
         if (account) _account = account;
         if (accounts) _accounts = accounts;
+        if (selected) _selected = selected;
     },
     reset: () => {
         _account = undefined;
@@ -41,7 +44,7 @@ const receiveAccountsData = (state, action) => {
 const groupRemove = (state, action) => {
     var accounts = clone(globalState().accounts);
     var account = clone(globalState().account);
-    if(!account){
+    if (!account) {
         console.log('ERROR: cannot remove group when account is not selected');
         return;
     }
@@ -50,7 +53,7 @@ const groupRemove = (state, action) => {
             .filter(x => x.title.toLowerCase() === item.title.toLowerCase()) || [])[0]
         );
     groupedItems.forEach(x => delete x.type);
-    
+
     accounts.liabilities = accounts.liabilities.filter(
         x => x.title.toLowerCase() !== account.title.toLowerCase()
     );
@@ -69,14 +72,24 @@ const popupAccount = (state, action) => {
         .find(
             a => a.title.toLowerCase() === action.payload.title.toLowerCase()
         );
-    
-        //console.log(account)
+
+    //console.log(account)
     globalState().set({ account });
 };
 
 const popupUpdate = (state, action) => {
-
+    // TODO: should be keeping track of account here as "OLD_ACCOUNT"
+    // INSTEAD OF HAVING TO CONSTANTLY SEARCH LIST FOR ACCOUNT IN POPUP
 };
+
+function selectAccountClick(state, action) {
+    const accounts = clone(globalState().accounts);
+    const newSelected = accounts.liabilities
+        .filter(x => x.title === action.payload.title);
+    const selected = [...clone(globalState().selected || []), ...newSelected];
+
+    globalState().set({ selected });
+}
 
 // -----------------------------------------------------------------------------
 
@@ -100,8 +113,10 @@ function root(state = null, action) {
             popupAccount(state, action);
             break;
         case 'POPUP_UPDATE':
-            console.log('--------------------------');
             popupUpdate(state, action);
+            break;
+        case 'SELECT_ACCOUNT_CLICK':
+            selectAccountClick(state, action, root);
             break;
         case 'REMOVE_ITEM':
             //removeItem(state, action);
@@ -114,7 +129,7 @@ function root(state = null, action) {
 }
 
 
-function bind(reducer){
+function bind(reducer) {
     return (state, action) => {
         // the right way to do it => commented out
         //const {accounts, account} = globalState();

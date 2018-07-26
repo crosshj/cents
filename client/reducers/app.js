@@ -41,7 +41,7 @@ function updateGroupFromChildren(accounts) {
             .reduce((status, z) => statToNumber[status.toLowerCase()] < statToNumber[z.toLowerCase()]
                 ? status.toLowerCase()
                 : z.toLowerCase()
-            , 'paid');
+                , 'paid');
         g.amount = groupedItems
             .map(x => x.amount)
             .reduce((total, z) => Number(total) + Number(z), 0);
@@ -66,7 +66,7 @@ function fixTotals(accounts) {
 
     u.totals = u.totals || {};
 
-    var pending = (u.liabilities||[])
+    var pending = (u.liabilities || [])
         .filter(function (a) {
             return a.status && a.status.toLowerCase() === 'pending';
         }).sort(function (a, b) {
@@ -78,7 +78,7 @@ function fixTotals(accounts) {
     //     }).sort(function (a, b) {
     //         return new Date(a.date) - new Date(b.date);
     //     });
-    var due = (u.liabilities||[])
+    var due = (u.liabilities || [])
         .filter(function (a) {
             return a.status && a.status.toLowerCase() === 'due';
         }).sort(function (a, b) {
@@ -95,17 +95,17 @@ function fixTotals(accounts) {
         .reduce((all, one) => all + Number(one.amount), 0)
         .toFixed(2);
 
-    u.totals.assetsTotal = (u.assets||[])
+    u.totals.assetsTotal = (u.assets || [])
         .filter(item => !JSON.parse(item.hidden))
         .reduce((all, one) => all + Number(one.amount), 0)
         .toFixed(2);
 
-    u.totals.debts = (u.liabilities||[])
+    u.totals.debts = (u.liabilities || [])
         .filter(item => !(item.hidden || item.type === 'group'))
         .reduce((all, one) => all + Number(one.amount), 0)
         .toFixed(2);
 
-    u.totals.debtsTotal = (u.liabilities||[])
+    u.totals.debtsTotal = (u.liabilities || [])
         .filter(item => !(item.hidden || item.type === 'group'))
         .reduce((all, one) => all + Number(one.total_owed), 0)
         .toFixed(2);
@@ -113,13 +113,13 @@ function fixTotals(accounts) {
     return u;
 }
 
-function markGroupedItems(accounts){
+function markGroupedItems(accounts) {
     const newAccounts = clone(accounts);
     const groupedItems = Object.keys(newAccounts.liabilities
         .reduce((all, x) => {
-            if(x.items){
+            if (x.items) {
                 x.items.forEach(y => {
-                    if(!all[y.title.toLowerCase()]){
+                    if (!all[y.title.toLowerCase()]) {
                         all[y.title.toLowerCase()] = y;
                     }
                 });
@@ -127,7 +127,7 @@ function markGroupedItems(accounts){
             return all;
         }, {}));
     newAccounts.liabilities.forEach(x => x.type !== 'group' ? delete x.type : undefined);
-    newAccounts.liabilities.forEach(x => 
+    newAccounts.liabilities.forEach(x =>
         x.type !== 'group' && groupedItems.includes(x.title.toLowerCase())
             ? x.type = 'grouped'
             : undefined
@@ -135,7 +135,7 @@ function markGroupedItems(accounts){
     return newAccounts;
 }
 
-function openGroupedAccounts(initialState, viewState){
+function openGroupedAccounts(initialState, viewState) {
     const outputState = clone(viewState);
 
     // stupid "false"
@@ -154,7 +154,7 @@ function openGroupedAccounts(initialState, viewState){
     var newLiabs = [];
     outputState.liabilities.forEach(group => {
         newLiabs.push(group);
-        if(!group.open || group.type !== 'group') return;
+        if (!group.open || group.type !== 'group') return;
 
         const groupedItems = group.items
             .map(item => (initialState.liabilities.filter(x => x.title === item.title) || [])[0])
@@ -173,52 +173,52 @@ function openGroupedAccounts(initialState, viewState){
     return outputState;
 }
 
-function bumpDateOneMonth(date){
-    var day = Number(date.replace(/.*-/g,''));
-    var month = Number(date.replace(/-..$/g,'').replace(/.*-/g,''));
-    var year = Number(date.replace(/-.*/g,''));
+function bumpDateOneMonth(date) {
+    var day = Number(date.replace(/.*-/g, ''));
+    var month = Number(date.replace(/-..$/g, '').replace(/.*-/g, ''));
+    var year = Number(date.replace(/-.*/g, ''));
     if (month === 12) {
         year += 1;
         month = 1;
     } else {
         month += 1;
     }
-    day = (day < 10) ? '0'+day : day;
-    month = (month < 10) ? '0'+month : month;
+    day = (day < 10) ? '0' + day : day;
+    month = (month < 10) ? '0' + month : month;
     return year + '-' + month + '-' + day;
 }
 
-function bumpDateOneMonthBack(date){
-    var day = Number(date.replace(/.*-/g,''));
-    var month = Number(date.replace(/-..$/g,'').replace(/.*-/g,''));
-    var year = Number(date.replace(/-.*/g,''));
+function bumpDateOneMonthBack(date) {
+    var day = Number(date.replace(/.*-/g, ''));
+    var month = Number(date.replace(/-..$/g, '').replace(/.*-/g, ''));
+    var year = Number(date.replace(/-.*/g, ''));
     if (month === 1) {
         year -= 1;
         month = 12;
     } else {
         month -= 1;
     }
-    day = (day < 10) ? '0'+day : day;
-    month = (month < 10) ? '0'+month : month;
+    day = (day < 10) ? '0' + day : day;
+    month = (month < 10) ? '0' + month : month;
     return year + '-' + month + '-' + day;
 }
 
 /*
-                                                
-   _  _  _       _  _  _  _    _  _  _  _       
-  (_)(_)(_) _   (_)(_)(_)(_)_ (_)(_)(_)(_)_     
-   _  _  _ (_)  (_)        (_)(_)        (_)    
- _(_)(_)(_)(_)  (_)        (_)(_)        (_)    
-(_)_  _  _ (_)_ (_) _  _  _(_)(_) _  _  _(_)    
-  (_)(_)(_)  (_)(_)(_)(_)(_)  (_)(_)(_)(_)      
-                (_)           (_)               
-                (_)           (_)               
+
+   _  _  _       _  _  _  _    _  _  _  _
+  (_)(_)(_) _   (_)(_)(_)(_)_ (_)(_)(_)(_)_
+   _  _  _ (_)  (_)        (_)(_)        (_)
+ _(_)(_)(_)(_)  (_)        (_)(_)        (_)
+(_)_  _  _ (_)_ (_) _  _  _(_)(_) _  _  _(_)
+  (_)(_)(_)  (_)(_)(_)(_)(_)  (_)(_)(_)(_)
+                (_)           (_)
+                (_)           (_)
 
 */
 
-function receiveAccounts(state, action, root){
+function receiveAccounts(state, action, root) {
     var newState;
-    if(action.payload.error){
+    if (action.payload.error) {
         newState = Object.assign({}, state, action.payload);
         return newState;
     }
@@ -235,7 +235,7 @@ function receiveAccounts(state, action, root){
     newState = fixTotals(newState);
     newState = openGroupedAccounts(newState.accounts, state && !state.error ? state : newState);
 
-    if(state && typeof state.selectedMenuIndex === "undefined"){
+    if (state && typeof state.selectedMenuIndex === "undefined") {
         newState.selectedMenuIndex = window && window.localStorage
             ? Number(localStorage.getItem('selectedTab'))
             : 0;
@@ -246,9 +246,9 @@ function receiveAccounts(state, action, root){
     return newState;
 }
 
-function receiveAccountsData(state, action, root){
+function receiveAccountsData(state, action, root) {
     var newState;
-    if(action.payload.error){
+    if (action.payload.error) {
         newState = Object.assign({}, state, action.payload);
         return newState;
     }
@@ -266,9 +266,9 @@ function receiveAccountsData(state, action, root){
     return newState;
 }
 
-function receiveAccountsSave(state, action, root){
+function receiveAccountsSave(state, action, root) {
     var newState;
-    if(action.payload.error){
+    if (action.payload.error) {
         newState = Object.assign({}, state, action.payload);
         return newState;
     }
@@ -278,7 +278,7 @@ function receiveAccountsSave(state, action, root){
     return newState;
 }
 
-function menuSelect(state, action, root){
+function menuSelect(state, action, root) {
     var newState;
     localStorage.setItem('selectedTab', action.payload);
     const selectedMenuIndex = action.payload;
@@ -288,27 +288,24 @@ function menuSelect(state, action, root){
     return newState;
 }
 
-function selectAccountClick(state, action, root){
-    var newState;
-    newState = clone(state);
-    newState.liabilities.forEach(liab => {
-        if (liab.title === action.payload.title) {
-            liab.selected = !liab.selected;
-        }
+function selectAccountClick(state, action, { selected = [] }) {
+    const newState = clone(state);
+    newState.accounts.liabilities.forEach(l => {
+        l.selected = selected.map(x => x.title).includes(l.title);
     });
-    newState.selected = newState.liabilities.filter(x => x.selected);
+    //newState.selected = selected.map(x => x.title);
     return newState;
 }
 
-function groupClick(state, action, root){
+function groupClick(state, action, root) {
     //console.log({state, action, root});
     var newState;
     const groupTitle = action.payload.title;
     //const group = (state.liabilities.filter(x => x.title === groupTitle) || [])[0];
 
     newState = clone(state);
-    newState.liabilities = newState.liabilities.map(x =>{
-        if (x.title.toLowerCase() === groupTitle.toLowerCase()){
+    newState.liabilities = newState.liabilities.map(x => {
+        if (x.title.toLowerCase() === groupTitle.toLowerCase()) {
             x.open = typeof x.open !== 'undefined' ? !x.open : true;
         }
         return x;
@@ -321,7 +318,7 @@ function groupClick(state, action, root){
     return newState;
 }
 
-function groupRemove(state, action, root){
+function groupRemove(state, action, root) {
     var newState = clone(state);
 
     newState.accounts = root ? clone(root.accounts) : {};
@@ -346,16 +343,16 @@ function groupRemove(state, action, root){
     return newState;
 }
 
-function accountSave(state, action, root){
+function accountSave(state, action, root) {
     var newState;
     //console.log('~~~~~', state)
     // add account/group, or remove group
     newState = clone(state);
-    
-    if (!newState.account){
+
+    if (!newState.account) {
         return state;
     }
-    
+
     if (newState.account.isNew) {
         const newAccount = clone(newState.account);
         delete newAccount.isNew;
@@ -382,23 +379,23 @@ function accountSave(state, action, root){
         groupedItems
             .forEach(x => x.type = 'grouped');
     } else {
-        [].concat((newState.accounts.liabilities||[]), (newState.accounts.assets||[])).forEach(a => {
+        [].concat((newState.accounts.liabilities || []), (newState.accounts.assets || [])).forEach(a => {
             //console.log(newState.account);
             if ((newState.account.oldTitle && a.title.toLowerCase() === newState.account.oldTitle.toLowerCase())
                 || a.title.toLowerCase() === newState.account.title.toLowerCase()
             ) {
                 Object.keys(newState.account).forEach(key => {
-                    if(key === 'oldTitle') return;
+                    if (key === 'oldTitle') return;
                     a[key] = newState.account[key];
                 });
             }
-            a.type === 'group' && [].concat((newState.liabilities||[]), (newState.assets||[])).forEach(b => {
-                if(a.title.toLowerCase() === b.title.toLowerCase()){
+            a.type === 'group' && [].concat((newState.liabilities || []), (newState.assets || [])).forEach(b => {
+                if (a.title.toLowerCase() === b.title.toLowerCase()) {
                     a.open = b.open;
                 }
                 // grouped account changed title
                 a.items.forEach(i => {
-                    if(newState.account.oldTitle && i.title.toLowerCase() === newState.account.oldTitle.toLowerCase()){
+                    if (newState.account.oldTitle && i.title.toLowerCase() === newState.account.oldTitle.toLowerCase()) {
                         i.title = newState.account.title;
                     }
                 });
@@ -419,7 +416,7 @@ function accountSave(state, action, root){
     newState = openGroupedAccounts(newState.accounts, newState);
 
     // removes view state from save state
-    [].concat((newState.accounts.liabilities||[]), (newState.accounts.assets||[])).forEach(a => {
+    [].concat((newState.accounts.liabilities || []), (newState.accounts.assets || [])).forEach(a => {
         delete a.open;
     });
 
@@ -431,15 +428,15 @@ function accountSave(state, action, root){
     newState.accounts = _accounts;
     newState.error = false;
     saveAccounts(_accounts);
-    newState.liabilities = newState.liabilities.filter(x=>!!x);
+    newState.liabilities = newState.liabilities.filter(x => !!x);
     newState.liabilities.forEach(g => {
-        if(g.items && g.items.length){
-            g.items = g.items.map(i=> ({title: i.title}));
+        if (g.items && g.items.length) {
+            g.items = g.items.map(i => ({ title: i.title }));
         }
     });
     delete newState.account;
     // TODO: this is lame, fix it later
-    if(root){
+    if (root) {
         root.set({ accounts: _accounts });
     }
 
@@ -475,6 +472,9 @@ function app(state, action, root) {
         case 'ACCOUNT_SAVE':
             newState = accountSave(state, action, root);
             break;
+
+
+        //TODO: should not be keeping track of this here!!!
         // from popup reducer
         case 'POPUP_ACCOUNT':
             newState = popupAccount(state, action, root);
