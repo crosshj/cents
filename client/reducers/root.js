@@ -91,6 +91,37 @@ function selectAccountClick(state, action) {
     globalState().set({ selected });
 }
 
+function accountSave(state, action){
+    var accounts = clone(globalState().accounts);
+    // account in state should be the original account state
+    // account in popup should be the new account state
+
+    // service needs to make net call to save changes on server
+    // - when call is in progress
+    //   - popup state should be same except with loading = true
+    //   - account state stays the same
+    //   - root state stays the same
+
+    // - if call fails, popup needs to display error and ask for fix
+    //   - root needs to keep same state
+    //   - account needs to keep same state
+    //   - popup state stays same except error is added
+
+    // - if call succeeds, do the following:
+    //   - popup needs to forget its account state
+    //   - app needs to update its total and list
+    //   - root needs to forget its account
+
+    // currently client state does not wait for net call, so assume success
+    //  - popup forgets its account state
+    //  - app updates total and list (based on what action payload modified by root?)
+    //  - root forgets its account, accounts gets updated in app reducer (LAME)
+
+    action.payload = { account: clone(state.popup.account) };
+    globalState().reset();
+    //globalState().set({ accounts });
+}
+
 // -----------------------------------------------------------------------------
 
 function root(state = null, action) {
@@ -106,7 +137,7 @@ function root(state = null, action) {
             groupRemove(state, action);
             break;
         case 'ACCOUNT_SAVE':
-            //accountSave(state, action);
+            accountSave(state, action);
             break;
         // from popup reducer
         case 'POPUP_ACCOUNT':
@@ -134,6 +165,12 @@ function bind(reducer) {
         // the right way to do it => commented out
         //const {accounts, account} = globalState();
         //return reducer(state, action, {accounts, account});
+
+        // switch (action.type) {
+        //     case 'ACCOUNT_SAVE':
+        //         console.log({ action });
+        //         break;
+        // }
 
         return reducer(state, action, globalState());
     };

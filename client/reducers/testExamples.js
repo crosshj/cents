@@ -11,21 +11,24 @@ function groupWithChildren(){
             amount: 400,
             total_owed: 800,
             type: 'group',
-            status: 'pending'
+            status: 'pending',
+            selected: false
         },{
             title: 'child',
             date: '2017-10-08',
             amount: 200,
             total_owed: 400,
             type: 'grouped',
-            status: 'paid'
+            status: 'paid',
+            selected: false
         },{
             title: 'child2',
             date: '2017-10-09',
             amount: 200,
             total_owed: 400,
             type: 'grouped',
-            status: 'pending'
+            status: 'pending',
+            selected: false
         }],
         totals: {
             assetsTotal: '0.00',
@@ -46,8 +49,8 @@ const accountsData = () => ({
     data: {
         accounts: [{
             balance: '999.09'
-        }] 
-    } 
+        }]
+    }
 });
 
 export {

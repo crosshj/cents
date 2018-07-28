@@ -304,7 +304,7 @@ function groupClick(state, action, root) {
     //const group = (state.liabilities.filter(x => x.title === groupTitle) || [])[0];
 
     newState = clone(state);
-    newState.liabilities = newState.liabilities.map(x => {
+    newState.accounts.liabilities = newState.liabilities.map(x => {
         if (x.title.toLowerCase() === groupTitle.toLowerCase()) {
             x.open = typeof x.open !== 'undefined' ? !x.open : true;
         }
@@ -329,10 +329,10 @@ function groupRemove(state, action, root) {
         liabilities: newState.accounts.liabilities,
         balance: newState.accounts.balance
     });
-    newState.assets = root
+    newState.accounts.assets = root
         ? clone(safeAccess(() => root.accounts.assets) || [])
         : [];
-    newState.liabilities = root
+    newState.accounts.liabilities = root
         ? clone(safeAccess(() => root.accounts.liabilities) || [])
         : [];
     newState.account = undefined;
@@ -349,15 +349,18 @@ function accountSave(state, action, root) {
     // add account/group, or remove group
     newState = clone(state);
 
-    if (!newState.account) {
+    if (!action.payload.account) {
+
         return state;
     }
+    newState.account = action.payload.account;
 
     if (newState.account.isNew) {
         const newAccount = clone(newState.account);
         delete newAccount.isNew;
+        delete newAccount.oldTitle;
         newAccount.items = (newAccount.items || []).map(x => ({ title: x.title }));
-        groupedItems = (newState.account.items || [])
+        const groupedItems = (newState.account.items || [])
             .map(item => (newState.accounts.liabilities.filter(x => x.title === item.title) || [])[0]);
         const groupStatus = groupedItems.reduce((status, g) => {
             status = g.status.toLowerCase() === 'due' ? 'due' : status;
@@ -389,7 +392,7 @@ function accountSave(state, action, root) {
                     a[key] = newState.account[key];
                 });
             }
-            a.type === 'group' && [].concat((newState.liabilities || []), (newState.assets || [])).forEach(b => {
+            a.type === 'group' && [].concat((newState.accounts.liabilities || []), (newState.accounts.assets || [])).forEach(b => {
                 if (a.title.toLowerCase() === b.title.toLowerCase()) {
                     a.open = b.open;
                 }
@@ -428,12 +431,12 @@ function accountSave(state, action, root) {
     newState.accounts = _accounts;
     newState.error = false;
     saveAccounts(_accounts);
-    newState.liabilities = newState.liabilities.filter(x => !!x);
-    newState.liabilities.forEach(g => {
-        if (g.items && g.items.length) {
-            g.items = g.items.map(i => ({ title: i.title }));
-        }
-    });
+    // newState.liabilities = newState.liabilities.filter(x => !!x);
+    // newState.liabilities.forEach(g => {
+    //     if (g.items && g.items.length) {
+    //         g.items = g.items.map(i => ({ title: i.title }));
+    //     }
+    // });
     delete newState.account;
     // TODO: this is lame, fix it later
     if (root) {
@@ -479,9 +482,9 @@ function app(state, action, root) {
         case 'POPUP_ACCOUNT':
             newState = popupAccount(state, action, root);
             break;
-        case 'POPUP_UPDATE':
-            newState = popupUpdate(state, action, root);
-            break;
+        // case 'POPUP_UPDATE':
+        //     newState = popupUpdate(state, action, root);
+        //     break;
         case 'REMOVE_ITEM':
             newState = removeItem(state, action, root);
             break;

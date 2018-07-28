@@ -62,7 +62,7 @@ function popupAccount(state, action, root) {
   return newState;
 }
 
-function popupUpdate(state, action, { accounts }) {
+function popupUpdate(state, action, { account, accounts }) {
   var newState = clone(state);
 
   if (!newState.account || typeof newState.account !== 'object') {
@@ -73,9 +73,7 @@ function popupUpdate(state, action, { accounts }) {
   const liabilities = (accounts || {}).liabilities || [];
   const assets = (accounts || {}).assets || [];
 
-  var oldAccount = [].concat(liabilities, assets)
-    .filter(a => a.title.toLowerCase() === newState.account.title.toLowerCase());
-  oldAccount = clone(oldAccount[0] || {});
+  var oldAccount = clone(account);
 
   Object.keys(action.payload)
     .forEach(fieldName => {

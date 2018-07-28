@@ -120,6 +120,8 @@ describe('app reducer', () => {
         getAccountByName(expected.app.liabilities, 'group')['total_owed'] = 703.01;
         //TODO: probably should be more updates here !!!
 
+        //console.log(JSON.stringify(currentState, null, '   '));
+        //console.log(JSON.stringify(root.globalState(), null, '   '));
         expect(currentState).toEqual(expected);
     });
 
@@ -138,9 +140,9 @@ describe('app reducer', () => {
         expected.popup.account.status = 'paid';
         expected.popup.account.date = '2017-11-09';
         expected.popup.dateDirty = true;
-        expected.app.account = expected.popup.account;
-        expected.app.dateDirty = true;
 
+        //console.log(JSON.stringify(currentState, null, '   '));
+        //console.log(JSON.stringify(root.globalState(), null, '   '));
         expect(result).toEqual(expected);
 
         // move status back to due
@@ -148,8 +150,6 @@ describe('app reducer', () => {
         expected.popup.account.status = 'pending';
         expected.popup.account.date = '2017-10-09';
         expected.popup.dateDirty = false;
-        expected.app.account = expected.popup.account;
-        expected.app.dateDirty = false;
         expect(result).toEqual(expected);
     });
 
@@ -262,15 +262,11 @@ describe('app reducer', () => {
         // update group name
         currentState = reduce(currentState, popupUpdate({ title: 'Group Creation Test Group' }));
 
-        //NOTE:  GOOD UP TO BEFORE HERE
-        console.log(JSON.stringify(currentState, null, '   '));
-        console.log(JSON.stringify(root.globalState(), null, '   '));
-
-        // app state now has error: "could not update popup state" (probably why login is showing up)
-        // however, popup state is just fine
-
         // save group
         currentState = reduce(currentState, accountSave());
+        //NOTE:  GOOD UP TO BEFORE HERE
+        console.log('Main State: ', JSON.stringify(currentState, null, '   '));
+        console.log('Root State: ', JSON.stringify(root.globalState(), null, '   '));
 
 
 
