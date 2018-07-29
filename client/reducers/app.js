@@ -211,7 +211,7 @@ function receiveAccounts(state, action, root) {
         newState.selectedMenuIndex = state ? state.selectedMenuIndex : 0;
     }
     //newState.accounts = action.payload;
-    debugger
+    //debugger
     return newState;
 }
 
