@@ -6,7 +6,25 @@ function groupWithChildren(){
     var example =  {
         liabilities: [{
             title: 'group',
-            items: [{ title: 'child'}, { title: 'child2'}],
+            items: [
+                {
+                    title: 'child',
+                    date: '2017-10-08',
+                    amount: 200,
+                    total_owed: 400,
+                    type: 'grouped',
+                    status: 'paid',
+                    selected: false
+                }, {
+                    title: 'child2',
+                    date: '2017-10-09',
+                    amount: 200,
+                    total_owed: 400,
+                    type: 'grouped',
+                    status: 'pending',
+                    selected: false
+                }
+            ],
             date: '2017-10-08',
             amount: 400,
             total_owed: 800,

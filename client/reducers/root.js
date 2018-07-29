@@ -1,4 +1,10 @@
 import { clone, safeAccess } from '../js/react/utilities';
+import { updateAccountsFromAccount } from './helpers';
+
+import {
+    saveAccounts
+} from '../js/redux/services';
+import { fixTotals } from '../js/redux/utilities';
 
 /*
 
@@ -93,6 +99,7 @@ function selectAccountClick(state, action) {
 
 function accountSave(state, action){
     var accounts = clone(globalState().accounts);
+    var account = clone(state.popup.account);
     // account in state should be the original account state
     // account in popup should be the new account state
 
@@ -117,9 +124,22 @@ function accountSave(state, action){
     //  - app updates total and list (based on what action payload modified by root?)
     //  - root forgets its account, accounts gets updated in app reducer (LAME)
 
-    action.payload = { account: clone(state.popup.account) };
+    action.payload = { account };
+
+    accounts = updateAccountsFromAccount({ accounts, account });
+
+    accounts.liabilities.forEach(liab => {
+        if (liab.type !== 'group') return;
+        liab.items = liab.items.map(i => i.title)
+    });
+
+    const totals = fixTotals(accounts).totals;
+    accounts.totals = totals;
+
+    saveAccounts(accounts);
+
     globalState().reset();
-    //globalState().set({ accounts });
+    globalState().set({ accounts });
 }
 
 // -----------------------------------------------------------------------------
@@ -149,9 +169,9 @@ function root(state = null, action) {
         case 'SELECT_ACCOUNT_CLICK':
             selectAccountClick(state, action, root);
             break;
-        case 'REMOVE_ITEM':
-            //removeItem(state, action);
-            break;
+        // case 'REMOVE_ITEM':
+        //     removeItem(state, action);
+        //     break;
         // end popup reducer
         default:
             break;

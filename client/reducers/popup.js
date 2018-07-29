@@ -70,9 +70,6 @@ function popupUpdate(state, action, { account, accounts }) {
     return newState;
   }
 
-  const liabilities = (accounts || {}).liabilities || [];
-  const assets = (accounts || {}).assets || [];
-
   var oldAccount = clone(account);
 
   Object.keys(action.payload)

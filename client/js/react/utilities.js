@@ -29,7 +29,13 @@ var unFormatMoney = function(money){
 };
 
 function clone(item) {
-    return JSON.parse(JSON.stringify(item));
+    var result = undefined;
+    try {
+        result = JSON.parse(JSON.stringify(item));
+    } catch (e) {
+        // nothing
+    }
+    return result;
 }
 
 export {

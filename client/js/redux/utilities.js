@@ -37,9 +37,9 @@ function updateGroupFromChildren(accounts) {
             .reduce((total, z) => Number(total) + Number(z), 0);
         g.status = groupedItems
             .map(x => x.status)
-            .reduce((status, z) => statToNumber[status.toLowerCase()] < statToNumber[z.toLowerCase()]
+            .reduce((status, z) => statToNumber[status.toLowerCase()] < statToNumber[(z||'').toLowerCase()]
                 ? status.toLowerCase()
-                : z.toLowerCase()
+                : (z||'').toLowerCase()
                 , 'paid');
         g.amount = groupedItems
             .map(x => x.amount)
