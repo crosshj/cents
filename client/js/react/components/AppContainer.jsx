@@ -14,6 +14,16 @@ import GlobalFlickity from 'flickity/dist/flickity.pkgd.min';
 //import GlobalFlickity from 'flickity';
 window.Flickity = GlobalFlickity;
 
+var safeAccess = (fn) => {
+  var response = undefined;
+  try {
+    response = fn();
+  } catch (error) {
+    // nothing
+  }
+  return response;
+};
+
 class AppContainer extends React.Component {
   constructor(props, context){
     super(props, context);
@@ -32,7 +42,10 @@ class AppContainer extends React.Component {
       draggable: true,
       percentPosition: true
     }
-    
+
+    const { liabilities, assets, totals } = safeAccess(() => this.props.accounts) || {};
+    console.log({ props: this.props });
+
     return (
       <React.Fragment>
         { !this.props.error &&
@@ -43,16 +56,16 @@ class AppContainer extends React.Component {
         }
         { !this.props.error &&
           <Flickity
-            className={ 'main-carousel' } 
-            elementType={ 'div' } // default 'div' 
-            options={ flickityOptions } // takes flickity options {} 
+            className={ 'main-carousel' }
+            elementType={ 'div' } // default 'div'
+            options={ flickityOptions } // takes flickity options {}
             disableImagesLoaded={ true } // default false
             reloadOnUpdate={false}
             onSwipe={menuSelect}
           >
-              <Liabilities liabilities={this.props.liabilities}/>
-              <Totals totals={this.props.totals}/>
-              <Assets assets={this.props.assets}/>
+              <Liabilities liabilities={liabilities}/>
+              <Totals totals={totals}/>
+              <Assets assets={assets}/>
           </Flickity>
         }
         { this.props.error &&

@@ -20,15 +20,21 @@ const numberToStat = {
     3: 'paid'
 };
 
-function updateGroupFromChildren(accounts) {
+function updateGroupFromChildren(accounts, root) {
     var newAccounts = clone(accounts);
-    var newLiabs = newAccounts.accounts.liabilities || [];
+    var newLiabs = root.accounts.liabilities || [];
     var groups = newLiabs.filter(x => x.type === 'group') || [];
+
     groups.forEach(g => {
+        // rehydrate grouped items
         const groupedItems = g.items
-            .map(item => (newLiabs
-                .filter(x => x.title.toLowerCase() === item.title.toLowerCase()) || []
-            )[0]);
+            .map(item => newLiabs
+                .find(x =>
+                    typeof item === 'string'
+                        ? x.title.toLowerCase() === item.toLowerCase()
+                        : x.title.toLowerCase() === (item.title||'').toLowerCase()
+                )
+            );
         if (!groupedItems[0]) {
             return;
         }

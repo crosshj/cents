@@ -39,9 +39,11 @@ function makeRow(data, key){
 
 function Liabilities({liabilities = []}){
     let liabRows = liabilities
+        .filter(x => x)
         .map(makeRow);
 
     const selectedLiabs = liabilities
+        .filter(x => x)
         .reduce((total, item) => item.selected
             ? total+1
             : total, 0

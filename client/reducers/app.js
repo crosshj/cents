@@ -196,7 +196,7 @@ function receiveAccounts(state, action, root) {
             x.hidden = false;
         }
     });
-    newState = updateGroupFromChildren(newState);
+    newState = updateGroupFromChildren(newState, root);
     newState.totals = safeAccess(() => state.totals) || {};
     newState.totals.balance = safeAccess(() => state.totals.balance) || 0;
     newState.totals.updating = true;
@@ -223,9 +223,9 @@ function receiveAccountsData(state, action, root) {
     }
     newState = clone(state);
     const balance = safeAccess(() => action.payload.data.accounts[0].balance);
-    newState.totals = newState.totals || {};
-    newState.totals.balance = Number(balance || 0);
-    newState.totals.updating = false;
+    newState.accounts.totals = newState.accounts.totals || {};
+    newState.accounts.totals.balance = Number(balance || 0);
+    newState.accounts.totals.updating = false;
 
     return newState;
 }
@@ -248,7 +248,7 @@ function menuSelect(state, action, root) {
     const selectedMenuIndex = action.payload;
     newState = clone(state);
     newState.selectedMenuIndex = selectedMenuIndex;
-    //newState.liabilities.forEach(x => x.selected = false);
+    //newState.accounts.liabilities.forEach(x => x.selected = false);
     return newState;
 }
 
@@ -268,12 +268,14 @@ function groupClick(state, action, root) {
     //const group = (state.liabilities.filter(x => x.title === groupTitle) || [])[0];
 
     newState = clone(state);
-    newState.accounts.liabilities = newState.liabilities.map(x => {
-        if (x.title.toLowerCase() === groupTitle.toLowerCase()) {
-            x.open = typeof x.open !== 'undefined' ? !x.open : true;
-        }
-        return x;
-    });
+    newState.accounts.liabilities = newState.accounts.liabilities
+        .filter(x => x)
+        .map(x => {
+            if (x.title.toLowerCase() === groupTitle.toLowerCase()) {
+                x.open = typeof x.open !== 'undefined' ? !x.open : true;
+            }
+            return x;
+        });
     //console.log(root)
     newState = openGroupedAccounts(newState, newState);
 
@@ -323,7 +325,7 @@ function accountSave(state, action, root) {
         );
     });
 
-    newState = updateGroupFromChildren(newState);
+    newState = updateGroupFromChildren(newState, root);
     newState = openGroupedAccounts(newState, newState);
 
     newState.totals = newState.accounts.totals;
