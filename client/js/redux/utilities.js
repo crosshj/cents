@@ -22,7 +22,7 @@ const numberToStat = {
 
 function updateGroupFromChildren(accounts) {
     var newAccounts = clone(accounts);
-    var newLiabs = newAccounts.liabilities || [];
+    var newLiabs = newAccounts.accounts.liabilities || [];
     var groups = newLiabs.filter(x => x.type === 'group') || [];
     groups.forEach(g => {
         const groupedItems = g.items
@@ -50,7 +50,7 @@ function updateGroupFromChildren(accounts) {
                 return new Date(a) - new Date(b);
             })[0];
     });
-    newAccounts.liabilities = newLiabs;
+    newAccounts.accounts.liabilities = newLiabs;
 
     return newAccounts;
 }
