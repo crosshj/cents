@@ -30,8 +30,8 @@ function popupAccount(state, action, root) {
   newState.account = root ? clone(root.account || {}) : {};
 
   if (newState.account.items) {
-    if (newState.selected && newState.selected.length) {
-      newState.selected
+    if (root.selected && root.selected.length) {
+      root.selected
         .forEach(x => {
           if (!newState.account.items
             .map(y => y.title.toLowerCase())
@@ -43,7 +43,11 @@ function popupAccount(state, action, root) {
     }
     newState.account.items = newState.account.items
       .map(x => {
-        return accounts.liabilities.filter(y => y.title.toLowerCase() === x.title.toLowerCase())[0];
+        return accounts.liabilities.filter(y => {
+          return typeof x === "string"
+            ? y.title.toLowerCase() === x.toLowerCase()
+            : y.title.toLowerCase() === x.title.toLowerCase()
+        })[0];
       })
       .filter(x => !!x)
       .sort((a, b) => b.total_owed - a.total_owed);

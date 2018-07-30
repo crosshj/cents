@@ -18,6 +18,32 @@ const statToNumber = {
     paid: 3
 };
 
+function sortAccounts(liabilities){
+    var pending = (liabilities || [])
+        .filter(function (a) {
+            return a.status && a.status.toLowerCase() === 'pending';
+        }).sort(function (a, b) {
+            return new Date(a.date) - new Date(b.date);
+        });
+    var paid = (liabilities||[])
+        .filter(function (a) {
+            return a.status && a.status.toLowerCase() === 'paid';
+        }).sort(function (a, b) {
+            return new Date(a.date) - new Date(b.date);
+        });
+    var due = (liabilities || [])
+        .filter(function (a) {
+            return a.status && a.status.toLowerCase() === 'due';
+        }).sort(function (a, b) {
+            return new Date(a.date) - new Date(b.date);
+        });
+    return [
+        ...due,
+        ...pending,
+        ...paid
+    ];
+}
+
 function fixTotals(accounts) {
     var u = clone(accounts);
     (u.liabilities || []).forEach(x => {
@@ -272,16 +298,19 @@ function groupClick(state, action, root) {
     //const group = (state.liabilities.filter(x => x.title === groupTitle) || [])[0];
 
     newState = clone(state);
+    // toggle group open
     newState.accounts.liabilities = newState.accounts.liabilities
         .filter(x => x)
         .map(x => {
             if (x.title.toLowerCase() === groupTitle.toLowerCase()) {
-                x.open = typeof x.open !== 'undefined' ? !x.open : true;
+                x.open = typeof x.open !== 'undefined'
+                    ? !x.open
+                    : true;
             }
             return x;
         });
     //console.log(root)
-    newState = openGroupedAccounts(newState, newState);
+    newState = openGroupedAccounts(root, newState);
 
     // toggle open/closed
     //newState = switchGroup(group, state, accounts, !group.open)
@@ -308,7 +337,7 @@ function groupRemove(state, action, root) {
     newState.account = undefined;
 
     newState = markGroupedItems(newState.accounts);
-    newState = openGroupedAccounts(newState, newState);
+    newState = openGroupedAccounts(root, newState);
 
     return newState;
 }
@@ -325,15 +354,22 @@ function accountSave(state, action, root) {
     newState.accounts.liabilities.forEach(liab => {
         if (liab.type !== 'group') return;
         liab.items = liab.items.map(i => newState.accounts.liabilities
-            .find(l => l.title === i)
+            .find(l => {
+                return typeof i === 'string'
+                    ? l.title === i
+                    : l.title === i.title;
+            })
         );
     });
 
     newState = updateGroupFromChildren(newState, root);
-    newState = openGroupedAccounts(newState, newState);
+    newState = openGroupedAccounts(root, newState);
 
     newState.totals = newState.accounts.totals;
     delete newState.accounts.totals;
+
+   //sort accounts
+   newState.accounts.liabilities = sortAccounts(newState.accounts.liabilities);
 
     return newState;
 }

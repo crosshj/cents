@@ -44,7 +44,6 @@ class AppContainer extends React.Component {
     }
 
     const { liabilities, assets, totals } = safeAccess(() => this.props.accounts) || {};
-    console.log({ props: this.props });
 
     return (
       <React.Fragment>
