@@ -233,7 +233,7 @@ describe('app reducer', () => {
         expect(currentState).toEqual(expected);
     });
 
-    it('should remove child from popuped up group properly', () => {
+    it('should remove child from group properly', () => {
         var currentState = exampleInitial();
 
         currentState = reduce(currentState, accountClick('group'));
@@ -245,11 +245,20 @@ describe('app reducer', () => {
         expect(currentState.popup.account.date).toEqual('2017-10-08');
         expect(currentState.popup.account.status).toEqual('paid');
 
-        //TODO: ? test that this saved alright?
-        // console.log('Main State: ', JSON.stringify(currentState, null, '   '));
-        // console.log('Root State: ', JSON.stringify(root.globalState(), null, '   '));
+        // save group
+        currentState = reduce(currentState, accountSave());
+
+        const theGroup = getAccountByName(currentState.app.accounts.liabilities, 'group');
+        expect(theGroup.items.length).toEqual(1);
+        expect(currentState.popup.error).toEqual('not initialized');
+        expect(currentState.app.accounts.liabilities.length).toEqual(2);
+    });
+
+
+    it('should add child to group properly', () => {
 
     });
+
 
     it('should keep track of useful info in root reducer', () => {
         // ARRANGE
@@ -323,9 +332,9 @@ describe('app reducer', () => {
         // console.log('Main State: ', JSON.stringify(currentState, null, '   '));
         // console.log('Root State: ', JSON.stringify(root.globalState(), null, '   '));
 
-
-
         // NOTE: investigation still in progress here
+
+        //TODO: should be fine, just write assertions
     });
 
     it('should update popup with new info once saved', () => {

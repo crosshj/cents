@@ -106,22 +106,38 @@ function markGroupedItems(accounts) {
     const groupedItems = Object.keys(
         newAccounts.liabilities
             .reduce((all, x) => {
-                if (x.items) {
-                    x.items.forEach(y => {
-                        if (!all[y.title.toLowerCase()]) {
-                            all[y.title.toLowerCase()] = y;
-                        }
-                    });
+                if(x.type !== 'group' || !x.items){
+                    return all;
                 }
+
+                x.items.forEach(y => {
+                    const yTitle = typeof y === 'string'
+                        ? y
+                        : y.title;
+                    if (!all[yTitle.toLowerCase()]) {
+                        all[yTitle.toLowerCase()] = y;
+                    }
+                });
+
                 return all;
             }, {})
     );
-    newAccounts.liabilities.forEach(x => x.type !== 'group' ? delete x.type : undefined);
-    newAccounts.liabilities.forEach(x =>
-        x.type !== 'group' && groupedItems.includes(x.title.toLowerCase())
-            ? x.type = 'grouped'
-            : undefined
-    );
+    newAccounts.liabilities.forEach(x => {
+        if(x.type === 'group') return;
+    });
+
+    newAccounts.liabilities.forEach(x => {
+        if(x.type === 'group') return;
+        delete x.type;
+
+        const itemIsGrouped = groupedItems
+            .includes(x.title.toLowerCase());
+
+        if (itemIsGrouped){
+            x.type = 'grouped';
+        }
+    });
+
     return newAccounts;
 }
 
@@ -138,10 +154,12 @@ function openGroupedAccounts(initialState, viewState) {
     );
 
     // remove grouped items
-    outputState.accounts.liabilities = outputState.accounts.liabilities.filter(x => x.type !== 'grouped');
+    outputState.accounts.liabilities = outputState.accounts.liabilities
+        .filter(x => x.type !== 'grouped');
 
     // remove hidden items
-    outputState.accounts.liabilities = outputState.accounts.liabilities.filter(x => !x.hidden);
+    outputState.accounts.liabilities = outputState.accounts.liabilities
+        .filter(x => !x.hidden);
 
     // add grouped items back if group open
     //console.log(initialState)
@@ -163,6 +181,7 @@ function openGroupedAccounts(initialState, viewState) {
 
                 return statCompare || new Date(a.date) - new Date(b.date);
             });
+        groupedItems.forEach(x => x.type = 'grouped');
 
         newLiabs = newLiabs.concat(groupedItems);
     });
@@ -362,8 +381,15 @@ function accountSave(state, action, root) {
         );
     });
 
+
     newState = updateGroupFromChildren(newState, root);
+    newState.accounts.liabilities.forEach(x => {
+        if(x.type !== 'grouped') return;
+        delete x.type;
+    });
+    newState.accounts = markGroupedItems(newState.accounts);
     newState = openGroupedAccounts(root, newState);
+    console.log({x: newState.accounts.liabilities });
 
     newState.totals = newState.accounts.totals;
     delete newState.accounts.totals;
@@ -371,7 +397,7 @@ function accountSave(state, action, root) {
    //sort accounts
    newState.accounts.liabilities = sortAccounts(newState.accounts.liabilities);
 
-    return newState;
+   return newState;
 }
 
 function app(state, action, root) {
