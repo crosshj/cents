@@ -154,7 +154,7 @@ describe('app reducer', () => {
         //debugState({ currentState})
         expected.app.accounts.liabilities.forEach(liab => {
             if(liab.type !== "group") return;
-            liab.items = liab.items.map(x=>x.title);
+            liab.items = liab.items.map(x=> ({ title: x.title }));
         });
 
         // ASSERT

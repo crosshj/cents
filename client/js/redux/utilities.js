@@ -161,7 +161,11 @@ function openGroupedAccounts(initialState, viewState) {
         if (!group.open || group.type !== 'group') return;
 
         const groupedItems = group.items
-            .map(item => (initialState.liabilities.filter(x => x.title === item.title) || [])[0])
+            .map(item => (initialState.liabilities.filter(x => {
+                return typeof i === 'string'
+                    ? x.title === item
+                    : x.title === item.title
+            }) || [])[0])
             .sort(function (a, b) {
                 var statCompare = 0;
                 if (statToNumber[a.status.toLowerCase()] > statToNumber[b.status.toLowerCase()]) statCompare = 1;

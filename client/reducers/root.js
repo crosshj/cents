@@ -130,7 +130,11 @@ function accountSave(state, action){
 
     accounts.liabilities.forEach(liab => {
         if (liab.type !== 'group') return;
-        liab.items = liab.items.map(i => i.title)
+        liab.items = liab.items.map(i => {
+            return typeof i === "string"
+            ? { title: i}
+            : { title: i.title }
+        })
     });
 
     const totals = fixTotals(accounts).totals;

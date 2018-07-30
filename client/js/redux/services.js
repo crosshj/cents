@@ -81,7 +81,7 @@ function fetchHistory({ type, title, field }) {
         // if login error, this call will be retried
         const thisFunction = this;
         GLOBAL_FUNCTION_QUEUE.push(thisFunction.bind(thisFunction));
-        
+
         const fetchField = field.toLowerCase().replace(' ', '_');
         const url = `diffs?type=${type}&account=${title}&field=${fetchField}`;
         const config = {
@@ -113,7 +113,11 @@ function saveAccounts(accounts) {
     accountsToSave.liabilities
         .filter(x => x.type === 'group')
         .forEach(group => {
-            group.items = group.items.map(item => ({title: item.title}));
+            group.items = group.items.map(item => {
+                return typeof item === 'string'
+                ? { title: item }
+                : { title: item.title }
+            });
         });
     accountsToSave.liabilities.forEach(x => {
         delete x.selected;
