@@ -35,3 +35,4 @@ service/scrapers/puppeteer/**/*.es6.js
 webpack-stats.json
 client/js/react/build
 client/js/build/
+accounts.bak.json
