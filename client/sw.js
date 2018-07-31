@@ -18,7 +18,7 @@ https://serviceworke.rs/
 
 // Update 'version' if you need to refresh the cache
 var staticCacheName = 'static';
-var version = 'v1.1.3::';
+var version = 'v1.1.4::';
 var CACHE = version + staticCacheName;
 var timeout = 1500;
 
@@ -99,7 +99,7 @@ function offlineResponse(request){
     return blankJS;
   }
 
-  if(!!~request.headers.get('Accept').indexOf('application/json')){ 
+  if(!!~request.headers.get('Accept').indexOf('application/json')){
     const fallbackResponse = {
       error: "offline"
     };
@@ -215,7 +215,7 @@ function fromNetwork(request, timeout) {
       if(isJSONRequest){
         clone.json().then(json => {
           json.cached = true;
-          var jsonRes = new Response(JSON.stringify(json), { 
+          var jsonRes = new Response(JSON.stringify(json), {
             headers: {
               'content-type': 'application/json'
             }
