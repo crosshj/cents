@@ -54,19 +54,19 @@ function fixTotals(accounts) {
 
     u.totals = u.totals || {};
 
-    var pending = (u.liabilities || [])
+    var pending = (u.accounts.liabilities || [])
         .filter(function (a) {
             return a.status && a.status.toLowerCase() === 'pending';
         }).sort(function (a, b) {
             return new Date(a.date) - new Date(b.date);
         });
-    // var paid = (u.liabilities||[])
-    //     .filter(function (a) {
-    //         return a.status && a.status.toLowerCase() === 'paid';
-    //     }).sort(function (a, b) {
-    //         return new Date(a.date) - new Date(b.date);
-    //     });
-    var due = (u.liabilities || [])
+    var paid = (u.accounts.liabilities||[])
+        .filter(function (a) {
+            return a.status && a.status.toLowerCase() === 'paid';
+        }).sort(function (a, b) {
+            return new Date(a.date) - new Date(b.date);
+        });
+    var due = (u.accounts.liabilities || [])
         .filter(function (a) {
             return a.status && a.status.toLowerCase() === 'due';
         }).sort(function (a, b) {
@@ -88,12 +88,12 @@ function fixTotals(accounts) {
         .reduce((all, one) => all + Number(one.amount), 0)
         .toFixed(2);
 
-    u.totals.debts = (u.liabilities || [])
+    u.totals.debts = (u.accounts.liabilities || [])
         .filter(item => !(item.hidden || item.type === 'group'))
         .reduce((all, one) => all + Number(one.amount), 0)
         .toFixed(2);
 
-    u.totals.debtsTotal = (u.liabilities || [])
+    u.totals.debtsTotal = (u.accounts.liabilities || [])
         .filter(item => !(item.hidden || item.type === 'group'))
         .reduce((all, one) => all + Number(one.total_owed), 0)
         .toFixed(2);
@@ -251,6 +251,7 @@ function receiveAccounts(state, action, root) {
     newState.totals.updating = true;
     newState = fixTotals(newState);
     newState = openGroupedAccounts(newState, newState);
+    //console.log(JSON.stringify({newState}, null, '  '))
 
     if (state && typeof state.selectedMenuIndex === "undefined") {
         newState.selectedMenuIndex = window && window.localStorage
@@ -388,8 +389,9 @@ function accountSave(state, action, root) {
         delete x.type;
     });
     newState.accounts = markGroupedItems(newState.accounts);
+    newState = fixTotals(newState);
     newState = openGroupedAccounts(root, newState);
-    console.log({x: newState.accounts.liabilities });
+    //console.log({x: newState.accounts.liabilities });
 
     newState.totals = newState.accounts.totals;
     delete newState.accounts.totals;

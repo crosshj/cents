@@ -313,7 +313,12 @@ describe('app reducer', () => {
         // 2 items that are not grouped
         root.globalState().reset();
         var exampleAccounts = groupWithChildren();
-        exampleAccounts.liabilities = exampleAccounts.liabilities.filter(x => x.type !== 'group');
+        exampleAccounts.liabilities = exampleAccounts.liabilities
+            .filter(x => x.type !== 'group')
+            .map(x => {
+                delete x.type;
+                return x;
+            });
         var currentState = reduce(undefined, receiveAccounts({ liabilities: exampleAccounts.liabilities }));
 
         // select 2 items
@@ -328,13 +333,9 @@ describe('app reducer', () => {
 
         // save group
         currentState = reduce(currentState, accountSave());
-        //NOTE:  GOOD UP TO BEFORE HERE
-        // console.log('Main State: ', JSON.stringify(currentState, null, '   '));
-        // console.log('Root State: ', JSON.stringify(root.globalState(), null, '   '));
+        //debugState({ currentState, root });
 
-        // NOTE: investigation still in progress here
-
-        //TODO: should be fine, just write assertions
+        //TODO: write assertions
     });
 
     it('should update popup with new info once saved', () => {

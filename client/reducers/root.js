@@ -30,6 +30,7 @@ const globalState = () => ({
     reset: () => {
         _account = undefined;
         _accounts = undefined;
+        _selected = undefined;
     }
 });
 
