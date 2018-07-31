@@ -382,24 +382,23 @@ function accountSave(state, action, root) {
         );
     });
 
-
     newState = updateGroupFromChildren(newState, root);
     newState.accounts.liabilities.forEach(x => {
         if(x.type !== 'grouped') return;
         delete x.type;
     });
     newState.accounts = markGroupedItems(newState.accounts);
-    newState = fixTotals(newState);
+    newState.accounts.totals = root.accounts.totals;
+
+    // don't need it and should fix or use this exclusively
+    //delete newState.totals;
+
     newState = openGroupedAccounts(root, newState);
-    //console.log({x: newState.accounts.liabilities });
 
-    newState.totals = newState.accounts.totals;
-    delete newState.accounts.totals;
+    //sort accounts
+    newState.accounts.liabilities = sortAccounts(newState.accounts.liabilities);
 
-   //sort accounts
-   newState.accounts.liabilities = sortAccounts(newState.accounts.liabilities);
-
-   return newState;
+    return newState;
 }
 
 function app(state, action, root) {
