@@ -249,7 +249,7 @@ a, button {
 }
 body {
   /* background-color: rgba(91,89,77,1); */
-  background-color: #777;
+  background-color: #667088;
   /*
   background-image: linear-gradient( rgba(0, 0, 0, 0.51), rgba(255, 255, 255, 0.09) ), url('http://mycolorscreen.com/wp-content/uploads/wallpapers_2012/320931/background-01.jpg');
   */
@@ -586,7 +586,7 @@ a.button.selected {
   position:absolute; left: 0; right: 0; bottom: 0; top: 0px;
   background-color: rgba(91,89,77,1);
   z-index: 999999;
-  background-color: #777;
+  background-color: #667088;
   font-size: 1.5em; /* currently ems cause chrome bug misinterpreting rems on body element */
   font-weight: 400;
   font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
