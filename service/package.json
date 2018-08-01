@@ -18,7 +18,7 @@
     "async": "^2.1.5",
     "cron": "^1.2.1",
     "express": "^4.15.2",
-    "logger": "0.0.1",
+    "logger": "git+https://github.com/fatshotty/node-logger.git#5b80950",
     "mnist": "^1.0.5",
     "nightmare": "^2.10.0",
     "read-last-lines": "^1.1.2",

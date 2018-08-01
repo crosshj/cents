@@ -18,7 +18,6 @@
     "http-proxy": "^1.12.0",
     "jquery": "^3.2.1",
     "lodash": "^4.12.0",
-    "logger": "git+https://github.com/fatshotty/node-logger.git#5b80950",
     "moment": "^2.17.1",
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
