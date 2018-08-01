@@ -34,11 +34,11 @@ var config = {
     }
   },
   plugins: [
-    // new webpack.DefinePlugin({
-    //   'process.env': {
-    //     'NODE_ENV': '"production"'
-    //   }
-    // }),
+    new webpack.DefinePlugin({
+      'process.env': {
+        'NODE_ENV': '"production"'
+      }
+    }),
     new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en/),
     new webpack.optimize.CommonsChunkPlugin({
       name: 'vendor',
@@ -96,7 +96,7 @@ var config = {
             }, {
                 loader: "sass-loader"
             }],
-            // use style-loader in development 
+            // use style-loader in development
             fallback: "style-loader"
         })
       },
