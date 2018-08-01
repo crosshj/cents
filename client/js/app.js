@@ -20,7 +20,7 @@ var jq = window.jQuery.noConflict();
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
-    navigator.serviceWorker.register('sw.js', {scope: './'}).then(function(registration) {
+    navigator.serviceWorker.register('sw.alt.js', {scope: './'}).then(function(registration) {
       // Registration was successful
       console.log('ServiceWorker registration successful with scope: ', registration.scope); //eslint-disable-line no-console
     }).catch(function(err) {
@@ -342,7 +342,7 @@ Element.prototype.remove = function() {
       event.stopPropagation();
       return false;
     });
-  
+
     jq('a.button:not(.menu):not(#add-new):not(#add-group):not(.group):not(.grouped)').on('contextmenu', function(event){
       if(jq(this).hasClass('selected')){
         jq(this).removeClass('selected');
