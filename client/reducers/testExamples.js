@@ -63,6 +63,20 @@ function groupWithChildren(){
     return _example;
 }
 
+function lotsOfAccounts(amount){
+	const lots = groupWithChildren();
+	lots.accounts.liabilities = lots.accounts.liabilities.concat((new Array(amount).fill()).map((x, i) => {
+		const randomAccount = clone(lots.accounts.liabilities.find(x=>x.title==='child'));
+		randomAccount.title = Math.random().toString(36).substring(2, 15) + ' ' + Math.random().toString(36).substring(2, 15);
+
+		const month = i%12 || 1;
+		// padding, meh
+		randomAccount.date = `2017-${month}-${i+1}`;
+		return randomAccount;
+	}));
+	return lots;
+}
+
 const accountsData = () => ({
     data: {
         accounts: [{
@@ -72,6 +86,7 @@ const accountsData = () => ({
 });
 
 export {
-    groupWithChildren,
+		groupWithChildren,
+		lotsOfAccounts,
     accountsData
 };
