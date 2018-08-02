@@ -31,6 +31,8 @@ var getAccountByName = function (data = [], title) {
 	return data.filter(val => val.title.toLowerCase().indexOf(title) >= 0)[0];
 };
 
+var randomElement = array => array.sort(() => 0.5 - Math.random())[0];
+
 function exampleInitial() {
 	var exampleAccounts = groupWithChildren();
 	var currentState = reduce(undefined, receiveAccounts({ liabilities: exampleAccounts.liabilities }));
@@ -381,6 +383,7 @@ describe('app reducer', () => {
 			.filter(x => x.type !== 'group' && !x.title.includes('child'))
 			.map(x => {
 				delete x.type;
+				x.status = randomElement(['due', 'pending', 'paid']);
 				return x;
 			});
 		exampleAccounts.liabilities = [...[{
@@ -391,6 +394,8 @@ describe('app reducer', () => {
 			...exampleAccounts.liabilities
 		];
 		var currentState = reduce(undefined, receiveAccounts({ liabilities: exampleAccounts.liabilities }));
-		debugState({ currentState });
+		//debugState({ currentState });
+		//debugState({ currentState, root });
+
 	});
 });

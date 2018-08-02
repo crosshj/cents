@@ -11,6 +11,10 @@ import {
     safeAccess
 } from '../js/react/utilities';
 
+import {
+    fixTotals, addSeperators
+} from './helpers';
+
 // Reducer
 const statToNumber = {
     due: 1,
@@ -42,63 +46,6 @@ function sortAccounts(liabilities){
         ...pending,
         ...paid
     ];
-}
-
-function fixTotals(accounts) {
-    var u = clone(accounts);
-    (u.liabilities || []).forEach(x => {
-        if (x.hidden === 'false') {
-            x.hidden = false;
-        }
-    });
-
-    u.totals = u.totals || {};
-
-    var pending = (u.accounts.liabilities || [])
-        .filter(function (a) {
-            return a.status && a.status.toLowerCase() === 'pending';
-        }).sort(function (a, b) {
-            return new Date(a.date) - new Date(b.date);
-        });
-    var paid = (u.accounts.liabilities||[])
-        .filter(function (a) {
-            return a.status && a.status.toLowerCase() === 'paid';
-        }).sort(function (a, b) {
-            return new Date(a.date) - new Date(b.date);
-        });
-    var due = (u.accounts.liabilities || [])
-        .filter(function (a) {
-            return a.status && a.status.toLowerCase() === 'due';
-        }).sort(function (a, b) {
-            return new Date(a.date) - new Date(b.date);
-        });
-
-    u.totals.pendingTotal = pending
-        .filter(item => !(item.hidden || item.type === 'group'))
-        .reduce((all, one) => all + Number(one.amount), 0)
-        .toFixed(2);
-
-    u.totals.dueTotal = due
-        .filter(item => !(item.hidden || item.type === 'group'))
-        .reduce((all, one) => all + Number(one.amount), 0)
-        .toFixed(2);
-
-    u.totals.assetsTotal = (u.assets || [])
-        .filter(item => !JSON.parse(item.hidden))
-        .reduce((all, one) => all + Number(one.amount), 0)
-        .toFixed(2);
-
-    u.totals.debts = (u.accounts.liabilities || [])
-        .filter(item => !(item.hidden || item.type === 'group'))
-        .reduce((all, one) => all + Number(one.amount), 0)
-        .toFixed(2);
-
-    u.totals.debtsTotal = (u.accounts.liabilities || [])
-        .filter(item => !(item.hidden || item.type === 'group'))
-        .reduce((all, one) => all + Number(one.total_owed), 0)
-        .toFixed(2);
-
-    return u;
 }
 
 function markGroupedItems(accounts) {
@@ -251,6 +198,7 @@ function receiveAccounts(state, action, root) {
     newState.totals.updating = true;
     newState = fixTotals(newState);
     newState = openGroupedAccounts(newState, newState);
+    newState.accounts = addSeperators(newState.accounts);
     //console.log(JSON.stringify({newState}, null, '  '))
 
     if (state && typeof state.selectedMenuIndex === "undefined") {

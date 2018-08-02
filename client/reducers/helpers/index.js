@@ -50,7 +50,7 @@ function updateAccountsFromAccount({accounts, account}){
 
 function fixTotals(accounts) {
     var u = clone(accounts);
-    (u.liabilities || []).forEach(x => {
+    (u.accounts.liabilities || []).forEach(x => {
         if (x.hidden === 'false') {
             x.hidden = false;
         }
@@ -58,19 +58,19 @@ function fixTotals(accounts) {
 
     u.totals = u.totals || {};
 
-    var pending = (u.liabilities || [])
+    var pending = (u.accounts.liabilities || [])
         .filter(function (a) {
             return a.status && a.status.toLowerCase() === 'pending';
         }).sort(function (a, b) {
             return new Date(a.date) - new Date(b.date);
         });
-    // var paid = (u.liabilities||[])
-    //     .filter(function (a) {
-    //         return a.status && a.status.toLowerCase() === 'paid';
-    //     }).sort(function (a, b) {
-    //         return new Date(a.date) - new Date(b.date);
-    //     });
-    var due = (u.liabilities || [])
+    var paid = (u.accounts.liabilities||[])
+        .filter(function (a) {
+            return a.status && a.status.toLowerCase() === 'paid';
+        }).sort(function (a, b) {
+            return new Date(a.date) - new Date(b.date);
+        });
+    var due = (u.accounts.liabilities || [])
         .filter(function (a) {
             return a.status && a.status.toLowerCase() === 'due';
         }).sort(function (a, b) {
@@ -78,34 +78,56 @@ function fixTotals(accounts) {
         });
 
     u.totals.pendingTotal = pending
-        .filter(item => !(item.hidden || item.type === 'group'))
+        .filter(item => !(item.hidden || (item.type||'').includes('group')) && item.amount)
         .reduce((all, one) => all + Number(one.amount), 0)
         .toFixed(2);
 
     u.totals.dueTotal = due
-        .filter(item => !(item.hidden || item.type === 'group'))
+        .filter(item => !(item.hidden || (item.type||'').includes('group')) && item.amount)
         .reduce((all, one) => all + Number(one.amount), 0)
         .toFixed(2);
 
-    u.totals.assetsTotal = (u.assets || [])
-        .filter(item => !JSON.parse(item.hidden))
+    u.totals.assetsTotal = (u.accounts.assets || [])
+        .filter(item => !JSON.parse(item.hidden) && item.amount)
         .reduce((all, one) => all + Number(one.amount), 0)
         .toFixed(2);
 
-    u.totals.debts = (u.liabilities || [])
-        .filter(item => !(item.hidden || item.type === 'group'))
+    u.totals.debts = (u.accounts.liabilities || [])
+        .filter(item => !(item.hidden || (item.type||'').includes('group')) && item.amount)
         .reduce((all, one) => all + Number(one.amount), 0)
         .toFixed(2);
 
-    u.totals.debtsTotal = (u.liabilities || [])
-        .filter(item => !(item.hidden || item.type === 'group'))
+    u.totals.debtsTotal = (u.accounts.liabilities || [])
+        .filter(item => !(item.hidden || (item.type||'').includes('group')) && item.total_owed)
         .reduce((all, one) => all + Number(one.total_owed), 0)
         .toFixed(2);
 
     return u;
 }
 
+function addSeperators(accounts){
+    const newAccounts = clone(accounts);
+
+    const addSeps = section => {
+        const defs = section.filter(x => (x.type||'').includes('seperator-def'));
+        // find range of dates for accounts
+
+        // create seperators in range:  [accounts] / [seperator] / [accounts] / [seperator]
+
+        // if first seperator is before all accounts, throw it away
+
+        // only one seperator should exist after all accounts
+
+        // sort accounts and seperators by date/name, seperators fall last in sort
+    };
+    [newAccounts.assets||[], newAccounts.liabilities||[]]
+        .forEach(section => addSeps(section));
+
+    return newAccounts;
+}
+
 export {
     updateAccountsFromAccount,
-    fixTotals
+    fixTotals,
+    addSeperators
 };
