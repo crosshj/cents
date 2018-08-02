@@ -374,7 +374,7 @@ describe('app reducer', () => {
 		/*
 			1) seperator account should never show up as normal account
 			2) seperators should be created dynamically based on seperator account
-			3) seperators should show date and available minus total
+			3) seperators should show date, and ...(available - total = diff)
 			4) nothing should break, just extra added
 
 			?? how to edit
