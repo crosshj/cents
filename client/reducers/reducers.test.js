@@ -374,8 +374,11 @@ describe('app reducer', () => {
 		/*
 			1) seperator account should never show up as normal account
 			2) seperators should be created dynamically based on seperator account
-			3) seperators should show total/date
+			3) seperators should show date and available minus total
 			4) nothing should break, just extra added
+
+			?? how to edit
+			?? what about seperators with nothing to encapsulate
 		*/
 		root.globalState().reset();
 		var exampleAccounts = lotsOfAccounts(15).accounts;
@@ -389,6 +392,7 @@ describe('app reducer', () => {
 		exampleAccounts.liabilities = [...[{
 				starts: "2017-1-1",
 				type: 'seperator-def',
+				available: '4321.21',
 				period: 14
 			}],
 			...exampleAccounts.liabilities
