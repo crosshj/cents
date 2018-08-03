@@ -401,5 +401,12 @@ describe('app reducer', () => {
 		//debugState({ currentState });
 		//debugState({ currentState, root });
 
+		const currentLiabs = currentState.app.accounts.liabilities;
+		const currentSeps = currentLiabs.filter(x => (x.type||'').includes('seperator'));
+		//const expectedAccounts = exampleAccounts.liabilities.filter(x => !(x.type||'').includes('seperator-def'));
+		expect(currentSeps.length)
+			.toEqual(23);
+
+		// what about seperators for other actions/reducers?
 	});
 });
