@@ -4,7 +4,21 @@ import {
     accountClick, selectAccountClick, groupClick, newAccountClick, newGroupClick
 } from '../../redux/actions';
 
+function SeperatorRow({ data, key }){
+  return (
+    <div className="row-seperator">
+      <p>{data.date}</p>
+      <p>{data.total}</p>
+    </div>
+  );
+}
+
 function makeRow(data, key){
+    if((data.type||'').includes('seperator')){
+      return (
+        <SeperatorRow {...{ data, key}} />
+      );
+    }
     const isGroup = data.type === 'group';
     const rowClassName = `button ${data.status.toLowerCase()} primary ${data.type} ${data.selected ? " selected" : ""}`;
     const rowClick = isGroup

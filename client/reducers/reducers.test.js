@@ -85,7 +85,9 @@ describe('app reducer', () => {
 	it('should return the initial state', () => {
 		var action = {};
 		var expected = { app: {}, popup: {} };
-		expect(reduce(undefined, action)).toEqual(expected)
+		var currentState = reduce(undefined, action);
+		delete currentState.root;
+		expect(currentState).toEqual(expected)
 	});
 
 	it('should handle basic receive accounts', () => {
@@ -108,9 +110,10 @@ describe('app reducer', () => {
 			popup: {}
 		};
 
-		var result = reduce(undefined, action);
-		delete result.accounts;
-		expect(result).toEqual(expected);
+		var currentState = reduce(undefined, action);
+		delete currentState.accounts;
+		delete currentState.root;
+		expect(currentState).toEqual(expected);
 	});
 
 	it('should update group/totals when group child changes', () => {
@@ -168,6 +171,9 @@ describe('app reducer', () => {
 		delete currentState.app.totals;
 		delete expected.app.totals;
 
+		delete currentState.root;
+		delete expected.root;
+
 		expect(currentState).toEqual(expected);
 	});
 
@@ -189,6 +195,8 @@ describe('app reducer', () => {
 
 		//console.log(JSON.stringify(currentState, null, '   '));
 		//console.log(JSON.stringify(root.globalState(), null, '   '));
+		delete result.root;
+		delete expected.root;
 		expect(result).toEqual(expected);
 
 		// move status back to due
@@ -196,6 +204,10 @@ describe('app reducer', () => {
 		expected.popup.account.status = 'pending';
 		expected.popup.account.date = '2017-10-09';
 		expected.popup.dateDirty = false;
+
+		delete result.root;
+		delete expected.root;
+
 		expect(result).toEqual(expected);
 	});
 
@@ -244,6 +256,9 @@ describe('app reducer', () => {
 		// TODO: totals needs to be sorted out
 		delete currentState.app.totals;
 		delete expected.app.totals;
+
+		delete currentState.root;
+		delete expected.root;
 
 		expect(currentState).toEqual(expected);
 	});

@@ -34,8 +34,8 @@ function popupAccount(state, action, root) {
       root.selected
         .forEach(x => {
           if (!newState.account.items
-            .map(y => y.title.toLowerCase())
-            .includes(x.title.toLowerCase())
+            .map(y => (y.title||'').toLowerCase())
+            .includes((x.title||'').toLowerCase())
           ) {
             newState.account.items.push(clone(x));
           }
@@ -45,8 +45,8 @@ function popupAccount(state, action, root) {
       .map(x => {
         return accounts.liabilities.filter(y => {
           return typeof x === "string"
-            ? y.title.toLowerCase() === x.toLowerCase()
-            : y.title.toLowerCase() === x.title.toLowerCase()
+            ? (y.title||'').toLowerCase() === x.toLowerCase()
+            : (y.title||'').toLowerCase() === (x.title||'').toLowerCase()
         })[0];
       })
       .filter(x => !!x)
@@ -215,9 +215,9 @@ function removeItem(state, action, root) {
   const itemTitle = action.payload.title;
 
   newState.account.items = newState.account.items
-    .filter(x => x.title.toLowerCase() !== itemTitle.toLowerCase())
+    .filter(x => (x.title||'').toLowerCase() !== itemTitle.toLowerCase())
     .map(x => root.accounts.liabilities
-      .filter(y => x.title.toLowerCase() === y.title.toLowerCase())[0]
+      .filter(y => (x.title||'').toLowerCase() === (y.title||'').toLowerCase())[0]
     );
 
   // update amount / total_owed / date / status for group

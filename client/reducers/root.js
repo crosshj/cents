@@ -57,12 +57,12 @@ const groupRemove = (state, action) => {
     }
     var groupedItems = account.items
         .map(item => (accounts.liabilities
-            .filter(x => x.title.toLowerCase() === item.title.toLowerCase()) || [])[0]
+            .filter(x => (x.title||'').toLowerCase() === item.title.toLowerCase()) || [])[0]
         );
     groupedItems.forEach(x => delete x.type);
 
     accounts.liabilities = accounts.liabilities.filter(
-        x => x.title.toLowerCase() !== account.title.toLowerCase()
+        x => (x.title||'').toLowerCase() !== account.title.toLowerCase()
     );
 
     globalState().reset();
@@ -77,7 +77,7 @@ const popupAccount = (state, action) => {
     //console.log([].concat(accounts.liabilities || [], accounts.assets || []));
     var account = [].concat(accounts.liabilities || [], accounts.assets || [])
         .find(
-            a => a.title.toLowerCase() === action.payload.title.toLowerCase()
+            a => (a.title||'').toLowerCase() === action.payload.title.toLowerCase()
         );
 
     //console.log(account)
@@ -92,7 +92,7 @@ const popupUpdate = (state, action) => {
 function selectAccountClick(state, action) {
     const accounts = clone(globalState().accounts);
     const newSelected = accounts.liabilities
-        .filter(x => x.title === action.payload.title);
+        .filter(x => (x.title||'') === action.payload.title);
     const selected = [...clone(globalState().selected || []), ...newSelected];
 
     globalState().set({ selected });
@@ -129,9 +129,9 @@ function accountSave(state, action){
 
     accounts = updateAccountsFromAccount({ accounts, account });
 
-    accounts.liabilities.forEach(liab => {
+    (accounts.liabilities||[]).forEach(liab => {
         if (liab.type !== 'group') return;
-        liab.items = liab.items.map(i => {
+        liab.items = (liab.items||[]).map(i => {
             return typeof i === "string"
             ? { title: i}
             : { title: i.title }

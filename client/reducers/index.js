@@ -1,6 +1,7 @@
 import app from './app';
 import popup from './popup';
 import root from './root';
+import global from './global';
 
 // FIX: jest doesn't like this!
 //import combineReducers from 'redux/es/combineReducers';
@@ -8,7 +9,8 @@ import { combineReducers } from 'redux';
 
 const reducers = {
     app: root.bind(app),
-    popup: root.bind(popup)
+		popup: root.bind(popup),
+		root: root.bind(global)
 };
 
 const rootReducer = (state, action) => {

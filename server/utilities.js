@@ -41,12 +41,16 @@ function getAccountsFileName() {
     : accountsFile;
 }
 
+var itemIsGroupOrSeperator = item =>
+	(item.type||'').includes('group')
+	|| (item.type||'').includes('seperator');
+
 function updateGroups(accounts){
     var groupedLiabs = accounts.liabilities
       .filter(x => x.type === 'group')
       .reduce((all, one) => all.concat(one.items.map(i=>i.title)), []);
     accounts.liabilities.forEach(function(element) {
-      if(element.type === 'group'){
+      if(itemIsGroupOrSeperator(element)){
         return;
       }
       element.type = undefined;
@@ -58,16 +62,16 @@ function updateGroups(accounts){
 }
 
 function updateAccounts(accounts) {
-  var u = JSON.parse(JSON.stringify(accounts));
+	var u = JSON.parse(JSON.stringify(accounts));
 
   // AUTO MARK DUE and PAID
   var today = new Date();
   var oneWeekAhead = new Date().setDate(today.getDate() + 7);
   var paycheck = accounts.assets
-    .filter(x => x.title.toLowerCase() === 'paycheck')[0];
+    .filter(x => (x.title||'').toLowerCase() === 'paycheck')[0];
   var payDate = paycheck && new Date(paycheck.date);
   u.liabilities = u.liabilities.map(function (item) {
-    if (!item.status || item.type === 'group'){
+    if (!item.status || itemIsGroupOrSeperator(item)){
       item.status = 'paid';
       return item;
     }
@@ -86,7 +90,7 @@ function updateAccounts(accounts) {
 
   // auto-mark group status based on child items
   u.liabilities = u.liabilities.map(function (item) {
-    if (item.type !== 'group'){
+    if ( itemIsGroupOrSeperator(item) ){
       return item;
     }
 
@@ -132,19 +136,19 @@ function updateAccounts(accounts) {
 
   u.totals = {};
   u.totals.pendingTotal = pending
-    .filter(item => !(JSON.parse(item.hidden) || item.type === 'group'))
+    .filter(item => !(JSON.parse(item.hidden||'false') || item.type === 'group'))
     .reduce((all, one) => all + Number(one.amount), 0);
   u.totals.dueTotal = due
-    .filter(item => !(JSON.parse(item.hidden) || item.type === 'group'))
+    .filter(item => !(JSON.parse(item.hidden||'false') || item.type === 'group'))
     .reduce((all, one) => all + Number(one.amount), 0);
   u.totals.assetsTotal = u.assets
-    .filter(item => !JSON.parse(item.hidden))
+    .filter(item => !JSON.parse(item.hidden||'false'))
     .reduce((all, one) => all + Number(one.amount), 0);
   u.totals.debts = u.liabilities
-    .filter(item => !(JSON.parse(item.hidden) || item.type === 'group'))
+    .filter(item => !(JSON.parse(item.hidden||'false') || item.type === 'group'))
     .reduce((all, one) => all + Number(one.amount), 0);
   u.totals.debtsTotal = u.liabilities
-    .filter(item => !(JSON.parse(item.hidden) || item.type === 'group'))
+    .filter(item => !(JSON.parse(item.hidden||'false') || item.type === 'group'))
     .reduce((all, one) => all - Number(one.total_owed), 0);
 
   u = updateGroups(u);

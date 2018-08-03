@@ -1,170 +1,170 @@
 import {
-    saveAccounts
+  saveAccounts
 } from '../js/redux/services';
 
 import {
-    updateGroupFromChildren
+  updateGroupFromChildren
 } from '../js/redux/utilities';
 
 import {
-    clone,
-    safeAccess
+  clone,
+  safeAccess
 } from '../js/react/utilities';
 
 import {
-    fixTotals, addSeperators
+  fixTotals, addSeperators
 } from './helpers';
 
 // Reducer
 const statToNumber = {
-    due: 1,
-    pending: 2,
-    paid: 3
+  due: 1,
+  pending: 2,
+  paid: 3
 };
 
-function sortAccounts(liabilities){
-    var pending = (liabilities || [])
-        .filter(function (a) {
-            return a.status && a.status.toLowerCase() === 'pending';
-        }).sort(function (a, b) {
-            return new Date(a.date) - new Date(b.date);
-        });
-    var paid = (liabilities||[])
-        .filter(function (a) {
-            return a.status && a.status.toLowerCase() === 'paid';
-        }).sort(function (a, b) {
-            return new Date(a.date) - new Date(b.date);
-        });
-    var due = (liabilities || [])
-        .filter(function (a) {
-            return a.status && a.status.toLowerCase() === 'due';
-        }).sort(function (a, b) {
-            return new Date(a.date) - new Date(b.date);
-        });
-    return [
-        ...due,
-        ...pending,
-        ...paid
-    ];
+function sortAccounts(liabilities) {
+  var pending = (liabilities || [])
+    .filter(function (a) {
+      return a.status && a.status.toLowerCase() === 'pending';
+    }).sort(function (a, b) {
+      return new Date(a.date) - new Date(b.date);
+    });
+  var paid = (liabilities || [])
+    .filter(function (a) {
+      return a.status && a.status.toLowerCase() === 'paid';
+    }).sort(function (a, b) {
+      return new Date(a.date) - new Date(b.date);
+    });
+  var due = (liabilities || [])
+    .filter(function (a) {
+      return a.status && a.status.toLowerCase() === 'due';
+    }).sort(function (a, b) {
+      return new Date(a.date) - new Date(b.date);
+    });
+  return [
+    ...due,
+    ...pending,
+    ...paid
+  ];
 }
 
 function markGroupedItems(accounts) {
-    const newAccounts = clone(accounts);
-    const groupedItems = Object.keys(
-        newAccounts.liabilities
-            .reduce((all, x) => {
-                if(x.type !== 'group' || !x.items){
-                    return all;
-                }
-
-                x.items.forEach(y => {
-                    const yTitle = typeof y === 'string'
-                        ? y
-                        : y.title;
-                    if (!all[yTitle.toLowerCase()]) {
-                        all[yTitle.toLowerCase()] = y;
-                    }
-                });
-
-                return all;
-            }, {})
-    );
-    newAccounts.liabilities.forEach(x => {
-        if(x.type === 'group') return;
-    });
-
-    newAccounts.liabilities.forEach(x => {
-        if(x.type === 'group') return;
-        delete x.type;
-
-        const itemIsGrouped = groupedItems
-            .includes(x.title.toLowerCase());
-
-        if (itemIsGrouped){
-            x.type = 'grouped';
+  const newAccounts = clone(accounts);
+  const groupedItems = Object.keys(
+    newAccounts.liabilities
+      .reduce((all, x) => {
+        if (x.type !== 'group' || !x.items) {
+          return all;
         }
-    });
 
-    return newAccounts;
+        x.items.forEach(y => {
+          const yTitle = typeof y === 'string'
+            ? y
+            : y.title;
+          if (!all[yTitle.toLowerCase()]) {
+            all[yTitle.toLowerCase()] = y;
+          }
+        });
+
+        return all;
+      }, {})
+  );
+  newAccounts.liabilities.forEach(x => {
+    if (x.type === 'group') return;
+  });
+
+  newAccounts.liabilities.forEach(x => {
+    if (x.type === 'group') return;
+    delete x.type;
+
+    const itemIsGrouped = groupedItems
+      .includes(x.title.toLowerCase());
+
+    if (itemIsGrouped) {
+      x.type = 'grouped';
+    }
+  });
+
+  return newAccounts;
 }
 
 function openGroupedAccounts(initialState, viewState) {
-    const outputState = clone(viewState);
+  const outputState = clone(viewState);
 
-    // stupid "false"
-    if(!outputState.accounts){
-        console.log(JSON.stringify({outputState, initialState, viewState}, null, '  '));
-        console.trace();
-    }
-    outputState.accounts.liabilities.forEach(
-        x => x.hidden === "false" ? x.hidden = false : undefined
-    );
+  // stupid "false"
+  if (!outputState.accounts) {
+    console.log(JSON.stringify({ outputState, initialState, viewState }, null, '  '));
+    console.trace();
+  }
+  outputState.accounts.liabilities.forEach(
+    x => x.hidden === "false" ? x.hidden = false : undefined
+  );
 
-    // remove grouped items
-    outputState.accounts.liabilities = outputState.accounts.liabilities
-        .filter(x => x.type !== 'grouped');
+  // remove grouped items
+  outputState.accounts.liabilities = outputState.accounts.liabilities
+    .filter(x => x.type !== 'grouped');
 
-    // remove hidden items
-    outputState.accounts.liabilities = outputState.accounts.liabilities
-        .filter(x => !x.hidden);
+  // remove hidden items
+  outputState.accounts.liabilities = outputState.accounts.liabilities
+    .filter(x => !x.hidden);
 
-    // add grouped items back if group open
-    //console.log(initialState)
-    var newLiabs = [];
-    outputState.accounts.liabilities.forEach(group => {
-        newLiabs.push(group);
-        if (!group.open || group.type !== 'group') return;
+  // add grouped items back if group open
+  //console.log(initialState)
+  var newLiabs = [];
+  outputState.accounts.liabilities.forEach(group => {
+    newLiabs.push(group);
+    if (!group.open || group.type !== 'group') return;
 
-        const groupedItems = group.items
-            .map(item => (initialState.accounts.liabilities.filter(x => {
-                return typeof i === 'string'
-                    ? x.title === item
-                    : x.title === item.title
-            }) || [])[0])
-            .sort(function (a, b) {
-                var statCompare = 0;
-                if (statToNumber[a.status.toLowerCase()] > statToNumber[b.status.toLowerCase()]) statCompare = 1;
-                if (statToNumber[a.status.toLowerCase()] < statToNumber[b.status.toLowerCase()]) statCompare = -1;
+    const groupedItems = group.items
+      .map(item => (initialState.accounts.liabilities.filter(x => {
+        return typeof i === 'string'
+          ? x.title === item
+          : x.title === item.title
+      }) || [])[0])
+      .sort(function (a, b) {
+        var statCompare = 0;
+        if (statToNumber[a.status.toLowerCase()] > statToNumber[b.status.toLowerCase()]) statCompare = 1;
+        if (statToNumber[a.status.toLowerCase()] < statToNumber[b.status.toLowerCase()]) statCompare = -1;
 
-                return statCompare || new Date(a.date) - new Date(b.date);
-            });
-        groupedItems.forEach(x => x.type = 'grouped');
+        return statCompare || new Date(a.date) - new Date(b.date);
+      });
+    groupedItems.forEach(x => x.type = 'grouped');
 
-        newLiabs = newLiabs.concat(groupedItems);
-    });
+    newLiabs = newLiabs.concat(groupedItems);
+  });
 
-    outputState.accounts.liabilities = newLiabs;
-    return outputState;
+  outputState.accounts.liabilities = newLiabs;
+  return outputState;
 }
 
 function bumpDateOneMonth(date) {
-    var day = Number(date.replace(/.*-/g, ''));
-    var month = Number(date.replace(/-..$/g, '').replace(/.*-/g, ''));
-    var year = Number(date.replace(/-.*/g, ''));
-    if (month === 12) {
-        year += 1;
-        month = 1;
-    } else {
-        month += 1;
-    }
-    day = (day < 10) ? '0' + day : day;
-    month = (month < 10) ? '0' + month : month;
-    return year + '-' + month + '-' + day;
+  var day = Number(date.replace(/.*-/g, ''));
+  var month = Number(date.replace(/-..$/g, '').replace(/.*-/g, ''));
+  var year = Number(date.replace(/-.*/g, ''));
+  if (month === 12) {
+    year += 1;
+    month = 1;
+  } else {
+    month += 1;
+  }
+  day = (day < 10) ? '0' + day : day;
+  month = (month < 10) ? '0' + month : month;
+  return year + '-' + month + '-' + day;
 }
 
 function bumpDateOneMonthBack(date) {
-    var day = Number(date.replace(/.*-/g, ''));
-    var month = Number(date.replace(/-..$/g, '').replace(/.*-/g, ''));
-    var year = Number(date.replace(/-.*/g, ''));
-    if (month === 1) {
-        year -= 1;
-        month = 12;
-    } else {
-        month -= 1;
-    }
-    day = (day < 10) ? '0' + day : day;
-    month = (month < 10) ? '0' + month : month;
-    return year + '-' + month + '-' + day;
+  var day = Number(date.replace(/.*-/g, ''));
+  var month = Number(date.replace(/-..$/g, '').replace(/.*-/g, ''));
+  var year = Number(date.replace(/-.*/g, ''));
+  if (month === 1) {
+    year -= 1;
+    month = 12;
+  } else {
+    month -= 1;
+  }
+  day = (day < 10) ? '0' + day : day;
+  month = (month < 10) ? '0' + month : month;
+  return year + '-' + month + '-' + day;
 }
 
 /*
@@ -181,213 +181,216 @@ function bumpDateOneMonthBack(date) {
 */
 
 function receiveAccounts(state, action, root) {
-    var newState = {};
-    if (action.payload.error) {
-        newState = Object.assign({}, state, action.payload);
-        return newState;
-    }
-    newState.accounts = clone(action.payload) || {};
-    (newState.accounts.liabilities || []).forEach(x => {
-        if (x.hidden === 'false') {
-            x.hidden = false;
-        }
-    });
-    newState = updateGroupFromChildren(newState, root);
-    newState.totals = safeAccess(() => state.totals) || {};
-    newState.totals.balance = safeAccess(() => state.totals.balance) || 0;
-    newState.totals.updating = true;
-    newState = fixTotals(newState);
-    newState = openGroupedAccounts(newState, newState);
-    newState.accounts = addSeperators(newState.accounts);
-    //console.log(JSON.stringify({newState}, null, '  '))
-
-    if (state && typeof state.selectedMenuIndex === "undefined") {
-        newState.selectedMenuIndex = window && window.localStorage
-            ? Number(localStorage.getItem('selectedTab'))
-            : 0;
-    } else {
-        newState.selectedMenuIndex = state ? state.selectedMenuIndex : 0;
-    }
-    //newState.accounts = action.payload;
-    //debugger
+  var newState = {};
+  if (action.payload.error) {
+    newState = Object.assign({}, state, action.payload);
     return newState;
+  }
+  newState.accounts = clone(action.payload) || {};
+  (newState.accounts.liabilities || []).forEach(x => {
+    if (x.hidden === 'false') {
+      x.hidden = false;
+    }
+  });
+  newState = updateGroupFromChildren(newState, root);
+  newState.totals = safeAccess(() => state.totals) || {};
+  newState.totals.balance = safeAccess(() => state.totals.balance) || 0;
+  newState.totals.updating = true;
+  newState = fixTotals(newState);
+  newState = openGroupedAccounts(newState, newState);
+  newState.accounts = addSeperators(newState.accounts);
+  //console.log(JSON.stringify({newState}, null, '  '))
+
+  if (state && typeof state.selectedMenuIndex === "undefined") {
+    newState.selectedMenuIndex = window && window.localStorage
+      ? Number(localStorage.getItem('selectedTab'))
+      : 0;
+  } else {
+    newState.selectedMenuIndex = state ? state.selectedMenuIndex : 0;
+  }
+  //newState.accounts = action.payload;
+  //debugger
+  return newState;
 }
 
 function receiveAccountsData(state, action, root) {
-    var newState;
-    if (action.payload.error) {
-        newState = Object.assign({}, state, action.payload);
-        return newState;
-    }
-    newState = clone(state);
-    const balance = safeAccess(() => action.payload.data.accounts[0].balance);
-    newState.accounts.totals = newState.accounts.totals || {};
-    newState.accounts.totals.balance = Number(balance || 0);
-    newState.accounts.totals.updating = false;
-
+  var newState;
+  if (action.payload.error) {
+    newState = Object.assign({}, state, action.payload);
     return newState;
+  }
+  newState = clone(state);
+  const balance = safeAccess(() => action.payload.data.accounts[0].balance);
+  newState.accounts.totals = newState.accounts.totals || {};
+  newState.accounts.totals.balance = Number(balance || 0);
+  newState.accounts.totals.updating = false;
+
+  newState.accounts = addSeperators(newState.accounts);
+
+  return newState;
 }
 
 function receiveAccountsSave(state, action, root) {
-    var newState;
-    if (action.payload.error) {
-        newState = Object.assign({}, state, action.payload);
-        return newState;
-    }
-    // console.log('got accounts save, notify if an error');
-    newState = clone(state);
-    newState.error = false;
+  var newState;
+  if (action.payload.error) {
+    newState = Object.assign({}, state, action.payload);
     return newState;
+  }
+  // console.log('got accounts save, notify if an error');
+  newState = clone(state);
+  newState.error = false;
+  return newState;
 }
 
 function menuSelect(state, action, root) {
-    var newState;
-    localStorage.setItem('selectedTab', action.payload);
-    const selectedMenuIndex = action.payload;
-    newState = clone(state);
-    newState.selectedMenuIndex = selectedMenuIndex;
-    //newState.accounts.liabilities.forEach(x => x.selected = false);
-    return newState;
+  var newState;
+  localStorage.setItem('selectedTab', action.payload);
+  const selectedMenuIndex = action.payload;
+  newState = clone(state);
+  newState.selectedMenuIndex = selectedMenuIndex;
+  //newState.accounts.liabilities.forEach(x => x.selected = false);
+  return newState;
 }
 
 function selectAccountClick(state, action, { selected = [] }) {
-    const newState = clone(state);
-    newState.accounts.liabilities.forEach(l => {
-        l.selected = selected.map(x => x.title).includes(l.title);
-    });
-    //newState.selected = selected.map(x => x.title);
-    return newState;
+  const newState = clone(state);
+  newState.accounts.liabilities.forEach(l => {
+    l.selected = selected.map(x => x.title).includes(l.title);
+  });
+  //newState.selected = selected.map(x => x.title);
+  return newState;
 }
 
 function groupClick(state, action, root) {
-    //console.log({state, action, root});
-    var newState;
-    const groupTitle = action.payload.title;
-    //const group = (state.liabilities.filter(x => x.title === groupTitle) || [])[0];
+  //console.log({state, action, root});
+  var newState;
+  const groupTitle = action.payload.title;
+  //const group = (state.liabilities.filter(x => x.title === groupTitle) || [])[0];
 
-    newState = clone(state);
-    // toggle group open
-    newState.accounts.liabilities = newState.accounts.liabilities
-        .filter(x => x)
-        .map(x => {
-            if (x.title.toLowerCase() === groupTitle.toLowerCase()) {
-                x.open = typeof x.open !== 'undefined'
-                    ? !x.open
-                    : true;
-            }
-            return x;
-        });
-    //console.log(root)
-    newState = openGroupedAccounts(root, newState);
+  newState = clone(state);
+  // toggle group open
+  newState.accounts.liabilities = newState.accounts.liabilities
+    .filter(x => x)
+    .map(x => {
+      if ((x.title || '').toLowerCase() === groupTitle.toLowerCase()) {
+        x.open = typeof x.open !== 'undefined'
+          ? !x.open
+          : true;
+      }
+      return x;
+    });
+  //console.log(root)
+  newState = openGroupedAccounts(root, newState);
 
-    // toggle open/closed
-    //newState = switchGroup(group, state, accounts, !group.open)
-    return newState;
+  // toggle open/closed
+  //newState = switchGroup(group, state, accounts, !group.open)
+  return newState;
 }
 
 function groupRemove(state, action, root) {
-    var newState = clone(state);
+  var newState = clone(state);
 
-    newState.accounts = clone(root.accounts);
+  newState.accounts = clone(root.accounts);
 
-    //TODO: should do this in root reducer
-    saveAccounts({
-        assets: newState.accounts.assets,
-        liabilities: newState.accounts.liabilities,
-        balance: newState.accounts.balance
-    });
-    newState.accounts.assets = root
-        ? clone(safeAccess(() => root.accounts.assets) || [])
-        : [];
-    newState.accounts.liabilities = root
-        ? clone(safeAccess(() => root.accounts.liabilities) || [])
-        : [];
-    newState.account = undefined;
+  //TODO: should do this in root reducer
+  saveAccounts({
+    assets: newState.accounts.assets,
+    liabilities: newState.accounts.liabilities,
+    balance: newState.accounts.balance
+  });
+  newState.accounts.assets = root
+    ? clone(safeAccess(() => root.accounts.assets) || [])
+    : [];
+  newState.accounts.liabilities = root
+    ? clone(safeAccess(() => root.accounts.liabilities) || [])
+    : [];
+  newState.account = undefined;
 
-    newState = markGroupedItems(newState.accounts);
-    newState = openGroupedAccounts(root, newState);
+  newState = markGroupedItems(newState.accounts);
+  newState = openGroupedAccounts(root, newState);
 
-    return newState;
+  return newState;
 }
 
 function accountSave(state, action, root) {
-    if (!action.payload.account) {
-        return state;
-    }
+  if (!action.payload.account) {
+    return state;
+  }
 
-    var newState = clone(state);
+  var newState = clone(state);
 
-    // rehydrate grouped items, maybe not needed
-    newState.accounts = clone(root.accounts);
-    newState.accounts.liabilities.forEach(liab => {
-        if (liab.type !== 'group') return;
-        liab.items = liab.items.map(i => newState.accounts.liabilities
-            .find(l => {
-                return typeof i === 'string'
-                    ? l.title === i
-                    : l.title === i.title;
-            })
-        );
-    });
+  // rehydrate grouped items, maybe not needed
+  newState.accounts = clone(root.accounts);
+  (newState.accounts.liabilities || []).forEach(liab => {
+    if (liab.type !== 'group') return;
+    liab.items = (liab.items || [])
+      .map(i => newState.accounts.liabilities
+        .find(l => {
+          return typeof i === 'string'
+            ? l.title === i
+            : l.title === i.title;
+        })
+      ) || [];
+  });
 
-    newState = updateGroupFromChildren(newState, root);
-    newState.accounts.liabilities.forEach(x => {
-        if(x.type !== 'grouped') return;
-        delete x.type;
-    });
-    newState.accounts = markGroupedItems(newState.accounts);
-    newState.accounts.totals = root.accounts.totals;
+  newState = updateGroupFromChildren(newState, root);
+  (newState.accounts.liabilities || []).forEach(x => {
+    if (x.type !== 'grouped') return;
+    delete x.type;
+  });
+  newState.accounts = markGroupedItems(newState.accounts);
+  newState.accounts.totals = root.accounts.totals;
 
-    // don't need it and should fix or use this exclusively
-    //delete newState.totals;
+  // don't need it and should fix or use this exclusively
+  //delete newState.totals;
 
-    newState = openGroupedAccounts(root, newState);
+  newState = openGroupedAccounts(root, newState);
 
-    //sort accounts
-    newState.accounts.liabilities = sortAccounts(newState.accounts.liabilities);
+  //sort accounts
+  newState.accounts.liabilities = sortAccounts(newState.accounts.liabilities);
 
-    return newState;
+  return newState;
 }
 
 function app(state, action, root) {
-    //console.log(`--- app runs: ${action.type}`);
-    var newState = undefined;
-    //var groupedItems = undefined;
-    switch (action.type) {
-        case 'RECEIVE_ACCOUNTS':
-            newState = receiveAccounts(state, action, root);
-            break;
-        case 'RECEIVE_ACCOUNTS_DATA':
-            newState = receiveAccountsData(state, action, root);
-            break;
-        case 'RECEIVE_ACCOUNTS_SAVE':
-            newState = receiveAccountsSave(state, action, root);
-            break;
-        case 'MENU_SELECT':
-            newState = menuSelect(state, action, root);
-            break;
-        case 'SELECT_ACCOUNT_CLICK':
-            newState = selectAccountClick(state, action, root);
-            break;
-        case 'GROUP_CLICK':
-            newState = groupClick(state, action, root);
-            break;
-        case 'GROUP_REMOVE':
-            newState = groupRemove(state, action, root);
-            break;
-        case 'ACCOUNT_SAVE':
-            newState = accountSave(state, action, root);
-            break;
-        default:
-            newState = clone(state || {});
-            //(newState.accounts.liabilities || []).forEach(x => x.selected = false);
-    }
+  //console.log(`--- app runs: ${action.type}`);
+  var newState = undefined;
+  //var groupedItems = undefined;
+  switch (action.type) {
+    case 'RECEIVE_ACCOUNTS':
+      newState = receiveAccounts(state, action, root);
+      break;
+    case 'RECEIVE_ACCOUNTS_DATA':
+      newState = receiveAccountsData(state, action, root);
+      break;
+    case 'RECEIVE_ACCOUNTS_SAVE':
+      newState = receiveAccountsSave(state, action, root);
+      break;
+    case 'MENU_SELECT':
+      newState = menuSelect(state, action, root);
+      break;
+    case 'SELECT_ACCOUNT_CLICK':
+      newState = selectAccountClick(state, action, root);
+      break;
+    case 'GROUP_CLICK':
+      newState = groupClick(state, action, root);
+      break;
+    case 'GROUP_REMOVE':
+      newState = groupRemove(state, action, root);
+      break;
+    case 'ACCOUNT_SAVE':
+      newState = accountSave(state, action, root);
+      break;
+    default:
+      newState = clone(state || {});
+    //(newState.accounts.liabilities || []).forEach(x => x.selected = false);
+  }
 
-    return newState || state || {};
+  return newState || state || {};
 }
 
 export default app;
 export {
-    receiveAccounts, receiveAccountsData, receiveAccountsSave, menuSelect,
-    selectAccountClick, groupClick, groupRemove, accountSave
+  receiveAccounts, receiveAccountsData, receiveAccountsSave, menuSelect,
+  selectAccountClick, groupClick, groupRemove, accountSave
 };

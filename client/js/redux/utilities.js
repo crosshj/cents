@@ -31,8 +31,8 @@ function updateGroupFromChildren(accounts, root) {
             .map(item => newLiabs
                 .find(x =>
                     typeof item === 'string'
-                        ? x.title.toLowerCase() === item.toLowerCase()
-                        : x.title.toLowerCase() === (item.title||'').toLowerCase()
+                        ? (x.title||'').toLowerCase() === item.toLowerCase()
+                        : (x.title||'').toLowerCase() === (item.title||'').toLowerCase()
                 )
             );
         if (!groupedItems[0]) {

@@ -109,6 +109,7 @@ function fetchHistory({ type, title, field }) {
 }
 
 function saveAccounts(accounts) {
+		//console.log(accounts);
     const accountsToSave = clone(accounts);
     accountsToSave.liabilities
         .filter(x => x.type === 'group')
@@ -121,7 +122,17 @@ function saveAccounts(accounts) {
         });
     accountsToSave.liabilities.forEach(x => {
         delete x.selected;
-    });
+		});
+		// don't save groups with no items
+		accountsToSave.liabilities = accountsToSave.liabilities.filter(x => {
+			if(!x.type || x.type !== 'group'){
+				return true;
+			}
+			if(x.items && x.items.length < 1){
+				return false;
+			}
+			return true;
+		});
     const url = './accounts';
     const config = {
         method: 'POST',

@@ -5,11 +5,11 @@ function updateAccountsFromAccount({ accounts, account }) {
 
     const foundAccount = _accounts.liabilities.find(x => {
         // TODO: gettting based on title is kinda weak, tokenize in future
-        return [
-            account.title.toLowerCase(),
+        return account.title && [
+            (account.title||'').toLowerCase(),
             (account.oldTitle || '').toLowerCase()
         ].includes(
-            x.title.toLowerCase()
+            (x.title||'').toLowerCase()
         );
     });
 
