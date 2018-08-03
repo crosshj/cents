@@ -390,7 +390,7 @@ describe('app reducer', () => {
 				return x;
 			});
 		exampleAccounts.liabilities = [...[{
-				starts: "2017-1-1",
+				starts: "2016-12-03",
 				type: 'seperator-def',
 				available: '4321.21',
 				period: 14
