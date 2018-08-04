@@ -8,7 +8,7 @@ function SeperatorRow({ data, key }){
   const duePendingTotal = Number(data.pending)+Number(data.due);
   const duePendingString = formatMoney(duePendingTotal);
   const total = formatMoney(data.total);
-  const totalString = dueAndPending === total || duePendingTotal === 0
+  const totalString = duePendingString === total || duePendingTotal === 0
     ? total
     : `${duePendingString}   |   ${total}`;
   const dateString = `${formatDateShort(data.displayDate)} → ${formatDateShort(data.date)}`;
