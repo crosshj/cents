@@ -5,11 +5,12 @@ import {
 } from '../../redux/actions';
 
 function SeperatorRow({ data, key }){
-  const dueAndPending = formatMoney(Number(data.pending)+Number(data.due));
+  const duePendingTotal = Number(data.pending)+Number(data.due);
+  const duePendingString = formatMoney(duePendingTotal);
   const total = formatMoney(data.total);
-  const totalString = dueAndPending === total
+  const totalString = dueAndPending === total || duePendingTotal === 0
     ? total
-    : `${dueAndPending}   |   ${total}`;
+    : `${duePendingString}   |   ${total}`;
   const dateString = `${formatDateShort(data.displayDate)} → ${formatDateShort(data.date)}`;
 
   return (
