@@ -36,6 +36,14 @@ function formatDate(dateString){
 	return `${_date.toISOString().slice(0, 10)}`;
 }
 
+function formatDateShort(dateString){
+	if(!dateString){
+		return dateString;
+	}
+	const _date = new Date(dateString);
+	return `${_date.getMonth() + 1}/${_date.getDate()}`;
+}
+
 function clone(item) {
     var result = undefined;
     try {
@@ -50,6 +58,7 @@ export {
     clone,
 		getByName,
 		formatDate,
+		formatDateShort,
     formatMoney,
     unFormatMoney,
     safeAccess

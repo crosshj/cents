@@ -1,19 +1,25 @@
 import React from 'react';
-import { formatMoney, formatDate } from '../utilities';
+import { formatMoney, formatDateShort } from '../utilities';
 import {
     accountClick, selectAccountClick, groupClick, newAccountClick, newGroupClick
 } from '../../redux/actions';
 
 function SeperatorRow({ data, key }){
+  const dueAndPending = formatMoney(Number(data.pending)+Number(data.due));
+  const total = formatMoney(data.total);
+  const totalString = dueAndPending === total
+    ? total
+    : `${dueAndPending}   |   ${total}`;
+  const dateString = `${formatDateShort(data.displayDate)} → ${formatDateShort(data.date)}`;
+
   return (
     <div className="row-seperator">
-    <table class="u-full-width"><tbody>
-      <tr class="info">
-        <td class="amount">{formatMoney(data.total)}</td>
-        <td class="total">{formatMoney(data.total_owed)}</td>
-        <td class="date">{formatDate(data.date)}</td>
-      </tr>
-    </tbody></table>
+      <table class="u-full-width"><tbody>
+        <tr class="info">
+          <td class="amount">{totalString}</td>
+          <td class="date">{dateString}</td>
+        </tr>
+      </tbody></table>
     </div>
   );
 }
@@ -48,7 +54,7 @@ function makeRow(data, key){
                     <td className="total">
                         {Boolean(Number(data.total_owed)) ? formatMoney(data.total_owed) : ''}
                     </td>
-                    <td className="date">{data.date}</td>
+                    <td className="date">{formatDateShort(data.date)}</td>
                 </tr>
             </tbody>
             </table>

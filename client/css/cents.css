@@ -1,4 +1,25 @@
-﻿.center-all {
+﻿:root {
+  --due-color: #e66060;
+  --pending-color: #cea95a;
+  --paid-color: #9a9a9a;
+  --body-color: #6a7c77;
+  /*
+  --due-color: rgba(255, 0, 0, 1);
+  --pending-color: #dcaa3e;
+  --paid-color: rgb(173, 168, 137);
+  --body-color: #667088;
+  */
+
+}
+
+.button:not(.grouped):not(.group):not(.menu) {
+  border: 0px;
+  border-radius: 0px;
+}
+
+
+
+.center-all {
   display: flex;
   top: 0px;
   bottom: 0px;
@@ -166,18 +187,18 @@ a.button {
 a.button.paid, button.selected.paid {
   color: rgb(255, 255, 255);
   border-color: rgb(255, 255, 255);
-  background-color: rgb(173, 168, 137);
+  background-color: var(--paid-color);
 }
 
 a.button.due, button.selected.due {
   color: rgba(255, 255, 255, 1);
-  background-color: rgba(255, 0, 0, 1);
+  background-color: var(--due-color);
   border-color: rgba(255, 255, 255, 1);
 }
 
 a.button.pending, button.selected.pending {
   color: rgba(255, 255, 255, 1);
-  background-color: rgba(220, 170, 62, 1);
+  background-color: var(--pending-color);
   border-color: rgba(255, 255, 255, 1);
 }
 
@@ -249,7 +270,7 @@ a, button {
 }
 body {
   /* background-color: rgba(91,89,77,1); */
-  background-color: #667088;
+  background-color: var(--body-color);
   /*
   background-image: linear-gradient( rgba(0, 0, 0, 0.51), rgba(255, 255, 255, 0.09) ), url('http://mycolorscreen.com/wp-content/uploads/wallpapers_2012/320931/background-01.jpg');
   */
@@ -721,7 +742,7 @@ input[type="date"] {
   /* background-color: rgba(0, 0, 0, 0.11); */
   margin-bottom: 16px;
   height: 28px;
-  border-top: 1px solid #b3b8c4;
+  border-top: 1px solid #9c9c9c;
   margin-top: 2px;
   padding-top: 6px;
   padding-bottom: 13px;
@@ -736,4 +757,6 @@ input[type="date"] {
 
 .row-seperator tr.info td {
   letter-spacing: 1.1px;
+  background-color: unset;
+  white-space: pre;
 }

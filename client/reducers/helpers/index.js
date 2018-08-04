@@ -144,9 +144,13 @@ const datesfromDateRangeAndDefs = ({ firstDate, lastDate, defs }) => {
     const seperatorDates = defs.reduce((all, one) => {
         var sepDate = one.starts;
         while(new Date(sepDate) < new Date(lastDate)){
-            sepDate = datePlusDays(sepDate, one.period);
+						const prevDate = clone(sepDate);
+						sepDate = datePlusDays(sepDate, one.period);
             if(new Date(sepDate) > new Date(firstDate)){
-                all.push(sepDate);
+                all.push({
+									text: sepDate,
+									display: prevDate
+								});
             }
         }
         return all;
@@ -158,18 +162,19 @@ const addTotalsToSeperators = ({ accountList, dateList}) => {
     const totaledSeperators = dateList.map((sepDate, si) => {
         var accsInRange = accountList.filter(acc =>
             // account date is less than or equal to seperator date
-            new Date(acc.date) <= new Date(sepDate)
+            new Date(acc.date) <= new Date(sepDate.text)
             // does not fall in range of previous seperator(s)
             && (
                 si > 0
-                    ? new Date(acc.date) > new Date(dateList[si-1])
+                    ? new Date(acc.date) > new Date(dateList[si-1].text)
                     : true
             )
         );
 
         var u = {
             type: 'seperator group',
-            date: sepDate
+						date: sepDate.text,
+						displayDate: sepDate.display
         };
         const visibleNotSeperator = item =>
             !(item.hidden || (item.type || '').includes('seperator'));
