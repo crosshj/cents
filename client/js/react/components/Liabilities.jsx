@@ -1,5 +1,5 @@
 import React from 'react';
-import {formatMoney} from '../utilities';
+import { formatMoney, formatDate } from '../utilities';
 import {
     accountClick, selectAccountClick, groupClick, newAccountClick, newGroupClick
 } from '../../redux/actions';
@@ -7,8 +7,13 @@ import {
 function SeperatorRow({ data, key }){
   return (
     <div className="row-seperator">
-      <p>{data.date}</p>
-      <p>{data.total}</p>
+    <table class="u-full-width"><tbody>
+      <tr class="info">
+        <td class="amount">{formatMoney(data.total)}</td>
+        <td class="total">{formatMoney(data.total_owed)}</td>
+        <td class="date">{formatDate(data.date)}</td>
+      </tr>
+    </tbody></table>
     </div>
   );
 }

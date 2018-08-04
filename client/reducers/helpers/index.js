@@ -1,17 +1,25 @@
 import { clone } from '../../js/react/utilities';
 
+import { statToNumber } from '../../js/redux/utilities';
+
 function updateAccountsFromAccount({ accounts, account }) {
     const _accounts = clone(accounts);
 
     const foundAccount = _accounts.liabilities.find(x => {
         // TODO: gettting based on title is kinda weak, tokenize in future
-        return account.title && [
+        const possibleAccountTitles = [
             (account.title||'').toLowerCase(),
             (account.oldTitle || '').toLowerCase()
-        ].includes(
-            (x.title||'').toLowerCase()
+        ].filter(x=>x) || [];
+
+        return account.title && (
+            possibleAccountTitles.includes(
+                (x.title||'').toLowerCase()
+            )
         );
     });
+
+    //console.log({ foundAccount });
 
     const newAccount = account.isNew
         ? clone(account)
@@ -44,7 +52,7 @@ function updateAccountsFromAccount({ accounts, account }) {
     }
 
     //TODO: update _accounts.totals as well
-
+    //console.log({ accounts, _accounts, account, _account });
     return _accounts;
 }
 
@@ -225,7 +233,19 @@ function addSeperators(accounts) {
         // sort accounts and seperators by date/name, seperators fall last in sort
         // TODO: maybe need to handle sorting better since seps don't have title
         section = [...fullSeps, ...section].sort(function (a, b) {
-            return new Date(a.date) - new Date(b.date) || a.title < b.title;
+					// TODO: this doesn't work right, should be:
+					/*
+						DUE
+						PENDING
+						PAID
+						-- SEPERATOR --
+						DUE
+						PENDING
+						PAID
+					*/
+					return new Date(a.date) - new Date(b.date)
+							|| statToNumber[(a.status||'').toLowerCase()] > statToNumber[(b.status||'').toLowerCase()]
+							|| a.title < b.title;
         });
 
         return section;

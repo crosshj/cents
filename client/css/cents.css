@@ -712,13 +712,28 @@ input[type="date"] {
 }
 
 .row-seperator {
+  font-family: sans-serif;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   padding-left: 5px;
   padding-right: 5px;
-  background-color: rgba(0, 0, 0, 0.11);
+  /* background-color: rgba(0, 0, 0, 0.11); */
   margin-bottom: 16px;
   height: 28px;
+  border-top: 1px solid #b3b8c4;
+  margin-top: 2px;
+  padding-top: 6px;
+  padding-bottom: 13px;
+  color: #b3b8c4;
+  padding-left: 14px;
+  padding-right: 12px;
 }
 
+.row-seperator .center-cell {
+  width: 200px;
+}
+
+.row-seperator tr.info td {
+  letter-spacing: 1.1px;
+}

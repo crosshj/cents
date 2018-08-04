@@ -28,6 +28,14 @@ var unFormatMoney = function(money){
     return response;
 };
 
+function formatDate(dateString){
+	if(!dateString){
+		return dateString;
+	}
+	const _date = new Date(dateString);
+	return `${_date.toISOString().slice(0, 10)}`;
+}
+
 function clone(item) {
     var result = undefined;
     try {
@@ -40,7 +48,8 @@ function clone(item) {
 
 export {
     clone,
-    getByName,
+		getByName,
+		formatDate,
     formatMoney,
     unFormatMoney,
     safeAccess

@@ -3,7 +3,8 @@ import {
 } from '../js/redux/services';
 
 import {
-  updateGroupFromChildren
+  updateGroupFromChildren,
+  markGroupedItems
 } from '../js/redux/utilities';
 
 import {
@@ -48,46 +49,6 @@ function sortAccounts(liabilities) {
   ];
 }
 
-function markGroupedItems(accounts) {
-  const newAccounts = clone(accounts);
-  const groupedItems = Object.keys(
-    newAccounts.liabilities
-      .reduce((all, x) => {
-        if (x.type !== 'group' || !x.items) {
-          return all;
-        }
-
-        x.items.forEach(y => {
-          const yTitle = typeof y === 'string'
-            ? y
-            : y.title;
-          if (!all[yTitle.toLowerCase()]) {
-            all[yTitle.toLowerCase()] = y;
-          }
-        });
-
-        return all;
-      }, {})
-  );
-  newAccounts.liabilities.forEach(x => {
-    if (x.type === 'group') return;
-  });
-
-  newAccounts.liabilities.forEach(x => {
-    if (x.type === 'group') return;
-    delete x.type;
-
-    const itemIsGrouped = groupedItems
-      .includes(x.title.toLowerCase());
-
-    if (itemIsGrouped) {
-      x.type = 'grouped';
-    }
-  });
-
-  return newAccounts;
-}
-
 function openGroupedAccounts(initialState, viewState) {
   const outputState = clone(viewState);
 
@@ -119,7 +80,7 @@ function openGroupedAccounts(initialState, viewState) {
       .map(item => (initialState.accounts.liabilities.filter(x => {
         return typeof i === 'string'
           ? x.title === item
-          : x.title === item.title
+          : x.title === item.title;
       }) || [])[0])
       .sort(function (a, b) {
         var statCompare = 0;
@@ -135,36 +96,6 @@ function openGroupedAccounts(initialState, viewState) {
 
   outputState.accounts.liabilities = newLiabs;
   return outputState;
-}
-
-function bumpDateOneMonth(date) {
-  var day = Number(date.replace(/.*-/g, ''));
-  var month = Number(date.replace(/-..$/g, '').replace(/.*-/g, ''));
-  var year = Number(date.replace(/-.*/g, ''));
-  if (month === 12) {
-    year += 1;
-    month = 1;
-  } else {
-    month += 1;
-  }
-  day = (day < 10) ? '0' + day : day;
-  month = (month < 10) ? '0' + month : month;
-  return year + '-' + month + '-' + day;
-}
-
-function bumpDateOneMonthBack(date) {
-  var day = Number(date.replace(/.*-/g, ''));
-  var month = Number(date.replace(/-..$/g, '').replace(/.*-/g, ''));
-  var year = Number(date.replace(/-.*/g, ''));
-  if (month === 1) {
-    year -= 1;
-    month = 12;
-  } else {
-    month -= 1;
-  }
-  day = (day < 10) ? '0' + day : day;
-  month = (month < 10) ? '0' + month : month;
-  return year + '-' + month + '-' + day;
 }
 
 /*
@@ -348,6 +279,8 @@ function accountSave(state, action, root) {
 
   //sort accounts
   newState.accounts.liabilities = sortAccounts(newState.accounts.liabilities);
+
+	newState.accounts = addSeperators(newState.accounts);
 
   return newState;
 }

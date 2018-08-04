@@ -139,7 +139,8 @@ function accountSave(state, action){
     });
 
     const totals = fixTotals(accounts).totals;
-    accounts.totals = totals;
+		accounts.totals = totals;
+		//console.log({accounts})
 
     saveAccounts(accounts);
 

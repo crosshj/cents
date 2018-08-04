@@ -121,7 +121,10 @@ function saveAccounts(accounts) {
             });
         });
     accountsToSave.liabilities.forEach(x => {
-        delete x.selected;
+				delete x.selected;
+				if(x.type === 'grouped'){
+					delete x.type;
+				}
 		});
 		// don't save groups with no items
 		accountsToSave.liabilities = accountsToSave.liabilities.filter(x => {

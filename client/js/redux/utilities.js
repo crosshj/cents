@@ -118,26 +118,66 @@ function fixTotals(accounts) {
     return u;
 }
 
+// function markGroupedItems(accounts) {
+//     const newAccounts = clone(accounts);
+//     const groupedItems = Object.keys(newAccounts.liabilities
+//         .reduce((all, x) => {
+//             if (x.items) {
+//                 x.items.forEach(y => {
+//                     if (!all[y.title.toLowerCase()]) {
+//                         all[y.title.toLowerCase()] = y;
+//                     }
+//                 });
+//             }
+//             return all;
+//         }, {}));
+//     newAccounts.liabilities.forEach(x => x.type !== 'group' ? delete x.type : undefined);
+//     newAccounts.liabilities.forEach(x =>
+//         x.type !== 'group' && groupedItems.includes(x.title.toLowerCase())
+//             ? x.type = 'grouped'
+//             : undefined
+//     );
+//     return newAccounts;
+// }
+
 function markGroupedItems(accounts) {
-    const newAccounts = clone(accounts);
-    const groupedItems = Object.keys(newAccounts.liabilities
-        .reduce((all, x) => {
-            if (x.items) {
-                x.items.forEach(y => {
-                    if (!all[y.title.toLowerCase()]) {
-                        all[y.title.toLowerCase()] = y;
-                    }
-                });
-            }
-            return all;
-        }, {}));
-    newAccounts.liabilities.forEach(x => x.type !== 'group' ? delete x.type : undefined);
-    newAccounts.liabilities.forEach(x =>
-        x.type !== 'group' && groupedItems.includes(x.title.toLowerCase())
-            ? x.type = 'grouped'
-            : undefined
-    );
-    return newAccounts;
+  const newAccounts = clone(accounts);
+  const groupedItems = Object.keys(
+    newAccounts.liabilities
+      .reduce((all, x) => {
+        if (x.type !== 'group' || !x.items) {
+          return all;
+        }
+
+        x.items.forEach(y => {
+          const yTitle = typeof y === 'string'
+            ? y
+            : y.title;
+          if (!all[yTitle.toLowerCase()]) {
+            all[yTitle.toLowerCase()] = y;
+          }
+        });
+
+        return all;
+      }, {})
+  );
+  newAccounts.liabilities.forEach(x => {
+    if (x.type === 'group') return;
+  });
+
+  newAccounts.liabilities.forEach(x => {
+    if ((x.type||'').includes('group') || (x.type||'').includes('seperator')) return;
+    delete x.type;
+
+    const itemIsGrouped = groupedItems
+      .includes((x.title||'').toLowerCase());
+
+    if (itemIsGrouped) {
+      x.type = 'grouped';
+    }
+  });
+
+  return newAccounts;
 }
 
 function openGroupedAccounts(initialState, viewState) {

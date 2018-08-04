@@ -42,7 +42,7 @@ function getAccountsFileName() {
 }
 
 var itemIsGroupOrSeperator = item =>
-	(item.type||'').includes('group')
+	((item.type || '').includes('group') && !(item.type || '').includes('grouped'))
 	|| (item.type||'').includes('seperator');
 
 function updateGroups(accounts){
@@ -94,7 +94,7 @@ function updateAccounts(accounts) {
       return item;
     }
 
-    const groupedItemsNames = item.items.map(x => x.title);
+    const groupedItemsNames = (item.items||[]).map(x => x.title);
     const groupedItems = u.liabilities.reduce((all, account) => {
       if (groupedItemsNames.includes(account.title)){
         all.push(account);
