@@ -28,11 +28,14 @@ var unFormatMoney = function(money){
     return response;
 };
 
+var one_day = 1000 * 60 * 60 * 24;
+var offset = one_day / 2;
+
 function formatDate(dateString){
 	if(!dateString){
 		return dateString;
 	}
-	const _date = new Date(dateString);
+	const _date = new Date(new Date(dateString).getTime() + offset);
 	return `${_date.toISOString().slice(0, 10)}`;
 }
 
@@ -40,7 +43,7 @@ function formatDateShort(dateString){
 	if(!dateString){
 		return dateString;
 	}
-	const _date = new Date(dateString);
+	const _date = new Date(new Date(dateString).getTime() + offset);
 	return `${_date.getMonth() + 1}/${_date.getDate()}`;
 }
 
