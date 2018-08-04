@@ -1,15 +1,15 @@
 ﻿:root {
-  --due-color: #e66060;
-  --pending-color: #cea95a;
-  --paid-color: #9a9a9a;
-  --body-color: #6a7c77;
-  /*
   --due-color: rgba(255, 0, 0, 1);
   --pending-color: #dcaa3e;
   --paid-color: rgb(173, 168, 137);
   --body-color: #667088;
-  */
+}
 
+.green-theme {
+  --due-color: #e66060;
+  --pending-color: #cea95a;
+  --paid-color: #9a9a9a;
+  --body-color: #6a7c77;
 }
 
 .button:not(.grouped):not(.group):not(.menu) {
