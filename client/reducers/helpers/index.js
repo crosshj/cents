@@ -8,13 +8,13 @@ function updateAccountsFromAccount({ accounts, account }) {
     const foundAccount = _accounts.liabilities.find(x => {
         // TODO: gettting based on title is kinda weak, tokenize in future
         const possibleAccountTitles = [
-            (account.title||'').toLowerCase(),
+            (account.title || '').toLowerCase(),
             (account.oldTitle || '').toLowerCase()
-        ].filter(x=>x) || [];
+        ].filter(x => x) || [];
 
         return account.title && (
             possibleAccountTitles.includes(
-                (x.title||'').toLowerCase()
+                (x.title || '').toLowerCase()
             )
         );
     });
@@ -117,7 +117,7 @@ function fixTotals(accounts) {
 }
 
 const dateRangeFromAccounts = (accountList = []) => {
-    if(!accountList.length){
+    if (!accountList.length) {
         return {};
     }
     // find range of dates for accounts
@@ -127,30 +127,34 @@ const dateRangeFromAccounts = (accountList = []) => {
     //assumes date on all accounts
     return {
         firstDate: sortedAccounts[0].date,
-        lastDate: sortedAccounts[sortedAccounts.length-1].date
+        lastDate: sortedAccounts[sortedAccounts.length - 1].date
     };
 };
 
 const datesfromDateRangeAndDefs = ({ firstDate, lastDate, defs }) => {
     // create seperators in range
     // eg. [accounts] / [seperator] / [accounts] / [seperator]
-    var one_day=1000*60*60*24;
+    var one_day = 1000 * 60 * 60 * 24;
     // without offset, seems to be a drift (final date of 11/16 vs 11/17)
-    var arbitraryOffset = one_day/24;
-    const datePlusDays = (dateString, period) =>  new Date(
+    var arbitraryOffset = one_day / 24;
+    const datePlusDays = (dateString, period) => new Date(
         new Date(dateString).getTime()
         + (period * one_day) + arbitraryOffset //???? use a library instead?
     ).toLocaleDateString();
+    const dateMinusDays = (dateString, period) => new Date(
+        new Date(dateString).getTime()
+        - (period * one_day) + arbitraryOffset //???? use a library instead?
+    ).toLocaleDateString();
     const seperatorDates = defs.reduce((all, one) => {
         var sepDate = one.starts;
-        while(new Date(sepDate) < new Date(lastDate)){
-						const prevDate = clone(sepDate);
-						sepDate = datePlusDays(sepDate, one.period);
-            if(new Date(sepDate) > new Date(firstDate)){
+        while (new Date(sepDate) < new Date(lastDate)) {
+            const prevDate = clone(sepDate);
+            sepDate = datePlusDays(sepDate, one.period);
+            if (new Date(sepDate) > new Date(firstDate)) {
                 all.push({
-									text: sepDate,
-									display: prevDate
-								});
+                    text: sepDate,
+                    display: dateMinusDays(prevDate, 1)
+                });
             }
         }
         return all;
@@ -158,7 +162,7 @@ const datesfromDateRangeAndDefs = ({ firstDate, lastDate, defs }) => {
     return seperatorDates;
 };
 
-const addTotalsToSeperators = ({ accountList, dateList}) => {
+const addTotalsToSeperators = ({ accountList, dateList }) => {
     const totaledSeperators = dateList.map((sepDate, si) => {
         var accsInRange = accountList.filter(acc =>
             // account date is less than or equal to seperator date
@@ -166,15 +170,15 @@ const addTotalsToSeperators = ({ accountList, dateList}) => {
             // does not fall in range of previous seperator(s)
             && (
                 si > 0
-                    ? new Date(acc.date) > new Date(dateList[si-1].text)
+                    ? new Date(acc.date) > new Date(dateList[si - 1].text)
                     : true
             )
         );
 
         var u = {
             type: 'seperator group',
-						date: sepDate.text,
-						displayDate: sepDate.display
+            date: sepDate.text,
+            displayDate: sepDate.display
         };
         const visibleNotSeperator = item =>
             !(item.hidden || (item.type || '').includes('seperator'));
@@ -238,19 +242,19 @@ function addSeperators(accounts) {
         // sort accounts and seperators by date/name, seperators fall last in sort
         // TODO: maybe need to handle sorting better since seps don't have title
         section = [...fullSeps, ...section].sort(function (a, b) {
-					// TODO: this doesn't work right, should be:
-					/*
-						DUE
-						PENDING
-						PAID
-						-- SEPERATOR --
-						DUE
-						PENDING
-						PAID
-					*/
-					return new Date(a.date) - new Date(b.date)
-							|| statToNumber[(a.status||'').toLowerCase()] > statToNumber[(b.status||'').toLowerCase()]
-							|| a.title < b.title;
+            // TODO: this doesn't work right, should be:
+            /*
+                DUE
+                PENDING
+                PAID
+                -- SEPERATOR --
+                DUE
+                PENDING
+                PAID
+            */
+            return new Date(a.date) - new Date(b.date)
+                || statToNumber[(a.status || '').toLowerCase()] > statToNumber[(b.status || '').toLowerCase()]
+                || a.title < b.title;
         });
 
         return section;
@@ -259,7 +263,7 @@ function addSeperators(accounts) {
     // add seperators to liabilities
     newAccounts = Object.keys(newAccounts).reduce((all, key) => {
         var section = newAccounts[key];
-        if(!['liabilities'].includes(key)){
+        if (!['liabilities'].includes(key)) {
             all[key] = section;
             return all;
         }
