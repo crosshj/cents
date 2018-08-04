@@ -136,15 +136,17 @@ const datesfromDateRangeAndDefs = ({ firstDate, lastDate, defs }) => {
     // eg. [accounts] / [seperator] / [accounts] / [seperator]
     var one_day = 1000 * 60 * 60 * 24;
     // without offset, seems to be a drift (final date of 11/16 vs 11/17)
-    var arbitraryOffset = one_day / 24;
+    var arbitraryOffset = one_day / 12;
     const datePlusDays = (dateString, period) => new Date(
         new Date(dateString).getTime()
         + (period * one_day) + arbitraryOffset //???? use a library instead?
     ).toLocaleDateString();
+
     const dateMinusDays = (dateString, period) => new Date(
         new Date(dateString).getTime()
-        - (period * one_day) + arbitraryOffset //???? use a library instead?
+        - (period * one_day)
     ).toLocaleDateString();
+
     const seperatorDates = defs.reduce((all, one) => {
         var sepDate = one.starts;
         while (new Date(sepDate) < new Date(lastDate)) {
@@ -153,7 +155,7 @@ const datesfromDateRangeAndDefs = ({ firstDate, lastDate, defs }) => {
             if (new Date(sepDate) > new Date(firstDate)) {
                 all.push({
                     text: sepDate,
-                    display: dateMinusDays(prevDate, 1)
+                    display: datePlusDays(prevDate, 1)
                 });
             }
         }
