@@ -12,7 +12,7 @@ https://googlechrome.github.io/samples/service-worker/post-message/index.html
 
 // Update 'version' if you need to refresh the cache
 var staticCacheName = 'static';
-var version = 'v2::';
+var version = 'v2.0.1::';
 
 // Store core files in a cache (including a page to display when offline)
 var staticCacheList = [

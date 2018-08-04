@@ -3,3 +3,5 @@ saving a grouped account, changing title ungroups it
 
 accounts seperated by separators are not sorted properly
 when no seperators, accounts are not sorted properly
+
+debt total and monthly debt not displaying properly in Totals tab
