@@ -8,16 +8,22 @@ function SeperatorRow({ data, key }){
   const duePendingTotal = Number(data.pending)+Number(data.due);
   const duePendingString = formatMoney(duePendingTotal);
   const total = formatMoney(data.total);
+  const diff = data.amount
+    ? formatMoney(data.amount - data.total)
+    : '';
   const totalString = duePendingString === total || duePendingTotal === 0
-    ? total
+    ? `${total}`
     : `${duePendingString}   |   ${total}`;
   const dateString = `${formatDateShort(data.displayDate)} → ${formatDateShort(data.date)}`;
-
+//debugger
   return (
     <div className="row-seperator">
       <table class="u-full-width"><tbody>
         <tr class="info">
-          <td class="amount">{totalString}</td>
+          <td class="amount">
+            <span>{totalString}</span>
+            <span className="diff">{diff}</span>
+          </td>
           <td class="date">{dateString}</td>
         </tr>
       </tbody></table>

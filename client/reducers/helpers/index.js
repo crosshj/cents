@@ -153,10 +153,14 @@ const datesfromDateRangeAndDefs = ({ firstDate, lastDate, defs }) => {
             const prevDate = clone(sepDate);
             sepDate = datePlusDays(sepDate, one.period);
             if (new Date(sepDate) > new Date(firstDate)) {
-                all.push({
+                const toPush = {
                     text: sepDate,
                     display: datePlusDays(prevDate, 1)
-                });
+                };
+                if(one.amount){
+                    toPush.amount = one.amount;
+                }
+                all.push(toPush);
             }
         }
         return all;
@@ -182,6 +186,9 @@ const addTotalsToSeperators = ({ accountList, dateList }) => {
             date: sepDate.text,
             displayDate: sepDate.display
         };
+        if(sepDate.amount){
+            u.amount = sepDate.amount;
+        }
         const visibleNotSeperator = item =>
             !(item.hidden || (item.type || '').includes('seperator'));
 

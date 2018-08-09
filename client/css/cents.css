@@ -762,3 +762,8 @@ input[type="date"] {
   background-color: unset;
   white-space: pre;
 }
+
+.row-seperator td span.diff {
+  margin-left: 11px;
+  opacity: .5;
+}
