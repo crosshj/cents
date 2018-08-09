@@ -270,10 +270,11 @@ function accountSave(state, action, root) {
     delete x.type;
   });
   newState.accounts = markGroupedItems(newState.accounts);
-  newState.accounts.totals = root.accounts.totals;
 
+
+  newState.accounts.totals = clone(root.accounts.totals);
   // don't need it and should fix or use this exclusively
-  //delete newState.totals;
+  newState.totals = clone(root.accounts.totals);
 
   newState = openGroupedAccounts(root, newState);
 

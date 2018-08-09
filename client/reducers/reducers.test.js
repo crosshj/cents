@@ -424,4 +424,42 @@ describe('app reducer', () => {
 
 		// what about seperators for other actions/reducers?
 	});
+
+	/*
+		saving a grouped account, changing title ungroups it
+
+
+		accounts seperated by separators are not sorted properly
+		when no seperators, accounts are not sorted properly
+
+		debt total and monthly debt not displaying properly in Totals tab
+		- 1) update item, 2) debt total shows as NaN
+	*/
+
+	it('should show totals properly', ()=>{
+		root.globalState().reset();
+		var exampleAccounts = lotsOfAccounts(15).accounts;
+		exampleAccounts.liabilities = exampleAccounts.liabilities
+			.filter(x => x.type !== 'group' && !x.title.includes('child'))
+			.map(x => {
+				delete x.type;
+				x.status = randomElement(['due', 'pending', 'paid']);
+				return x;
+			});
+		var currentState = reduce(undefined, receiveAccounts({ liabilities: exampleAccounts.liabilities }));
+		const childName = currentState.app.accounts.liabilities[0].title;
+		currentState = reduce(currentState, accountClick(childName));
+		currentState = reduce(currentState, popupUpdate({ amount: 300, total_owed: 300}));
+		currentState = reduce(currentState, accountSave());
+
+		//debugState({ currentState });
+		//console.log(currentState.app.totals);
+		//console.log(currentState.root.accounts.totals);
+
+		expect(currentState.app.accounts.totals.debtsTotal).toEqual('5900.00');
+		expect(currentState.app.accounts.totals.debts).toEqual('3100.00');
+		expect(currentState.root.accounts.totals).toEqual(currentState.app.totals);
+
+
+	});
 });
