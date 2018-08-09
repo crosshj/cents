@@ -45,6 +45,9 @@ function makeRow(data, key){
     const contextClick = isGroup
         ? e => {e.preventDefault(); accountClick(data.title); return false; }
         : e => {e.preventDefault(); selectAccountClick(data.title); return false; };
+    const automark = data.auto
+        ? ' Ⓐ'
+        : '';
 
     return (
         <a className={rowClassName} key={key + '-' + data.title}
@@ -53,7 +56,7 @@ function makeRow(data, key){
             <table className="u-full-width">
             <tbody>
                 <tr className="header">
-                    <td colSpan="2" className="title">{data.title}</td>
+                    <td colSpan="2" className="title">{data.title}{automark}</td>
                     <td className="status">{data.status.toUpperCase()}</td>
                 </tr>
                 <tr className="info">
