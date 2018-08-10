@@ -1,7 +1,8 @@
 /* global
     describe:false,
     beforeAll:false,
-    it:false,
+		it:false,
+		xit:false,
     expect:false
 */
 import { groupWithChildren, lotsOfAccounts, accountsData } from './testExamples';
@@ -382,7 +383,7 @@ describe('app reducer', () => {
 		//TODO: write assertions
 	});
 
-	it('should update popup with new info once saved', () => {
+	xit('should update popup with new info once saved', () => {
 		/*
 				1) open account popup
 				2) update something
@@ -393,10 +394,10 @@ describe('app reducer', () => {
 		*/
 	});
 
-	it('should expand group in UI properly', () => {
+	xit('should expand group in UI properly', () => {
 	});
 
-	it('should update UI state when popup updates account', () => {
+	xit('should update UI state when popup updates account', () => {
 	});
 
 	it('should handle seperator accounts properly', () => {
