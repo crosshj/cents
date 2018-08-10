@@ -61,62 +61,62 @@ function updateGroupFromChildren(accounts, root) {
     return newAccounts;
 }
 
-function fixTotals(accounts) {
-    var u = clone(accounts);
-    (u.liabilities || []).forEach(x => {
-        if (x.hidden === 'false') {
-            x.hidden = false;
-        }
-    });
+// function fixTotals(accounts) {
+//     var u = clone(accounts);
+//     (u.liabilities || []).forEach(x => {
+//         if (x.hidden === 'false') {
+//             x.hidden = false;
+//         }
+//     });
 
-    u.totals = u.totals || {};
+//     u.totals = u.totals || {};
 
-    var pending = (u.liabilities || [])
-        .filter(function (a) {
-            return a.status && a.status.toLowerCase() === 'pending';
-        }).sort(function (a, b) {
-            return new Date(a.date) - new Date(b.date);
-        });
-    // var paid = (u.liabilities||[])
-    //     .filter(function (a) {
-    //         return a.status && a.status.toLowerCase() === 'paid';
-    //     }).sort(function (a, b) {
-    //         return new Date(a.date) - new Date(b.date);
-    //     });
-    var due = (u.liabilities || [])
-        .filter(function (a) {
-            return a.status && a.status.toLowerCase() === 'due';
-        }).sort(function (a, b) {
-            return new Date(a.date) - new Date(b.date);
-        });
+//     var pending = (u.liabilities || [])
+//         .filter(function (a) {
+//             return a.status && a.status.toLowerCase() === 'pending';
+//         }).sort(function (a, b) {
+//             return new Date(a.date) - new Date(b.date);
+//         });
+//     // var paid = (u.liabilities||[])
+//     //     .filter(function (a) {
+//     //         return a.status && a.status.toLowerCase() === 'paid';
+//     //     }).sort(function (a, b) {
+//     //         return new Date(a.date) - new Date(b.date);
+//     //     });
+//     var due = (u.liabilities || [])
+//         .filter(function (a) {
+//             return a.status && a.status.toLowerCase() === 'due';
+//         }).sort(function (a, b) {
+//             return new Date(a.date) - new Date(b.date);
+//         });
 
-    u.totals.pendingTotal = pending
-        .filter(item => !(item.hidden || item.type === 'group'))
-        .reduce((all, one) => all + Number(one.amount), 0)
-        .toFixed(2);
+//     u.totals.pendingTotal = pending
+//         .filter(item => !(item.hidden || item.type === 'group'))
+//         .reduce((all, one) => all + Number(one.amount), 0)
+//         .toFixed(2);
 
-    u.totals.dueTotal = due
-        .filter(item => !(item.hidden || item.type === 'group'))
-        .reduce((all, one) => all + Number(one.amount), 0)
-        .toFixed(2);
+//     u.totals.dueTotal = due
+//         .filter(item => !(item.hidden || item.type === 'group'))
+//         .reduce((all, one) => all + Number(one.amount), 0)
+//         .toFixed(2);
 
-    u.totals.assetsTotal = (u.assets || [])
-        .filter(item => !JSON.parse(item.hidden))
-        .reduce((all, one) => all + Number(one.amount), 0)
-        .toFixed(2);
+//     u.totals.assetsTotal = (u.assets || [])
+//         .filter(item => !JSON.parse(item.hidden))
+//         .reduce((all, one) => all + Number(one.amount), 0)
+//         .toFixed(2);
 
-    u.totals.debts = (u.liabilities || [])
-        .filter(item => !(item.hidden || item.type === 'group'))
-        .reduce((all, one) => all + Number(one.amount), 0)
-        .toFixed(2);
+//     u.totals.debts = (u.liabilities || [])
+//         .filter(item => !(item.hidden || item.type === 'group'))
+//         .reduce((all, one) => all + Number(one.amount), 0)
+//         .toFixed(2);
 
-    u.totals.debtsTotal = (u.liabilities || [])
-        .filter(item => !(item.hidden || item.type === 'group'))
-        .reduce((all, one) => all + Number(one.total_owed), 0)
-        .toFixed(2);
+//     u.totals.debtsTotal = (u.liabilities || [])
+//         .filter(item => !(item.hidden || item.type === 'group'))
+//         .reduce((all, one) => all + Number(one.total_owed), 0)
+//         .toFixed(2);
 
-    return u;
-}
+//     return u;
+// }
 
 // function markGroupedItems(accounts) {
 //     const newAccounts = clone(accounts);
@@ -252,6 +252,6 @@ function bumpDateOneMonthBack(date) {
 }
 
 export {
-    clone, statToNumber, numberToStat, updateGroupFromChildren, fixTotals, markGroupedItems,
+    clone, statToNumber, numberToStat, updateGroupFromChildren, markGroupedItems,
     openGroupedAccounts, bumpDateOneMonth, bumpDateOneMonthBack
 };

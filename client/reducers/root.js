@@ -4,7 +4,7 @@ import { updateAccountsFromAccount } from './helpers';
 import {
     saveAccounts
 } from '../js/redux/services';
-import { fixTotals } from '../js/redux/utilities';
+import { fixTotals } from './helpers';
 
 /*
 
@@ -36,7 +36,10 @@ const globalState = () => ({
 
 // -----------------------------------------------------------------------------
 const receiveAccounts = (state, action) => {
-    globalState().set({ accounts: action.payload });
+    const accounts = clone(action.payload);
+    const totals = fixTotals(accounts).totals;
+    accounts.totals = totals;
+    globalState().set({ accounts });
 }
 
 const receiveAccountsData = (state, action) => {
@@ -57,12 +60,12 @@ const groupRemove = (state, action) => {
     }
     var groupedItems = account.items
         .map(item => (accounts.liabilities
-            .filter(x => (x.title||'').toLowerCase() === item.title.toLowerCase()) || [])[0]
+            .filter(x => (x.title || '').toLowerCase() === item.title.toLowerCase()) || [])[0]
         );
     groupedItems.forEach(x => delete x.type);
 
     accounts.liabilities = accounts.liabilities.filter(
-        x => (x.title||'').toLowerCase() !== account.title.toLowerCase()
+        x => (x.title || '').toLowerCase() !== account.title.toLowerCase()
     );
 
     globalState().reset();
@@ -77,7 +80,7 @@ const popupAccount = (state, action) => {
     //console.log([].concat(accounts.liabilities || [], accounts.assets || []));
     var account = [].concat(accounts.liabilities || [], accounts.assets || [])
         .find(
-            a => (a.title||'').toLowerCase() === action.payload.title.toLowerCase()
+            a => (a.title || '').toLowerCase() === action.payload.title.toLowerCase()
         );
 
     //console.log(account)
@@ -92,13 +95,13 @@ const popupUpdate = (state, action) => {
 function selectAccountClick(state, action) {
     const accounts = clone(globalState().accounts);
     const newSelected = accounts.liabilities
-        .filter(x => (x.title||'') === action.payload.title);
+        .filter(x => (x.title || '') === action.payload.title);
     const selected = [...clone(globalState().selected || []), ...newSelected];
 
     globalState().set({ selected });
 }
 
-function accountSave(state, action){
+function accountSave(state, action) {
     var accounts = clone(globalState().accounts);
     var account = clone(state.popup.account);
     // account in state should be the original account state
@@ -129,18 +132,18 @@ function accountSave(state, action){
 
     accounts = updateAccountsFromAccount({ accounts, account });
 
-    (accounts.liabilities||[]).forEach(liab => {
+    (accounts.liabilities || []).forEach(liab => {
         if (liab.type !== 'group') return;
-        liab.items = (liab.items||[]).map(i => {
+        liab.items = (liab.items || []).map(i => {
             return typeof i === "string"
-            ? { title: i}
-            : { title: i.title }
+                ? { title: i }
+                : { title: i.title }
         })
     });
 
-    const totals = fixTotals(accounts).totals;
-		accounts.totals = totals;
-		//console.log({accounts})
+    const totals = fixTotals(accounts, true).totals;
+    accounts.totals = totals;
+    //console.log({accounts})
 
     saveAccounts(accounts);
 

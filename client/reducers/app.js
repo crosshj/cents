@@ -124,10 +124,12 @@ function receiveAccounts(state, action, root) {
     }
   });
   newState = updateGroupFromChildren(newState, root);
-  newState.totals = safeAccess(() => state.totals) || {};
-  newState.totals.balance = safeAccess(() => state.totals.balance) || 0;
-  newState.totals.updating = true;
-  newState = fixTotals(newState);
+  newState.accounts.totals = safeAccess(() => root.accounts.totals) || {};
+  newState.accounts.totals.balance = safeAccess(() => state.accounts.totals.balance) || 0;
+	newState.accounts.totals.updating = true;
+
+
+	//newState = fixTotals(newState);
   newState = openGroupedAccounts(newState, newState);
   newState.accounts = addSeperators(newState.accounts);
   //console.log(JSON.stringify({newState}, null, '  '))
@@ -141,7 +143,8 @@ function receiveAccounts(state, action, root) {
   }
   //newState.accounts = action.payload;
   //debugger
-  return newState;
+	delete newState.totals;
+	return newState;
 }
 
 function receiveAccountsData(state, action, root) {
@@ -169,7 +172,8 @@ function receiveAccountsSave(state, action, root) {
   }
   // console.log('got accounts save, notify if an error');
   newState = clone(state);
-  newState.error = false;
+	newState.error = false;
+	newState.accounts.totals.updating = false;
   return newState;
 }
 
@@ -282,6 +286,9 @@ function accountSave(state, action, root) {
   newState.accounts.liabilities = sortAccounts(newState.accounts.liabilities);
 
 	newState.accounts = addSeperators(newState.accounts);
+	newState.accounts.totals = clone(root.accounts.totals);
+	delete newState.totals;
+	//console.log({ rootTotals: root.accounts.totals })
 
   return newState;
 }

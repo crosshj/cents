@@ -56,64 +56,81 @@ function updateAccountsFromAccount({ accounts, account }) {
     return _accounts;
 }
 
-function fixTotals(accounts) {
-    var u = clone(accounts);
-    (u.accounts.liabilities || []).forEach(x => {
-        if (x.hidden === 'false') {
-            x.hidden = false;
-        }
-    });
+function fixTotals(accounts, debug) {
+	var u = clone(accounts);
+	(u.liabilities || []).forEach(x => {
+			if (x.hidden === 'false') {
+					x.hidden = false;
+			}
+	});
 
-    u.totals = u.totals || {};
+	u.totals = u.totals || {};
 
-    var pending = (u.accounts.liabilities || [])
-        .filter(function (a) {
-            return a.status && a.status.toLowerCase() === 'pending';
-        }).sort(function (a, b) {
-            return new Date(a.date) - new Date(b.date);
-        });
-    // var paid = (u.accounts.liabilities || [])
-    //     .filter(function (a) {
-    //         return a.status && a.status.toLowerCase() === 'paid';
-    //     }).sort(function (a, b) {
-    //         return new Date(a.date) - new Date(b.date);
-    //     });
-    var due = (u.accounts.liabilities || [])
-        .filter(function (a) {
-            return a.status && a.status.toLowerCase() === 'due';
-        }).sort(function (a, b) {
-            return new Date(a.date) - new Date(b.date);
-        });
+	var pending = (u.liabilities || [])
+			.filter(function (a) {
+					return a.status && a.status.toLowerCase() === 'pending';
+			}).sort(function (a, b) {
+					return new Date(a.date) - new Date(b.date);
+			});
+	// var paid = (u.liabilities||[])
+	//     .filter(function (a) {
+	//         return a.status && a.status.toLowerCase() === 'paid';
+	//     }).sort(function (a, b) {
+	//         return new Date(a.date) - new Date(b.date);
+	//     });
+	var due = (u.liabilities || [])
+			.filter(function (a) {
+					return a.status && a.status.toLowerCase() === 'due';
+			}).sort(function (a, b) {
+					return new Date(a.date) - new Date(b.date);
+			});
 
-    const visibleNotGroup = item =>
-        !(item.hidden || (item.type || '').includes('seperator'));
 
-    u.totals.pendingTotal = pending
-        .filter(item => visibleNotGroup(item) && item.amount)
-        .reduce((all, one) => all + Number(one.amount), 0)
-        .toFixed(2);
+	const ensureNumber = (thing) => typeof thing === 'number'
+		? thing
+		: Number(thing);
+	const safeToTotal = (item, prop) => !(
+		Boolean(item.hidden)
+		|| (item.type || '').includes('seperator')
+		|| ((item.type || '').includes('group') && !(item.type || '').includes('grouped'))
+		|| ensureNumber(item[prop]) === 'NaN'
+		|| isNaN(ensureNumber(item[prop]))
+		|| !ensureNumber(item[prop])
+	);
 
-    u.totals.dueTotal = due
-        .filter(item => visibleNotGroup(item) && item.amount)
-        .reduce((all, one) => all + Number(one.amount), 0)
-        .toFixed(2);
+	// if(debug){
+	// 	console.log({
+	// 		pendingLength: pending.length,
+	// 		pending: pending.filter(item => safeToTotal(item, 'amount'))
+	// 	});
+	// }
 
-    u.totals.assetsTotal = (u.accounts.assets || [])
-        .filter(item => !JSON.parse(item.hidden) && item.amount)
-        .reduce((all, one) => all + Number(one.amount), 0)
-        .toFixed(2);
+	u.totals.pendingTotal = pending
+			.filter(item => safeToTotal(item, 'amount'))
+			.reduce((all, one) => all + ensureNumber(one.amount), 0)
+			.toFixed(2);
 
-    u.totals.debts = (u.accounts.liabilities || [])
-        .filter(item => visibleNotGroup(item) && item.amount)
-        .reduce((all, one) => all + Number(one.amount), 0)
-        .toFixed(2);
+	u.totals.dueTotal = due
+			.filter(item => safeToTotal(item, 'amount'))
+			.reduce((all, one) => all + ensureNumber(one.amount), 0)
+			.toFixed(2);
 
-    u.totals.debtsTotal = (u.accounts.liabilities || [])
-        .filter(item => visibleNotGroup(item) && item.total_owed)
-        .reduce((all, one) => all + Number(one.total_owed), 0)
-        .toFixed(2);
+	u.totals.assetsTotal = (u.assets || [])
+			.filter(item => safeToTotal(item, 'amount'))
+			.reduce((all, one) => all + ensureNumber(one.amount), 0)
+			.toFixed(2);
 
-    return u;
+	u.totals.debts = (u.liabilities || [])
+			.filter(item => safeToTotal(item, 'amount'))
+			.reduce((all, one) => all + ensureNumber(one.amount), 0)
+			.toFixed(2);
+
+	u.totals.debtsTotal = (u.liabilities || [])
+			.filter(item => safeToTotal(item, 'total_owed'))
+			.reduce((all, one) => all + ensureNumber(one.total_owed), 0)
+			.toFixed(2);
+
+	return u;
 }
 
 const dateRangeFromAccounts = (accountList = []) => {

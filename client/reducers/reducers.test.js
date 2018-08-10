@@ -45,6 +45,14 @@ function exampleInitial() {
 	return currentState;
 }
 
+function basicExample() {
+	var exampleAccounts = groupWithChildren();
+	exampleAccounts.accounts.totals = clone(exampleAccounts.totals);
+	delete exampleAccounts.accounts.totals.balance;
+	exampleAccounts = exampleAccounts.accounts;
+	return exampleAccounts;
+}
+
 function safeToIgnore(expected) {
 	// doesn't matter (?), but causes test fail
 	try {
@@ -97,13 +105,13 @@ describe('app reducer', () => {
 		var expected = {
 			app: {
 				accounts: {
-					liabilities: []
-				},
-				totals: {
-					assetsTotal: "0.00", debts: "0.00", debtsTotal: "0.00",
-					dueTotal: "0.00", pendingTotal: "0.00",
-					balance: 0,
-					updating: true
+					liabilities: [],
+					totals: {
+						assetsTotal: "0.00", debts: "0.00", debtsTotal: "0.00",
+						dueTotal: "0.00", pendingTotal: "0.00",
+						balance: 0,
+						updating: true
+					},
 				},
 				selectedMenuIndex: 0
 			},
@@ -122,17 +130,20 @@ describe('app reducer', () => {
 		var expected = clone(currentState);
 
 		// totals should be updated
-		expected.app.totals.pendingTotal = "209.99";
-		expected.app.totals.debts = "409.99";
-		expected.app.totals.debtsTotal = "703.01";
-
+		expected.app.accounts.totals.pendingTotal = "209.99";
+		expected.app.accounts.totals.debts = "409.99";
+		expected.app.accounts.totals.debtsTotal = "703.01";
+		const totals = clone(expected.app.accounts.totals);
 
 		// popup should be blank
 		expected.popup.account = undefined;
 		expected.popup.dateDirty = false;
 		expected.popup.error = "not initialized";
-
 		expected = safeToIgnore(expected);
+
+
+		expected.app.accounts.totals = totals;
+		expected.app.accounts.totals.updating = true;
 
 		// group should be updated
 		const theGroup = getAccountByName(expected.app.accounts.liabilities, 'group');
@@ -155,7 +166,7 @@ describe('app reducer', () => {
 		// TODO: this stupid crap...
 		// currentState.app.accounts.assets = undefined;
 		// currentState.app.accounts.balance = undefined;
-		currentState.app.totals.updating = true;
+		//currentState.app.totals.updating = true;
 		//debugState({ currentState})
 		expected.app.accounts.liabilities.forEach(liab => {
 			if (liab.type !== "group") return;
@@ -163,9 +174,9 @@ describe('app reducer', () => {
 		});
 
 		// ASSERT
-		delete expected.app.totals.updating;
-		expected.app.totals.balance = 999.09;
-		expected.app.accounts.totals = clone(expected.app.totals);
+		//delete expected.app.totals.updating;
+		//expected.app.accounts.totals.balance = 999.09;
+
 
 		// TODO: totals needs to be sorted out
 		delete currentState.app.totals;
@@ -217,11 +228,12 @@ describe('app reducer', () => {
 		//ARRANGE
 		var state = exampleInitial();
 		var expected = clone(state);
-		expected.app.totals.debts = "400.00";
-		expected.app.totals.debtsTotal = "800.00";
-		expected.app.totals.pendingTotal = "200.00";
+		expected.app.accounts.totals.debts = "400.00";
+		expected.app.accounts.totals.debtsTotal = "800.00";
+		expected.app.accounts.totals.pendingTotal = "200.00";
 
-		delete expected.app.totals.updating;
+		expected.app.accounts.totals.updating = true;
+		const totals = clone(expected.app.accounts.totals);
 
 		// ACT
 		var currentState = reduce(state, accountClick('group'));
@@ -249,9 +261,9 @@ describe('app reducer', () => {
 		// console.log('Main State: ', JSON.stringify(currentState, null, '   '));
 		// console.log('Root State: ', JSON.stringify(root.globalState(), null, '   '));
 
-		delete expected.app.totals.updating;
-		expected.app.totals.balance = 999.09;
-		expected.app.accounts.totals = clone(expected.app.totals);
+		//delete expected.app.accounts.totals.updating;
+		expected.app.accounts.totals = totals;
+		expected.app.accounts.totals.balance = 999.09;
 
 		// TODO: totals needs to be sorted out
 		delete currentState.app.totals;
@@ -293,13 +305,15 @@ describe('app reducer', () => {
 	it('should keep track of useful info in root reducer', () => {
 		// ARRANGE
 		root.globalState().reset();
-		var exampleAccounts = groupWithChildren();
+		var exampleAccounts = basicExample();
+		exampleAccounts.totals.balance = 0;
+		exampleAccounts.totals.updating = true;
 
 		// ACT / ASSERT
-		var currentState = reduce(undefined, receiveAccounts({ liabilities: exampleAccounts.liabilities }));
+		var currentState = reduce(undefined, receiveAccounts(exampleAccounts));
 		var rootState = root.globalState();
 
-		expect(rootState.accounts).toEqual(exampleAccounts.accounts);
+		expect(rootState.accounts).toEqual(exampleAccounts);
 		expect(rootState.account).toEqual(undefined);
 
 		var exampleAccountsData = accountsData();
@@ -342,7 +356,7 @@ describe('app reducer', () => {
 		// ARRANGE
 		// 2 items that are not grouped
 		root.globalState().reset();
-		var exampleAccounts = groupWithChildren();
+		var exampleAccounts = basicExample();
 		exampleAccounts.liabilities = exampleAccounts.liabilities
 			.filter(x => x.type !== 'group')
 			.map(x => {
@@ -458,8 +472,7 @@ describe('app reducer', () => {
 
 		expect(currentState.app.accounts.totals.debtsTotal).toEqual('5900.00');
 		expect(currentState.app.accounts.totals.debts).toEqual('3100.00');
-		expect(currentState.root.accounts.totals).toEqual(currentState.app.totals);
-
+		expect(currentState.root.accounts.totals).toEqual(currentState.app.accounts.totals);
 
 	});
 });
