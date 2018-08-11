@@ -58,7 +58,7 @@ function setupLoginPageListener(){
 function registerServiceWorker(){
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {
-          navigator.serviceWorker.register('sw.alt.js', {scope: './'}).then(function(registration) {
+          navigator.serviceWorker.register('sw.new.js', {scope: './'}).then(function(registration) {
             // Registration was successful
             console.log('ServiceWorker registration successful with scope: ', registration.scope); //eslint-disable-line no-console
           }).catch(function(err) {
