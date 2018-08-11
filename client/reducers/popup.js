@@ -9,7 +9,6 @@ import {
   statToNumber,
   numberToStat
 } from '../js/redux/utilities.js';
-import { newGroupClick } from '../js/redux/actions';
 
 function receiveHistory(state, action) {
   var newState = undefined;

@@ -17,7 +17,24 @@ function updateAccountsFromAccount({ accounts, account }) {
                 (x.title || '').toLowerCase()
             )
         );
-    });
+		});
+
+		const isGroup = account => {
+			return (account.type||'').includes('group') && !(account.type||'').includes('grouped');
+		};
+
+		// update any groups containing child where applicable
+		if(account.oldTitle !== account.title && !isGroup(account)){
+			const groupsContainingChild = _accounts.liabilities
+				.filter(x => isGroup(x))
+				.filter(x => x.items && x.items.map(i=>i.title || i).includes(account.oldTitle));
+			groupsContainingChild.forEach(x => {
+				x.items = x.items.filter(i =>
+					!(i.title || i).includes(account.oldTitle)
+				);
+				x.items.push({ title: account.title });
+			});
+		}
 
     //console.log({ foundAccount });
 

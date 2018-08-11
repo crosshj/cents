@@ -136,12 +136,11 @@ describe('app reducer', () => {
 		expected.app.accounts.totals.debtsTotal = "703.01";
 		const totals = clone(expected.app.accounts.totals);
 
-		// popup should be blank
+		// popup should be blank when done
 		expected.popup.account = undefined;
 		expected.popup.dateDirty = false;
 		expected.popup.error = "not initialized";
 		expected = safeToIgnore(expected);
-
 
 		expected.app.accounts.totals = totals;
 		expected.app.accounts.totals.updating = true;
@@ -152,37 +151,25 @@ describe('app reducer', () => {
 		theGroup['total_owed'] = 703.01;
 		getAccountByName(theGroup.items, 'child2').amount = 209.99;
 		getAccountByName(theGroup.items, 'child2')['total_owed'] = 303.01;
+		getAccountByName(theGroup.items, 'child2')['title'] = 'child-foo';
 
-		// ACT
-		var childName = 'child2';
-		currentState = reduce(currentState, accountClick(childName));
-		//return debugState({ currentState, root });
-
-		currentState = reduce(currentState, popupUpdate({ amount: 209.99, total_owed: 303.01 }));
-		//return debugState({ currentState, root });
-
-		currentState = reduce(currentState, accountSave());
-		//return debugState({ currentState/*, root*/ });
-
-		// TODO: this stupid crap...
-		// currentState.app.accounts.assets = undefined;
-		// currentState.app.accounts.balance = undefined;
-		//currentState.app.totals.updating = true;
-		//debugState({ currentState})
 		expected.app.accounts.liabilities.forEach(liab => {
 			if (liab.type !== "group") return;
 			liab.items = liab.items.map(x => ({ title: x.title }));
 		});
 
+		// ACT
+		var childName = 'child2';
+		currentState = reduce(currentState, accountClick(childName));
+		currentState = reduce(currentState, popupUpdate({
+			title: 'child-foo',
+			amount: 209.99,
+			total_owed: 303.01
+		}));
+		currentState = reduce(currentState, accountSave());
+
+
 		// ASSERT
-		//delete expected.app.totals.updating;
-		//expected.app.accounts.totals.balance = 999.09;
-
-
-		// TODO: totals needs to be sorted out
-		delete currentState.app.totals;
-		delete expected.app.totals;
-
 		delete currentState.root;
 		delete expected.root;
 
@@ -250,25 +237,13 @@ describe('app reducer', () => {
 		expected.popup.dateDirty = false;
 		expected.popup.account = undefined;
 
-		// ignore things
-		expected = safeToIgnore(expected);
-
-
-		//debugState({ root, currentState });
 		//TODO: for some reason, expected shows thin items list for group and results show thick
 		// -- maybe do something about this, but ignore now
 		getAccountByName(expected.app.accounts.liabilities, 'new group title').items
 			= getAccountByName(currentState.app.accounts.liabilities, 'new group title').items;
-		// console.log('Main State: ', JSON.stringify(currentState, null, '   '));
-		// console.log('Root State: ', JSON.stringify(root.globalState(), null, '   '));
 
-		//delete expected.app.accounts.totals.updating;
 		expected.app.accounts.totals = totals;
 		expected.app.accounts.totals.balance = 999.09;
-
-		// TODO: totals needs to be sorted out
-		delete currentState.app.totals;
-		delete expected.app.totals;
 
 		delete currentState.root;
 		delete expected.root;
@@ -296,12 +271,6 @@ describe('app reducer', () => {
 		expect(currentState.popup.error).toEqual('not initialized');
 		expect(currentState.app.accounts.liabilities.length).toEqual(2);
 	});
-
-
-	it('should add child to group properly', () => {
-
-	});
-
 
 	it('should keep track of useful info in root reducer', () => {
 		// ARRANGE
@@ -383,29 +352,13 @@ describe('app reducer', () => {
 		//TODO: write assertions
 	});
 
-	xit('should update popup with new info once saved', () => {
-		/*
-				1) open account popup
-				2) update something
-				3) open same account popup
-				Expect: new info should be in popup
-				Actual: old info in popup
-				This was fixed already
-		*/
-	});
-
-	xit('should expand group in UI properly', () => {
-	});
-
-	xit('should update UI state when popup updates account', () => {
-	});
-
 	it('should handle seperator accounts properly', () => {
 		/*
 			1) seperator account should never show up as normal account
 			2) seperators should be created dynamically based on seperator account
 			3) seperators should show date, and ...(available - total = diff)
 			4) nothing should break, just extra added
+			5) first seperator should use current account balance
 
 			?? how to edit
 			?? what about seperators with nothing to encapsulate
@@ -428,8 +381,6 @@ describe('app reducer', () => {
 			...exampleAccounts.liabilities
 		];
 		var currentState = reduce(undefined, receiveAccounts({ liabilities: exampleAccounts.liabilities }));
-		//debugState({ currentState });
-		//debugState({ currentState, root });
 
 		const currentLiabs = currentState.app.accounts.liabilities;
 		const currentSeps = currentLiabs.filter(x => (x.type||'').includes('seperator'));
@@ -439,17 +390,6 @@ describe('app reducer', () => {
 
 		// what about seperators for other actions/reducers?
 	});
-
-	/*
-		saving a grouped account, changing title ungroups it
-
-
-		accounts seperated by separators are not sorted properly
-		when no seperators, accounts are not sorted properly
-
-		debt total and monthly debt not displaying properly in Totals tab
-		- 1) update item, 2) debt total shows as NaN
-	*/
 
 	it('should show totals properly', ()=>{
 		root.globalState().reset();
@@ -467,13 +407,61 @@ describe('app reducer', () => {
 		currentState = reduce(currentState, popupUpdate({ amount: 300, total_owed: 300}));
 		currentState = reduce(currentState, accountSave());
 
-		//debugState({ currentState });
-		//console.log(currentState.app.totals);
-		//console.log(currentState.root.accounts.totals);
-
 		expect(currentState.app.accounts.totals.debtsTotal).toEqual('5900.00');
 		expect(currentState.app.accounts.totals.debts).toEqual('3100.00');
 		expect(currentState.root.accounts.totals).toEqual(currentState.app.accounts.totals);
+	});
+
+	xit('should create and use keys on accounts', () => {
+		/*
+			create key when:
+				receive accounts and key not already exists
+				create a new account with popup
+
+			use key when:
+				popup existing account
+				rehydrate group accounts in app reducer
+				to track items on group
+				creating totals for groups
+		*/
+		root.globalState().reset();
+		var exampleAccounts = basicExample();
+		var currentState = reduce(undefined, receiveAccounts({ liabilities: exampleAccounts.liabilities }));
+		// expect all accounts to have a reasonable key created
+
 
 	});
+
+	xit('should expand group in UI properly', () => {
+	});
+
+	xit('should update UI state when popup updates account', () => {
+	});
+
+	xit('should add child to group properly', () => {
+
+	});
+
+	xit('should update popup with new info once saved', () => {
+		/*
+				1) open account popup
+				2) update something
+				3) open same account popup
+				Expect: new info should be in popup
+				Actual: old info in popup
+				This was fixed already
+		*/
+	});
+
+	/*
+		KNOWN_ISSUES
+
+		accounts seperated by separators are not sorted properly
+		when no seperators, accounts are not sorted properly
+
+	*/
+
+
+
+
 });
