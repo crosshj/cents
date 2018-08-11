@@ -454,7 +454,7 @@ describe('app reducer', () => {
 	});
 
 	/*
-		KNOWN_ISSUES
+		KNOWN_ISSUES (FIXED NOW, but test this)
 
 		accounts seperated by separators are not sorted properly
 		when no seperators, accounts are not sorted properly

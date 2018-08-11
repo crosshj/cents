@@ -260,6 +260,41 @@ const addTotalsToSeperators = ({ accountList, dateList }) => {
     return totaledSeperators;
 };
 
+function sortBetweenSeps(section){
+    const isSeperator = a => (a.type||'').includes('seperator');
+    const sortAccounts = list => list
+        .sort((a, b) =>
+            statToNumber[(a.status || '').toLowerCase()] > statToNumber[(b.status || '').toLowerCase()]
+            || new Date(a.date) - new Date(b.date)
+            || a.title < b.title
+        );
+    if(!section.find(isSeperator)){
+        //console.log('---- no seperator');
+        const sorted = [
+            ...sortAccounts(section.filter(x=>x.status.toLowerCase() === 'due')),
+            ...sortAccounts(section.filter(x=>x.status.toLowerCase() === 'pending')),
+            ...sortAccounts(section.filter(x=>x.status.toLowerCase() === 'paid')),
+        ];
+        //console.log(sorted)
+        return sorted;
+    }
+
+    var sortedSection = [];
+    var buffer = [];
+    section.forEach(a => {
+        if(!(a.type||'').includes('seperator')){
+            buffer.push(a);
+            return;
+        }
+
+        const sortedBuffer = sortAccounts(clone(buffer));
+        sortedSection = [...sortedSection, ...sortedBuffer, a];
+        buffer = [];
+    });
+
+    return sortedSection;
+}
+
 function addSeperators(accounts) {
     var newAccounts = clone(accounts);
 
@@ -283,18 +318,7 @@ function addSeperators(accounts) {
         });
 
         // sort accounts and seperators by date/name, seperators fall last in sort
-        // TODO: maybe need to handle sorting better since seps don't have title
         section = [...fullSeps, ...section].sort(function (a, b) {
-            // TODO: this doesn't work right, should be:
-            /*
-                DUE
-                PENDING
-                PAID
-                -- SEPERATOR --
-                DUE
-                PENDING
-                PAID
-            */
             return new Date(a.date) - new Date(b.date)
                 || statToNumber[(a.status || '').toLowerCase()] > statToNumber[(b.status || '').toLowerCase()]
                 || a.title < b.title;
@@ -310,7 +334,8 @@ function addSeperators(accounts) {
             all[key] = section;
             return all;
         }
-        all[key] = addSeps(section);
+        //all[key] = addSeps(section);
+        all[key] = sortBetweenSeps(addSeps(section));
         return all;
     }, {});
 
