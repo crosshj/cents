@@ -103,7 +103,15 @@ function Totals({totals = {}}){
             setTimeout(()=>{
                 // because 1st /json req returns error: offline
                 // but 2nd does not
-                fetch('./json')
+                var config = {
+                    credentials: 'include',
+                    method: 'GET',
+                    headers: new Headers({
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    })
+                };
+                fetch('./json', config)
                     .then(res => {
                         document.location.reload();
                     })
