@@ -97,7 +97,9 @@ function Totals({totals = {}}){
         fetch('./killCache')
           .then(res => res.json)
           .then(json => {
-            document.location.reload();
+            setTimeout(()=>{
+                document.location.reload();
+            },5000);
           });
         return false;
     }
