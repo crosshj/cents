@@ -18,7 +18,7 @@ https://serviceworke.rs/
 
 // Update 'version' if you need to refresh the cache
 var staticCacheName = 'static';
-var version = 'v1.1.8::';
+var version = 'v1.1.12::';
 var CACHE = version + staticCacheName;
 var timeout = 1500;
 
@@ -58,8 +58,8 @@ self.addEventListener('install', function (event) {
   event.waitUntil(updateStaticCache());
 });
 
-//self.addEventListener('fetch', fetchHandler);
-self.addEventListener('fetch', serveCacheAndUpdate); //alternate
+self.addEventListener('fetch', fetchHandler);
+//self.addEventListener('fetch', serveCacheAndUpdate); //alternate
 
 
 // --- FUNCTION DEFS -----------------------------------------------------------
@@ -118,6 +118,15 @@ function fetchHandler(event){
   var request = event.request;
   const isHTMLRequest = !!~request.headers.get('Accept').indexOf('text/html');
   const isJSONRequest = !!~request.headers.get('Accept').indexOf('application/json');
+  const isManifestRequest = request.url.includes('manifest.json');
+
+  if(isManifestRequest){
+    const manifestResponse = new Response(manifestJSON(), {
+      headers: {'Content-Type': 'application/json'}
+    });
+    event.respondWith(manifestResponse);
+    return;
+  }
 
   const isKillCache = request.url.includes('killCache');
   if(isKillCache){
@@ -151,8 +160,8 @@ function fetchHandler(event){
 
   // always return cached static GETs
   const staticCacheMatches = staticCacheList
-  .map(item => item.replace(/^./, ''))
-  .filter(x => x !== '/');
+    .map(item => item.replace(/^./, ''))
+    .filter(x => x !== '/');
   const urlInStatic = request.url === `${self.location.origin}/` || staticCacheMatches.some(m => {
     return request.url.includes(m);
   });
@@ -265,7 +274,6 @@ function fromCache(request) {
   });
 }
 
-
 // Update consists in opening the cache, performing a network request and
 // storing the new response data.
 function update(request) {
@@ -355,3 +363,38 @@ function offlineHTML(){
   return html;
 }
 
+function manifestJSON(){
+  const manifest = {
+    "test_property": "123",
+    "short_name": "Cents",
+    "name": "Cents: Personal Finance",
+    "background_color": "#746D5D",
+    "theme_color": "#746D5D",
+    "icons": [
+      {
+        "src": "./images/launcher-icon-2x.png",
+        "sizes": "96x96",
+        "type": "image/png"
+      },
+      {
+        "src": "./images/launcher-icon-3x.png",
+        "sizes": "144x144",
+        "type": "image/png"
+      },
+      {
+        "src": "./images/launcher-icon-4x.png",
+        "sizes": "192x192",
+        "type": "image/png"
+      },
+      {
+        "src": "./images/launcher-icon-512px.png",
+        "sizes": "512x512",
+        "type": "image/png"
+      }
+    ],
+    "start_url": "./#homescreen",
+    "display": "standalone",
+    "orientation": "portrait"
+  };
+  return JSON.stringify(manifest, null, '  ');
+}
