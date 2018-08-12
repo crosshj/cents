@@ -138,7 +138,6 @@ function fetchHandler(event){
   }
 
   const isKillCache = request.url.includes('killCache');
-  console.log({ isKillCache })
   if(isKillCache){
     const fallbackResponse = {
       status: "okay"
