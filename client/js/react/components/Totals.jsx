@@ -101,7 +101,12 @@ function Totals({totals = {}}){
             //TODO: this is a lame way of doing this,
             //should listen to event for cache update to reload
             setTimeout(()=>{
-                document.location.reload();
+                // because 1st /json req returns error: offline
+                // but 2nd does not
+                fetch('./json')
+                    .then(res => {
+                        document.location.reload();
+                    })
             }, 10000);
           });
         return false;
