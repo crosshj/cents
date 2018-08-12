@@ -26,6 +26,9 @@ function fetchAccounts() {
             if (body.error) {
                 GLOBAL_FUNCTION_QUEUE.push(() => fetchAccounts());
             }
+            if (!navigator.onLine){
+                document.body.classList.add("offline");
+            }
             const payload = body || {};
             payload.error = body.error || false;
             receiveAccounts(payload);
