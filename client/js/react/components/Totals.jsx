@@ -94,6 +94,7 @@ function Totals({totals = {}}){
     const totalsRows = makeTotalsRow(totals);
 
     function killCache(){
+        document.querySelector('cache-kill').innerHTML = 'WAIT...';
         fetch('./killCache')
           .then(res => res.json)
           .then(json => {
@@ -116,9 +117,9 @@ function Totals({totals = {}}){
                         color: '#555',
                         marginTop: '10px'
                     }}
-                    className='button totals'
+                    className='button totals cache-kill'
                     onClick={() => killCache()}
-                >Kill Cache</button>
+                >Refresh Cache</button>
             </div>
         </div>
     );
