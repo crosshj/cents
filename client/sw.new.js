@@ -88,6 +88,15 @@ function clearStaleCaches(){
     });
 }
 
+function deleteAllCaches(){
+  return caches.keys()
+    .then(function (keys) {
+      return Promise.all(keys
+        .map(function(key) { return caches.delete(key); })
+      );
+    });
+}
+
 function offlineResponse(request){
   // If the request is for an image, show an offline placeholder
   // if (!!~request.headers.get('Accept').indexOf('image')) {
@@ -129,6 +138,7 @@ function fetchHandler(event){
   }
 
   const isKillCache = request.url.includes('killCache');
+  console.log({ isKillCache })
   if(isKillCache){
     const fallbackResponse = {
       status: "okay"
@@ -137,7 +147,10 @@ function fetchHandler(event){
       headers: {'Content-Type': 'application/json'}
     });
     event.respondWith(jsonResponse);
-    event.waitUntil(updateStaticCache());
+    event.waitUntil(
+      deleteAllCaches()
+        .then(updateStaticCache)
+    );
     return;
   }
 

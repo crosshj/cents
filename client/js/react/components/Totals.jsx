@@ -116,7 +116,7 @@ function Totals({totals = {}}){
                     }}
                     className='button totals'
                     onClick={() => killCache()}
-                >Kill Cache</button>
+                >Update Cache</button>
             </div>
         </div>
     );
