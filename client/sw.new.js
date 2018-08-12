@@ -269,6 +269,18 @@ function fromCache(request) {
   return caches.open(CACHE)
     .then(function (cache) {
       return cache.match(request).then(matching => {
+        // const isJSONRequest = !!~request.headers.get('Accept').indexOf('application/json');
+        // var newResponse;
+        // if(isJSONRequest && matching){
+        //   return matching.json().then(json => {
+        //     //debugger;
+        //     //console.log({ json });
+        //     json.offline = true;
+        //     newResponse = new Response(JSON.stringify(json, null, '  '));
+        //     //console.log({ json });
+        //     return newResponse || Promise.resolve(offlineResponse(request));
+        //   });
+        // }
         return matching || Promise.resolve(offlineResponse(request));
       });
   });
