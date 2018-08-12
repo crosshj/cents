@@ -44,7 +44,7 @@ function makeTotalsRow(props){
                                 updating
                                     ? <i className="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
                                     : 'Update'
-                            }</button> 
+                            }</button>
                         </td>
                     </tr>
                 </tbody>
@@ -93,10 +93,30 @@ function makeTotalsRow(props){
 function Totals({totals = {}}){
     const totalsRows = makeTotalsRow(totals);
 
+    function killCache(){
+        fetch('./killCache')
+          .then(res => res.json)
+          .then(json => {
+            document.location.reload();
+          });
+        return false;
+    }
+
     return (
         <div className="carousel-cell">
             <div className="container">
                 {totalsRows}
+            </div>
+            <div className="container" style={{ textAlign: 'center' }}>
+                <button
+                    style={{
+                        backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                        color: '#555',
+                        marginTop: '10px'
+                    }}
+                    className='button totals'
+                    onClick={() => killCache()}
+                >Refresh Cache</button>
             </div>
         </div>
     );
