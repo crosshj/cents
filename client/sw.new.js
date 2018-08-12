@@ -18,7 +18,7 @@ https://serviceworke.rs/
 
 // Update 'version' if you need to refresh the cache
 var staticCacheName = 'static';
-var version = 'v1.1.13::';
+var version = 'v1.1.14::';
 var CACHE = version + staticCacheName;
 var timeout = 1500;
 
@@ -89,6 +89,8 @@ function clearStaleCaches(){
 }
 
 function deleteAllCaches(){
+  // some things will "never" need to be deleted (fonts, images maybe)
+  // do not delete these?
   return caches.keys()
     .then(function (keys) {
       return Promise.all(keys
