@@ -8,8 +8,21 @@ import {
 } from '../../redux/services';
 
 function makeTotalsRow(props){
-    const {balance=0, pendingTotal=0, dueTotal=0, assetsTotal=0, debts=0, debtsTotal=0, updating} = props;
+    var {balance=0, pendingTotal=0, dueTotal=0, assetsTotal=0, debts=0, debtsTotal=0, updating} = props;
     //console.log(props);
+    const currentBalance = localStorage.getItem('currentBalance');
+    if(currentBalance){
+      balance = currentBalance;
+    }
+    const onClickBalance = () => {
+        var cb = prompt("Current Balance", currentBalance || balance);
+        if(!cb){
+            return;
+        }
+        cb = cb.replace(/\$|,/g, '');
+        localStorage.setItem('currentBalance', cb);
+        document.location.reload();
+      };
     return (
         <div className="column totals">
             <a className="button totals">
@@ -18,7 +31,7 @@ function makeTotalsRow(props){
                     <tr className="header">
                         <td colSpan="2" className="title center">Current</td>
                     </tr>
-                    <tr className="header">
+                    <tr className="header" onClick={onClickBalance}>
                         <td className="title">Balance</td>
                         <td className="status">{formatMoney(balance)}</td>
                     </tr>

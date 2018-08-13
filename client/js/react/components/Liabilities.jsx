@@ -1,28 +1,47 @@
 import React from 'react';
-import { formatMoney, formatDateShort } from '../utilities';
+import { formatMoney, formatDateShort, clone } from '../utilities';
 import {
     accountClick, selectAccountClick, groupClick, newAccountClick, newGroupClick
 } from '../../redux/actions';
 
 function SeperatorRow({ data, key }){
-  const duePendingTotal = Number(data.pending)+Number(data.due);
+  const sepData = clone(data);
+  const currentBalance = localStorage.getItem('currentBalance');
+  if(sepData.first && currentBalance){
+    sepData.amount = currentBalance;
+  }
+
+  const duePendingTotal = Number(sepData.pending)+Number(sepData.due);
   const duePendingString = formatMoney(duePendingTotal);
-  const total = formatMoney(data.total);
-  const diff = data.amount
-    ? formatMoney(data.amount - data.total)
+  const total = formatMoney(sepData.total);
+  const diff = sepData.amount
+    ? formatMoney(sepData.amount - sepData.total)
     : '';
-  const totalString = duePendingString === total || duePendingTotal === 0
-    ? `${total}`
-    : `${duePendingString}   |   ${total}`;
-  const dateString = `${formatDateShort(data.displayDate)} → ${formatDateShort(data.date)}`;
-//debugger
+//   const totalString = duePendingString === total || duePendingTotal === 0
+//     ? `${total}`
+//     : `${duePendingString}   |   ${total}`;
+  const totalString = `${total}`;
+  const dateString = `${formatDateShort(sepData.displayDate)} → ${formatDateShort(sepData.date)}`;
+
+  const onClick = (sepData) => {
+    if(!sepData.first){
+        return;
+    }
+    var cb = prompt("Current Balance", currentBalance || sepData.amount);
+    if(!cb){
+        return;
+    }
+    cb = cb.replace(/\$|,/g, '');
+    localStorage.setItem('currentBalance', cb);
+    document.location.reload();
+  };
   return (
-    <div className="row-seperator">
+    <div className="row-seperator" onClick={() => onClick(sepData)}>
       <table class="u-full-width"><tbody>
         <tr class="info">
           <td class="amount">
             <span>{totalString}</span>
-            <span className="diff">{diff}</span>
+            <span className="diff">| {diff}</span>
           </td>
           <td class="date">{dateString}</td>
         </tr>
@@ -73,11 +92,22 @@ function makeRow(data, key){
 }
 
 function Liabilities({liabilities = []}){
-    let liabRows = liabilities
+    const thisLiabs = clone(liabilities);
+    var foundFirstSep = false;
+    const isSeperator = (liab) => liab.type && liab.type.includes('seperator');
+
+    thisLiabs.forEach(liab => {
+        if(foundFirstSep || !isSeperator(liab)){
+            return;
+        }
+        liab.first = true;
+        foundFirstSep = true;
+    });
+    let liabRows = thisLiabs
         .filter(x => x)
         .map(makeRow);
 
-    const selectedLiabs = liabilities
+    const selectedLiabs = thisLiabs
         .filter(x => x)
         .reduce((total, item) => item.selected
             ? total+1
