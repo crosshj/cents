@@ -120,6 +120,9 @@ function Totals({totals = {}}){
         return false;
     }
 
+    const commitDateString = (new Date(process.env.COMMIT_DATE))
+        .toLocaleString();
+
     return (
         <div className="carousel-cell">
             <div className="container">
@@ -135,7 +138,20 @@ function Totals({totals = {}}){
                     }}
                     className='button totals cache-kill'
                     onClick={() => killCache()}
-                >Kill Cache</button>
+                >Update App Cache</button>
+            </div>
+            <div className="container" style={{
+                textAlign: 'center',
+                fontFamily: 'monospace',
+                whiteSpace: 'pre',
+                marginBottom: '25px',
+                marginTop: '10px'
+            }}>
+                <span>Commit Hash: </span>
+                <a target="_blank" href={process.env.COMMIT_URI}>
+                    {process.env.COMMIT_HASH.slice(0, 7)+'\n'}
+                </a>
+                <span>Commit Date: {commitDateString}</span>
             </div>
         </div>
     );

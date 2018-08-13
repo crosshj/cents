@@ -16,6 +16,18 @@ const extractSass = new ExtractTextPlugin({
    disable: false
 });
 
+let commitHash = require('child_process')
+  .execSync('git rev-parse HEAD')
+  .toString()
+  .replace(/\n/g, '');
+
+let commitDate = require('child_process')
+  .execSync('git log -1 --format=%ct')
+  .toString()
+  .replace(/\n/g, '') + '000'; //because timestamp is in seconds, not milliseonds
+
+let commitURI = `https://github.com/crosshj/cents/commit/${commitHash}`;
+
 var config = {
   entry: {
     app: APP_DIR + '/app'
@@ -36,7 +48,10 @@ var config = {
   plugins: [
     new webpack.DefinePlugin({
       'process.env': {
-        'NODE_ENV': '"production"'
+        'NODE_ENV': '"production"',
+        'COMMIT_URI': `"${commitURI}"`,
+        'COMMIT_HASH': `"${commitHash}"`,
+        'COMMIT_DATE': commitDate
       }
     }),
     new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en/),
