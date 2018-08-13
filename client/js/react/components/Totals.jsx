@@ -148,7 +148,9 @@ function Totals({totals = {}}){
                 marginTop: '10px'
             }}>
                 <span>Commit Hash: </span>
-                <a target="_blank" href={process.env.COMMIT_URI}>
+                <a target="_blank" href={
+                    'https://github.com/crosshj/cents/commits' || process.env.COMMIT_URI
+                }>
                     {process.env.COMMIT_HASH.slice(0, 7)+'\n'}
                 </a>
                 <span>Commit Date: {commitDateString}</span>
