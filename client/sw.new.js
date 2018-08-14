@@ -22,18 +22,16 @@ var version = 'v1.1.14::';
 var CACHE = version + staticCacheName;
 var timeout = 1500;
 
+//TODO: before refreshing these cache'd items
+// , ask if the new version is acceptable!!!
+// and some stuff "never" needs to refresh, images/css
+
 var staticCacheList = [
+  //TODO: should rarely update these (and only when good)
   './',
   './login/',
   './images/launcher-icon-3x.png',
-
-  './css/raleway.css',
-  './css/flickity.2.0.9.css',
-  './css/bootstrap.3.3.4.min.css',
-  './css/skeleton.css',
-  './css/cents.css',
-  './css/font-awesome.min.css',
-
+  './offline.html',
   './fonts/fontawesome-webfont.woff?v=4.4.0',
   './fonts/-_Ctzj9b56b8RgXW8FAriQzyDMXhdD8sAj6OAJTFsBI.woff2 ',
   './fonts/ZKwULyCG95tk6mOqHQfRBAsYbbCjybiHxArTLjt7FRU.woff2',
@@ -45,9 +43,18 @@ var staticCacheList = [
   './fonts/glyphicons-halflings-regular.woff',
   './fonts/glyphicons-halflings-regular.ttf',
 
+  //TODO: these will update with every code push (version)
   './js/build/app.js',
   './js/build/vendor.js',
-  './offline.html'
+
+  //TODO: put this all in one file!
+  './css/raleway.css',
+  './css/flickity.2.0.9.css',
+  './css/bootstrap.3.3.4.min.css',
+  './css/skeleton.css',
+  './css/cents.css',
+  './css/font-awesome.min.css'
+
 ];
 
 self.addEventListener('activate', function (event) {
