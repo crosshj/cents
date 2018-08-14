@@ -9,27 +9,10 @@ var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var passport = require('passport');
 
-const webpack = require('webpack');
-const webpackDevMiddleware = require('webpack-dev-middleware');
-const webpackConfig = require('../webpack.config.js');
-const webpackCompiler = webpack(webpackConfig);
-
 var appPort = process.env.PORT || 8080;
-// const webpackCompiler = webpack(webpackConfig, function(err, stats) {
-//   if (err) { return console.log(err); }
-//   console.log();
-//   console.log(stats.toString({
-//     chunks: false,
-//     modules: false,
-//     chunkOrigins: false,
-//     colors: true
-//   }));
-//   console.log(`\nDone. Server ready on port ${appPort}.`);
-//   return;
-// });
 
-var cron = require('../service/cron');
-cron();
+//var cron = require('../service/cron');
+//cron();
 
 var app = express();
 app.enable('etag', 'strong');
@@ -58,6 +41,24 @@ require('./routes')(app, passport);
 
 const useWebpackDevMiddleware = process.env.NODE_ENV === 'dev';
 if (useWebpackDevMiddleware){
+  const webpack = require('webpack');
+  const webpackDevMiddleware = require('webpack-dev-middleware');
+  const webpackConfig = require('../webpack.config.js');
+  const webpackCompiler = webpack(webpackConfig);
+
+  // const webpackCompiler = webpack(webpackConfig, function(err, stats) {
+  //   if (err) { return console.log(err); }
+  //   console.log();
+  //   console.log(stats.toString({
+  //     chunks: false,
+  //     modules: false,
+  //     chunkOrigins: false,
+  //     colors: true
+  //   }));
+  //   console.log(`\nDone. Server ready on port ${appPort}.`);
+  //   return;
+  // });
+
   app.use(webpackDevMiddleware(webpackCompiler, {
     publicPath: '/js/build/',
     //quiet: true,
