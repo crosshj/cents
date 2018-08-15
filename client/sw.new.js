@@ -43,17 +43,11 @@ var staticCacheList = [
   './fonts/glyphicons-halflings-regular.woff',
   './fonts/glyphicons-halflings-regular.ttf',
 
-  //TODO: these will update with every code push (version)
+  //TODO: these will update possibly with every code push (version)
   './js/build/app.js',
   './js/build/vendor.js',
-
-  //TODO: put this all in one file!
-  './css/raleway.css',
-  './css/flickity.2.0.9.css',
-  './css/bootstrap.3.3.4.min.css',
-  './css/skeleton.css',
-  './css/cents.css',
-  './css/font-awesome.min.css'
+  './js/build/bundle.css',
+  //TODO: vendor.css
 
 ];
 
