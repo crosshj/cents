@@ -1,4 +1,5 @@
 import React from 'react';
+import ActionButton from './ActionButton';
 
 import Menu from './Menu';
 import Liabilities from './Liabilities';
@@ -77,6 +78,9 @@ class AppContainer extends React.Component {
         }
         <Popup {...this.props.popup}/>
         <div id="corner-circle">0</div>
+
+        <ActionButton />
+
         {/* This fake div hidden preloads our web font! */}
         <div className="div-fake-hidden">
           <i className="fa fa-square-o fa-3x"></i>

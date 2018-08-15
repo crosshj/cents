@@ -94,6 +94,7 @@ ul.plain {
 .column.menu {
   text-align: center;
   line-height: 25px;
+  margin-top: 7px;
 }
 .column:not(.menu) {
   height: 100%;

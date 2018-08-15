@@ -25,6 +25,7 @@
     "react-dom": "^16.2.0",
     "react-flickity-component": "git+https://github.com/crosshj/react-flickity-component.git",
     "react-highcharts": "^15.0.0",
+    "react-mfb": "^0.6.0",
     "redux": "^3.7.2",
     "request": "^2.87.0",
     "sync-request": "^2.0.1",

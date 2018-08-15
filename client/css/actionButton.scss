@@ -1,0 +1,28 @@
+@import "~react-mfb/mfb.css";
+
+
+.floating-action-button {
+    li a {
+        background-color: rgba(0, 0, 0, 0);
+
+        &:hover {
+            .a-icon {
+                color: white;
+            }
+        }
+
+        .a-icon {
+            color: #999;
+
+            &:before {
+                line-height: 57px;
+                font-size: 22px;
+            }
+        }
+    }
+
+    [data-mfb-label]:after {
+        background-color: rgb(77, 77, 77);
+        margin-top: -13.5px;
+    }
+}
