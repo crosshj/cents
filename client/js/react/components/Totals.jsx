@@ -34,8 +34,7 @@ function makeTotalsRow(props){
                     </tr>
                     <tr className="header"
                         onClick={onClickBalance}
-                        onContextMenu={updating ? ()=>{} : onClickBalance}
-
+                        onContextMenu={onClickBalance}
                     >
                         <td className="title">Balance</td>
                         <td className="status">{formatMoney(balance)}</td>
@@ -60,7 +59,8 @@ function makeTotalsRow(props){
                         <td colSpan="2" className="title center">
                             <button
                                 className='balance-update-button'
-                                onClick={updating ? ()=>{} : fetchAccounts}
+                                onClick={onClickBalance}
+                                // onClick={updating ? ()=>{} : fetchAccounts}
                             >{
                                 updating
                                     ? <i className="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
