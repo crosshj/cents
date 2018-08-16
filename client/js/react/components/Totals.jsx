@@ -53,7 +53,11 @@ function makeTotalsRow(props){
                     </tr>
                     <tr className="header">
                         <td colSpan="2" className="title center">
-                            <button onClick={updating ? ()=>{} : fetchAccounts}>{
+                            <button
+                                className='balance-update-button'
+                                onClick={updating ? ()=>{} : fetchAccounts}
+                                onContextMenu={updating ? ()=>{} : onClickBalance}
+                            >{
                                 updating
                                     ? <i className="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
                                     : 'Update'
@@ -108,6 +112,7 @@ function Totals({totals = {}}){
 
     function killCache(){
         document.querySelector('.cache-kill').innerHTML = 'WAIT...';
+        document.querySelector('.balance-update-button').innerHTML = 'WAIT...';
         fetch('./killCache')
           .then(res => res.json)
           .then(json => {
