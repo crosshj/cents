@@ -10,14 +10,19 @@
   --pending-color: #cea95a;
   --paid-color: #9a9a9a;
   --body-color: #6a7c77;
+
+}
+
+@media (max-width: 550px) {
+  .green-theme {
+    --body-color: #52605c;
+  }
 }
 
 .button:not(.grouped):not(.group):not(.menu) {
   border: 0px;
   border-radius: 0px;
 }
-
-
 
 .center-all {
   display: flex;
@@ -110,7 +115,7 @@ div.menu a {
   width: 25%;
   padding-top: 10px;
   line-height: 20px;
-  color: rgba(0, 0, 0, 0.75) !important;
+  color: #bac4c1 !important;
   background-color: rgba(255, 255, 255, 0) !important;
   font-weight: bolder;
   border-color: rgba(255, 255, 255, 0) !important;

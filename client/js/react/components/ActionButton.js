@@ -9,6 +9,7 @@ const menuProps = {
 
 const childMenuClick = () => {
     console.log('Action Button child click: handler should be passed by parent!');
+    document.querySelector('.mfb-component__main-icon--active').click();
 };
 
 function ActionButton() {

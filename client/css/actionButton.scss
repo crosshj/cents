@@ -2,8 +2,15 @@
 
 
 .floating-action-button {
+    [data-mfb-state="closed"]{
+        li a {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+    }
+
     li a {
-        background-color: rgba(0, 0, 0, 0);
+        background-color: rgb(115, 139, 255);
+        transition: background-color 1000ms linear;
 
         &:hover {
             .a-icon {
@@ -12,7 +19,7 @@
         }
 
         .a-icon {
-            color: #999;
+            color: #eee;
 
             &:before {
                 line-height: 57px;
