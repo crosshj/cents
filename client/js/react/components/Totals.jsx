@@ -14,7 +14,8 @@ function makeTotalsRow(props){
     if(currentBalance){
       balance = currentBalance;
     }
-    const onClickBalance = () => {
+    const onClickBalance = (e) => {
+        e.preventDefault();
         var cb = prompt("Current Balance", currentBalance || balance);
         if(!cb){
             return;
@@ -112,7 +113,6 @@ function Totals({totals = {}}){
 
     function killCache(){
         document.querySelector('.cache-kill').innerHTML = 'WAIT...';
-        document.querySelector('.balance-update-button').innerHTML = 'WAIT...';
         fetch('./killCache')
           .then(res => res.json)
           .then(json => {
