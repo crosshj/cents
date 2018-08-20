@@ -1,5 +1,9 @@
 
 
+GROUPED ACCOUNTS
+  - amount that is shown due/pending should only be that due within period
+  - should handle recurring period properly: month/bi-month/weekly/bi-week/annual
+
 REDESIGN UI
   - do away with 3 tabs at top or move to bottom
   - make current debt list a stream of paychecks which expands to show debts for that check
