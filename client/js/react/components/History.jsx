@@ -43,6 +43,7 @@ var chartConfig = (data) => ({
     yAxis: {
         title: ''
     },
+    zoomType: 'x',
     series: [{
         name: '',
         data
