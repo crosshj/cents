@@ -1,0 +1,32 @@
+
+
+GROUPED ACCOUNTS
+  - amount that is shown due/pending should only be that due within period
+  - should handle recurring period properly: month/bi-month/weekly/bi-week/annual
+
+REDESIGN UI
+  - do away with 3 tabs at top or move to bottom
+  - make current debt list a stream of paychecks which expands to show debts for that check
+  - remove inline action and use FAB for adding new item
+  - provide a way to see previous items in stream
+
+GET SCRAPER/AI SERVICE WORKING AGAIN
+  - should run as seperate process
+  - need UI for adding and editing scrapers
+
+SERVICE WORKER / WEB WORKER
+  - redux in web worker
+  - service worker should be air-tight
+  - still seeing cache issues (submitted values not appearing until refresh)
+
+LOGIN / AUTH
+  - this should work for anyone and not be dummy like it is already
+  - should track anyone's finances
+
+DESKTOP vs MOBILE
+  - desktop should be all-in-one view
+  - mobile should be one stream (see above about tabs)
+
+REACT-NATIVE
+  - need a build process which converts desktop/mobile to react-native
+  - ^^ is this even possible?

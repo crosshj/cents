@@ -1,0 +1,10 @@
+updating and adding assets does not work
+  - network call works, but item is not updated in router (I think)
+
+client does not continue to work even after the server is down
+  - should validate cache before updating item
+
+prompt does not work in chrome canary
+  - click which should trigger prompt does not
+
+
