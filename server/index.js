@@ -4,7 +4,23 @@ eslint-disable no-console
 var path = require('path');
 var express = require('express');
 var session = require('express-session');
-var TingoStore = require('connect-tingo')({session});
+//var TingoStore = require('connect-tingo')({session});
+
+var MongoDBStore = require('connect-mongodb-session')(session);
+var store = new MongoDBStore({
+  uri: 'mongodb://ubuntu:27017',
+  databaseName: 'cents',
+  collection: 'sessions'
+},
+function(error) {
+  if(error) console.log({ mongoConnectError: error});
+  // Should have gotten an error
+});
+store.on('error', function(error) {
+  console.log(error);
+});
+
+
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var passport = require('passport');
@@ -19,17 +35,32 @@ app.enable('etag', 'strong');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
+app.use('/', express.static(
+  path.resolve(__dirname, '../client'),
+  {
+        setHeaders: (res) => {
+            res.setHeader('x-powered-by', 'Foo')
+        },
+        redirect: false
+    }
+));
+
 require('./authentication').init(app);
 var settings = {
   cookieSecret: require('crypto').randomBytes(64).toString('hex'),
   folderLocation:  path.resolve(__dirname, '../service/database/data')
 };
+
 app.use(cookieParser());
+console.log({
+  settings 
+});
 app.use(session({
     secret: settings.cookieSecret,
-    store: new TingoStore({
-      db: settings.folderLocation
-    }),
+    // store: new TingoStore({
+    //   db: settings.folderLocation
+    // }),
+    store,
     resave: false,
     saveUninitialized: false
 }));
@@ -41,6 +72,7 @@ require('./routes')(app, passport);
 
 const useWebpackDevMiddleware = process.env.NODE_ENV === 'dev';
 if (useWebpackDevMiddleware){
+  console.log('Using Webpack Dev Middleware!');
   const webpack = require('webpack');
   const webpackDevMiddleware = require('webpack-dev-middleware');
   const webpackConfig = require('../webpack.config.js');
@@ -68,16 +100,10 @@ if (useWebpackDevMiddleware){
   }));
 }
 
-app.use('/', express.static(
-  path.resolve(__dirname, '../client'),
-  {
-        setHeaders: (res) => {
-            res.setHeader('x-powered-by', 'Foo')
-        },
-        redirect: false
-    }
-));
+
+
+const hostname = 'http://localhost';
 
 app.listen(appPort, function(){
-  console.log(`\nDone. Server ready on port ${appPort}.`);
+  console.log(`\nDone. Server ready at ${hostname}:${appPort} .`);
 });
