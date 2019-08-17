@@ -6,7 +6,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 
 var BUILD_DIR = path.resolve(__dirname, './dist/client/');
-console.log({ BUILD_DIR})
+//console.log({ BUILD_DIR})
 var APP_DIR = path.resolve(__dirname, 'client/js/react');
 
 //var BUILD_DIR = '/client/build';
@@ -114,5 +114,12 @@ var config = {
     ]
   }
 };
+
+if(process.env.NODE_ENV === 'dev'){
+  const liveReloadPlugin = require('webpack-livereload-plugin');
+  config.plugins.push(new liveReloadPlugin({
+    //live-reload options
+  }));
+}
 
 module.exports = config;
