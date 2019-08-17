@@ -18,6 +18,14 @@ var _account = undefined;
 var _accounts = undefined;
 var _selected = undefined;
 
+window.MAIN_DATA = {
+    get: () => ({
+        account: _account,
+        accounts: _accounts,
+        selected: _selected
+    })
+};
+
 const globalState = () => ({
     accounts: (() => _accounts)(),
     account: (() => _account)(),
@@ -36,7 +44,7 @@ const globalState = () => ({
 
 // -----------------------------------------------------------------------------
 const receiveAccounts = (state, action) => {
-    debugger;
+    //debugger;
     const accounts = clone(action.payload);
     const totals = fixTotals(accounts).totals;
     accounts.totals = totals;

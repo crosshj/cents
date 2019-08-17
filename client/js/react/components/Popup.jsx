@@ -201,14 +201,14 @@ function Popup({error, account, history}){
                         }
                     </div>
                     <div className="form-group">
-                        <label>Date Due</label>
-                        <input type="date" value={account.date||''}
-                            onChange={(event) => update('date', event)}
+                        <label>APR</label>
+                        <input type="number" value={0.00} className="u-full-width"
+                            onChange={(event) => update('apr', event)}
                         />
                     </div>
                     <div className="form-group">
-                        <label>APR</label>
-                        <input type="number" value={account.date||''}
+                        <label>Date Due</label>
+                        <input type="date" value={account.date||''}
                             onChange={(event) => update('date', event)}
                         />
                     </div>

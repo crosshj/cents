@@ -17,10 +17,11 @@ import {
 
 import '../../css/index.scss';
 
+const pageHash = document.location.hash.slice(1);
+console.log(`--- ${pageHash}`);
+
 const store = setupStore(renderApp);
 initActions(store);
-
-console.log('hello - buddy');
 
 function renderApp() {
   const state = store.getState();
@@ -33,5 +34,4 @@ function renderApp() {
 
 setupLoginPageListener();
 registerServiceWorker();
-
 fetchAccounts();
