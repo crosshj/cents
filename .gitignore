@@ -32,7 +32,7 @@ service/utilities/getPrivateInfo.js
 
 service/scrapers/puppeteer/**/*.es6.js
 
+package-lock.json
 webpack-stats.json
-client/js/react/build
-client/js/build/
+dist/
 accounts.bak.json

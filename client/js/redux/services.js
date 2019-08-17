@@ -22,6 +22,7 @@ function fetchAccounts() {
     fetch(url, config)
         .then(r => r.json())
         .then(body => {
+            debugger
             // console.log(`Response from ${url} : ${JSON.stringify(body)}`);
             if (body.error) {
                 GLOBAL_FUNCTION_QUEUE.push(() => fetchAccounts());

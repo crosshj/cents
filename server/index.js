@@ -4,6 +4,7 @@ eslint-disable no-console
 var path = require('path');
 var express = require('express');
 var session = require('express-session');
+var serveStatic = require('serve-static');
 //var TingoStore = require('connect-tingo')({session});
 
 var MongoDBStore = require('connect-mongodb-session')(session);
@@ -35,15 +36,24 @@ app.enable('etag', 'strong');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-app.use('/', express.static(
-  path.resolve(__dirname, '../client'),
-  {
-        setHeaders: (res) => {
-            res.setHeader('x-powered-by', 'Foo')
-        },
-        redirect: false
-    }
+// app.use('/', express.static(
+//   path.resolve(__dirname, '../client'),
+//   {
+//         setHeaders: (res) => {
+//             res.setHeader('x-powered-by', 'Foo')
+//         },
+//         redirect: false
+//     }
+// ));
+
+app.use(serveStatic(
+  require('path').resolve(__dirname, '../dist/client'),
+  { 
+    index: ['index.html', 'index.htm']
+  }
 ));
+
+
 
 require('./authentication').init(app);
 var settings = {
@@ -52,9 +62,9 @@ var settings = {
 };
 
 app.use(cookieParser());
-console.log({
-  settings 
-});
+// console.log({
+//   settings 
+// });
 app.use(session({
     secret: settings.cookieSecret,
     // store: new TingoStore({
@@ -70,13 +80,29 @@ app.use(passport.session());
 
 require('./routes')(app, passport);
 
+
+
 const useWebpackDevMiddleware = process.env.NODE_ENV === 'dev';
 if (useWebpackDevMiddleware){
   console.log('Using Webpack Dev Middleware!');
   const webpack = require('webpack');
   const webpackDevMiddleware = require('webpack-dev-middleware');
   const webpackConfig = require('../webpack.config.js');
-  const webpackCompiler = webpack(webpackConfig);
+
+  
+  const webpackCompilerCallback = (err, output) => {
+    if(err){
+      console.log('--- webpack compile error ---');
+      console.log(JSON.stringify(err));
+      return;
+    }
+    
+    console.log('Webpack finished building client!');
+    //console.log({ output });
+    //console.log(Object.keys(output));
+    //console.log(JSON.stringify(output.toJson()));
+  };
+  const webpackCompiler = webpack(webpackConfig, webpackCompilerCallback);
 
   // const webpackCompiler = webpack(webpackConfig, function(err, stats) {
   //   if (err) { return console.log(err); }
@@ -91,9 +117,12 @@ if (useWebpackDevMiddleware){
   //   return;
   // });
 
+  const publicPath = require('path').resolve(__dirname, '../dist/client');
+  console.log({ publicPath })
   app.use(webpackDevMiddleware(webpackCompiler, {
-    publicPath: '/js/build/',
-    //quiet: true,
+    publicPath,
+    writeToDisk: true,
+    quiet: true,
     stats: {
       colors: true
     }

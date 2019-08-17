@@ -206,6 +206,12 @@ function Popup({error, account, history}){
                             onChange={(event) => update('date', event)}
                         />
                     </div>
+                    <div className="form-group">
+                        <label>APR</label>
+                        <input type="number" value={account.date||''}
+                            onChange={(event) => update('date', event)}
+                        />
+                    </div>
                     {isNewItem &&
                     <div className="form-group">
                         <label>Occurence</label>

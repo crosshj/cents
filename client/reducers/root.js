@@ -36,6 +36,7 @@ const globalState = () => ({
 
 // -----------------------------------------------------------------------------
 const receiveAccounts = (state, action) => {
+    debugger;
     const accounts = clone(action.payload);
     const totals = fixTotals(accounts).totals;
     accounts.totals = totals;

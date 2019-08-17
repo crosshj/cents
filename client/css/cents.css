@@ -1,4 +1,6 @@
-﻿:root {
+﻿/* ------- CENTS CSS ------- */
+
+:root {
   --due-color: rgba(255, 0, 0, 1);
   --pending-color: #dcaa3e;
   --paid-color: rgb(173, 168, 137);
