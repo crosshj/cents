@@ -80,15 +80,12 @@ app.use(passport.session());
 
 require('./routes')(app, passport);
 
-
-
 const useWebpackDevMiddleware = process.env.NODE_ENV === 'dev';
 if (useWebpackDevMiddleware){
   console.log('Using Webpack Dev Middleware!');
   const webpack = require('webpack');
-  const webpackDevMiddleware = require('webpack-dev-middleware');
+  //const webpackDevMiddleware = require('webpack-dev-middleware');
   const webpackConfig = require('../webpack.config.js');
-
   
   const webpackCompilerCallback = (err, output) => {
     if(err){
@@ -97,11 +94,20 @@ if (useWebpackDevMiddleware){
       return;
     }
     
-    console.log('Webpack finished building client!');
+    console.log('Webpack finished client build.');
     //console.log({ output });
     //console.log(Object.keys(output));
     //console.log(JSON.stringify(output.toJson()));
+    // webpackCompiler.watch({}, (err, stats) => {
+    //   if(err) {
+    //     console.log({ err });
+    //   }
+    //   console.log('Webpack finished build.');
+    //   //console.log({ stats });
+    // });
   };
+  //console.log(Object.keys(webpack));
+  webpackConfig.watch = true;
   const webpackCompiler = webpack(webpackConfig, webpackCompilerCallback);
 
   // const webpackCompiler = webpack(webpackConfig, function(err, stats) {
@@ -117,16 +123,21 @@ if (useWebpackDevMiddleware){
   //   return;
   // });
 
-  const publicPath = require('path').resolve(__dirname, '../dist/client');
-  console.log({ publicPath })
-  app.use(webpackDevMiddleware(webpackCompiler, {
-    publicPath,
-    writeToDisk: true,
-    quiet: true,
-    stats: {
-      colors: true
-    }
-  }));
+  //const publicPath = require('path').resolve(__dirname, '../dist/client');
+  //console.log({ publicPath })
+  // app.use(webpackDevMiddleware(webpackCompiler, {
+  //   publicPath,
+  //   writeToDisk: true,
+  //   quiet: false,
+  //   lazy: true,
+  //   watchOptions: {
+  //     poll: true
+  //   },
+  //   stats: {
+  //     colors: true
+  //   }
+  // }));
+
 }
 
 

@@ -20,6 +20,8 @@ import '../../css/index.scss';
 const store = setupStore(renderApp);
 initActions(store);
 
+console.log('hello - buddy');
+
 function renderApp() {
   const state = store.getState();
   //console.log(state);
