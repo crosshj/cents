@@ -17,7 +17,8 @@ var chartConfig = (data) => ({
     chart: {
         //renderTo: $container,
         marginTop: 30,
-        height: 300
+        height: 300,
+        styledMode: true
     },
     title: {
         text: ''
@@ -51,12 +52,22 @@ var chartConfig = (data) => ({
 });
 
 
-function History({ data, width }) {
+function History({ data=[], width, series, type }) {
     const formattedData = formatGraphData(data);
-    //console.log({data});
+    console.log({data, series});
     const config = chartConfig(formattedData);
     if(width){
         config.chart.width = width;
+    }
+    if(series){
+        config.series = series
+        .map(x => Object.assign(
+            {}, x,
+            { data: formatGraphData(x.data) }
+        ));
+    }
+    if(type){
+        config.chart.type = type;
     }
     return (
         <React.Fragment>
