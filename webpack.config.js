@@ -85,7 +85,8 @@ var config = {
       { from: 'client/images', to: 'images/' },
       { from: 'client/*.json', to: '../'},
       { from: 'client/*.htm*', to: '../'},
-      { from: 'client/serviceWorker', to: './'}
+      { from: 'client/serviceWorker', to: './'},
+      { from: 'client/fonts', to: 'fonts/'}
     ])
   ],
   module : {
@@ -109,7 +110,14 @@ var config = {
       },
       {
         test   : /\.(ttf|eot|svg|woff(2)?)(\?[a-z0-9=&.]+)?$/,
-        loader : 'file-loader'
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              outputPath: 'fonts',
+            }
+          },
+        ],
       }
     ]
   }
