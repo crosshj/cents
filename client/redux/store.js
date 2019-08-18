@@ -9,10 +9,14 @@ const initialState = {
     }, 
     popup: {
         error: 'not initialized'
-    }
+    },
+    page: undefined
 };
 
-function setup(renderer){
+function setup(renderer, page){
+    if(page){
+        initialState.page = page;
+    }
     const store = createStore(
         reducers,
         initialState,

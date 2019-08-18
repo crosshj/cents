@@ -7,6 +7,8 @@ import Assets from './Assets';
 import Totals from './Totals';
 import Popup from './Popup';
 import Login from './Login';
+import Router, { Link, Route } from './Router';
+import APR from './APR';
 
 import { menuSelect } from '../redux/actions';
 
@@ -44,42 +46,65 @@ class AppContainer extends React.Component {
       percentPosition: true
     }
 
+    //console.log({ props: this.props });
+
     const { liabilities, assets, totals } = safeAccess(() => this.props.accounts) || {};
 
     return (
       <React.Fragment>
-        { !this.props.error &&
-          <Menu
-            items={['Debts', 'Totals', 'Assets']}
-            selected={this.props.selectedMenuIndex}
-          />
-        }
-        { !this.props.error &&
-          <Flickity
-            className={ 'main-carousel' }
-            elementType={ 'div' } // default 'div'
-            options={ flickityOptions } // takes flickity options {}
-            disableImagesLoaded={ true } // default false
-            reloadOnUpdate={false}
-            onSwipe={menuSelect}
-          >
-              <Liabilities liabilities={liabilities}/>
-              <Totals totals={totals}/>
-              <Assets assets={assets}/>
-          </Flickity>
-        }
-        { this.props.error &&
-          <div className="center-all">
-            <i className="fa fa-spinner fa-pulse fa-5x fa-fw white  "></i>
-          </div>
-        }
-        { this.props.error &&
-          <Login />
-        }
-        <Popup {...this.props.popup}/>
-        <div id="corner-circle">0</div>
+        <Router page={this.props.page}>
+          <Route path='/accounts'>
+            <Link
+              action="PAGE_CHANGE"
+              to='/apr'
+              className="test-link"
+              text="APR Test"
+            />
+            { !this.props.error &&
+              <Menu
+                items={['Debts', 'Totals', 'Assets']}
+                selected={this.props.selectedMenuIndex}
+              />
+            }
+            { !this.props.error &&
+              <Flickity
+                className={ 'main-carousel' }
+                elementType={ 'div' } // default 'div'
+                options={ flickityOptions } // takes flickity options {}
+                disableImagesLoaded={ true } // default false
+                reloadOnUpdate={false}
+                onSwipe={menuSelect}
+              >
+                  <Liabilities liabilities={liabilities}/>
+                  <Totals totals={totals}/>
+                  <Assets assets={assets}/>
+              </Flickity>
+            }
+            { this.props.error &&
+              <div className="center-all">
+                <i className="fa fa-spinner fa-pulse fa-5x fa-fw white  "></i>
+              </div>
+            }
+            { this.props.error &&
+              <Login />
+            }
+            <Popup {...this.props.popup}/>
 
-        <ActionButton />
+            <div id="corner-circle">0</div>
+            <ActionButton />
+          </Route>
+
+          <Route path='/apr'>
+            <APR/>
+            <Link
+              action="PAGE_CHANGE"
+              to='/accounts/popup/sawnee'
+              className="test-link"
+              text="Accounts Page"
+            />
+          </Route>
+
+        </Router>
 
         {/* This fake div hidden preloads our web font! */}
         <div className="div-fake-hidden">

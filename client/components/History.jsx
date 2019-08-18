@@ -51,16 +51,23 @@ var chartConfig = (data) => ({
 });
 
 
-function History({ data }) {
+function History({ data, width }) {
     const formattedData = formatGraphData(data);
-    return <React.Fragment>
-        {!data.error &&
-            <ReactHighcharts config={chartConfig(formattedData)}></ReactHighcharts>
-        }
-        {data.error &&
-            <div className="offline">offline</div>
-        }
-    </React.Fragment>;
+    //console.log({data});
+    const config = chartConfig(formattedData);
+    if(width){
+        config.chart.width = width;
+    }
+    return (
+        <React.Fragment>
+            {!data.error &&
+                <ReactHighcharts config={config}></ReactHighcharts>
+            }
+            {data.error &&
+                <div className="offline">offline</div>
+            }
+        </React.Fragment>
+    );
 }
 
 export default History;

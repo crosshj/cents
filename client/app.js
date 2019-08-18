@@ -17,17 +17,16 @@ import {
 
 import './css/index.scss';
 
-const pageHash = document.location.hash.slice(1);
-console.log(`--- ${pageHash}`);
+const page = document.location.hash.slice(1);
 
-const store = setupStore(renderApp);
+const store = setupStore(renderApp, page);
 initActions(store);
 
 function renderApp() {
   const state = store.getState();
   //console.log(state);
   render(
-    React.createElement(AppContainer, Object.assign({}, state.app, {popup: state.popup}), null),
+    React.createElement(AppContainer, Object.assign({}, state.app, {popup: state.popup, page: state.page}), null),
     document.querySelector('#app')
   );
 }

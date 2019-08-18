@@ -119,7 +119,7 @@ function init(store){
 }
 
 export {
-    init, receiveAccounts, receiveAccountsSave, menuSelect, selectAccountClick, groupRemove, accountSave,
+    init, dispatch, receiveAccounts, receiveAccountsSave, menuSelect, selectAccountClick, groupRemove, accountSave,
     accountClick, groupClick, newAccountClick, newGroupClick, popupCancel,
     popupHistory, popupHistoryBack, popupUpdate, receiveHistory, receiveAccountsData,
     removeItem

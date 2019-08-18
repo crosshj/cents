@@ -104,9 +104,12 @@ var config = {
         test: /\.(css|sass|scss)$/,
         use: [
           MiniCssExtractPlugin.loader,
-          'css-loader',
+          {
+            loader: 'css-loader', 
+            options: { url: false }
+          },
           'sass-loader'
-        ]
+        ],
       },
       {
         test   : /\.(ttf|eot|svg|woff(2)?)(\?[a-z0-9=&.]+)?$/,

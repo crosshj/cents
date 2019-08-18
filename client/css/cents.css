@@ -843,3 +843,60 @@ input[type="date"] {
   line-height: auto;
   border-collapse: collapse;
 }
+
+a.test-link {
+  position: absolute;
+  z-index: 999;
+  bottom: 20px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 700;
+  background: #b5b3b3;
+  text-decoration: none;
+  color: #5a5a5a;
+  width: 170px;
+  border-radius: 3px;
+  text-transform: uppercase;
+  margin: auto;
+  box-shadow: 0px 7px 14px 0px #0000003b;
+  padding: 5px;
+}
+
+.apr-wrapper {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  overflow: auto;
+  background: #769492;
+  background: url('../images/triangles.png');
+  background-size: cover;
+}
+
+.apr-contain {
+  padding-top: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+  background: white;
+  margin-top: 25px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  min-height: 1500px;
+  padding: 35px;
+  min-width: 950px;
+  overflow-y: auto;
+  white-space: pre;
+  font-size: 17px;
+  margin-bottom: 100px;
+}
+
+.apr-contain .highcharts-container {
+  width: 100% !important;
+}
