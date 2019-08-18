@@ -27,17 +27,17 @@ function fetchAccounts() {
             if (body.error) {
                 GLOBAL_FUNCTION_QUEUE.push(() => fetchAccounts());
             }
-            if (!navigator.onLine){
+            if (!navigator.onLine) {
                 document.body.classList.add("offline");
             }
             const payload = body || {};
             payload.error = body.error || false;
             receiveAccounts(payload);
-            if(!body.error) fetchAccountsData();
+            if (!body.error) fetchAccountsData();
         })
-        // .catch(error => {
-        //     receiveAccounts({ error });
-        // });
+    // .catch(error => {
+    //     receiveAccounts({ error });
+    // });
 }
 
 // TODO: steal this from misc.js later
@@ -106,40 +106,40 @@ function fetchHistory({ type, title, field }) {
                 receiveHistory(json);
             })
             .catch(function (error) {
-                receiveHistory({error});
+                receiveHistory({ error });
             });
     }
     updateDiffs.bind(updateDiffs)();
 }
 
 function saveAccounts(accounts) {
-		//console.log(accounts);
+    //console.log(accounts);
     const accountsToSave = clone(accounts);
     accountsToSave.liabilities
         .filter(x => x.type === 'group')
         .forEach(group => {
             group.items = group.items.map(item => {
                 return typeof item === 'string'
-                ? { title: item }
-                : { title: item.title }
+                    ? { title: item }
+                    : { title: item.title }
             });
         });
     accountsToSave.liabilities.forEach(x => {
-				delete x.selected;
-				if(x.type === 'grouped'){
-					delete x.type;
-				}
-		});
-		// don't save groups with no items
-		accountsToSave.liabilities = accountsToSave.liabilities.filter(x => {
-			if(!x.type || x.type !== 'group'){
-				return true;
-			}
-			if(x.items && x.items.length < 1){
-				return false;
-			}
-			return true;
-		});
+        delete x.selected;
+        if (x.type === 'grouped') {
+            delete x.type;
+        }
+    });
+    // don't save groups with no items
+    accountsToSave.liabilities = accountsToSave.liabilities.filter(x => {
+        if (!x.type || x.type !== 'group') {
+            return true;
+        }
+        if (x.items && x.items.length < 1) {
+            return false;
+        }
+        return true;
+    });
     const url = './accounts';
     const config = {
         method: 'POST',

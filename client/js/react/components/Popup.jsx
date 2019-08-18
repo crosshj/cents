@@ -200,11 +200,19 @@ function Popup({error, account, history}){
                             </button>
                         }
                     </div>
-                    <div className="form-group">
-                        <label>APR</label>
-                        <input type="number" value={0.00} className="u-full-width"
-                            onChange={(event) => update('apr', event)}
-                        />
+                    <div class="flex-row flex-row-apr">
+                        <div className="form-group">
+                            <label>APR</label>
+                            <input type="number" value={account.apr} className="u-full-width"
+                                onChange={(event) => update('apr', event)}
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label>APR (cash advance)</label>
+                            <input type="number" value={account.aprCash} className="u-full-width"
+                                onChange={(event) => update('aprCash', event)}
+                            />
+                        </div>
                     </div>
                     <div className="form-group">
                         <label>Date Due</label>

@@ -21,6 +21,18 @@
   }
 }
 
+@media (max-width: 750px) {
+  .column, .columns {
+      max-width: unset !important;
+  }
+}
+
+@media (min-width: 750px) {
+  .column, .columns {
+      max-width: auto;
+  }
+}
+
 .button:not(.grouped):not(.group):not(.menu) {
   border: 0px;
   border-radius: 0px;
@@ -133,39 +145,54 @@ a.button.menu.button-primary.selected:after {
   margin-top: 5px;
 }
 
-a.button {
+.column a.button {
   width: 100%;
   height: auto;
+  margin-bottom: 15px;
 }
-table {
+.account.item {
   margin-bottom: 0px;
   line-height: auto;
   border-collapse: collapse;
 }
-td {
+/* .account.item > div > div {
   border-bottom: none;
   padding: 0px;
-}
-td.title {
+} */
+.title {
     font-weight: 600;
     padding-left: 5px;
 }
-td.total, td.status, td.date {
-    text-align: right;
+.info .total {
+    text-align: center;
+    flex-direction: row;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    color: #fffa;
 }
-
-td.status, td.date {
+.apr {
+  margin: 0;
+  padding: 2px;
+  border: 1px solid;
+  margin-left: 5px;
+  font-size: 11px;
+  border-color: #fff3;
+}
+@media (max-width: 400px) {
+  .apr {
+    display: none;
+  }
+}
+.status, .date {
     text-align: right;
-    width: 42%;
     padding-right: 7px;
 }
-
-td.amount {
+.amount {
   padding-left: 7px;
+  text-align: left;
 }
-
-
-tr.header td {
+.header > div {
   line-height: 16px;
   padding-top: 12px;
   font-size: 15px;
@@ -175,15 +202,19 @@ tr.header td {
   font-weight: 100;
 }
 
-tr.info td {
-  padding-top: 6px;
-  line-height: 10px;
-  padding-bottom: 6px;
+.info {
   border-color: rgba(0, 0, 0, 0.09);
   font-size: 14px;
   font-family: sans-serif;
   background-color: rgba(0, 0, 0, 0.03);
   font-weight: 200;
+}
+
+.info > div {
+  padding-top: 6px;
+  line-height: 10px;
+  padding-bottom: 6px;
+
 }
 
 /*
@@ -778,9 +809,21 @@ input[type="date"] {
   letter-spacing: 1.1px;
   background-color: unset;
   white-space: pre;
+  border: 0px;
+  padding-top: 5px;
 }
 
 .row-seperator td span.diff {
   margin-left: 11px;
   opacity: .5;
+}
+
+.flex-row {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  align-items: center;
+}
+.flex-row.flex-row-apr .u-full-width {
+  width: 97%;
 }

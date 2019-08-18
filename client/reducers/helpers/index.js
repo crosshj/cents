@@ -56,7 +56,7 @@ function updateAccountsFromAccount({ accounts, account }) {
     }
     if (foundAccount) {
         // add or set prop to equal incoming account
-        Object.keys(_account)
+        Object.keys(account)
             .forEach(key => {
                 _account[key] = account[key];
             });
