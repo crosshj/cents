@@ -1,7 +1,7 @@
 import React from 'react';
 
 import History from './History';
-import {formatMoney} from '../utilities';
+import {formatMoney} from '../helpers/utilities';
 import {
     popupCancel,
     groupRemove,
@@ -10,7 +10,7 @@ import {
     popupHistory,
     popupHistoryBack,
     popupUpdate
-  } from '../../redux/actions';
+  } from '../redux/actions';
 
 function Popup({error, account, history}){
     //console.log({error, account, history});
@@ -80,14 +80,16 @@ function Popup({error, account, history}){
     const historyError = history && history.error
         && typeof history.error === 'object';
 
+    const historyTitle = `${((history||{}).title||'').toUpperCase()} ${((history||{}).field||'').replace('_', ' ')} History`;
+
     return (
         <div id="popup-modal" className={popupClass} ref={ref => ref && ref.scrollTo(0,0)}>
             { history &&
                 <div className="container content history">
                     <div>
-                        <h4>
-                            <a>{history.title} {history.field} History</a>
-                        </h4>
+                        <h5 className='history-title' style={{ fontSize: (30 / historyTitle.length) * 22}}>
+                            <a>{historyTitle}</a>
+                        </h5>
                         <div id="history-graph">
                             { historyLoading &&
                                 <div className="loading-spinner">
@@ -117,7 +119,7 @@ function Popup({error, account, history}){
                         <h2>
                         { isNewItem
                             ? <a className='popup-heading'>New { isGroup ? 'Group' : 'Item'}</a>
-                            : <a target="_blank" href={account.website}>{account.title}</a>
+                            : <a target="_blank" href={account.website} style={{ fontSize: account.title.length > 15 ? 30 : 35}}>{account.title}</a>
                         }
                         </h2>
                         { !isNewItem &&

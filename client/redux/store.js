@@ -1,7 +1,7 @@
 import createStore from 'redux/es/createStore';
 
 
-import reducers from '../../reducers';
+import reducers from '../reducers';
 
 const initialState = {
     app: {

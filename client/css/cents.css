@@ -267,9 +267,9 @@ a.button.grouped {
   border: 0px;
   border-left: 4px solid !important;
   border-left-color: #888 !important;
-  margin-top: -17px;
+  margin-top: -15px;
   border-radius: 0px;
-  border-top: 1px solid #5b594c;
+  border-top: 1px solid #77766c;
 }
 
 a.button.totals:not(.menu) {
@@ -826,4 +826,20 @@ input[type="date"] {
 }
 .flex-row.flex-row-apr .u-full-width {
   width: 97%;
+}
+
+.button.totals td {
+  line-height: 16px;
+  padding-top: 12px;
+  font-size: 15px;
+  border-bottom: 1px solid;
+  padding-bottom: 5px;
+  border-color: rgba(255, 255, 255, 0.05);
+  font-weight: 100;
+}
+
+.button.totals table {
+  margin-bottom: 0px;
+  line-height: auto;
+  border-collapse: collapse;
 }

@@ -1,9 +1,9 @@
-import { clone, safeAccess } from '../js/react/utilities';
+import { clone, safeAccess } from '../helpers/utilities';
 import { updateAccountsFromAccount } from './helpers';
 
 import {
     saveAccounts
-} from '../js/redux/services';
+} from '../redux/services';
 import { fixTotals } from './helpers';
 
 /*

@@ -1,6 +1,4 @@
-import { clone } from '../../js/react/utilities';
-
-import { statToNumber } from '../../js/redux/utilities';
+import { clone, statToNumber } from '../../redux/utilities';
 
 function updateAccountsFromAccount({ accounts, account }) {
     const _accounts = clone(accounts);

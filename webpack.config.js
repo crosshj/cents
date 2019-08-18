@@ -7,7 +7,7 @@ var CopyWebpackPlugin = require('copy-webpack-plugin');
 
 var BUILD_DIR = path.resolve(__dirname, './dist/client/');
 //console.log({ BUILD_DIR})
-var APP_DIR = path.resolve(__dirname, 'client/js/react');
+var APP_DIR = path.resolve(__dirname, 'client/');
 
 //var BUILD_DIR = '/client/build';
 //var APP_DIR = './client/js/react';

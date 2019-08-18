@@ -1,7 +1,7 @@
 import React from 'react';
 import {
     menuSelect
-  } from '../../redux/actions';
+  } from '../redux/actions';
 
 function Menu({items, selected}){
     const menuItems = items.map((item, key) => {

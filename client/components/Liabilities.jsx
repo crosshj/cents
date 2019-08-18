@@ -1,8 +1,8 @@
 import React from 'react';
-import { formatMoney, formatDateShort, clone } from '../utilities';
+import { formatMoney, formatDateShort, clone } from '../helpers/utilities';
 import {
     accountClick, selectAccountClick, groupClick, newAccountClick, newGroupClick
-} from '../../redux/actions';
+} from '../redux/actions';
 import Row from './Row';
 
 function SeperatorRow({ data, key }){

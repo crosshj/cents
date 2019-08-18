@@ -2,7 +2,7 @@ import React from 'react';
 
 import {
     accountClick
-} from '../../redux/actions';
+} from '../redux/actions';
 
 import Row from './Row';
 

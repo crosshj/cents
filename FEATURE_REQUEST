@@ -2,6 +2,9 @@ INBOX
   - create paycheck view
   - make a desktop version
   - create a brighter theme
+  - show hidden / hide
+  - show projected payoff date in popup
+  - scroll history graph
 
 GROUPED ACCOUNTS
   - amount that is shown due/pending should only be that due within period

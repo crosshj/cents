@@ -1,5 +1,5 @@
 import React from 'react';
-import {formatMoney, formatDateShort} from '../utilities';
+import {formatMoney, formatDateShort} from '../helpers/utilities';
 
 const Row = ({
     data, key, rowClick, title, contextClick = () => {}
