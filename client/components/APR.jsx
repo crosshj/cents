@@ -182,6 +182,7 @@ const APR = ({ state, onChange }) => {
 						</div>
 					</div>
 				</div>
+				<div>TOTAL INTEREST COST: &lt;TODO this&gt;</div>
 				<div>{`
 				The idea here is to see what strategies work best for paying down debt.  Consider the following:
 
