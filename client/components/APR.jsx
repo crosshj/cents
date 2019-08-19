@@ -187,8 +187,9 @@ const APR = ({ state, onChange }) => {
 				The idea here is to see what strategies work best for paying down debt.  Consider the following:
 
 				    - *** pay off debts in order of highest APR ***
-				    - pay off lowest debt first
+				    - pay off lowest/highest debt first
 				    - pay off whatever debt is costing the most per month first
+				    - split extra money between accounts
 				    - only pay minimum payment
 
 				Here "pay off" means that there is some extra amount available in addition to normal payment amount.
