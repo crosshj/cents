@@ -12,7 +12,7 @@ function Menu({items, selected}){
     });
 
     return (
-    <div className="container">
+    <div className="menu-container container">
         <div className="row">
             <div className="column menu">
                 { menuItems }

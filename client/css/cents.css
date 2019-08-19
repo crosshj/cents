@@ -33,6 +33,13 @@
   }
 }
 
+.main-carousel .column,
+.main-carousel .columns,
+.menu-container .column,
+.menu-container .columns {
+  float: unset;
+}
+
 .button:not(.grouped):not(.group):not(.menu) {
   border: 0px;
   border-radius: 0px;
@@ -826,6 +833,9 @@ input[type="date"] {
 }
 .flex-row.flex-row-apr .u-full-width {
   width: 97%;
+}
+.flex-row .columns {
+  margin-bottom: auto;
 }
 
 .button.totals td {

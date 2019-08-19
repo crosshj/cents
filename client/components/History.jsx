@@ -54,7 +54,7 @@ var chartConfig = (data) => ({
 
 function History({ data=[], width, series, type }) {
     const formattedData = formatGraphData(data);
-    console.log({data, series});
+    //console.log({data, series});
     const config = chartConfig(formattedData);
     if(width){
         config.chart.width = width;
