@@ -18,33 +18,37 @@ var chartConfig = (data) => ({
         //renderTo: $container,
         marginTop: 30,
         height: 300,
+        zoomType: 'x',
+        panKey: 'shift',
+        //https://www.highcharts.com/docs/chart-design-and-style/style-by-css
         styledMode: true
+    },
+    plotOptions: {
+        series: {
+            pointPadding: 200,
+        }
     },
     title: {
         text: ''
     },
-    legend: {
-        enabled: false
-    },
-    credits: {
-        enabled: false
-    },
+    legend: { enabled: false },
+    credits: { enabled: false },
     tooltip: {
         formatter: function () {
-            return `
-                <b>$${this.y}</b>
-                <br/>
-                <p>${moment(this.x).format('MMM DD YYYY, HH:mm a')}</p>
-            `;
+            return false; // also see css for .highcharts-halo
+            // return `
+            //     <b>$${this.y}</b>
+            //     <br/>
+            //     <p>${moment(this.x).format('MMM DD YYYY, HH:mm a')}</p>
+            // `;
         }
     },
     xAxis: {
-        type: 'datetime'
+        type: 'datetime',
     },
     yAxis: {
         title: ''
     },
-    zoomType: 'x',
     series: [{
         name: '',
         data
@@ -61,10 +65,10 @@ function History({ data=[], width, series, type }) {
     }
     if(series){
         config.series = series
-        .map(x => Object.assign(
-            {}, x,
-            { data: formatGraphData(x.data) }
-        ));
+            .map(x => Object.assign(
+                {}, x,
+                { data: formatGraphData(x.data) }
+            ));
     }
     if(type){
         config.chart.type = type;

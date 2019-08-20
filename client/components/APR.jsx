@@ -1,6 +1,6 @@
 import React from 'react';
 import History from './History';
-import { clone } from '../helpers/utilities';
+import { formatMoney, formatDateShort, clone } from '../helpers/utilities';
 
 const getDates = (datesMax) => {
 	const dates = [];
@@ -18,17 +18,20 @@ class DebtPayer {
 	constructor({ startingDebt, apr, interest, minPayment }) {
 		this.balance = startingDebt;
 		this.apr = apr;
+		this.totalInterest = 0;
 		this.interest = () => {
 			return interest(this.balance, this.apr);
 		};
 		this.minPayment = () => {
-			return Math.min(this.balance + 1, minPayment(this.balance));
+			return Math.min(this.balance, minPayment(this.balance));
 		};
 	}
 
 	pay(additional = 0) {
 		const thisMonthsBalance = this.balance;
-		this.balance = this.interest() + thisMonthsBalance - this.minPayment() - additional;
+		const interest = this.interest();
+		this.totalInterest += interest;
+		this.balance = interest + thisMonthsBalance - this.minPayment() - additional;
 		if (this.balance <= 0) {
 			this.balance = 0;
 		}
@@ -92,22 +95,83 @@ const APR = ({ state, onChange }) => {
 		payDebtRed.minPayment()
 		+ payDebtBlue.minPayment()
 		+ state.other.extra;
+	//console.log({ totalAvailableMoney });
 
 	var blueDone, redDone;
 	(new Array(NUMBER_OF_MONTHS)).fill().forEach((x, i) => {
 		const redMinPay = payDebtRed.minPayment();
 		const blueMinPay = payDebtBlue.minPayment();
 		var extraMoney = 0;
+		var redExtraMoney = 0;
+		var blueExtraMoney = 0;
 
 		if (totalAvailableMoney > redMinPay + blueMinPay) {
 			extraMoney = totalAvailableMoney - (redMinPay + blueMinPay);
 		}
-		var redExtraMoney = 0;
-		var blueExtraMoney = 0;
-		if (redMinPay > 1) {
-			redExtraMoney = extraMoney;
-		} else {
+
+		if(state.other.strategy.includes("APR")){
+			if(state.other.strategy.includes("High")){
+				if(payDebtRed.apr >= payDebtBlue.apr){
+					redExtraMoney = extraMoney;
+				}
+				if(payDebtRed.apr < payDebtBlue.apr){
+					blueExtraMoney = extraMoney;
+				}
+			} else {
+				if(payDebtRed.apr < payDebtBlue.apr){
+					redExtraMoney = extraMoney;
+				}
+				if(payDebtRed.apr >= payDebtBlue.apr){
+					blueExtraMoney = extraMoney;
+				}
+			}
+		}
+
+		if(state.other.strategy.includes("Debt")){
+			if(state.other.strategy.includes("High")){
+				if(payDebtRed.balance >= payDebtBlue.balance){
+					redExtraMoney = extraMoney;
+				}
+				if(payDebtRed.balance < payDebtBlue.balance){
+					blueExtraMoney = extraMoney;
+				}
+			} else {
+				if(payDebtRed.balance < payDebtBlue.balance){
+					redExtraMoney = extraMoney;
+				}
+				if(payDebtRed.balance >= payDebtBlue.balance){
+					blueExtraMoney = extraMoney;
+				}
+			}
+		}
+
+		if(state.other.strategy.includes("Cost")){
+			const redInterest = payDebtRed.interest();
+			const blueInterest = payDebtBlue.interest();
+			if(state.other.strategy.includes("High")){
+				if(redInterest >= blueInterest){
+					redExtraMoney = extraMoney;
+				}
+				if(redInterest < blueInterest){
+					blueExtraMoney = extraMoney;
+				}
+			} else {
+				if(redInterest < blueInterest){
+					redExtraMoney = extraMoney;
+				}
+				if(redInterest >= blueInterest){
+					blueExtraMoney = extraMoney;
+				}
+			}
+		}
+
+		// dont give extra money to accounts almost or fully paid
+		if (redMinPay === 0 || payDebtRed.balance === redMinPay) {
 			blueExtraMoney = extraMoney;
+		}
+		
+		if (blueMinPay === 0 || payDebtBlue.balance === blueMinPay) {
+			redExtraMoney = extraMoney;
 		}
 
 		const redBalance = payDebtRed.pay(redExtraMoney);
@@ -138,25 +202,54 @@ const APR = ({ state, onChange }) => {
 
 	const series = [{
 		name: '',
+		color: 'blue',
+		fillColor: 'rgba(0,80,255,0.3)',
+		data: dataBlue
+	}, {
+		name: '',
 		color: 'red',
 		fillColor: 'rgba(255,0,0,0.3)',
 		data: dataRed
-	}, {
-		name: '',
-		color: 'blue',
-		fillColor: 'rgba(0,0,255,0.3)',
-		data: dataBlue
-	}]
+	}];
 	//console.log({ data2 });
 
 	const redBlueControlFields = [
 		'Amount', 'APR', 'Minimum Percent', 'Minimum Payment'
 	];
+
+	const strategies = [
+		'High APR',
+		'Low APR',
+		'High Debt',
+		'Low Debt',
+		'High Cost',
+		'Low Cost',
+		'None'
+	].map(x => ({
+		text: x,
+		isSelected: x === state.other.strategy
+	}));
+
+	const totalInterest = formatMoney(payDebtRed.totalInterest + payDebtBlue.totalInterest);
 	return (
 		<div className="apr-wrapper">
 			<div className="apr-contain container">
 				<h2>APR Test</h2>
 				<History series={series} width={850} type="area" />
+
+				<h5>STRATEGY</h5>
+				<div className="grid-row">
+					{ strategies.map((button, i) => {
+						return (
+							<button
+								className={button.isSelected ? 'button-primary grey' : ''}
+								onClick={(event) => onChange('other', 'strategy', event.target.innerHTML)}
+							>{button.text}</button>
+						);
+					})}
+				</div>
+				<h5 style={{ marginTop: 25, marginBottom: 10 }}>INTEREST COST</h5>
+				<h4 style={{ marginBottom: 40, fontWeight: 500 }}>{totalInterest}</h4>
 				<div className="container">
 					<div className="flex-row">
 						<div className="columns">
@@ -182,7 +275,6 @@ const APR = ({ state, onChange }) => {
 						</div>
 					</div>
 				</div>
-				<div>TOTAL INTEREST COST: &lt;TODO this&gt;</div>
 				<div>{`
 				The idea here is to see what strategies work best for paying down debt.  Consider the following:
 
@@ -194,13 +286,6 @@ const APR = ({ state, onChange }) => {
 
 				Here "pay off" means that there is some extra amount available in addition to normal payment amount.
 
-				I would like to show these strategies visually by graphing balances over time.
-
-				Each account should have:
-				     - minimum due per month (based on balance at given time)
-				     - total owed at given time
-				     - APR which is applied monthly at given time
-
 		`.replace(/\t/g, '')}</div>
 			</div>
 		</div>
@@ -210,7 +295,8 @@ const APR = ({ state, onChange }) => {
 const APRInitialState = {
 	other: {
 		months: 60,
-		extra: 50
+		extra: 0,
+		strategy: 'High APR'
 	},
 	red: {
 		// wal-mart
@@ -236,7 +322,10 @@ class APRContainer extends React.Component {
 	}
 
 	onChange(prefix, cleanKeyName, event){
-		this.state[prefix][cleanKeyName] = Number(event.target.value);
+		const value = typeof event === 'string'
+			? event
+			: Number(event.target.value);
+		this.state[prefix][cleanKeyName] = value;
 		this.forceUpdate();
 	}
 

@@ -838,6 +838,12 @@ input[type="date"] {
   margin-bottom: auto;
 }
 
+.grid-row {
+  display: grid;
+  grid-gap: 5px;
+  grid-auto-flow: column;
+}
+
 .button.totals td {
   line-height: 16px;
   padding-top: 12px;
@@ -852,6 +858,12 @@ input[type="date"] {
   margin-bottom: 0px;
   line-height: auto;
   border-collapse: collapse;
+}
+
+button.button-primary.grey {
+  background: #d9d9d978;
+  border-color: #5c5c5c;
+  color: #5c5c5c;
 }
 
 a.test-link {
@@ -917,4 +929,8 @@ a.test-link {
 }
 .apr-contain path.highcharts-graph {
   stroke-width: 0.5;
+}
+
+.apr-contain .highcharts-markers {
+  display: none;
 }
