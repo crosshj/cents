@@ -54,12 +54,6 @@ class AppContainer extends React.Component {
       <React.Fragment>
         <Router page={this.props.page}>
           <Route path='/accounts'>
-            <Link
-              action="PAGE_CHANGE"
-              to='/apr'
-              className="test-link"
-              text="APR Test"
-            />
             { !this.props.error &&
               <Menu
                 items={['Debts', 'Totals', 'Assets']}
@@ -92,13 +86,19 @@ class AppContainer extends React.Component {
 
             <div id="corner-circle">0</div>
             <ActionButton />
+            <Link
+              action="PAGE_CHANGE"
+              to='/debt-pay-calc'
+              className="test-link"
+              text="Debt Pay Calc"
+            />
           </Route>
 
-          <Route path='/apr'>
+          <Route path='/debt-pay-calc'>
             <APR/>
             <Link
               action="PAGE_CHANGE"
-              to='/accounts/popup/sawnee'
+              to='/accounts'
               className="test-link"
               text="Accounts Page"
             />

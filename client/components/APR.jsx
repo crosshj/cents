@@ -234,7 +234,7 @@ const APR = ({ state, onChange }) => {
 	return (
 		<div className="apr-wrapper">
 			<div className="apr-contain container">
-				<h2>APR Test</h2>
+				<h2>Debt Payment Calculator</h2>
 				<History series={series} width={850} type="area" />
 
 				<h5>STRATEGY</h5>

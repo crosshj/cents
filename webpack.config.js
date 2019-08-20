@@ -62,8 +62,8 @@ var config = {
       moment: 'moment/min/moment.min.js',
       //'react': 'react-dom/cjs/react-dom.production.min.js',
       //'react-dom': 'react/cjs/react.production.min.js',
-      "react": "preact-compat",
-      "react-dom": "preact-compat"
+      // "react": "preact-compat",
+      // "react-dom": "preact-compat"
     }
   },
   plugins: [

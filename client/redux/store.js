@@ -8,7 +8,7 @@ const initialState = {
     popup: {
         error: 'not initialized'
     },
-    page: document.location.hash.slice(1) || ''
+    page: document.location.hash.slice(1) || '/accounts'
 };
 
 function setup(renderer){

@@ -6,7 +6,7 @@ const Router = ({ page, children }) => {
         <React.Fragment>
             { children.filter(child => {
                 //console.log({page, childPage: child.props.path, child});
-                return page.includes(child.props.path);
+                return page.includes(child.props.path) || page === child.props.path;
             })}
         </React.Fragment>
     );
