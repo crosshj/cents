@@ -1,3 +1,9 @@
+/*
+
+DEPRECATE THIS: it sucks having to register an action here, just share th dispatcher
+
+*/
+
 
 var dispatch = undefined;
 

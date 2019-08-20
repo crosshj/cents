@@ -59,9 +59,11 @@ var config = {
     extensions: ['.js', '.jsx'],
     alias: {
       jquery: 'jquery/dist/jquery.slim.min.js',
-      moment: 'moment/min/moment.min.js'
+      moment: 'moment/min/moment.min.js',
       //'react': 'react-dom/cjs/react-dom.production.min.js',
-      //'react-dom': 'react/cjs/react.production.min.js'
+      //'react-dom': 'react/cjs/react.production.min.js',
+      "react": "preact-compat",
+      "react-dom": "preact-compat"
     }
   },
   plugins: [

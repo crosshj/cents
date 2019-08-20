@@ -1,6 +1,4 @@
 import createStore from 'redux/es/createStore';
-
-
 import reducers from '../reducers';
 
 const initialState = {
@@ -10,13 +8,10 @@ const initialState = {
     popup: {
         error: 'not initialized'
     },
-    page: undefined
+    page: document.location.hash.slice(1) || ''
 };
 
-function setup(renderer, page){
-    if(page){
-        initialState.page = page;
-    }
+function setup(renderer){
     const store = createStore(
         reducers,
         initialState,

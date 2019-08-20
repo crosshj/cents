@@ -1,5 +1,8 @@
-import React from 'react/cjs/react.production.min.js';
-import { render } from 'react-dom/cjs/react-dom.production.min.js';
+//import React from 'react/cjs/react.production.min.js';
+//import { render } from 'react-dom/cjs/react-dom.production.min.js';
+
+import React from 'react';
+import { render } from 'react-dom';
 
 import { setup as setupStore } from './redux/store';
 import { init as initActions } from './redux/actions';
@@ -17,9 +20,7 @@ import {
 
 import './css/index.scss';
 
-const page = document.location.hash.slice(1);
-
-const store = setupStore(renderApp, page);
+const store = setupStore(renderApp);
 initActions(store);
 
 function renderApp() {

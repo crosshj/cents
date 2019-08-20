@@ -82,7 +82,7 @@ require('./routes')(app, passport);
 
 const useWebpackDevMiddleware = process.env.NODE_ENV === 'dev';
 if (useWebpackDevMiddleware){
-  console.log('Using Webpack Dev Middleware!');
+  console.log('Using Webpack Dev Middleware (NOT)!');
   const webpack = require('webpack');
   //const webpackDevMiddleware = require('webpack-dev-middleware');
   const webpackConfig = require('../webpack.config.js');
