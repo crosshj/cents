@@ -5,71 +5,68 @@ var path = require('path');
 var express = require('express');
 var session = require('express-session');
 var serveStatic = require('serve-static');
-//var TingoStore = require('connect-tingo')({session});
-
-var MongoDBStore = require('connect-mongodb-session')(session);
-var store = new MongoDBStore({
-  uri: 'mongodb://ubuntu:27017',
-  databaseName: 'cents',
-  collection: 'sessions'
-},
-function(error) {
-  if(error) console.log({ mongoConnectError: error});
-  // Should have gotten an error
-});
-store.on('error', function(error) {
-  console.log(error);
-});
-
-
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var passport = require('passport');
-
 var appPort = process.env.PORT || 8080;
-
-//var cron = require('../service/cron');
-//cron();
-
 var app = express();
-app.enable('etag', 'strong');
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
 
-// app.use('/', express.static(
-//   path.resolve(__dirname, '../client'),
-//   {
-//         setHeaders: (res) => {
-//             res.setHeader('x-powered-by', 'Foo')
-//         },
-//         redirect: false
-//     }
-// ));
-
-app.use(serveStatic(
-  require('path').resolve(__dirname, '../dist/client'),
-  { 
-    index: ['index.html', 'index.htm']
-  }
-));
-
-
-
-require('./authentication').init(app);
 var settings = {
   cookieSecret: require('crypto').randomBytes(64).toString('hex'),
   folderLocation:  path.resolve(__dirname, '../service/database/data')
 };
+// console.log({
+//   settings
+// });
+
+var useFileStore = true;
+var store = ((sess) => {
+	if(useFileStore){
+		const FileStore = require('session-file-store')(session);
+		const fileStoreOptions = {
+			path: settings.folderLocation
+		};
+		const store = new FileStore(fileStoreOptions)
+		return store;
+	}
+
+	var MongoDBStore = require('connect-mongodb-session')(sess);
+	const connectErrorCallback = (error) => {
+		if(error) {
+			console.log({ mongoConnectError: error});
+		}
+	};
+	var store = new MongoDBStore({
+		uri: 'mongodb://ubuntu:27017',
+		databaseName: 'cents',
+		collection: 'sessions'
+	}, connectErrorCallback);
+
+	store.on('error', connectErrorCallback);
+	return store;
+
+})(session);
+
+
+//var cron = require('../service/cron');
+//cron();
+
+app.enable('etag', 'strong');
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+
+app.use(serveStatic(
+  require('path').resolve(__dirname, '../dist/client'),
+  {
+    index: ['index.html', 'index.htm']
+  }
+));
+
+require('./authentication').init(app);
 
 app.use(cookieParser());
-// console.log({
-//   settings 
-// });
 app.use(session({
     secret: settings.cookieSecret,
-    // store: new TingoStore({
-    //   db: settings.folderLocation
-    // }),
     store,
     resave: false,
     saveUninitialized: false
@@ -86,14 +83,14 @@ if (useWebpackDevMiddleware){
   const webpack = require('webpack');
   //const webpackDevMiddleware = require('webpack-dev-middleware');
   const webpackConfig = require('../webpack.config.js');
-  
+
   const webpackCompilerCallback = (err, output) => {
     if(err){
       console.log('--- webpack compile error ---');
       console.log(JSON.stringify(err));
       return;
     }
-    
+
     console.log('Webpack finished client build.');
     //console.log({ output });
     //console.log(Object.keys(output));
@@ -139,8 +136,6 @@ if (useWebpackDevMiddleware){
   // }));
 
 }
-
-
 
 const hostname = 'http://localhost';
 
