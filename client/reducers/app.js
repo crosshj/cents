@@ -1,16 +1,16 @@
 import {
   saveAccounts
-} from '../js/redux/services';
+} from '../redux/services';
 
 import {
   updateGroupFromChildren,
   markGroupedItems
-} from '../js/redux/utilities';
+} from '../redux/utilities';
 
 import {
   clone,
   safeAccess
-} from '../js/react/utilities';
+} from '../helpers/utilities';
 
 import {
   fixTotals, addSeperators

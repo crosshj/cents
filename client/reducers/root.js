@@ -1,9 +1,9 @@
-import { clone, safeAccess } from '../js/react/utilities';
+import { clone, safeAccess } from '../helpers/utilities';
 import { updateAccountsFromAccount } from './helpers';
 
 import {
     saveAccounts
-} from '../js/redux/services';
+} from '../redux/services';
 import { fixTotals } from './helpers';
 
 /*
@@ -17,6 +17,14 @@ root reducer:
 var _account = undefined;
 var _accounts = undefined;
 var _selected = undefined;
+
+window.MAIN_DATA = {
+    get: () => ({
+        account: _account,
+        accounts: _accounts,
+        selected: _selected
+    })
+};
 
 const globalState = () => ({
     accounts: (() => _accounts)(),
@@ -36,6 +44,7 @@ const globalState = () => ({
 
 // -----------------------------------------------------------------------------
 const receiveAccounts = (state, action) => {
+    //debugger;
     const accounts = clone(action.payload);
     const totals = fixTotals(accounts).totals;
     accounts.totals = totals;

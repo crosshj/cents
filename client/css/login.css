@@ -1,3 +1,5 @@
+/* ------- LOGIN CSS ------- */
+
 body {
   background-color: rgba(91,89,77,1);
   font-size: 1.5em; /* currently ems cause chrome bug misinterpreting rems on body element */

@@ -1,4 +1,5 @@
 import app from './app';
+import page from './page';
 import popup from './popup';
 import root from './root';
 import global from './global';
@@ -9,8 +10,9 @@ import { combineReducers } from 'redux';
 
 const reducers = {
     app: root.bind(app),
-		popup: root.bind(popup),
-		root: root.bind(global)
+    popup: root.bind(popup),
+    page: root.bind(page),
+    root: root.bind(global)
 };
 
 const rootReducer = (state, action) => {

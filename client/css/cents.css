@@ -1,4 +1,6 @@
-﻿:root {
+﻿/* ------- CENTS CSS ------- */
+
+:root {
   --due-color: rgba(255, 0, 0, 1);
   --pending-color: #dcaa3e;
   --paid-color: rgb(173, 168, 137);
@@ -17,6 +19,25 @@
   .green-theme {
     --body-color: #52605c;
   }
+}
+
+@media (max-width: 750px) {
+  .column, .columns {
+      max-width: unset !important;
+  }
+}
+
+@media (min-width: 750px) {
+  .column, .columns {
+      max-width: auto;
+  }
+}
+
+.main-carousel .column,
+.main-carousel .columns,
+.menu-container .column,
+.menu-container .columns {
+  float: unset;
 }
 
 .button:not(.grouped):not(.group):not(.menu) {
@@ -131,39 +152,54 @@ a.button.menu.button-primary.selected:after {
   margin-top: 5px;
 }
 
-a.button {
+.column a.button {
   width: 100%;
   height: auto;
+  margin-bottom: 15px;
 }
-table {
+.account.item {
   margin-bottom: 0px;
   line-height: auto;
   border-collapse: collapse;
 }
-td {
+/* .account.item > div > div {
   border-bottom: none;
   padding: 0px;
-}
-td.title {
+} */
+.title {
     font-weight: 600;
     padding-left: 5px;
 }
-td.total, td.status, td.date {
-    text-align: right;
+.info .total {
+    text-align: center;
+    flex-direction: row;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    color: #fffa;
 }
-
-td.status, td.date {
+.apr {
+  margin: 0;
+  padding: 2px;
+  border: 1px solid;
+  margin-left: 5px;
+  font-size: 11px;
+  border-color: #fff3;
+}
+@media (max-width: 400px) {
+  .apr {
+    display: none;
+  }
+}
+.status, .date {
     text-align: right;
-    width: 42%;
     padding-right: 7px;
 }
-
-td.amount {
+.amount {
   padding-left: 7px;
+  text-align: left;
 }
-
-
-tr.header td {
+.header > div {
   line-height: 16px;
   padding-top: 12px;
   font-size: 15px;
@@ -173,15 +209,19 @@ tr.header td {
   font-weight: 100;
 }
 
-tr.info td {
-  padding-top: 6px;
-  line-height: 10px;
-  padding-bottom: 6px;
+.info {
   border-color: rgba(0, 0, 0, 0.09);
   font-size: 14px;
   font-family: sans-serif;
   background-color: rgba(0, 0, 0, 0.03);
   font-weight: 200;
+}
+
+.info > div {
+  padding-top: 6px;
+  line-height: 10px;
+  padding-bottom: 6px;
+
 }
 
 /*
@@ -234,9 +274,9 @@ a.button.grouped {
   border: 0px;
   border-left: 4px solid !important;
   border-left-color: #888 !important;
-  margin-top: -17px;
+  margin-top: -15px;
   border-radius: 0px;
-  border-top: 1px solid #5b594c;
+  border-top: 1px solid #77766c;
 }
 
 a.button.totals:not(.menu) {
@@ -776,9 +816,121 @@ input[type="date"] {
   letter-spacing: 1.1px;
   background-color: unset;
   white-space: pre;
+  border: 0px;
+  padding-top: 5px;
 }
 
 .row-seperator td span.diff {
   margin-left: 11px;
   opacity: .5;
+}
+
+.flex-row {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  align-items: center;
+}
+.flex-row.flex-row-apr .u-full-width {
+  width: 97%;
+}
+.flex-row .columns {
+  margin-bottom: auto;
+}
+
+.grid-row {
+  display: grid;
+  grid-gap: 5px;
+  grid-auto-flow: column;
+}
+
+.button.totals td {
+  line-height: 16px;
+  padding-top: 12px;
+  font-size: 15px;
+  border-bottom: 1px solid;
+  padding-bottom: 5px;
+  border-color: rgba(255, 255, 255, 0.05);
+  font-weight: 100;
+}
+
+.button.totals table {
+  margin-bottom: 0px;
+  line-height: auto;
+  border-collapse: collapse;
+}
+
+button.button-primary.grey {
+  background: #d9d9d978;
+  border-color: #5c5c5c;
+  color: #5c5c5c;
+}
+
+a.test-link {
+  position: absolute;
+  z-index: 999;
+  bottom: 20px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 700;
+  background: #b5b3b3;
+  text-decoration: none;
+  color: #5a5a5a;
+  width: 170px;
+  border-radius: 3px;
+  text-transform: uppercase;
+  margin: auto;
+  box-shadow: 0px 7px 14px 0px #0000003b;
+  padding: 5px;
+}
+
+.apr-wrapper {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  overflow: auto;
+  background: #769492;
+  background: url('../images/triangles.png');
+  background-size: cover;
+}
+
+.apr-contain {
+  padding-top: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+  background: white;
+  margin-top: 25px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  min-height: 1500px;
+  padding: 35px;
+  min-width: 950px;
+  overflow-y: auto;
+  white-space: pre;
+  font-size: 17px;
+  margin-bottom: 100px;
+}
+
+.apr-contain .highcharts-container {
+  width: 100% !important;
+}
+
+.apr-contain .highcharts-point {
+  stroke-width: 0;
+  d: path("");
+}
+.apr-contain path.highcharts-graph {
+  stroke-width: 0.5;
+}
+
+.apr-contain .highcharts-markers {
+  display: none;
 }

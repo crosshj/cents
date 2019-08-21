@@ -18,7 +18,7 @@ https://serviceworke.rs/
 
 // Update 'version' if you need to refresh the cache
 var staticCacheName = 'static';
-var version = 'v1.1.14::';
+var version = 'v1.1.17::';
 var CACHE = version + staticCacheName;
 var timeout = 1500;
 
@@ -29,7 +29,6 @@ var timeout = 1500;
 var staticCacheList = [
   //TODO: should rarely update these (and only when good)
   './',
-  './login/',
   './images/launcher-icon-3x.png',
   './offline.html',
   './fonts/fontawesome-webfont.woff?v=4.4.0',
@@ -44,10 +43,10 @@ var staticCacheList = [
   './fonts/glyphicons-halflings-regular.ttf',
 
   //TODO: these will update possibly with every code push (version)
-  './js/build/app.js',
-  './js/build/vendor.js',
-  './js/build/bundle.css',
-  //TODO: vendor.css
+  './app.js',
+  './vendor.js',
+  './app.css',
+  './vendor.css'
 
 ];
 

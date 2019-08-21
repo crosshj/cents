@@ -1,6 +1,4 @@
-import { clone } from '../../js/react/utilities';
-
-import { statToNumber } from '../../js/redux/utilities';
+import { clone, statToNumber } from '../../redux/utilities';
 
 function updateAccountsFromAccount({ accounts, account }) {
     const _accounts = clone(accounts);
@@ -56,7 +54,7 @@ function updateAccountsFromAccount({ accounts, account }) {
     }
     if (foundAccount) {
         // add or set prop to equal incoming account
-        Object.keys(_account)
+        Object.keys(account)
             .forEach(key => {
                 _account[key] = account[key];
             });

@@ -1,3 +1,9 @@
+/*
+
+DEPRECATE THIS: it sucks having to register an action here, just share th dispatcher
+
+*/
+
 
 var dispatch = undefined;
 
@@ -119,7 +125,7 @@ function init(store){
 }
 
 export {
-    init, receiveAccounts, receiveAccountsSave, menuSelect, selectAccountClick, groupRemove, accountSave,
+    init, dispatch, receiveAccounts, receiveAccountsSave, menuSelect, selectAccountClick, groupRemove, accountSave,
     accountClick, groupClick, newAccountClick, newGroupClick, popupCancel,
     popupHistory, popupHistoryBack, popupUpdate, receiveHistory, receiveAccountsData,
     removeItem
