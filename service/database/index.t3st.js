@@ -59,4 +59,21 @@ const del = callback => {
   });
 };
 
-async.series([init, create, read, update, del]);
+//async.series([init, create, read, update, del]);
+
+const checkRecords = callback => {
+	db.init({
+		collectionName: 'records',
+		callback: (error, collection) => {
+			db.read({
+				query: {},
+				callback: (err, result) => {
+					console.log({ err, result: JSON.stringify(result[0]) });
+					callback()
+				}
+			});
+		}
+	});
+};
+
+async.series([checkRecords]);
