@@ -2,9 +2,9 @@ var getByName = function(data, title){
     return data.filter(function(val,i,arr){ return val.title.toLowerCase().indexOf(title) >= 0; })[0];
 };
 
-var formatMoney = function(amount){
-    if (!amount){
-        return "$0.00";
+var formatMoney = function(amount, defaultAmount){
+    if (!amount || !Boolean(amount) || Number(amount) == 0){
+        return defaultAmount || "$0.00";
     }
     amount = amount.toString().replace(/[$,]+/g,"");
     amount = (Number(amount) >= 0 ? "$" :"-$")

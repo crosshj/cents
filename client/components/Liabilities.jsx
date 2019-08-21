@@ -1,8 +1,9 @@
 import React from 'react';
-import { formatMoney, formatDateShort, clone } from '../utilities';
+import { formatMoney, formatDateShort, clone } from '../helpers/utilities';
 import {
     accountClick, selectAccountClick, groupClick, newAccountClick, newGroupClick
-} from '../../redux/actions';
+} from '../redux/actions';
+import Row from './Row';
 
 function SeperatorRow({ data, key }){
   const sepData = clone(data);
@@ -64,31 +65,14 @@ function makeRow(data, key){
     const contextClick = isGroup
         ? e => {e.preventDefault(); accountClick(data.title); return false; }
         : e => {e.preventDefault(); selectAccountClick(data.title); return false; };
-    const automark = data.auto
-        ? ' Ⓐ'
-        : '';
-
-    return (
-        <a className={rowClassName} key={key + '-' + data.title}
-            onClick={rowClick} onContextMenu={contextClick}
-        >
-            <table className="u-full-width">
-            <tbody>
-                <tr className="header">
-                    <td colSpan="2" className="title">{data.title}{automark}</td>
-                    <td className="status">{data.status.toUpperCase()}</td>
-                </tr>
-                <tr className="info">
-                    <td className="amount">{formatMoney(data.amount)}</td>
-                    <td className="total">
-                        {Boolean(Number(data.total_owed)) ? formatMoney(data.total_owed) : ''}
-                    </td>
-                    <td className="date">{formatDateShort(data.date)}</td>
-                </tr>
-            </tbody>
-            </table>
-        </a>
-    );
+    const props = {
+        data, key,
+        title: data.title + (data.auto
+            ? ' Ⓐ'
+            : ''),
+        rowClassName, rowClick, contextClick 
+    };
+    return <Row {...props}></Row>
 }
 
 function Liabilities({liabilities = []}){

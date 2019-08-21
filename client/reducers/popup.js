@@ -1,6 +1,6 @@
 import {
   fetchHistory
-} from '../js/redux/services';
+} from '../redux/services';
 
 import {
   clone,
@@ -8,7 +8,7 @@ import {
   bumpDateOneMonthBack,
   statToNumber,
   numberToStat
-} from '../js/redux/utilities.js';
+} from '../redux/utilities.js';
 
 function receiveHistory(state, action) {
   var newState = undefined;

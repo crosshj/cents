@@ -1,7 +1,5 @@
 import createStore from 'redux/es/createStore';
-
-
-import reducers from '../../reducers';
+import reducers from '../reducers';
 
 const initialState = {
     app: {
@@ -9,7 +7,8 @@ const initialState = {
     }, 
     popup: {
         error: 'not initialized'
-    }
+    },
+    page: document.location.hash.slice(1) || '/accounts'
 };
 
 function setup(renderer){

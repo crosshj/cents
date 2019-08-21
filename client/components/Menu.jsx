@@ -1,7 +1,7 @@
 import React from 'react';
 import {
     menuSelect
-  } from '../../redux/actions';
+  } from '../redux/actions';
 
 function Menu({items, selected}){
     const menuItems = items.map((item, key) => {
@@ -12,7 +12,7 @@ function Menu({items, selected}){
     });
 
     return (
-    <div className="container">
+    <div className="menu-container container">
         <div className="row">
             <div className="column menu">
                 { menuItems }

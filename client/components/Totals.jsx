@@ -1,11 +1,11 @@
 import React from 'react';
-import {formatMoney} from '../utilities';
+import {formatMoney} from '../helpers/utilities';
 import {
     popupHistory
-  } from '../../redux/actions';
+  } from '../redux/actions';
 import {
     fetchAccounts
-} from '../../redux/services';
+} from '../redux/services';
 
 function makeTotalsRow(props){
     var {balance=0, pendingTotal=0, dueTotal=0, assetsTotal=0, debts=0, debtsTotal=0, updating} = props;

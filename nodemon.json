@@ -1,8 +1,4 @@
 {
   "verbose": true,
-  "ignore": [
-    "client/*",
-    "diffs.log",
-    "accounts.*json"
-  ]
+  "watch": ["server/", "webpack.config.js"]
 }
