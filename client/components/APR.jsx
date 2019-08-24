@@ -329,6 +329,21 @@ class APRContainer extends React.Component {
 		this.forceUpdate();
 	}
 
+	onComponentDidMount(){
+		// allow zoom
+		const viewportMeta = document.querySelector('[name="viewport"]');
+		this.viewportContentBackup = viewportMeta.getAttribute('content');
+		const newViewportContent = this.viewportContentBackup
+			.replace('maximum-scale=1', 'maximum-scale=3');
+		viewportMeta.setAttribute('content', newViewportContent);
+	}
+
+	componentWillUnmount(){
+		// reset zoom
+		const viewportMeta = document.querySelector('[name="viewport"]');
+		viewportMeta.setAttribute('content', this.viewportContentBackup);
+	}
+
 	render() {
 		return <APR {...this.props} state={this.state} onChange={this.onChange}/>
 	}

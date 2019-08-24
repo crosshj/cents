@@ -841,7 +841,9 @@ input[type="date"] {
 .grid-row {
   display: grid;
   grid-gap: 5px;
-  grid-auto-flow: column;
+  /* grid-auto-flow: column; */
+  width: 100%;
+  grid-template-columns: repeat(auto-fill, 170px);
 }
 
 .button.totals td {
@@ -896,6 +898,12 @@ a.test-link {
   background: #769492;
   background: url('../images/triangles.png');
   background-size: cover;
+}
+
+@media (max-width: 550px) {
+  .apr-wrapper {
+    zoom: 0.385;
+  }
 }
 
 .apr-contain {
