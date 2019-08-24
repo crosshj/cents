@@ -7,6 +7,7 @@
   "dependencies": {
     "async": "^2.6.0",
     "body-parser": "^1.16.0",
+    "compression": "1.7.4",
     "connect-mongodb-session": "^2.2.0",
     "cookie-parser": "^1.4.4",
     "cron": "^1.2.1",

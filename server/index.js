@@ -5,6 +5,7 @@ var path = require('path');
 var express = require('express');
 var session = require('express-session');
 var serveStatic = require('serve-static');
+var compression = require('compression');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var passport = require('passport');
@@ -50,7 +51,7 @@ var store = ((sess) => {
 
 //var cron = require('../service/cron');
 //cron();
-
+app.use(compression());
 app.enable('etag', 'strong');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));

@@ -29,18 +29,19 @@ var timeout = 1500;
 var staticCacheList = [
   //TODO: should rarely update these (and only when good)
   './',
+  './?source=pwa',
   './images/launcher-icon-3x.png',
   './offline.html',
   './fonts/fontawesome-webfont.woff?v=4.4.0',
-  './fonts/-_Ctzj9b56b8RgXW8FAriQzyDMXhdD8sAj6OAJTFsBI.woff2 ',
-  './fonts/ZKwULyCG95tk6mOqHQfRBAsYbbCjybiHxArTLjt7FRU.woff2',
-  './fonts/YZaO6llzOP57DpTBv2GnyFKPGs1ZzpMvnHX-7fPOuAc.woff2',
   './fonts/QAUlVt1jXOgQavlW5wEfxQLUuEpTyoUstqEm5AMlJo4.woff2',
-  './fonts/STBOO2waD2LpX45SXYjQBQsYbbCjybiHxArTLjt7FRU.woff2',
+  './fonts/-_Ctzj9b56b8RgXW8FAriQzyDMXhdD8sAj6OAJTFsBI.woff2 ',
   './fonts/xkvoNo9fC8O2RDydKj12bwzyDMXhdD8sAj6OAJTFsBI.woff2',
-  './fonts/glyphicons-halflings-regular.woff2',
-  './fonts/glyphicons-halflings-regular.woff',
-  './fonts/glyphicons-halflings-regular.ttf',
+  // './fonts/ZKwULyCG95tk6mOqHQfRBAsYbbCjybiHxArTLjt7FRU.woff2',
+  // './fonts/YZaO6llzOP57DpTBv2GnyFKPGs1ZzpMvnHX-7fPOuAc.woff2',
+  // './fonts/STBOO2waD2LpX45SXYjQBQsYbbCjybiHxArTLjt7FRU.woff2',
+  // './fonts/glyphicons-halflings-regular.woff2',
+  // './fonts/glyphicons-halflings-regular.woff',
+  // './fonts/glyphicons-halflings-regular.ttf',
 
   //TODO: these will update possibly with every code push (version)
   './app.js',

@@ -20,8 +20,11 @@
     <!-- <link href="css/raleway.css" rel="stylesheet" type="text/css"> -->
 
     <!-- CSS –––––––––––––––––––––––––––––––– -->
-    <link rel="stylesheet" href="vendor.css">
-    <link rel="stylesheet" href="app.css">
+    <link rel="preload" href="vendor.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="vendor.css"></noscript>
+
+    <link rel="preload" href="app.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="app.css"></noscript>
 
     <!-- Favicon –––––––––––––––––––––––––––––––– -->
     <link rel="icon" type="image/png" href="images/launcher-icon-3x.png">
