@@ -20,6 +20,11 @@ const extractSass = new MiniCssExtractPlugin({
 	ignoreOrder: false, // Enable to remove warnings about conflicting order
 });
 
+const injectSWVersion = (content, path) => (
+	content.toString()
+		.replace('__SW_VERSION__', `${(new Date()).toLocaleDateString()} ${(new Date()).toLocaleTimeString()}`)
+);
+
 let commitHash = require('child_process')
 	.execSync('git rev-parse HEAD')
 	.toString()
@@ -88,8 +93,9 @@ var config = {
 			{ from: 'client/images', to: 'images/' },
 			{ from: 'client/*.json', to: '../' },
 			{ from: 'client/*.htm*', to: '../' },
-			{ from: 'client/serviceWorker', to: './' },
-			{ from: 'client/fonts', to: 'fonts/' }
+			{ from: 'client/fonts', to: 'fonts/' },
+			{ from: 'client/serviceWorker', to: './', transform: injectSWVersion },
+			
 		])
 	],
 	module: {
