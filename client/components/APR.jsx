@@ -329,10 +329,16 @@ class APRContainer extends React.Component {
 		this.forceUpdate();
 	}
 
-	onComponentDidMount(){
+	componentDidMount(){
 		// allow zoom
 		const viewportMeta = document.querySelector('[name="viewport"]');
+		if(!viewportMeta){
+			return;
+		}
 		this.viewportContentBackup = viewportMeta.getAttribute('content');
+		if(!this.viewportContentBackup){
+			return;
+		}
 		const newViewportContent = this.viewportContentBackup
 			.replace('maximum-scale=1', 'maximum-scale=3');
 		viewportMeta.setAttribute('content', newViewportContent);
@@ -340,6 +346,9 @@ class APRContainer extends React.Component {
 
 	componentWillUnmount(){
 		// reset zoom
+		if(!this.viewportContentBackup){
+			return;
+		}
 		const viewportMeta = document.querySelector('[name="viewport"]');
 		viewportMeta.setAttribute('content', this.viewportContentBackup);
 	}
