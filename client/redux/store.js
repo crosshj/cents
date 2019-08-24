@@ -1,6 +1,13 @@
 import createStore from 'redux/es/createStore';
 import reducers from '../reducers';
 
+const page = ((hash)=>{
+    if(!hash || hash.includes('homescreen')){
+        return '/accounts';
+    }
+    return hash;
+})(document.location.hash.slice(1));
+
 const initialState = {
     app: {
         error: 'not initialized'
@@ -8,7 +15,7 @@ const initialState = {
     popup: {
         error: 'not initialized'
     },
-    page: document.location.hash.slice(1) || '/accounts'
+    page
 };
 
 function setup(renderer){
