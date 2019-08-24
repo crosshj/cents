@@ -330,6 +330,9 @@ class APRContainer extends React.Component {
 	}
 
 	componentDidMount(){
+		//TODO: fix this; is not doing what I wanted (per page allow zoom)
+		return;
+
 		// allow zoom
 		const viewportMeta = document.querySelector('[name="viewport"]');
 		if(!viewportMeta){
