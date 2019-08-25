@@ -54,44 +54,50 @@ class AppContainer extends React.Component {
       <React.Fragment>
         <Router page={this.props.page}>
           <Route path='/accounts'>
-            { !this.props.error &&
-              <Menu
-                items={['Debts', 'Totals', 'Assets']}
-                selected={this.props.selectedMenuIndex}
+            <header></header>
+            <nav>
+              { !this.props.error &&
+                <Menu
+                  items={['Debts', 'Totals', 'Assets']}
+                  selected={this.props.selectedMenuIndex}
+                />
+              }
+            </nav>
+            <main>
+              { !this.props.error &&
+                <Flickity
+                  className={ 'main-carousel' }
+                  elementType={ 'div' } // default 'div'
+                  options={ flickityOptions } // takes flickity options {}
+                  disableImagesLoaded={ true } // default false
+                  reloadOnUpdate={false}
+                  onSwipe={menuSelect}
+                >
+                    <Liabilities liabilities={liabilities}/>
+                    <Totals totals={totals}/>
+                    <Assets assets={assets}/>
+                </Flickity>
+              }
+              { this.props.error &&
+                <div className="center-all">
+                  <i className="fa fa-spinner fa-pulse fa-5x fa-fw white  "></i>
+                </div>
+              }
+              { this.props.error &&
+                <Login />
+              }
+              <Popup {...this.props.popup}/>
+            </main>
+            <footer>
+              <div id="corner-circle">0</div>
+              <ActionButton />
+              <Link
+                action="PAGE_CHANGE"
+                to='/debt-pay-calc'
+                className="test-link"
+                text="Debt Pay Calc"
               />
-            }
-            { !this.props.error &&
-              <Flickity
-                className={ 'main-carousel' }
-                elementType={ 'div' } // default 'div'
-                options={ flickityOptions } // takes flickity options {}
-                disableImagesLoaded={ true } // default false
-                reloadOnUpdate={false}
-                onSwipe={menuSelect}
-              >
-                  <Liabilities liabilities={liabilities}/>
-                  <Totals totals={totals}/>
-                  <Assets assets={assets}/>
-              </Flickity>
-            }
-            { this.props.error &&
-              <div className="center-all">
-                <i className="fa fa-spinner fa-pulse fa-5x fa-fw white  "></i>
-              </div>
-            }
-            { this.props.error &&
-              <Login />
-            }
-            <Popup {...this.props.popup}/>
-
-            <div id="corner-circle">0</div>
-            <ActionButton />
-            <Link
-              action="PAGE_CHANGE"
-              to='/debt-pay-calc'
-              className="test-link"
-              text="Debt Pay Calc"
-            />
+            </footer>
           </Route>
 
           <Route path='/debt-pay-calc'>

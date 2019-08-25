@@ -1,6 +1,7 @@
 /* latin-ext */
 @font-face {
   font-family: 'Raleway';
+  font-display: auto;
   font-style: normal;
   font-weight: 300;
   src: local('Raleway Light'), local('Raleway-Light'), url(../../fonts/ZKwULyCG95tk6mOqHQfRBAsYbbCjybiHxArTLjt7FRU.woff2) format('woff2');
@@ -9,6 +10,7 @@
 /* latin */
 @font-face {
   font-family: 'Raleway';
+  font-display: auto;
   font-style: normal;
   font-weight: 300;
   src: local('Raleway Light'), local('Raleway-Light'), url(../../fonts/-_Ctzj9b56b8RgXW8FAriQzyDMXhdD8sAj6OAJTFsBI.woff2) format('woff2');
@@ -17,6 +19,7 @@
 /* latin-ext */
 @font-face {
   font-family: 'Raleway';
+  font-display: auto;
   font-style: normal;
   font-weight: 400;
   src: local('Raleway'), local('Raleway-Regular'), url(../../fonts/YZaO6llzOP57DpTBv2GnyFKPGs1ZzpMvnHX-7fPOuAc.woff2) format('woff2');
@@ -25,6 +28,7 @@
 /* latin */
 @font-face {
   font-family: 'Raleway';
+  font-display: auto;
   font-style: normal;
   font-weight: 400;
   src: local('Raleway'), local('Raleway-Regular'), url(../../fonts/QAUlVt1jXOgQavlW5wEfxQLUuEpTyoUstqEm5AMlJo4.woff2) format('woff2');
@@ -33,6 +37,7 @@
 /* latin-ext */
 @font-face {
   font-family: 'Raleway';
+  font-display: auto;
   font-style: normal;
   font-weight: 600;
   src: local('Raleway SemiBold'), local('Raleway-SemiBold'), url(../../fonts/STBOO2waD2LpX45SXYjQBQsYbbCjybiHxArTLjt7FRU.woff2) format('woff2');
@@ -41,6 +46,7 @@
 /* latin */
 @font-face {
   font-family: 'Raleway';
+  font-display: auto;
   font-style: normal;
   font-weight: 600;
   src: local('Raleway SemiBold'), local('Raleway-SemiBold'), url(../../fonts/xkvoNo9fC8O2RDydKj12bwzyDMXhdD8sAj6OAJTFsBI.woff2) format('woff2');

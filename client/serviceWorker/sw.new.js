@@ -335,6 +335,7 @@ function refresh(response) {
 }
 
 function offlineHTML(){
+  //TODO: this should be added by webpack
   const html = `
     <style>
     .btn {
@@ -391,8 +392,8 @@ function offlineHTML(){
 }
 
 function manifestJSON(){
+  //TODO: this should be added by webpack
   const manifest = {
-    "test_property": "123",
     "short_name": "Cents",
     "name": "Cents: Personal Finance",
     "background_color": "#746D5D",
@@ -419,7 +420,7 @@ function manifestJSON(){
         "type": "image/png"
       }
     ],
-    "start_url": "./#homescreen",
+    "start_url": "/?source=pwa",
     "display": "standalone",
     "orientation": "portrait"
   };
