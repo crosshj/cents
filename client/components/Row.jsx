@@ -16,6 +16,7 @@ const Row = ({
                     <div colSpan="2" className="title">{title || data.title}</div>
                     <div className="status">{data.status.toUpperCase()}</div>
                 </div>
+                <div className="seperator"></div>
                 <div className='flex-row info'>
                     <div className="amount">{formatMoney(data.amount)}</div>
                     
