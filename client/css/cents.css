@@ -7,12 +7,18 @@
   --body-color: #667088;
 }
 
-.green-theme {
+.old-green-theme {
   --due-color: #e66060;
   --pending-color: #cea95a;
   --paid-color: #9a9a9a;
   --body-color: #6a7c77;
+}
 
+.green-theme {
+  --due-color: #b73150;
+  --pending-color: #af904f;
+  --paid-color: hsla(61, 37%, 26%, 1);
+  --body-color: #4d554a;
 }
 
 @media (max-width: 550px) {
