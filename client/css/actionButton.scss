@@ -3,7 +3,7 @@
 .floating-action-button {
     [data-mfb-state="closed"]{
         li a {
-            background-color: rgba(255, 255, 255, 0.2);
+            background-color: rgba(255, 255, 255, 0.699);
         }
     }
 
@@ -13,12 +13,13 @@
 
         &:hover {
             .a-icon {
-                color: white;
+                color: var(--text-light-color);
             }
         }
 
         .a-icon {
-            color: #eee;
+            // color: #eee;
+            color: var(--text-light-color);
 
             &:before {
                 line-height: 57px;

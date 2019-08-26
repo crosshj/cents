@@ -2,6 +2,13 @@ var webpack = require('webpack');
 var path = require('path');
 const sass = require('sass');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const swManifest = require('./client/manifest.json');
+
+var fs = require('fs');
+require.extensions['.html'] = function (module, filename) {
+    module.exports = fs.readFileSync(filename, 'utf8');
+};
+const offlineHTML = require('./client/offline.html');
 
 //var HtmlWebpackPlugin = require('html-webpack-plugin');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
@@ -20,9 +27,11 @@ const extractSass = new MiniCssExtractPlugin({
 	ignoreOrder: false, // Enable to remove warnings about conflicting order
 });
 
-const injectSWVersion = (content, path) => (
+const injectSW = (content, path) => (
 	content.toString()
 		.replace('__SW_VERSION__', `${(new Date()).toLocaleDateString()} ${(new Date()).toLocaleTimeString()}`)
+		.replace('__MANIFEST__', JSON.stringify(swManifest, null, '\t'))
+		.replace('__OFFLINE_HTML__', offlineHTML)
 );
 
 let commitHash = require('child_process')
@@ -94,7 +103,7 @@ var config = {
 			{ from: 'client/*.json', to: '../' },
 			{ from: 'client/*.htm*', to: '../' },
 			{ from: 'client/fonts', to: 'fonts/' },
-			{ from: 'client/serviceWorker', to: './', transform: injectSWVersion },
+			{ from: 'client/serviceWorker', to: './', transform: injectSW },
 			
 		])
 	],

@@ -12,6 +12,7 @@ const Row = ({
             onClick={rowClick} onContextMenu={contextClick}
         >
             <div className="u-full-width account item">
+                <div className={'flexrow status-bar ' + data.status.toLowerCase()}></div>
                 <div className='flex-row header'>
                     <div colSpan="2" className="title">{title || data.title}</div>
                     <div className="status">{data.status.toUpperCase()}</div>

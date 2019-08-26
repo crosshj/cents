@@ -7,6 +7,8 @@
   --body-color: #667088;
 }
 
+
+
 .old-green-theme {
   --due-color: #e66060;
   --pending-color: #cea95a;
@@ -24,12 +26,13 @@
 } */
 
 .green-theme {
-  --due-color: #deabb0;
-  --pending-color: #efdcb3;
-  --paid-color: #e0e0e0;
-  --body-color: #f3f3f3;
+  --due-color: #ff021b;
+  --pending-color: #ffb100;
+  --paid-color: #acff80;
+  --body-color: #ebebe5;
   --text-color: black;
-  --text-heavy-color: #888;
+  --text-light-color: #0005;
+  --text-heavy-color: #000a;
   --text-inverse-color: white;
 }
 
@@ -38,6 +41,26 @@
     --body-color: #082f24;
   }
 } */
+
+nav {
+  background: #dcaa3e;
+  box-shadow: 0 -4px 7px 3px #313131;
+  z-index: 1;
+  position: absolute;
+  width: 100%;
+}
+a.button.menu.button-primary {
+  margin-bottom: 0px;
+}
+.menu-container.container {
+  padding-bottom: 0px;
+  padding-top: 17px;
+}
+
+.menu-container.container a.button {
+  color: var(--text-inverse-color);
+
+}
 
 @media (max-width: 750px) {
   .column, .columns {
@@ -138,10 +161,11 @@ ul.plain {
 .column.menu {
   text-align: center;
   line-height: 25px;
-  margin-top: 7px;
+  /* margin-top: 7px; */
 }
 .column:not(.menu) {
   height: 100%;
+  padding-top: 16px;
 }
 
 div.menu {
@@ -160,7 +184,7 @@ div.menu a {
 
 a.button.menu.button-primary.selected:after {
   content: ' ';
-  background-color: var(--text-color);
+  background-color: var(--text-inverse-color);
   display: block;
   height: 2px;
   width: 100%;
@@ -192,12 +216,12 @@ a.button.menu.button-primary.selected:after {
     display: flex;
     align-items: center;
     justify-content: space-around;
-    opacity: 0.4;
+    color: var(--text-heavy-color);
 }
 .apr {
   margin: 0;
   padding: 2px;
-  border: 1px solid;
+  border: 1px solid var(--text-light-color);
   margin-left: 5px;
   font-size: 11px;
 }
@@ -246,9 +270,10 @@ a.button.menu.button-primary.selected:after {
 }
 
 .account {
-  box-shadow: 3px 3px 6px 1px #0000000f;
-  border: 1px solid #0002;
-  border-radius: 2px;
+  box-shadow: 0 2px 4px 0px var(--text-light-color);
+  border: 1px solid var( --text-light-color);
+  border-radius: 3px;
+  overflow: hidden;
 }
 
 .account > div {
@@ -287,29 +312,31 @@ a.button {
   letter-spacing: .1rem;
   padding-bottom: 8px;
   color: var(--text-color);
+  background: var(--text-inverse-color);
 }
 
-a.button.paid, button.selected.paid {
+.flexrow.status-bar {
+  height: 3px;
+  padding: 0;
+}
+.flexrow.status-bar.paid, button.selected.paid {
   background-color: var(--paid-color);
 }
-
-a.button.due, button.selected.due {
+button.selected.due, .flexrow.status-bar.due {
   background-color: var(--due-color);
 }
-
-a.button.pending, button.selected.pending {
+.flexrow.status-bar.pending, button.selected.pending {
   background-color: var(--pending-color);
 }
 
-a.button.group {
+a.button.group > div {
   width: 100%;
   margin-left: 0%;
   border-left-width: 4px;
-  border-left-color: var(--text-heavy-color);
+  border-left-color: var(--text-light-color);
   border-top-width: 0px;
   border-bottom-width: 0px;
   border-right-width: 0px;
-  border-radius: 0px;
 }
 
 a.button.grouped {
@@ -547,7 +574,7 @@ a.button.selected {
 .main-carousel {
   position: absolute;
   bottom: 0px;
-  top: 55px;
+  top: 44px;
   left: 0px;
   right: 0px;
 }

@@ -336,93 +336,12 @@ function refresh(response) {
 
 function offlineHTML(){
   //TODO: this should be added by webpack
-  const html = `
-    <style>
-    .btn {
-        font-size: 1em;
-        display: inline-block;
-        padding: 6px 12px;
-        margin-bottom: 0;
-        line-height: 1.42857143;
-        text-align: center;
-        white-space: nowrap;
-        vertical-align: middle;
-        touch-action: manipulation;
-        cursor: pointer;
-        user-select: none;
-        background-image: none;
-        border: 1px solid transparent;
-        border-radius: 4px;
-    }
-    div {
-        text-align: center;
-        font-size: 5rem;
-        font-weight: 400;
-        font-family: arial;
-    }
-    span {
-        color: white;
-        margin: 18px;
-        display: inline-block;
-    }
-    body {
-        background-color: rgba(91,89,77,1);
-    }
-    </style>
-
-    <script>
-    function killCache(){
-        fetch('./killCache')
-          .then(res => res.json)
-          .then(json => {
-            document.location.reload();
-          });
-        return false;
-    }
-    </script>
-
-    <div>
-    <span>Offline Mode</span>
-    <form onsubmit="return killCache()">
-        <input type="submit" value="RELOAD" class="btn"/>
-    </form>
-    </div>
-  `;
+  const html = `__OFFLINE_HTML__`;
   return html;
 }
 
 function manifestJSON(){
-  //TODO: this should be added by webpack
-  const manifest = {
-    "short_name": "Cents",
-    "name": "Cents: Personal Finance",
-    "background_color": "#746D5D",
-    "theme_color": "#746D5D",
-    "icons": [
-      {
-        "src": "./images/launcher-icon-2x.png",
-        "sizes": "96x96",
-        "type": "image/png"
-      },
-      {
-        "src": "./images/launcher-icon-3x.png",
-        "sizes": "144x144",
-        "type": "image/png"
-      },
-      {
-        "src": "./images/launcher-icon-4x.png",
-        "sizes": "192x192",
-        "type": "image/png"
-      },
-      {
-        "src": "./images/launcher-icon-512px.png",
-        "sizes": "512x512",
-        "type": "image/png"
-      }
-    ],
-    "start_url": "/?source=pwa",
-    "display": "standalone",
-    "orientation": "portrait"
-  };
+  //added with webpack
+  const manifest = __MANIFEST__;
   return JSON.stringify(manifest, null, '  ');
 }
