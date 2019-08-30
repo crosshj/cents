@@ -42,7 +42,7 @@ function getAccounts(req, res) {
 				query: '',
 				callback: (err, result) => {
 					res.json(
-						result.length === 0
+						!result || result.length === 0
 							? noDBerror
 							: result[result.length - 1]
 					);
