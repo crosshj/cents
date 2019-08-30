@@ -11,9 +11,8 @@ services:
       - PORT=8070
     volumes:
       - ./:/home/harrison/repos/cents
-    ports:
-      - "8070:8070"
     command: "node server/index.js"
+
   # this allows rolling updates
   cents-haproxy:
     image: dockercloud/haproxy
