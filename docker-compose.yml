@@ -4,15 +4,21 @@ services:
     restart: always
     image: "node:8-alpine"
     user: "node"
+    working_dir: /app
     environment:
       - NODE_ENV=production
       - PORT=8070
     volumes:
-      - ./:./
+      - ./server:/app/server
+      - ./service:/app/service
+      - ./dist:/app/dist
+      - ./node_modules:/app/node_modules
+      - ./accounts.json:/app/accounts.json
+      - ./diffs.log:/app/diffs.log
     command: "node server/index.js"
 
   # this allows rolling updates
-  cents-haproxy:
+  haproxy:
     image: dockercloud/haproxy
     links:
       - cents
