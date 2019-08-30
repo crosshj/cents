@@ -14,13 +14,13 @@ docker-compose scale cents=$MAX_NUM_OF_CONTAINERS
 
 # waiting for new containers
 echo "Waiting to kill old containers... [TODO: what if new are not up yet?]"
+echo $NUM_OF_CONTAINERS
+echo $((NUM_OF_CONTAINERS+FIRST_NUM))
 sleep 90
 
-echo $NUM_OF_CONTAINERS
-echo $NUM_OF_CONTAINERS+$FIRST_NUM
 
 # removing old containers
-for ((i=$FIRST_NUM;i<$NUM_OF_CONTAINERS+$FIRST_NUM;i++))
+for ((i=$FIRST_NUM;i<$((NUM_OF_CONTAINERS+FIRST_NUM));i++))
 do
    docker stop $CONTAINER_NAME$i
    docker rm $CONTAINER_NAME$i
