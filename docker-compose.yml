@@ -7,7 +7,7 @@ services:
     working_dir: /app
     environment:
       - NODE_ENV=production
-      - COOKIE_SECRET=${COOKIE_SECRET}
+      - COOKIE_SECRET
       - PORT=8070
     volumes:
       - ./server:/app/server
@@ -20,8 +20,12 @@ services:
 
   # this allows rolling updates
   haproxy:
-    image: dockercloud/haproxy
+    build:
+      context: .
+      dockerfile: ./proxy/Dockerfile
     links:
+      - cents
+    depends_on:
       - cents
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
