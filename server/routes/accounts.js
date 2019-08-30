@@ -34,7 +34,7 @@ function getAccounts(req, res) {
 		error: 'no accounts info available from DB',
 		data: { accounts: [{}] }
 	};
-	res.json(noDBerror);
+	//res.json(noDBerror);
 	db.init({
 		collectionName: 'records',
 		callback: () => {
