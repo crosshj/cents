@@ -7,7 +7,7 @@ services:
     working_dir: /app
     environment:
       - NODE_ENV=production
-      - COOKIE_SECRET=${COOKIE_SECRET}
+      - COOKIE_SECRET
       - PORT=8070
     volumes:
       - ./server:/app/server
