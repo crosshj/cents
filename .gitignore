@@ -35,3 +35,4 @@ package-lock.json
 webpack-stats.json
 dist/
 accounts.bak.json
+.env
