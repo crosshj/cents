@@ -13,7 +13,7 @@ var appPort = process.env.PORT || 8080;
 var app = express();
 
 var settings = {
-  cookieSecret: require('crypto').randomBytes(64).toString('hex'),
+  cookieSecret: process.env.COOKIE_SECRET || require('crypto').randomBytes(64).toString('hex'),
   folderLocation:  path.resolve(__dirname, '../service/database/data')
 };
 // console.log({
