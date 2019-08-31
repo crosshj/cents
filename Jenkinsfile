@@ -24,12 +24,26 @@ pipeline {
         }
         stage('Analyze') {
             steps {
-                echo 'Testing..'
-                sh 'npm run test.ci'
-                echo 'Analyzing..'
-                echo 'TODO: coverage'
-                echo 'TODO: linter'
-                echo 'TODO: build/dist analysis - https://survivejs.com/webpack/optimizing/build-analysis/'
+                parallel (
+                    "test" : {
+                        echo 'Testing..'
+                        sh 'npm run test.ci'
+                    },
+                    "coverage": {
+                        echo 'TODO: coverage'
+                    },
+                    "lint" : {
+                        echo 'TODO: linter'
+                    },
+                    "build stats": {
+                        echo 'TODO: build/dist analysis - https://survivejs.com/webpack/optimizing/build-analysis/'
+                    }
+                )
+            }
+            post {
+                always {
+                    junit 'build/reports/*.xml'
+                }
             }
         }
         stage('Deploy') {
