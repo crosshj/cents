@@ -5,7 +5,6 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building..'
-                checkout scm
                 sh 'node -v'
                 sh 'npm install'
                 sh 'npm run build'
@@ -14,6 +13,7 @@ pipeline {
         stage('Test') {
             steps {
                 echo 'Testing..'
+                sh 'npm run test'
             }
         }
         stage('Deploy') {

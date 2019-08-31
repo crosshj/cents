@@ -23,7 +23,7 @@ import {
 	selectAccountClick,
 	accountSave,
 	popupUpdate
-} from '../js/redux/actions';
+} from '../redux/actions';
 //import { debug } from 'util';
 
 const clone = x => JSON.parse(JSON.stringify(x));
@@ -93,7 +93,7 @@ describe('app reducer', () => {
 
 	it('should return the initial state', () => {
 		var action = {};
-		var expected = { app: {}, popup: {} };
+		var expected = { app: {}, page: {}, popup: {} };
 		var currentState = reduce(undefined, action);
 		delete currentState.root;
 		expect(currentState).toEqual(expected)
@@ -116,6 +116,7 @@ describe('app reducer', () => {
 				},
 				selectedMenuIndex: 0
 			},
+			page: {},
 			popup: {}
 		};
 
@@ -244,6 +245,7 @@ describe('app reducer', () => {
 
 		expected.app.accounts.totals = totals;
 		expected.app.accounts.totals.balance = 999.09;
+		expected.app.accounts.liabilities[0].oldTitle = "group";
 
 		delete currentState.root;
 		delete expected.root;
