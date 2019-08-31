@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # from https://medium.com/@slavakorolev/zero-downtime-deployment-with-docker-d9ef54e48c4
 
