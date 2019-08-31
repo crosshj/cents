@@ -28,4 +28,3 @@ with ubuntu security policy, node will not run on port < 1024; fix:
 ```
 sudo setcap 'cap_net_bind_service=+ep' `which node`
 ```
-bum
