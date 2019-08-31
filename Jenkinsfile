@@ -37,6 +37,9 @@ pipeline {
                     },
                     "build stats": {
                         echo 'TODO: build/dist analysis - https://survivejs.com/webpack/optimizing/build-analysis/'
+                    },
+                    "audit": {
+                        echo 'TODO: audit dependencies'
                     }
                 )
             }
