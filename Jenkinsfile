@@ -14,7 +14,6 @@ pipeline {
             steps {
                 echo 'Testing..'
                 sh 'npm run test.ci'
-                junit ''
             }
         }
         stage('Deploy') {
