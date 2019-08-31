@@ -17,7 +17,7 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building..'
-                echo 'NODE: ${NODE_VERSION}, NPM: ${NPM__VERSION}'
+                echo "NODE: ${NODE_VERSION}, NPM: ${NPM__VERSION}"
                 sh 'npm install'
                 sh 'npm run build'
             }
