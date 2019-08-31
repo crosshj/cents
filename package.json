@@ -62,6 +62,9 @@
   "config": {
     "tester": "jest"
   },
+  "jest-junit": {
+    "outputDirectory": "./build/reports/"
+  },
   "scripts": {
     "install": "./service/init.sh",
     "build": "webpack",

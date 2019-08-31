@@ -14,12 +14,18 @@ pipeline {
             steps {
                 echo 'Testing..'
                 sh 'npm run test.ci'
+                junit ''
             }
         }
         stage('Deploy') {
             steps {
                 echo 'Deploying....'
             }
+        }
+    }
+    post {
+        always {
+            junit 'build/reports/**/*.xml'
         }
     }
 }
