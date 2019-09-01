@@ -1,13 +1,3 @@
-def NODE_VERSION = sh(
-    returnStdout: true,
-    script: 'node -v'
-).trim()
-
-def NPM_VERSION = sh(
-    returnStdout: true,
-    script: 'npm -v'
-).trim()
-
 pipeline {
     agent any
 
@@ -16,6 +6,17 @@ pipeline {
 
     stages {
         stage('Build') {
+            script {
+                NODE_VERSION = sh(
+                    returnStdout: true,
+                    script: 'node -v'
+                ).trim()
+
+                NPM_VERSION = sh(
+                    returnStdout: true,
+                    script: 'npm -v'
+                ).trim()
+            }
             steps {
                 echo 'Building..'
                 echo "NODE: " + NODE_VERSION + ", " + "NPM: " + NPM_VERSION
