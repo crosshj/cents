@@ -47,7 +47,6 @@ pipeline {
             post {
                 always {
                     junit 'build/reports/*.xml'
-                    archiveArtifacts artifacts: 'webpack-stats.json'
                 }
             }
         }
@@ -72,6 +71,7 @@ pipeline {
     }
     post {
         always {
+            archiveArtifacts artifacts: 'webpack-stats.json', fingerprint: true
             // archiveArtifacts artifacts: 'node_modules/**, dist/**, server/**, service/**, deploy.sh, docker-compose.yml', fingerprint: true
         }
     }
