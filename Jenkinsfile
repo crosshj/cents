@@ -1,23 +1,22 @@
 pipeline {
     agent any
 
-    environment { 
-        NODE_VERSION = sh(
-            returnStdout: true,
-            script: 'node -v'
-        ).trim()
-
-        NPM_VERSION = sh(
-            returnStdout: true,
-            script: 'npm -v'
-        ).trim()
-    }
+    // environment { 
+    // }
 
     stages {
         stage('Build') {
             steps {
                 echo 'Building..'
-                echo "NODE: ${NODE_VERSION}, NPM: ${NPM_VERSION}"
+                def NODE_VERSION = sh(
+                    returnStdout: true,
+                    script: 'node -v'
+                ).trim()
+                def NPM_VERSION = sh(
+                    returnStdout: true,
+                    script: 'npm -v'
+                ).trim()
+                echo "NODE: " + NODE_VERSION + ", " + "NPM: " + NPM_VERSION
                 sh 'npm install'
                 sh 'npm run build'
             }
