@@ -71,7 +71,6 @@ pipeline {
     post {
         always {
             // archiveArtifacts artifacts: 'node_modules/**, dist/**, server/**, service/**, deploy.sh, docker-compose.yml', fingerprint: true
-            junit 'build/reports/*.xml'
         }
     }
 }
