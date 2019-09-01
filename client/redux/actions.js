@@ -35,6 +35,13 @@ function receiveHistory(payload){
     });
 }
 
+function receiveLogin(payload){
+    return dispatch({
+        type: 'RECEIVE_LOGIN',
+        payload
+    });
+}
+
 function menuSelect(payload){
     return dispatch({
         type: 'MENU_SELECT',
@@ -127,6 +134,6 @@ function init(store){
 export {
     init, dispatch, receiveAccounts, receiveAccountsSave, menuSelect, selectAccountClick, groupRemove, accountSave,
     accountClick, groupClick, newAccountClick, newGroupClick, popupCancel,
-    popupHistory, popupHistoryBack, popupUpdate, receiveHistory, receiveAccountsData,
+    popupHistory, popupHistoryBack, popupUpdate, receiveHistory, receiveAccountsData, receiveLogin,
     removeItem
 };
