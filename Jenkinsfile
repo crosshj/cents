@@ -6,19 +6,19 @@ pipeline {
 
     stages {
         stage('Build') {
-            script {
-                NODE_VERSION = sh(
-                    returnStdout: true,
-                    script: 'node -v'
-                ).trim()
-
-                NPM_VERSION = sh(
-                    returnStdout: true,
-                    script: 'npm -v'
-                ).trim()
-            }
             steps {
                 echo 'Building..'
+                script {
+                    NODE_VERSION = sh(
+                        returnStdout: true,
+                        script: 'node -v'
+                    ).trim()
+
+                    NPM_VERSION = sh(
+                        returnStdout: true,
+                        script: 'npm -v'
+                    ).trim()
+                }
                 echo "NODE: " + NODE_VERSION + ", " + "NPM: " + NPM_VERSION
                 sh 'npm install'
                 sh 'npm run build'
