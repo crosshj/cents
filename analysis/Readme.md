@@ -1,9 +1,9 @@
 
 
 
-### thinking about page/bundle size:
+# thinking about page/bundle size:
 
-# web app to word equivalent
+### web app to word equivalent
    
 kilobytes | word conversion   
 http://extraconversion.com/data-storage/kilobytes/kilobytes-to-words.html   
@@ -14,7 +14,7 @@ typical web app size in words
 ~500kB => 250,000 words   
 
 
-# Word counts of famous novels (for comparison)   
+### Word counts of famous novels (for comparison)   
    
 https://blog.nathanbransford.com/2018/04/all-about-novel-word-counts
    
