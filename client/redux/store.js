@@ -11,7 +11,7 @@ const page = ((hash)=>{
 const initialState = {
     app: {
         error: 'not initialized'
-    }, 
+    },
     popup: {
         error: 'not initialized'
     },

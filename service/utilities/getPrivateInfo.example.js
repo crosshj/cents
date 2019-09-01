@@ -6,13 +6,13 @@ const usaa = () => ({
     answer: question => {
       var result = '';
       switch (true){
-        case !!~question.indexOf('*****'):
+        case !!~question.indexOf('***** one?'):
           result = '*****';
           break;
-        case !!~question.indexOf('*****'):
+        case !!~question.indexOf('***** two?'):
           result = '*****';
           break;
-        case !!~question.indexOf('*****'):
+        case !!~question.indexOf('***** three?'):
           result = '*****';
           break;
         default:

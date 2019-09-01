@@ -31,7 +31,7 @@ function getAccountsFileName() {
         // nothing to do, just use default
       }
     }
-    return _useDefault
+    return _useDefault;
   })();
 
   DEBUG && console.log('Will use accounts.default.json: ', useDefault);
@@ -118,17 +118,17 @@ function updateAccounts(accounts) {
 
   // SORT LIABILITIES
   var pending = u.liabilities.filter(function (a) {
-    return a.status && a.status.toLowerCase() === 'pending'
+    return a.status && a.status.toLowerCase() === 'pending';
   }).sort(function (a, b) {
     return new Date(a.date) - new Date(b.date);
   });
   var paid = u.liabilities.filter(function (a) {
-    return a.status ? a.status.toLowerCase() === 'paid' : a.status
+    return a.status ? a.status.toLowerCase() === 'paid' : a.status;
   }).sort(function (a, b) {
     return new Date(a.date) - new Date(b.date);
   });
   var due = u.liabilities.filter(function (a) {
-    return a.status && a.status.toLowerCase() === 'due'
+    return a.status && a.status.toLowerCase() === 'due';
   }).sort(function (a, b) {
     return new Date(a.date) - new Date(b.date);
   });

@@ -18,17 +18,17 @@
 		canvas.height = h || 3;
 		var context = canvas.getContext('2d');
 
-		for (var y = 0; y < canvas.height; y++) { 
-			for (var x = 0; x < canvas.width; x++) { 
+		for (var y = 0; y < canvas.height; y++) {
+			for (var x = 0; x < canvas.width; x++) {
 				var red = Math.floor(Math.random() * 30)+20;
 				var green = Math.floor(Math.random() * 50)+20;
 				var blue = Math.floor(Math.random() * 50)+20;
 				putPixel(
-					context, 
-					x, y, 
-					red, 
-					green, 
-					blue, 
+					context,
+					x, y,
+					red,
+					green,
+					blue,
 					255
 				);
 			}
@@ -40,6 +40,6 @@
 		document.body.style.backgroundSize = "cover";
 		if (bgColor){
 			document.body.style.backgroundBlendMode = "lighten, luminosity";
-			document.body.style.backgroundColor = bgColor;	
+			document.body.style.backgroundColor = bgColor;
 		}
 	};

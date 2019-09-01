@@ -97,7 +97,7 @@
 	// to allow use of node syntax and potentially enable interop going forward
 	module = (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
 		? module
-		: { exports: undefined }
+		: { exports: undefined };
 
 	var Database = {
 		signIn,

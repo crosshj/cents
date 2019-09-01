@@ -1,6 +1,7 @@
 import {safeAccess} from './utilities';
 import { popFunctionQueue } from '../redux/services';
 
+// eslint-disable-next-line no-unused-vars
 var GLOBAL_FUNCTION_QUEUE = [];
 
 function ajaxLogin(username, password, callback){
@@ -48,7 +49,7 @@ function setupLoginPageListener(){
             if(functionFromQueue && typeof functionFromQueue === "function"){
             functionFromQueue();
             }
-        }
+        };
 
         ajaxLogin(username, password, callback);
         }

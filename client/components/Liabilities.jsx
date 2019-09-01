@@ -12,8 +12,8 @@ function SeperatorRow({ data, key }){
     sepData.amount = currentBalance;
   }
 
-  const duePendingTotal = Number(sepData.pending)+Number(sepData.due);
-  const duePendingString = formatMoney(duePendingTotal);
+  //const duePendingTotal = Number(sepData.pending)+Number(sepData.due);
+  //const duePendingString = formatMoney(duePendingTotal);
   const total = formatMoney(sepData.total);
   const diff = sepData.amount
     ? formatMoney(sepData.amount - sepData.total)
@@ -37,14 +37,14 @@ function SeperatorRow({ data, key }){
     document.location.reload();
   };
   return (
-    <div className="row-seperator" onClick={() => onClick(sepData)}>
-      <table class="u-full-width"><tbody>
-        <tr class="info">
-          <td class="amount">
+    <div className="row-seperator" key={key} onClick={() => onClick(sepData)}>
+      <table className="u-full-width"><tbody>
+        <tr className="info">
+          <td className="amount">
             <span>{totalString}</span>
             <span className="diff">| {diff}</span>
           </td>
-          <td class="date">{dateString}</td>
+          <td className="date">{dateString}</td>
         </tr>
       </tbody></table>
     </div>
@@ -70,9 +70,9 @@ function makeRow(data, key){
         title: data.title + (data.auto
             ? ' Ⓐ'
             : ''),
-        rowClassName, rowClick, contextClick 
+        rowClassName, rowClick, contextClick
     };
-    return <Row {...props}></Row>
+    return <Row {...props}></Row>;
 }
 
 function Liabilities({liabilities = []}){

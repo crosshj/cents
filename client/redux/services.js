@@ -34,7 +34,7 @@ function fetchAccounts() {
             payload.error = body.error || false;
             receiveAccounts(payload);
             if (!body.error) fetchAccountsData();
-        })
+        });
     // .catch(error => {
     //     receiveAccounts({ error });
     // });
@@ -121,7 +121,7 @@ function saveAccounts(accounts) {
             group.items = group.items.map(item => {
                 return typeof item === 'string'
                     ? { title: item }
-                    : { title: item.title }
+                    : { title: item.title };
             });
         });
     accountsToSave.liabilities.forEach(x => {
@@ -168,4 +168,4 @@ function popFunctionQueue() {
 export {
     fetchAccounts, login, fetchAccountsData, fetchHistory, saveAccounts,
     popFunctionQueue
-}
+};

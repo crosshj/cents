@@ -129,4 +129,4 @@ export {
     accountClick, groupClick, newAccountClick, newGroupClick, popupCancel,
     popupHistory, popupHistoryBack, popupUpdate, receiveHistory, receiveAccountsData,
     removeItem
-}
+};

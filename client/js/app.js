@@ -59,7 +59,7 @@ if ('serviceWorker' in navigator) {
 
 Element.prototype.remove = function() {
     this.parentElement.removeChild(this);
-}
+};
 
   function makeRow (data){
     var primary = data.status.toLowerCase() !== "paid"
@@ -263,7 +263,7 @@ Element.prototype.remove = function() {
     var content = undefined;
     switch (true){
       case jq(this).is('.paid, .pending, .due'):
-        jq('a.button.selected:not(".menu")').removeClass('selected')
+        jq('a.button.selected:not(".menu")').removeClass('selected');
         const isGroup = jq(this).hasClass('group');
         if(isGroup){
             openGroup(jq(this));
@@ -336,7 +336,7 @@ Element.prototype.remove = function() {
         document.body.classList.add('offline');
       }
       var content = undefined;
-      jq('a.button.selected:not(".menu")').removeClass('selected')
+      jq('a.button.selected:not(".menu")').removeClass('selected');
       content = typeof makeAccountContent === "function" && makeAccountContent(jq(this));
       typeof popUpModal === "function" && popUpModal(jq(this), content);
       event.stopPropagation();
@@ -359,7 +359,7 @@ Element.prototype.remove = function() {
 
       if(jq('#add-group').length === 0){
         var $addGroupButton = makeAddGroup();
-        $addGroupButton.on('click', accountsClickHandler)
+        $addGroupButton.on('click', accountsClickHandler);
         jq('div.liabilities').append($addGroupButton);
       }
       jq('#add-new').hide();
@@ -373,7 +373,7 @@ Element.prototype.remove = function() {
     jq('#popup-modal').on('click', function(e){
       if(e.target !== e.currentTarget) return;
       typeof popUpModal === "function" && popUpModal();
-      jq('a.button.selected:not(".menu")').removeClass('selected')
+      jq('a.button.selected:not(".menu")').removeClass('selected');
     });
 
     jq('#popup-modal .content').unbind();
@@ -556,7 +556,7 @@ Element.prototype.remove = function() {
           if(functionFromQueue && typeof functionFromQueue === "function"){
             functionFromQueue();
           }
-        }
+        };
 
         ajaxLogin(username, password, callback);
       }

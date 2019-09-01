@@ -27,7 +27,7 @@ var store = ((sess) => {
 		const fileStoreOptions = {
 			path: settings.folderLocation
 		};
-		const store = new FileStore(fileStoreOptions)
+		const store = new FileStore(fileStoreOptions);
 		return store;
 	}
 
@@ -106,7 +106,7 @@ if (useWebpackDevMiddleware){
   };
   //console.log(Object.keys(webpack));
   webpackConfig.watch = true;
-  const webpackCompiler = webpack(webpackConfig, webpackCompilerCallback);
+  /*const webpackCompiler =*/ webpack(webpackConfig, webpackCompilerCallback);
 
   // const webpackCompiler = webpack(webpackConfig, function(err, stats) {
   //   if (err) { return console.log(err); }

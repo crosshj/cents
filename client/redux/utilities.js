@@ -204,7 +204,7 @@ function openGroupedAccounts(initialState, viewState) {
             .map(item => (initialState.liabilities.filter(x => {
                 return typeof i === 'string'
                     ? x.title === item
-                    : x.title === item.title
+                    : x.title === item.title;
             }) || [])[0])
             .sort(function (a, b) {
                 var statCompare = 0;

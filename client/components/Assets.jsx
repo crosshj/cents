@@ -10,11 +10,11 @@ function Assets({assets = []}){
     const assetRows = assets.map((data, key) => {
         const isGroup = false;
         const props = {
-            data, key,
+            data,
             rowClassName: `button ${data.status.toLowerCase()} primary${isGroup ? " group" : ""}`,
             rowClick: () => accountClick(data.title)
         };
-        return <Row {...props}></Row>
+        return <Row {...props} key={key}></Row>;
     });
 
     return (

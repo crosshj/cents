@@ -16,7 +16,7 @@ MongoClient.connect("mongodb://ubuntu:27017/cents-sessions", {
     var doc1 = {'hello':'doc1'};
     var doc2 = {'hello':'doc2'};
     var lotsOfDocs = [{'hello':'doc3'}, {'hello':'doc4'}];
-  
+
     collection.insertOne(doc1, function(err1, result1) {
         collection.insertOne(doc2, {w:1}, function(err2, result2) {
             collection.insertMany(lotsOfDocs, {w:1}, function(err3, result3) {

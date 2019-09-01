@@ -17,7 +17,7 @@ function scrapeUSAA(callback){
     const loginButtonHandle = await page.$('.button-logon');
     await loginButtonHandle.click();
 
-    debug('second page');  
+    debug('second page');
     await page.waitFor('#input_onlineid');
     const usernameHandle = await page.$('#input_onlineid');
     await usernameHandle.click();
@@ -28,33 +28,33 @@ function scrapeUSAA(callback){
     await passwordHandle.type(getPrivateInfo.password(), {delay: 100});
     await passwordHandle.press('Enter');
 
-    debug('third page');  
+    debug('third page');
     await page.waitFor('#pinTextField');
     const pinHandle = await page.$('#pinTextField');
     await pinHandle.click();
     await pinHandle.type(getPrivateInfo.pin(), {delay: 100});
     await pinHandle.press('Enter');
 
-    debug('fourth page');  
+    debug('fourth page');
     await page.waitFor('#securityQuestionTextField');
-    const question = await page.$eval('label[for=securityQuestionTextField]', el => el.innerText)
+    const question = await page.$eval('label[for=securityQuestionTextField]', el => el.innerText);
     const answer = getPrivateInfo.answer(question);
     const questionFieldHandle = await page.$('#securityQuestionTextField');
     await questionFieldHandle.click();
     await questionFieldHandle.type(answer, {delay: 100});
     await questionFieldHandle.press('Enter');
 
-    debug('fifth page');  
+    debug('fifth page');
     await page.waitFor('#menu #ma');
     const myAccountsMenuHandle = await page.$('#menu #ma');
     myAccountsMenuHandle.click();
 
-    debug('sixth page');  
+    debug('sixth page');
     await page.waitFor('ul.acct-group-list li.acct-group-row:first-child .acct-name');
     const firstAccountHandle = await page.$('.acct-group-list .acct-group-row:first-child .acct-name');
     firstAccountHandle.click();
 
-    debug('seventh page');  
+    debug('seventh page');
     // all transactions
     await page.waitFor('.details:nth-of-type(n+8)');
     const transactions = await page.evaluate(() =>

@@ -1,3 +1,8 @@
+/* istanbul ignore file */
+
+// make jest skip this file
+if(test){ test.skip('skip', () => {}) }
+
 /*
 eslint-disable no-console
 */
@@ -69,7 +74,7 @@ const checkRecords = callback => {
 				query: {},
 				callback: (err, result) => {
 					console.log({ err, result: JSON.stringify(result[0]) });
-					callback()
+					callback();
 				}
 			});
 		}

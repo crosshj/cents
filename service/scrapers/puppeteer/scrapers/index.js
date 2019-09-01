@@ -5,4 +5,4 @@ function getScrapers(privateInfo){
   };
 }
 
-module.exports = getScrapers; 
+module.exports = getScrapers;

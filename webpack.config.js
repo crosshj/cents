@@ -90,7 +90,7 @@ var config = {
 				'COMMIT_DATE': commitDate
 			}
 		}),
-		new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en/),
+		new webpack.ContextReplacementPlugin(/moment[/\\]locale$/, /en/),
 		extractSass,
 		// new HtmlWebpackPlugin({
 		//   title: 'HA Bridge Configuration',
@@ -104,7 +104,7 @@ var config = {
 			{ from: 'client/*.htm*', to: '../' },
 			{ from: 'client/fonts', to: 'fonts/' },
 			{ from: 'client/serviceWorker', to: './', transform: injectSW },
-			
+
 		])
 	],
 	module: {

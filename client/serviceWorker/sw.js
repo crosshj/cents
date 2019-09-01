@@ -114,6 +114,7 @@ function offlineResponse(request){
   });
 }
 
+// eslint-disable-next-line no-unused-vars
 function fetchHandler(event){
   var request = event.request;
   const isHTMLRequest = !!~request.headers.get('Accept').indexOf('text/html');

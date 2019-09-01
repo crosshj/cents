@@ -38,14 +38,14 @@ function popupAccount(state, action, root) {
           ) {
             newState.account.items.push(clone(x));
           }
-        })
+        });
     }
     newState.account.items = newState.account.items
       .map(x => {
         return accounts.liabilities.filter(y => {
           return typeof x === "string"
             ? (y.title||'').toLowerCase() === x.toLowerCase()
-            : (y.title||'').toLowerCase() === (x.title||'').toLowerCase()
+            : (y.title||'').toLowerCase() === (x.title||'').toLowerCase();
         })[0];
       })
       .filter(x => !!x)
@@ -61,7 +61,7 @@ function popupAccount(state, action, root) {
   return newState;
 }
 
-function popupUpdate(state, action, { account, accounts }) {
+function popupUpdate(state, action, { account, /*accounts*/ }) {
   var newState = clone(state);
 
   if (!newState.account || typeof newState.account !== 'object') {
@@ -76,7 +76,7 @@ function popupUpdate(state, action, { account, accounts }) {
       if (fieldName === 'title') {
         newState.account.oldTitle = newState.account.title;
       }
-      newState.account[fieldName] = action.payload[fieldName]
+      newState.account[fieldName] = action.payload[fieldName];
     });
   // change date based on status change
   if (action.payload.status) {
@@ -145,7 +145,7 @@ function popupNewGroup(state, action, { selected = [], account = {} }) {
   return newState;
 }
 
-function popupNewAccount(state, action) {
+function popupNewAccount(state, /*action*/) {
   var newState = undefined;
   var account = {
     type: "",
@@ -167,7 +167,7 @@ function popupNewAccount(state, action) {
   return newState;
 }
 
-function popupCancel(state, action) {
+function popupCancel(state, /*action*/) {
   var newState = undefined;
   newState = Object.assign({}, state, {
     error: 'not initialized',
@@ -193,7 +193,7 @@ function popupHistory(state, action) {
   return newState;
 }
 
-function popupHistoryBack(state, action) {
+function popupHistoryBack(state, /*action*/) {
   var newState = undefined;
   newState = Object.assign({}, state, {
     account: state.account,
@@ -203,7 +203,7 @@ function popupHistoryBack(state, action) {
   return newState;
 }
 
-function groupRemove(state, action) {
+function groupRemove(state, /*action*/) {
   var newState = undefined;
   newState = Object.assign({}, state, { error: 'not initialized', account: undefined });
   return newState;
@@ -247,7 +247,7 @@ function removeItem(state, action, root) {
   return newState;
 }
 
-function accountSave(state, action, root) {
+function accountSave(state, /*action, root*/) {
   var newState = undefined;
   newState = Object.assign({}, state, { error: 'not initialized' });
   newState.account = undefined;

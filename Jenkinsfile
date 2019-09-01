@@ -33,19 +33,21 @@ pipeline {
                         echo 'TODO: coverage'
                     },
                     "lint" : {
-                        echo 'TODO: linter'
+                        sh 'npm run lint'
                     },
                     "build stats": {
-                        echo 'TODO: build/dist analysis - https://survivejs.com/webpack/optimizing/build-analysis/'
+                        echo 'TODO: build/dist analysis (jenkins plugin?) - https://survivejs.com/webpack/optimizing/build-analysis/'
+                        sh 'npm run bundle.stats'
                     },
                     "audit": {
-                        echo 'TODO: audit dependencies'
+                        sh 'rm -rf .npmrc && npm i --package-lock-only && npm audit'
                     }
                 )
             }
             post {
                 always {
                     junit 'build/reports/*.xml'
+                    archiveArtifacts artifacts: 'webpack-stats.json'
                 }
             }
         }

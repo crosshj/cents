@@ -1,0 +1,16 @@
+/build/**
+/coverage/**
+/dist/**/*
+/misc/**
+/node_modules/**
+
+*.min.js
+*.test.js
+
+/ TODO: THE FOLLOWING NEEDS TO BE FIXED!! /
+/service/database/mongo-example/node_modules/**
+/client/js/**
+/client/poc/**
+
+
+

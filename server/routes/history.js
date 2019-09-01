@@ -19,7 +19,7 @@ function filterDiffs(lines, type, fields, account){
               .forEach(lc => {
                 lc.changes
                   .filter(ic => fields.includes(ic.key))
-                  .filter(ic => 
+                  .filter(ic =>
                     ic.oldValue && ic.value
                     && Number(ic.oldValue) !== Number(ic.value))
                   .forEach(ic => {
@@ -29,10 +29,10 @@ function filterDiffs(lines, type, fields, account){
                       field: ic.key,
                       value: ic.value,
                       oldValue: ic.oldValue
-                    })
-                  })
-              })
-        })
+                    });
+                  });
+              });
+        });
       return out;
     }, []);
   return diffs;

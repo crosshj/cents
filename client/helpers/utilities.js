@@ -1,5 +1,5 @@
 var getByName = function(data, title){
-    return data.filter(function(val,i,arr){ return val.title.toLowerCase().indexOf(title) >= 0; })[0];
+    return data.filter(function(val){ return val.title.toLowerCase().indexOf(title) >= 0; })[0];
 };
 
 var formatMoney = function(amount, defaultAmount){

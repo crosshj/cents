@@ -2,16 +2,16 @@ document.addEventListener("DOMContentLoaded",function(){
 	function OpenCentsFullPage(){
 		var a=chrome.extension.getBackgroundPage();
 		window.close();
-		a.OpenExtensionUrl("/src/cents.html")
+		a.OpenExtensionUrl("/src/cents.html");
 	}
 	window.addEventListener("load", function(){
 		document.getElementById("cents-full-page").addEventListener("click",
-			function(){ 
+			function(){
 				OpenCentsFullPage();
 			}
 		);
 		document.getElementById("cents-settings").addEventListener("click",
-			function(){ 
+			function(){
 				OpenCentsFullPage();
 			}
 		);

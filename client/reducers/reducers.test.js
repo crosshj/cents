@@ -96,7 +96,7 @@ describe('app reducer', () => {
 		var expected = { app: {}, page: {}, popup: {} };
 		var currentState = reduce(undefined, action);
 		delete currentState.root;
-		expect(currentState).toEqual(expected)
+		expect(currentState).toEqual(expected);
 	});
 
 	it('should handle basic receive accounts', () => {

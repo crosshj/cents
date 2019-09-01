@@ -1,6 +1,6 @@
 import React from 'react';
 
-function submitHandler(event, form){
+function submitHandler(event, /*form*/){
     event.preventDefault();
     var formEl = document.querySelector('form');
 
@@ -14,7 +14,7 @@ function submitHandler(event, form){
 
 }
 
-function Login(props){
+function Login(/*props*/){
     return (
         <div id='login'>
             <form name="login">
@@ -25,13 +25,13 @@ function Login(props){
                     <div className="field">
                         <input name="username" className="form-control input-lg"
                             id="username" type="text" placeholder="Your username"
-                            autocomplete="current-username"
+                            autoComplete="current-username"
                         />
                     </div>
                     <div className="field">
                         <input name="password" className="form-control input-lg"
                             id="password" type="password" placeholder="Your password"
-                            autocomplete="current-password"
+                            autoComplete="current-password"
                         />
                     </div>
                     <div className="">
@@ -41,7 +41,7 @@ function Login(props){
                     </div>
                     <div className="">
                         <button type="button" className="register btn btn-lg btn-secondary btn-block transparent-bg"
-                            onclick=""
+                            onClick=""
                         >Register</button>
                     </div>
                 </div>

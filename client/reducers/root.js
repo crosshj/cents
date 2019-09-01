@@ -49,7 +49,7 @@ const receiveAccounts = (state, action) => {
     const totals = fixTotals(accounts).totals;
     accounts.totals = totals;
     globalState().set({ accounts });
-}
+};
 
 const receiveAccountsData = (state, action) => {
     globalState().accounts.totals
@@ -81,7 +81,7 @@ const groupRemove = (state, action) => {
     globalState().set({ accounts });
 
     //TODO: maybe trigger accounts save here (service)
-}
+};
 
 const popupAccount = (state, action) => {
     //console.log(action.payload.title)
@@ -146,8 +146,8 @@ function accountSave(state, action) {
         liab.items = (liab.items || []).map(i => {
             return typeof i === "string"
                 ? { title: i }
-                : { title: i.title }
-        })
+                : { title: i.title };
+        });
     });
 
     const totals = fixTotals(accounts, true).totals;

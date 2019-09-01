@@ -20,7 +20,7 @@ const Row = ({
                 <div className="seperator"></div>
                 <div className='flex-row info'>
                     <div className="amount">{formatMoney(data.amount)}</div>
-                    
+
                     <div className="total">
                         { (Boolean(data.total_owed) && Number(data.total_owed) != 0) &&
                             <div>

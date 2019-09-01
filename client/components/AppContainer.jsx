@@ -44,7 +44,7 @@ class AppContainer extends React.Component {
       wrapAround: true,
       draggable: true,
       percentPosition: true
-    }
+    };
 
     //console.log({ props: this.props });
 

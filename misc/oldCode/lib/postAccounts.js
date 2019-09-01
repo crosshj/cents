@@ -1,10 +1,10 @@
 function saveAccounts(data){
 	var jsonFile = require('path').join(__dirname + '/../accounts.json');
-	
+
 	// simple check to make sure data is clean and safe
 	var dataOkayToSave = data
-		&& data.hasOwnProperty('balance') 
-		&& data.hasOwnProperty('assets') 
+		&& data.hasOwnProperty('balance')
+		&& data.hasOwnProperty('assets')
 		&& data.hasOwnProperty('liabilities');
 	if (dataOkayToSave){
 		require('fs')
@@ -27,6 +27,6 @@ function postAccounts (req, res){
 	});
 		res.writeHead(200, {'Content-Type': 'text/html'});
 	return res.end('post received');
-};
+}
 
 module.exports = postAccounts;

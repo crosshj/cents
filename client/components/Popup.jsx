@@ -18,9 +18,9 @@ function Popup({error, account, history}){
     const popupClass = error ? 'hidden' : 'show';
     const isNewItem = (account||{}).isNew;
     const isGroup = (account||{}).type === 'group';
-    const statusItems = [];
-    const originalStatus = 'pending';
-    const originalDateString  = '';
+    // const statusItems = [];
+    // const originalStatus = 'pending';
+    // const originalDateString  = '';
     const totalHistory = () => {
         popupHistory('total_owed');
     };
@@ -44,17 +44,17 @@ function Popup({error, account, history}){
     function statusRow(status){
         return (
             <div className="row status">
-                <div class="one-third column">
+                <div className="one-third column">
                     <button className={"due" + (status==='due'?' selected':'')}
                         onClick={() => popupUpdate({ status: 'due'})}
                     >due</button>
                 </div>
-                <div class="one-third column">
+                <div className="one-third column">
                     <button className={"pending" + (status==='pending' ? ' selected':'')}
                         onClick={() => popupUpdate({ status: 'pending'})}
                     >pending</button>
                 </div>
-                <div class="one-third column">
+                <div className="one-third column">
                     <button className={"paid" + (status==='paid' ? ' selected':'')}
                         onClick={() => popupUpdate({ status: 'paid'})}
                     >paid</button>
@@ -64,16 +64,16 @@ function Popup({error, account, history}){
     }
 
     function groupItems(items){
-        return items.map((item, key) => 
+        return items.map((item, key) =>
             <tr className={`group${ key%2 === 1 ? ' even' : ''}`} key={'group_item'+key}>
                 <td className="">{item.title}</td>
                 <td className="amount">{Number(item.total_owed) ? formatMoney(item.total_owed) : ''}</td>
                 <td className="amount">{formatMoney(item.amount)}</td>
-                <td className="remove"><span onClick={()=>{ removeItem({title: item.title})}}>X</span></td>
+                <td className="remove"><span onClick={()=>{ removeItem({title: item.title});}}>X</span></td>
             </tr>
         );
     }
-    
+
     const historyLoading = history && history.error
         && typeof history.error === 'string'
         && history.error.toLowerCase() === 'loading';
@@ -105,7 +105,7 @@ function Popup({error, account, history}){
                         </div>
                         <div className="row actions">
                             <button className="button-primary close" onClick={popupCancel}>Close</button>
-                            { account && 
+                            { account &&
                                 <button className="button-primary cancel" onClick={popupHistoryBack}>Back</button>
                             }
                         </div>
@@ -119,12 +119,16 @@ function Popup({error, account, history}){
                         <h2>
                         { isNewItem
                             ? <a className='popup-heading'>New { isGroup ? 'Group' : 'Item'}</a>
-                            : <a target="_blank" href={account.website} style={{ fontSize: account.title.length > 15 ? 30 : 35}}>{account.title}</a>
+                            : <a target="_blank"
+                                rel="noopener noreferrer"
+                                href={account.website}
+                                style={{ fontSize: account.title.length > 15 ? 30 : 35}}
+                              >{account.title}</a>
                         }
                         </h2>
                         { !isNewItem &&
                             <h2 onClick={() => updateManual('title', prompt('Edit Title:', account.title) || account.title)}>
-                                <i class="fa fa-pencil"></i>
+                                <i className="fa fa-pencil"></i>
                             </h2>
                         }
                         { isNewItem &&
@@ -202,7 +206,7 @@ function Popup({error, account, history}){
                             </button>
                         }
                     </div>
-                    <div class="flex-row flex-row-apr">
+                    <div className="flex-row flex-row-apr">
                         <div className="form-group">
                             <label>APR</label>
                             <input type="number" value={account.apr} className="u-full-width"

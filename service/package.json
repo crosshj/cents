@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "test.scrapers": "export DEBUG=nightmare || set DEBUG=nightmare && node ./scrapers/index.t3st",
-    "test.scrapers.headless": "export DEBUG=nightmare || set DEBUG=nightmare && xvfb-run --auto-servernum --server-args='-screen 0 801x601x24' node ./scrapers/index.t3st",
+    "test.scrapers": "export DEBUG=nightmare || set DEBUG=nightmare && node ./scrapers/index-test",
+    "test.scrapers.headless": "export DEBUG=nightmare || set DEBUG=nightmare && xvfb-run --auto-servernum --server-args='-screen 0 801x601x24' node ./scrapers/index-test",
     "server": "node app.js",
     "example": "DEBUG=nightmare xvfb-run --auto-servernum --server-args='-screen 0 801x601x24' node utilities/example1.js",
     "scrape": "xvfb-run --auto-servernum --server-args='-screen 0 801x601x24' node scrape.js",

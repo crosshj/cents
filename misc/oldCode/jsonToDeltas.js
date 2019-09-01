@@ -12,7 +12,7 @@ var accounts = getAccounts();
 
 function dataStoresRequest(error,response, body){
 	if(error){
-		console.log("FAIL BEFORE DATASTORES REQUEST");	
+		console.log("FAIL BEFORE DATASTORES REQUEST");
 	}
 	// call drop lib here
 	dropbox.list_datastores(null, getDataStoresToAdd);
@@ -39,24 +39,24 @@ function getDataStoresToAdd(error, response, body){
 	if (toAdd.length > 0){
 		// call function to add datastores here
 		//get_or_create_datastore(access_token, datastoreName,etc << callback for this calls dataStoresRequest and starts process again
-		dropbox.get_or_create_datastore(null,toAdd[0],dataStoresRequest)
+		dropbox.get_or_create_datastore(null,toAdd[0],dataStoresRequest);
 		console.log(inspect(toAdd));
 	} else {
-		// call function to kick off the following 
+		// call function to kick off the following
 		console.log('--- ALL NEEDED DATASTORES EXIST');
 		//console.log(inspect(dropbox.handles));
 		getAccountRows(accounts);
 	}
-	
+
 }
 
 // used for each account to get rows
 function snapshotResponse(error, response, body){
 	if(error){
-		console.log("FAIL TO GET SNAPSHOT");	
+		console.log("FAIL TO GET SNAPSHOT");
 	}
 	responseRows = JSON.parse(body).rows;
-	
+
 	console.log(inspect(body));
 	accountsRows = (responseRows.length > 0) ? accountsRows.concat(responseRows) : accountsRows;
 	var handle = response.request.url.query.replace("handle=","");
@@ -73,7 +73,7 @@ function snapshotResponse(error, response, body){
 	// remove requestedDataStore
 	var index = accountsLeftToGetRows.indexOf(requestedDataStore);
 	accountsLeftToGetRows.splice(index, 1);
-	
+
 	getAccountRows(accountsLeftToGetRows);
 }
 
@@ -82,8 +82,8 @@ var accountsRows = [];
 function getAccountRows(accounts){
 	// for all items in each account property (balance, assets, liabilities)
 	// either insert or update based on snapshot got from request (or from information in get_deltas), only if needed
-	accountsLeftToGetRows = (Object.prototype.toString.call(accounts).toLowerCase().indexOf("array") == -1) 
-								? Object.getOwnPropertyNames(accounts).concat(["superfantastic"]) 
+	accountsLeftToGetRows = (Object.prototype.toString.call(accounts).toLowerCase().indexOf("array") == -1)
+								? Object.getOwnPropertyNames(accounts).concat(["superfantastic"])
 								: accounts;
 	//console.log(inspect(accounts));
 	//console.log(dropbox.handles[accountsLeftToGetRows[0]]);
@@ -109,19 +109,19 @@ function getAccountRows(accounts){
 				console.log(inspect(changes));
 				dropbox.put_delta(handle,access_token,revision,changes, function (error,response,body) {
 			    	console.log(body);
-			    });	
+			    });
 			}
-			
+
 		}
 	}
-	
+
 }
 
 function getDeltas(accountsRows){
 	//console.log(accountsRows);
 	//console.log("-- TODO: look at what rows are on server and compare those with what needs added/updated from local, create a DELTA and push to server");
-	var accounts = getAccounts();	
-	
+	var accounts = getAccounts();
+
 	var deltas = [];
 
 	for(var section in accounts) {
@@ -131,20 +131,20 @@ function getDeltas(accountsRows){
 			var id = rows[row].title.toLowerCase().replace(/ /g,"_");
 			var existingMatches = accountsRows.filter(function(a){   return a.tid.indexOf(section)!=-1 && a.rowid.indexOf(id)!=-1; });
 			var change = [];
-			if(!existingMatches || existingMatches.length <= 0) { 
+			if(!existingMatches || existingMatches.length <= 0) {
 				//console.log("-- INSERT row in dropbox: " + section + "/" + id);
 				change = [
 			        "I",
 			        section,
 			        id,
 			        rows[row]
-			    ]
+			    ];
 			    deltas.push(change);
 			}
 			if(!!existingMatches && existingMatches.length > 0){
-				console.log("-- TODO: if not equal, UPDATE row in dropbox: " + section + "/" + id);	
-				
-			} 
+				console.log("-- TODO: if not equal, UPDATE row in dropbox: " + section + "/" + id);
+
+			}
 			//console.log("\t"+id);
 		}
 		console.log("-- TODO: delete rows that should not exist");

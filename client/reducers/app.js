@@ -13,7 +13,7 @@ import {
 } from '../helpers/utilities';
 
 import {
-  fixTotals, addSeperators
+  /*fixTotals,*/ addSeperators
 } from './helpers';
 
 // Reducer
@@ -147,7 +147,7 @@ function receiveAccounts(state, action, root) {
 	return newState;
 }
 
-function receiveAccountsData(state, action, root) {
+function receiveAccountsData(state, action, /*root*/) {
   var newState;
   if (action.payload.error) {
     newState = Object.assign({}, state, action.payload);
@@ -164,7 +164,7 @@ function receiveAccountsData(state, action, root) {
   return newState;
 }
 
-function receiveAccountsSave(state, action, root) {
+function receiveAccountsSave(state, action, /*root*/) {
   var newState;
   if (action.payload.error) {
     newState = Object.assign({}, state, action.payload);
@@ -177,7 +177,7 @@ function receiveAccountsSave(state, action, root) {
   return newState;
 }
 
-function menuSelect(state, action, root) {
+function menuSelect(state, action, /*root*/) {
   var newState;
   localStorage.setItem('selectedTab', action.payload);
   const selectedMenuIndex = action.payload;

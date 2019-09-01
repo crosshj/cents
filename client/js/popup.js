@@ -29,7 +29,7 @@ var statusRow = function(statusItems, status, showLabel){
       }, '')}
     </div>
   `;
-}
+};
 
 function makeHistoryContent({type, title, field, hijack}){
   var historyContent = jq(`
@@ -140,7 +140,7 @@ function showHistoryPopup(target, h){
       headers: {
         'Accept': 'application/json'
       },
-      credentials: 'include'  
+      credentials: 'include'
     })
       .then(function(response) {
         return response.json();
@@ -164,8 +164,8 @@ function showHistoryPopup(target, h){
         var graphData = formatGraphData(json);
         var chart = makeGraph(graphContainer, graphData);
       })
-      .catch(function(error) { 
-        console.log("Error making graph", error); 
+      .catch(function(error) {
+        console.log("Error making graph", error);
       });
   }
   updateDiffs.bind(updateDiffs)();
@@ -188,7 +188,7 @@ function statusHandler(content, originalStatus, originalDateString, getStatus){
       }
       day = (day < 10) ? '0'+day : day;
       month = (month < 10) ? '0'+month : month;
-      content.find('input[type="date"]').val(year + '-' + month + '-' + day)
+      content.find('input[type="date"]').val(year + '-' + month + '-' + day);
     } else {
       content.find('input[type="date"]').val(originalDateString);
     }
@@ -284,7 +284,7 @@ function removeGroupHandler(content){
 }
 
 function accountUI({
-  isNewItem, isGroup, items, statusItems, 
+  isNewItem, isGroup, items, statusItems,
   originalDateString, website, title, originalStatus, notes, autoIsChecked, amount, total
 }){
   var content = jq(`
@@ -423,10 +423,10 @@ function makeAccountContent($clickedRow){
       <td class="">${formatMoney(item.amount)}</td>
     </tr>`;
     return all;
-  }, '')
+  }, '');
 
   var content = accountUI({
-    isNewItem, isGroup, items, statusItems, 
+    isNewItem, isGroup, items, statusItems,
     originalDateString, website, title, originalStatus, notes, autoIsChecked, amount, total
   });
 
@@ -480,7 +480,7 @@ function makeGroupContent($selected){
   var { title, note, total_owed, amount } = newGroup;
 
   var content = accountUI({
-    isNewItem, isGroup, items, statusItems, 
+    isNewItem, isGroup, items, statusItems,
     originalDateString, website, title, originalStatus:status, notes: note, autoIsChecked, amount, total: total_owed
   });
 

@@ -131,7 +131,7 @@ function postAccounts(req, res) {
 			res.json({status: 'accounts saved'});
 		});
 	} catch (error) {
-		console.log(error)
+		console.log(error);
 		res.json(error.toString());
 	}
 }

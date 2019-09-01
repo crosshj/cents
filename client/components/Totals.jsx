@@ -3,9 +3,9 @@ import {formatMoney} from '../helpers/utilities';
 import {
     popupHistory
   } from '../redux/actions';
-import {
-    fetchAccounts
-} from '../redux/services';
+// import {
+//     fetchAccounts
+// } from '../redux/services';
 
 function makeTotalsRow(props){
     var {balance=0, pendingTotal=0, dueTotal=0, assetsTotal=0, debts=0, debtsTotal=0, updating} = props;
@@ -118,7 +118,7 @@ function Totals({totals = {}}){
         document.querySelector('.cache-kill').innerHTML = 'WAIT...';
         fetch('./killCache')
           .then(res => res.json)
-          .then(json => {
+          .then((() => {
             //TODO: this is a lame way of doing this,
             //should listen to event for cache update to reload
             setTimeout(()=>{
@@ -133,11 +133,11 @@ function Totals({totals = {}}){
                     })
                 };
                 fetch('./json', config)
-                    .then(res => {
+                    .then(() => {
                         document.location.reload();
-                    })
+                    });
             }, 10000);
-          });
+          }));
         return false;
     }
 
@@ -169,7 +169,7 @@ function Totals({totals = {}}){
                 marginTop: '10px'
             }}>
                 <span>Commit Hash: </span>
-                <a target="_blank" rel="noreferrer" href={
+                <a target="_blank" rel="noopener noreferrer" href={
                     'https://github.com/crosshj/cents/commits' || process.env.COMMIT_URI
                 }>
                     {process.env.COMMIT_HASH.slice(0, 7)+'\n'}

@@ -15,19 +15,19 @@ function scrapeDiscover(callback){
     const pages = await browser.pages();
     const page = pages[0];
     await page.goto(getPrivateInfo.url());
-  
+
     const usernameField = '#userid-content';
     const passwordField = '#password-content';
     const loginButton = '#log-in-button';
-  
+
     await page.waitFor(loginButton);
-    const loginButtonHandle = await page.$(loginButton);
+    //const loginButtonHandle = await page.$(loginButton);
     const usernameHandle = await page.$(usernameField);
     await usernameHandle.click();
-    await usernameHandle.type(getPrivateInfo.username(), {delay: 100});    
+    await usernameHandle.type(getPrivateInfo.username(), {delay: 100});
     const passwordHandle = await page.$(passwordField);
     await passwordHandle.click();
-    await passwordHandle.type(getPrivateInfo.password(), {delay: 100});    
+    await passwordHandle.type(getPrivateInfo.password(), {delay: 100});
     //await loginButtonHandle.click();
     await passwordHandle.press('Enter');
 
@@ -40,7 +40,7 @@ function scrapeDiscover(callback){
 
     const pendingRowsSelector = '#pending-transction .row-details';
     await page.waitFor(pendingRowsSelector);
-    const pendingTransactions = await page.$$eval(pendingRowsSelector, rows => 
+    const pendingTransactions = await page.$$eval(pendingRowsSelector, rows =>
       rows.map(row => ({
         date: row.children[1].innerText.trim(),
         description: row.children[2].innerText.trim(),
@@ -51,7 +51,7 @@ function scrapeDiscover(callback){
 
     const postedRowsSelector = '#posted-transction .row-details';
     await page.waitFor(postedRowsSelector);
-    const postedTransactions = await page.$$eval(postedRowsSelector, rows => 
+    const postedTransactions = await page.$$eval(postedRowsSelector, rows =>
       rows.map(row => ({
         date: row.children[1].innerText.trim(),
         description: row.children[2].innerText.trim(),

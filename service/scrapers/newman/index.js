@@ -31,5 +31,5 @@ newman.run({
     // urls.forEach(function (url) {
     //     console.info(`${uniqueUrls[url]}: ${url}`);
     // });
-    console.log('----- done')
+    console.log('----- done');
   });

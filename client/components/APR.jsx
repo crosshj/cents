@@ -1,18 +1,18 @@
 import React from 'react';
 import History from './History';
-import { formatMoney, formatDateShort, clone } from '../helpers/utilities';
+import { formatMoney } from '../helpers/utilities';
 
 const getDates = (datesMax) => {
 	const dates = [];
 	var y = 2019;
 	while (dates.length <= datesMax) {
 		for (var m = 1; m <= 12; m++) {
-			dates.push(`${y}${(m + '').padStart(2, '0')}01`)
+			dates.push(`${y}${(m + '').padStart(2, '0')}01`);
 		}
 		y += 1;
 	}
 	return dates;
-}
+};
 
 class DebtPayer {
 	constructor({ startingDebt, apr, interest, minPayment }) {
@@ -49,7 +49,7 @@ const Controls = ({ prefix, values={}, onChange, fields }) => {
 					: key[0].toLowerCase() + key.slice(1).replace(' ', '');
 
 				return (
-					<div className="" key={`controls-${prefix}-key`}>
+					<div className="" key={`controls-${prefix}-key-${i}`}>
 						<label>{key}</label>
 						<input type="number"
 							step={values[cleanKeyName] < 1
@@ -91,7 +91,7 @@ const APR = ({ state, onChange }) => {
 	// SIMULATION HERE
 	const dataRed = [];
 	const dataBlue = [];
-	const totalAvailableMoney = 
+	const totalAvailableMoney =
 		payDebtRed.minPayment()
 		+ payDebtBlue.minPayment()
 		+ state.other.extra;
@@ -169,7 +169,7 @@ const APR = ({ state, onChange }) => {
 		if (redMinPay === 0 || payDebtRed.balance === redMinPay) {
 			blueExtraMoney = extraMoney;
 		}
-		
+
 		if (blueMinPay === 0 || payDebtBlue.balance === blueMinPay) {
 			redExtraMoney = extraMoney;
 		}
@@ -242,6 +242,7 @@ const APR = ({ state, onChange }) => {
 					{ strategies.map((button, i) => {
 						return (
 							<button
+								key={'strategy-button-' + i}
 								className={button.isSelected ? 'button-primary grey' : ''}
 								onClick={(event) => onChange('other', 'strategy', event.target.innerHTML)}
 							>{button.text}</button>
@@ -312,7 +313,7 @@ const APRInitialState = {
 		minimumPercent: 0.0255, //doesn't really matter when minPayment is very high
 		minimumPayment: 25
 	}
-}
+};
 
 class APRContainer extends React.Component {
 	constructor(props, context){
@@ -325,11 +326,13 @@ class APRContainer extends React.Component {
 		const value = typeof event === 'string'
 			? event
 			: Number(event.target.value);
+		// eslint-disable-next-line react/no-direct-mutation-state
 		this.state[prefix][cleanKeyName] = value;
 		this.forceUpdate();
 	}
 
 	componentDidMount(){
+		/* eslint-disable no-unreachable */
 		//TODO: fix this; is not doing what I wanted (per page allow zoom)
 		return;
 
@@ -345,6 +348,7 @@ class APRContainer extends React.Component {
 		const newViewportContent = this.viewportContentBackup
 			.replace('maximum-scale=1', 'maximum-scale=3');
 		viewportMeta.setAttribute('content', newViewportContent);
+		/* eslint-enable no-unreachable */
 	}
 
 	componentWillUnmount(){
@@ -357,7 +361,7 @@ class APRContainer extends React.Component {
 	}
 
 	render() {
-		return <APR {...this.props} state={this.state} onChange={this.onChange}/>
+		return <APR {...this.props} state={this.state} onChange={this.onChange}/>;
 	}
 }
 

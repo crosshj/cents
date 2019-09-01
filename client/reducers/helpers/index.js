@@ -71,7 +71,7 @@ function updateAccountsFromAccount({ accounts, account }) {
     return _accounts;
 }
 
-function fixTotals(accounts, debug) {
+function fixTotals(accounts, /*debug*/) {
 	var u = clone(accounts);
 	(u.liabilities || []).forEach(x => {
 			if (x.hidden === 'false') {
@@ -174,10 +174,10 @@ const datesfromDateRangeAndDefs = ({ firstDate, lastDate, defs }) => {
         + (period * one_day) + arbitraryOffset //???? use a library instead?
     ).toLocaleDateString();
 
-    const dateMinusDays = (dateString, period) => new Date(
-        new Date(dateString).getTime()
-        - (period * one_day)
-    ).toLocaleDateString();
+    // const dateMinusDays = (dateString, period) => new Date(
+    //     new Date(dateString).getTime()
+    //     - (period * one_day)
+    // ).toLocaleDateString();
 
     const seperatorDates = defs.reduce((all, one) => {
         var sepDate = one.starts;

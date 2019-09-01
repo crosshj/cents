@@ -10,44 +10,44 @@ function _getBalances(accounts){
 	var balance = [];
 	var _uBal = 0; //--- TODO: fix this ---//get('localhost/cents/accounts/usaa/balance');
 	var usaaBalance = JSON.parse(_uBal).balance||0;
-	
+
 	var totalAssets = parseFloat(accounts.assets.map(function(el) {
-						return Number(el.amount)
+						return Number(el.amount);
 					}).reduce(function(previousValue, currentValue, index, array) {
 						return previousValue + currentValue;
 					}, 0)).toFixed(2);
 	var totalLiab = parseFloat(accounts.liabilities.map(function(el) {
-						return Number(el.amount)
+						return Number(el.amount);
 					}).reduce(function(previousValue, currentValue, index, array) {
 						return previousValue + currentValue;
 					}, 0)).toFixed(2);
 	var totalOwed = parseFloat(accounts.liabilities.map(function(el) {
-						return Number(el.total_owed)
+						return Number(el.total_owed);
 					}).reduce(function(previousValue, currentValue, index, array) {
 						return previousValue + currentValue;
 					}, 0)).toFixed(2);
 	var totalDue = parseFloat(accounts.liabilities.filter(function(el) {
-						return el.status.toLowerCase().indexOf("due") != -1
+						return el.status.toLowerCase().indexOf("due") != -1;
 					}).map(function(el) {
-						return Number(el.amount)
+						return Number(el.amount);
 					}).reduce(function(previousValue, currentValue, index, array) {
 						return previousValue + currentValue;
 					}, 0)).toFixed(2);
 	var totalPending = parseFloat(accounts.liabilities.filter(function(el) {
-						return el.status.toLowerCase().indexOf("pending") != -1
+						return el.status.toLowerCase().indexOf("pending") != -1;
 					}).map(function(el) {
-						return Number(el.amount)
+						return Number(el.amount);
 					}).reduce(function(previousValue, currentValue, index, array) {
 						return previousValue + currentValue;
 					}, 0)).toFixed(2);
-	
+
 	var balMinPend = usaaBalance - totalPending;
 	var balMinPendDue = usaaBalance - totalPending - totalDue;
 
 	balance.push({ title: "Total Assets", amount: totalAssets });
 	balance.push({ title: "Total Liabilities", amount: totalLiab });
 	balance.push({ title: "Total Owed", amount: totalOwed });
-	
+
 	if (totalDue > 0) {
 		balance.push({ title: "Total Due", amount: totalDue });
 	}
@@ -76,10 +76,10 @@ function getAccounts(){
 
 function saveAccounts(data){
 	var jsonFile = require('path').join(__dirname + '/../accounts.json');
-	
+
 	// simple check to make sure data is clean and safe
-	var dataOkayToSave = data.hasOwnProperty('balance') 
-				&& data.hasOwnProperty('assets') 
+	var dataOkayToSave = data.hasOwnProperty('balance')
+				&& data.hasOwnProperty('assets')
 				&& data.hasOwnProperty('liabilities');
 	if (dataOkayToSave){
 		require('fs')
@@ -105,12 +105,12 @@ var htmlFromJson = function(json){
 
 	html+=( TR_OPEN + " class='header'>"+ TD_OPEN +" colspan='999'>"+"SUMMARY"+"</td>" + TR_CLOSE);
 	json.balance.forEach(function(row){
-		html+=( TR_OPEN + " class='standard summary' data-id='"+row.title+"'>"+ 
-					TD_OPEN +">" +((row.title.toLowerCase() != "balance") ? row.title : '<a target="_blank" href="'+usaaURL+'">'+row.title+'</a>')+"</td>"+ 
+		html+=( TR_OPEN + " class='standard summary' data-id='"+row.title+"'>"+
+					TD_OPEN +">" +((row.title.toLowerCase() != "balance") ? row.title : '<a target="_blank" href="'+usaaURL+'">'+row.title+'</a>')+"</td>"+
 					TD_OPEN +">$"+parseFloat(row.amount).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") +"</td>"+
 				TR_CLOSE);
 	});
-	
+
 	html+="\n</table><table class='assetsLiabs'>";
 	html+=( TR_OPEN + "  class='header'>"+ TD_OPEN +" colspan='999'>"+"LIABILITIES"+"</td>"+TR_CLOSE);
 	json.liabilities.sort(function(a, b) {
@@ -118,12 +118,12 @@ var htmlFromJson = function(json){
 		}).forEach(function(row){
 			if( "true" != row.hidden ){
 				var note = (row.note.length > 2) ? ("<div class='circle' title='"+row.note+"'>"+"i"+"</div>") : null;
-				html+=( TR_OPEN + " class='standard' data-id='"+row.title+"'>"+ 
+				html+=( TR_OPEN + " class='standard' data-id='"+row.title+"'>"+
 							TD_OPEN +">" +((!!row.website && row.website.length > 1) ? "<a target='_self' href='"+ row.website +"'>"+row.title+"</a>" : row.title )+(!!note ? note : "")+"</td>"+
 							TD_OPEN +">$"+parseFloat(row.amount).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"</td>"+
 							TD_OPEN +">" +row.status.toUpperCase()+"</td>"+
 							TD_OPEN +">"+ new Date(row.date).toISOString().replace(/T(.*)$/,'') +"</td>"+
-							TD_OPEN +">"+ ((row.total_owed && row.total_owed > 0) ? "$"+parseFloat(row.total_owed).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : "") +"</td>"+ 
+							TD_OPEN +">"+ ((row.total_owed && row.total_owed > 0) ? "$"+parseFloat(row.total_owed).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : "") +"</td>"+
 						TR_CLOSE );
 			}
 		});
@@ -135,12 +135,12 @@ var htmlFromJson = function(json){
 		}).forEach(function(row){
 			if( "true" != row.hidden ){
 				var note = (row.note.length > 2) ? ("<div class='circle' title='"+row.note+"'>"+"i"+"</div>") : null;
-				html+=( TR_OPEN + " class='standard' data-id='"+row.title+"'>"+ 
+				html+=( TR_OPEN + " class='standard' data-id='"+row.title+"'>"+
 							TD_OPEN +">" +((!!row.website && row.website.length > 1) ? "<a target='_self' href='"+ row.website +"'>"+row.title+"</a>" : row.title )+(!!note ? note : "")+"</td>"+
 							TD_OPEN +">$"+parseFloat(row.amount).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"</td>"+
 							TD_OPEN +">" +row.status.toUpperCase()+"</td>"+
 							TD_OPEN +">"+ new Date(row.date).toISOString().replace(/T(.*)$/,'') +"</td>"+
-							TD_OPEN +">"+ ((row.total_owed && row.total_owed > 0) ? "$"+parseFloat(row.total_owed).toFixed(2) : "") +"</td>"+ 
+							TD_OPEN +">"+ ((row.total_owed && row.total_owed > 0) ? "$"+parseFloat(row.total_owed).toFixed(2) : "") +"</td>"+
 						TR_CLOSE);
 			}
 		});
@@ -202,22 +202,22 @@ var htmlFromJson = function(json){
 			list.forEach(function(element, index, array) {
 				//console.log(JSON.stringify(element));
 				var string = " " + base.pad(element.title[0], 20).toUpperCase();
-				string += " - "
+				string += " - ";
 				string += base.pad(element.status[0], 7).toUpperCase();
-				string += " - "
+				string += " - ";
 				string += base.pad("$" + parseFloat(element.amount[0]).toFixed(2), 8);
-				string += " - "
+				string += " - ";
 				string += base.pad(element.date[0], 10);
 				var total_owed = ( !! element.total_owed) ? parseFloat(element.total_owed[0]).toFixed(2) : null;
 				if (total_owed && total_owed > 0) {
-					string += " - "
+					string += " - ";
 					string += "OWED: $" + total_owed;
 				}
 				string = (!!colog) ? colog.apply(base.pad(string, 90), ["white", assets ? "bgGreen" : "bgRed"]) : string;
-				string += "\n"
+				string += "\n";
 				if ( !! element.website) string += "  SITE: " + element.website[0];
-				string += "\n"
-				string += "  NOTE: "
+				string += "\n";
+				string += "  NOTE: ";
 				string += (element.note[0].length > 1) ? element.note[0] : "-";
 				//string += "\n"
 
@@ -239,11 +239,11 @@ var htmlFromJson = function(json){
 			var callback = function(err, result) {
 				if (err) console.log(err);
 				base.accountsData = result;
-				
+
 				base.json = base.fixXMLResult(result);
-				
+
 				base.json.balance = [];
-				
+
 				base.json.balance.push({ title: "Total Assets", amount: base.total.assets() });
 				base.json.balance.push({ title: "Total Liabilities", amount: base.total.liablities() });
 				base.json.balance.push({ title: "Total Owed", amount: base.total.owed() });
@@ -262,12 +262,12 @@ var htmlFromJson = function(json){
 				if (base.total.due() > 0) {
 					base.json.balance.push({ title: "Balance - Pend/Due", amount: balMinPendDue });
 				}
-				
+
 				base.outputJSONfile(base.json, outputJSONFilename);
-				
+
 				if(base.outputFormat=="plain" || base.outputFormat =="colored" ){
 					var useColog = base.outputFormat =="colored";
-					
+
 					//console.log(JSON.stringify(base.accountsData.accounts)); //.balance[0].item[0].amount[0]);
 					//console.log(JSON.stringify(base.assetsList()));
 					console.log("Total Assets       = " + base.total.assets());
@@ -277,7 +277,7 @@ var htmlFromJson = function(json){
 					console.log("Total Pending      = " + base.total.pending());
 					console.log("Balance            = " + base.getBalance());
 					console.log("Rental             = " + base.getRental());
-					var balMinPend = parseFloat(base.getBalance() - base.total.pending()).toFixed(2)
+					var balMinPend = parseFloat(base.getBalance() - base.total.pending()).toFixed(2);
 					if (base.total.pending() > 0) {
 						console.log("Balance - Pending  = " + balMinPend);
 					}
@@ -325,25 +325,25 @@ var htmlFromJson = function(json){
 		total: {
 			owed: function() {
 				return parseFloat(base.liabList().map(function(el) {
-					return Number(el.total_owed[0])
+					return Number(el.total_owed[0]);
 				}).reduce(function(previousValue, currentValue, index, array) {
 					return previousValue + currentValue;
 				})).toFixed(2);
 			},
 			due: function() {
 				return parseFloat(base.liabList().filter(function(el) {
-					return el.status[0].toLowerCase().indexOf("due") != -1
+					return el.status[0].toLowerCase().indexOf("due") != -1;
 				}).map(function(el) {
-					return Number(el.amount[0])
+					return Number(el.amount[0]);
 				}).reduce(function(previousValue, currentValue, index, array) {
 					return previousValue + currentValue;
 				}, 0)).toFixed(2);
 			},
 			pending: function() {
 				return parseFloat(base.liabList().filter(function(el) {
-					return el.status[0].toLowerCase().indexOf("pending") != -1
+					return el.status[0].toLowerCase().indexOf("pending") != -1;
 				}).map(function(el) {
-					return Number(el.amount[0])
+					return Number(el.amount[0]);
 				}).reduce(function(previousValue, currentValue, index, array) {
 					return previousValue + currentValue;
 				}, 0)).toFixed(2);
@@ -351,14 +351,14 @@ var htmlFromJson = function(json){
 			assets: function() {
 				//console.log("----"+JSON.stringify(base));
 				return parseFloat(base.assetsList().map(function(el) {
-					return Number(el.amount[0])
+					return Number(el.amount[0]);
 				}).reduce(function(previousValue, currentValue, index, array) {
 					return previousValue + currentValue;
 				}, 0)).toFixed(2);
 			},
 			liablities: function() {
 				return parseFloat(base.liabList().map(function(el) {
-					return Number(el.amount[0])
+					return Number(el.amount[0]);
 				}).reduce(function(previousValue, currentValue, index, array) {
 					return previousValue + currentValue;
 				}, 0)).toFixed(2);
@@ -631,7 +631,7 @@ var htmlFromJson = function(json){
 		forceRefresh: function() {
 			var amount = Number(0);
 			$('tr[id=current]').children('.value').css("padding-right", "20px");
-			$('tr[id=current]').children('.value').html('<img src="ajax-loader.gif"/>')
+			$('tr[id=current]').children('.value').html('<img src="ajax-loader.gif"/>');
 			$.ajax({
 				type: "GET",
 				cache: false,
@@ -658,9 +658,9 @@ var htmlFromJson = function(json){
 							base.hiddenList.push($(base).closest('tr'));
 							$(base).closest('tr').hide();
 						}
-					})
+					});
 				}
-			})
+			});
 			if ($(base.hiddenList).size() > 0) {
 				var showHiddenLink = $('.noborder.footer_cell').find('center').last().clone().html('<a class="blend">Show Hidden</a>');
 				showHiddenLink.find('a').click(function() {
@@ -672,7 +672,7 @@ var htmlFromJson = function(json){
 
 		showHidden: function(clickItem) {
 			$('.title a').closest('tr').show();
-			clickItem.html('<a class="blend">Hide Hidden</a>')
+			clickItem.html('<a class="blend">Hide Hidden</a>');
 			clickItem.find('a').click(function() {
 				$(base).closest('center').remove();
 				hideAccounts();
@@ -686,7 +686,7 @@ var htmlFromJson = function(json){
 			base.checkedTotal = 0;
 			$('td.checkbox input:checked').closest('tr').find('td.amount').each(function() {
 				checkedTotal += parseFloat($(base).text().replace(",", ""));
-			})
+			});
 			$('div.total div:eq(1)').text("$" + checkedTotal.numberFormat(2));
 		},
 
@@ -699,7 +699,7 @@ var htmlFromJson = function(json){
 				parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, thousands_sep);
 
 				return parts.join(dec_point);
-			}
+			};
 
 			$('h4:contains("Liabilities")').css("display", "inline-block");
 			$('#liabContain tr td:first-child').before('<td class="checkbox"></td>');

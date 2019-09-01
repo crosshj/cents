@@ -1,6 +1,8 @@
+/* eslint-disable no-useless-escape */
+
 var Nightmare = require('nightmare');
 var nightmare = Nightmare({ show: false, frame: true, openDevTools: true });
-var path = require('path');
+//var path = require('path');
 var getPrivateInfo = require('../utilities/getPrivateInfo').usaa;
 var debug = require('debug')('nightmare');
 
