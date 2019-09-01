@@ -114,7 +114,7 @@ var config = {
 				loader: 'babel-loader?cacheDirectory=true',
 				exclude: /(node_modules|bower_components)/,
 				options: {
-					presets: ['babel-preset-env', 'babel-preset-react'],
+					presets: ["@babel/env", "@babel/react"],
 					plugins: []
 				}
 			},

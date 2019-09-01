@@ -1,8 +1,3 @@
-/* istanbul ignore file */
-
-// make jest skip this file
-if(test){ test.skip('skip', () => {}) }
-
 /*
 eslint-disable no-console
 */

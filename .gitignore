@@ -36,4 +36,4 @@ webpack-stats.json
 dist/
 accounts.bak.json
 .env
-build/reports/**/*
+build/**/*

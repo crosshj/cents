@@ -29,9 +29,6 @@ pipeline {
                         echo 'Testing..'
                         sh 'npm run test.ci'
                     },
-                    "coverage": {
-                        echo 'TODO: coverage'
-                    },
                     "lint" : {
                         sh 'npm run lint'
                     },
@@ -40,13 +37,14 @@ pipeline {
                         sh 'npm run bundle.stats'
                     },
                     "audit": {
-                        sh 'rm -rf .npmrc && npm i --package-lock-only && npm audit'
+                        sh 'mv .npmrc .no-npmrc && npm i --package-lock-only && mv .no-npmrc .npmrc && npm audit'
                     }
                 )
             }
             post {
                 always {
                     junit 'build/reports/*.xml'
+                    cobertura coberturaReportFile: 'build/coverage/cobertura-coverage.xml'
                 }
             }
         }
