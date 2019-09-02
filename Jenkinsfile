@@ -1,6 +1,16 @@
 pipeline {
     agent any
 
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
+    }
+    /*
+        daysToKeepStr: history is only kept up to this days.
+        numToKeepStr: only this number of build logs are kept.
+        artifactDaysToKeepStr: artifacts are only kept up to this days.
+        artifactNumToKeepStr: only this number of builds have their artifacts kept.
+    */
+
     // environment { 
     // }
 
