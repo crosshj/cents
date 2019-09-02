@@ -65,6 +65,7 @@ pipeline {
         }
         stage('Deploy') {
             steps {
+                echo "TODO: node_modules cleanup unsuck"
                 sh 'npm prune --no-production'
                 sh 'ls -l node_modules'
 
@@ -87,7 +88,7 @@ pipeline {
                         transfers: [sshTransfer(
                             cleanRemote: true,
                             excludes: '',
-                            execCommand: 'touch ./deploy/it-happened.done',
+                            execCommand: 'touch ./deploy/it-happened.done && du -ch ./deploy/cents/',
                             execTimeout: 120000,
                             flatten: false,
                             makeEmptyDirs: true,
