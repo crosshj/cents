@@ -88,7 +88,7 @@ pipeline {
                         transfers: [sshTransfer(
                             cleanRemote: true,
                             excludes: '',
-                            execCommand: 'touch ./deploy/it-happened.done && du -ch ./deploy/cents/',
+                            execCommand: 'touch ./deploy/it-happened.done && du -hd1 ./deploy/cents/',
                             execTimeout: 120000,
                             flatten: false,
                             makeEmptyDirs: true,
