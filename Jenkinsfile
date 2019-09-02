@@ -22,7 +22,6 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                echo 'Building..'
                 script {
                     NODE_VERSION = sh(
                         returnStdout: true,
@@ -43,7 +42,6 @@ pipeline {
             steps {
                 parallel (
                     "test" : {
-                        echo 'Testing..'
                         sh 'npm run test.ci'
                     },
                     "lint" : {
@@ -67,19 +65,12 @@ pipeline {
         }
         stage('Deploy') {
             steps {
-                echo 'Deploying....'
                 sh 'npm prune --no-production'
                 sh 'ls -l node_modules'
-                echo 'TODO: attach all the stuff that needs to go to server and send'
-                echo ' --- .env: port, cookie_secret, mongo, reddis, ...'
-                echo ' --- other?'
 
-                // sh 'ssh user@server rm -rf /var/www/temp_deploy/dist/'
-                // sh 'ssh user@server mkdir -p /var/www/temp_deploy'
-                // sh 'scp -r dist user@server:/var/www/temp_deploy/dist/'
-                // sh 'ssh user@server "rm -rf /var/www/example.com/dist/ && mv /var/www/temp_deploy/dist/ /var/www/example.com/"'
-
-                def COOKIE_SECRET = UUID.randomUUID().toString()
+                script {
+                    COOKIE_SECRET = UUID.randomUUID().toString()
+                }
                 writeFile(file: ".env", text: """
                     COOKIE_SECRET=${COOKIE_SECRET}
                     PORT=
@@ -109,9 +100,6 @@ pipeline {
                         verbose: false
                     )]
                 )
-                
-                echo 'https://dzone.com/articles/intro-to-jenkins-pipeline-and-using-publish-over-s'
-                echo 'https://github.com/linuxacademy/devops-essentials-sample-app/blob/master/Jenkinsfile'
             }
         }
     }
