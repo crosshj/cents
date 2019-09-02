@@ -2,9 +2,14 @@ pipeline {
     agent any
 
     options {
-        buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
+        buildDiscarder(logRotator(
+            numToKeepStr: '10',
+            artifactNumToKeepStr: '10'
+        ))
     }
     /*
+        https://stackoverflow.com/a/44155346
+
         daysToKeepStr: history is only kept up to this days.
         numToKeepStr: only this number of build logs are kept.
         artifactDaysToKeepStr: artifacts are only kept up to this days.
@@ -73,6 +78,37 @@ pipeline {
                 // sh 'ssh user@server mkdir -p /var/www/temp_deploy'
                 // sh 'scp -r dist user@server:/var/www/temp_deploy/dist/'
                 // sh 'ssh user@server "rm -rf /var/www/example.com/dist/ && mv /var/www/temp_deploy/dist/ /var/www/example.com/"'
+
+                def COOKIE_SECRET = UUID.randomUUID().toString()
+                writeFile(file: ".env", text: """
+                    COOKIE_SECRET=${COOKIE_SECRET}
+                    PORT=
+                    MONGO=
+                    REDDIS=
+                """, encoding: "UTF-8")
+
+                sshPublisher(
+                    publishers: [sshPublisherDesc(
+                        configName: 'ubuntu',
+                        transfers: [sshTransfer(
+                            cleanRemote: true,
+                            excludes: '',
+                            execCommand: 'touch ./deploy/it-happened.done',
+                            execTimeout: 120000,
+                            flatten: false,
+                            makeEmptyDirs: true,
+                            noDefaultExcludes: false,
+                            patternSeparator: '[, ]+',
+                            remoteDirectory: '/deploy/cents/',
+                            remoteDirectorySDF: false,
+                            removePrefix: '',
+                            sourceFiles: 'dist/**, node_modules/**, server/**, service/**, deploy.sh, docker-compose.yml, .env'
+                        )], 
+                        usePromotionTimestamp: false, 
+                        useWorkspaceInPromotion: false,
+                        verbose: false
+                    )]
+                )
                 
                 echo 'https://dzone.com/articles/intro-to-jenkins-pipeline-and-using-publish-over-s'
                 echo 'https://github.com/linuxacademy/devops-essentials-sample-app/blob/master/Jenkinsfile'
