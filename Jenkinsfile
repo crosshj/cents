@@ -69,14 +69,17 @@ pipeline {
                 sh 'ls -l node_modules'
 
                 script {
-                    COOKIE_SECRET = UUID.randomUUID().toString()
+                    ENVMAP = [
+                        COOKIE_SECRET: UUID.randomUUID(),
+                        PORT: "",
+                        MONGO: "",
+                        REDDIS: ""
+                    ]
+                    ENVTEXT = ENVMAP.inject([]) { result, entry ->
+                        result << "${entry.key}=${entry.value.toString()}"
+                    }.join('\n')
                 }
-                writeFile(file: ".env", text: """
-                    COOKIE_SECRET=${COOKIE_SECRET}
-                    PORT=
-                    MONGO=
-                    REDDIS=
-                """, encoding: "UTF-8")
+                writeFile(file: ".env", text: ENVTEXT, encoding: "UTF-8")
 
                 sshPublisher(
                     publishers: [sshPublisherDesc(
