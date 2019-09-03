@@ -2,6 +2,8 @@
 
 # from https://medium.com/@slavakorolev/zero-downtime-deployment-with-docker-d9ef54e48c4
 
+# alternative to this using traefik router - https://coderbook.com/@marcus/how-to-do-zero-downtime-deployments-of-docker-containers/
+
 CONTAINER_NAME="cents_"
 
 # lets find the first container
