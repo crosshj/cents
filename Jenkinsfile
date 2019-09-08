@@ -97,7 +97,7 @@ pipeline {
                             remoteDirectory: '/deploy/cents/',
                             remoteDirectorySDF: false,
                             removePrefix: '',
-                            sourceFiles: 'dist/**, node_modules/**, server/**, service/**, deploy.sh, docker-compose.yml, .env'
+                            sourceFiles: 'dist/**, node_modules/**, deploy.sh, docker-compose.yml, .env'
                         )], 
                         usePromotionTimestamp: false, 
                         useWorkspaceInPromotion: false,
