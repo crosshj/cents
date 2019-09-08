@@ -150,9 +150,14 @@ var clientBuild = {
 	}
 };
 
+const whitelist= [
+	...Object.keys(require('./package.json').devDependencies)
+];
+//console.log({whitelist});
+
 const serverBuild = {
 	entry: {
-		app: SERVER_DIR + '/index'
+		index: SERVER_DIR + '/index'
 	},
 	output: {
 		path: SERVER_BUILD_DIR,
@@ -161,19 +166,22 @@ const serverBuild = {
 	},
 	target: 'node',
 	mode: 'none',
-	externals: [nodeExternals()],
+	externals: [nodeExternals({
+		whitelist
+	})],
 	optimization: {
-		minimize: true,
-		splitChunks: {
-			cacheGroups: {
-				vendor: {
-					test: /(node_modules|vendor)/,
-					chunks: 'initial',
-					name: 'vendor',
-					enforce: true
-				}
-			}
-		},
+		minimize: false,
+		// NOTE: the following does not work yet for server bundle
+		// splitChunks: {
+		// 	cacheGroups: {
+		// 		vendor: {
+		// 			test: /(node_modules|vendor)/,
+		// 			chunks: 'initial',
+		// 			name: 'vendor',
+		// 			enforce: true
+		// 		}
+		// 	}
+		// },
 	},
 	module: {
 		rules: [
@@ -197,4 +205,5 @@ if (process.env.NODE_ENV === 'dev') {
 	}));
 }
 
-module.exports = [ clientBuild, /*serverBuild*/ ];
+module.exports = [ clientBuild, serverBuild ];
+//module.exports = serverBuild;
