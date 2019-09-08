@@ -62,7 +62,8 @@
     "webpack": "4.39.2",
     "webpack-cli": "3.3.6",
     "webpack-dev-middleware": "3.7.0",
-    "webpack-livereload-plugin": "^2.2.0"
+    "webpack-livereload-plugin": "^2.2.0",
+    "webpack-node-externals": "1.7.2"
   },
   "jest": {
     "verbose": true,
@@ -95,7 +96,7 @@
     "install": "./service/init.sh",
     "build": "webpack",
     "start": "node server/index.js",
-    "watch": "export NODE_ENV=dev|| set NODE_ENV=dev&& nodemon server/index.js",
+    "watch": "export NODE_ENV=dev || set NODE_ENV=dev && nodemon server/index.js",
     "prestart": "touch ./accounts.json",
     "bundle.stats": "webpack --profile --json > webpack-stats.json && echo https://chrisbateman.github.io/webpack-visualizer/",
     "lint": "eslint . --ext .js,.jsx",

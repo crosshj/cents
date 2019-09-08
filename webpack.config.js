@@ -17,8 +17,9 @@ var BUILD_DIR = path.resolve(__dirname, './dist/client/');
 //console.log({ BUILD_DIR})
 var APP_DIR = path.resolve(__dirname, 'client/');
 
-//var BUILD_DIR = '/client/build';
-//var APP_DIR = './client/js/react';
+var SERVER_DIR = path.resolve(__dirname, 'server/');
+var SERVER_BUILD_DIR = path.resolve(__dirname, './dist/server/');
+var nodeExternals = require('webpack-node-externals');
 
 process.traceDeprecation = true;
 
@@ -46,7 +47,7 @@ let commitDate = require('child_process')
 
 let commitURI = `https://github.com/crosshj/cents/commit/${commitHash}`;
 
-var config = {
+var clientBuild = {
 	entry: {
 		app: APP_DIR + '/app'
 	},
@@ -149,11 +150,51 @@ var config = {
 	}
 };
 
+const serverBuild = {
+	entry: {
+		app: SERVER_DIR + '/index'
+	},
+	output: {
+		path: SERVER_BUILD_DIR,
+		filename: "[name].js",
+		chunkFilename: '[name].js',
+	},
+	target: 'node',
+	mode: 'none',
+	externals: [nodeExternals()],
+	optimization: {
+		minimize: true,
+		splitChunks: {
+			cacheGroups: {
+				vendor: {
+					test: /(node_modules|vendor)/,
+					chunks: 'initial',
+					name: 'vendor',
+					enforce: true
+				}
+			}
+		},
+	},
+	module: {
+		rules: [
+			{
+				test: /\.jsx?/,
+				loader: 'babel-loader?cacheDirectory=true',
+				exclude: /(node_modules|bower_components)/,
+				options: {
+					presets: ["@babel/env", "@babel/react"],
+					plugins: []
+				}
+			},
+		]
+	}
+};
+
 if (process.env.NODE_ENV === 'dev') {
 	const liveReloadPlugin = require('webpack-livereload-plugin');
-	config.plugins.push(new liveReloadPlugin({
+	clientBuild.plugins.push(new liveReloadPlugin({
 		//live-reload options
 	}));
 }
 
-module.exports = config;
+module.exports = [ clientBuild, /*serverBuild*/ ];
