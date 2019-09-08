@@ -171,7 +171,9 @@ const serverBuild = {
 	})],
 	optimization: {
 		minimize: false,
-		// NOTE: the following does not work yet for server bundle
+		// NOTE: the following does not work yet for server bundle (maybe?)
+		// possibly mentioned here? - https://github.com/webpack/webpack/issues/8156
+		// or here? https://github.com/webpack/webpack/issues/8161
 		// splitChunks: {
 		// 	cacheGroups: {
 		// 		vendor: {

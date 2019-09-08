@@ -9,7 +9,7 @@ const webpackCompilerCallback = (err, output) => {
     console.log(JSON.stringify(err));
     return;
   }
-  console.log('Webpack finished client build.');
+  console.log('Webpack finished build.');
   //console.log({ output });
   //console.log(Object.keys(output));
   //console.log(JSON.stringify(output.toJson()));
@@ -20,6 +20,7 @@ const webpackCompilerCallback = (err, output) => {
   //   console.log('Webpack finished build.');
   //   //console.log({ stats });
   // });
+  //require('../dist/server/vendor');
   require('../dist/server');
 };
 //console.log(Object.keys(webpack));

@@ -65,9 +65,7 @@ pipeline {
         }
         stage('Deploy') {
             steps {
-                echo "TODO: node_modules cleanup unsuck"
                 sh 'npm run clean'
-                sh 'ls -l node_modules'
 
                 script {
                     ENVMAP = [
