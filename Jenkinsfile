@@ -70,7 +70,7 @@ pipeline {
                 script {
                     ENVMAP = [
                         COOKIE_SECRET: UUID.randomUUID(),
-                        PORT: "",
+                        PORT: 3777,
                         MONGO: "",
                         REDDIS: ""
                     ]
@@ -95,7 +95,7 @@ pipeline {
                             remoteDirectory: '/deploy/cents/',
                             remoteDirectorySDF: false,
                             removePrefix: '',
-                            sourceFiles: 'dist/**, node_modules/**, deploy.sh, docker-compose.yml, .env'
+                            sourceFiles: 'dist/**, service/**, node_modules/**, deploy.sh, docker-compose.yml, .env'
                         )], 
                         usePromotionTimestamp: false, 
                         useWorkspaceInPromotion: false,
