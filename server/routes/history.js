@@ -1,7 +1,7 @@
 const fs = require('fs');
-const path = require('path');
 
-const DIFF_LOG_LOCATION = path.resolve(__dirname, '../../diffs.log');
+// path relative to root (because webpack the server)
+const DIFF_LOG_LOCATION = './diffs.log';
 
 //(+date)delta/liabilities/changes/(+key)(?update)changes/(?amount)(+value)(+oldValue)update
 // -> { date, key, value, oldValue }

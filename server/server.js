@@ -41,7 +41,7 @@ function serverStart(app, settings) {
   app.enable('etag', 'strong');
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: false }));
-  app.use(serveStatic(require('path').resolve(__dirname, '../dist/client'), {
+  app.use(serveStatic('./dist/client', {
     index: ['index.html', 'index.htm']
   }));
   require('./authentication').init(app);

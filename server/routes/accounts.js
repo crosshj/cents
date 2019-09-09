@@ -16,11 +16,11 @@ var moment = require('moment');
 
 var getAccountsFileName = require('../utilities').getAccountsFileName;
 var updateAccounts = require('../utilities').updateAccounts;
-
-var jsonFile = require('path').resolve(__dirname, '../../accounts.json');
-var logFile = require('path').resolve(__dirname, '../../diffs.log');
-
 var db = require('../../service/database');
+
+// path relative to root (because webpack the server)
+var jsonFile = './accounts.json';
+var logFile = './diffs.log';
 
 function getJSON(req, res) {
 	const accountsFileName = getAccountsFileName();

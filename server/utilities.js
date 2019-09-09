@@ -3,7 +3,7 @@ var path = require('path');
 var DEBUG = false;
 
 function getAccountsFileName() {
-  const accountsFile = path.resolve(__dirname, '../accounts.json');
+  const accountsFile = './accounts.json';
 
   const useDefault = (() => {
     var _useDefault = true;
