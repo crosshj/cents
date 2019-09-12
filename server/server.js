@@ -8,7 +8,7 @@ var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var passport = require('passport');
 var authentication = require('./authentication');
-const errorHandler = require('./expressErrorHandler');;
+const errorHandler = require('./expressErrorHandler');
 
 const hostname = 'http://localhost';
 

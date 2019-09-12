@@ -10,7 +10,7 @@ const menuProps = {
 
 function ActionButton({ onChoose }) {
     const childMenuClick = (which) => {
-        onChoose && onChoose(which)
+        onChoose && onChoose(which);
         const mainIcon = document && document.querySelector('.mfb-component__main-icon--active');
         /* istanbul ignore next */
         mainIcon && mainIcon.click();
