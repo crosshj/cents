@@ -37,9 +37,11 @@ describe('floating action button', () => {
     );
 
     const childButtons = component.root.findAllByProps({className: 'mfb-component__button--child'});
-    childButtons[0].props.onClick();
+    childButtons.forEach(child => child.props.onClick());
 
     expect(onChoose).toBeCalledWith('dollar');
+    expect(onChoose).toBeCalledWith('group');
+    expect(onChoose).toBeCalledWith('refresh');
 
     const tree = component.toJSON();
     expect(tree).toMatchSnapshot();
