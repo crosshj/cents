@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`changes class when clicked 1`] = `
+exports[`floating action button changes class when clicked 1`] = `
 <div
   className="floating-action-button"
 >
@@ -66,7 +66,7 @@ exports[`changes class when clicked 1`] = `
 </div>
 `;
 
-exports[`changes class when clicked 2`] = `
+exports[`floating action button changes class when clicked 2`] = `
 <div
   className="floating-action-button"
 >
@@ -132,7 +132,7 @@ exports[`changes class when clicked 2`] = `
 </div>
 `;
 
-exports[`renders in initial state 1`] = `
+exports[`floating action button renders in initial state 1`] = `
 <div
   className="floating-action-button"
 >
