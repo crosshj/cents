@@ -4,33 +4,47 @@ import renderer from 'react-test-renderer';
 
 describe('floating action button', () => {
 
-  it('renders in initial state', () => {
+  it('renders initial view', () => {
     const component = renderer.create(
       <ActionButton />,
     );
-  
+
     let tree = component.toJSON();
     expect(tree).toMatchSnapshot();
   });
-  
-  it('changes class when clicked', () => {
+
+  it('changes menu state to open when main button clicked', () => {
     const component = renderer.create(
       <ActionButton />,
     );
-  
-    let tree = component.toJSON();
-    expect(tree).toMatchSnapshot();
-  
-    // manually trigger the callback
+    const mainMenu = component.root.findByProps({ className: 'mfb-slidein mfb-component--br'})
+    var mainMenuState = mainMenu.props['data-mfb-state'];
+    expect(mainMenuState).toBe('closed');
+
     const button = component.root.findByProps({className: 'mfb-component__button--main'});
     const eventMock = { preventDefault: jest.fn() };
     button.props.onClick(eventMock);
-  
-    // re-rendering
-    tree = component.toJSON();
-    expect(tree).toMatchSnapshot();
-  
+
+    mainMenuState = mainMenu.props['data-mfb-state'];
+    expect(mainMenuState).toBe('open');
   });
+
+  it('calls onChoose function when child button is clicked', () => {
+    const onChoose = jest.fn();
+
+    const component = renderer.create(
+      <ActionButton onChoose={onChoose}/>,
+    );
+
+    const childButtons = component.root.findAllByProps({className: 'mfb-component__button--child'});
+    childButtons[0].props.onClick();
+
+    expect(onChoose).toBeCalledWith('dollar');
+
+    const tree = component.toJSON();
+    expect(tree).toMatchSnapshot();
+  });
+
 });
 
 

@@ -7,12 +7,14 @@ const menuProps = {
     method: 'click'
 };
 
-const childMenuClick = () => {
-    console.log('Action Button child click: handler should be passed by parent!');
-    document.querySelector('.mfb-component__main-icon--active').click();
-};
 
-function ActionButton() {
+function ActionButton({ onChoose }) {
+    const childMenuClick = (which) => {
+        onChoose && onChoose(which)
+        const mainIcon = document && document.querySelector('.mfb-component__main-icon--active');
+        mainIcon && mainIcon.click();
+    };
+
     return (
         <div className='floating-action-button'>
             <Menu {...menuProps}>
@@ -21,17 +23,17 @@ function ActionButton() {
                     iconActive="a-icon fa fa-times"
                 />
                 <ChildButton
-                    onClick={childMenuClick}
+                    onClick={() => childMenuClick('dollar')}
                     icon="a-icon fa fa-dollar"
                     label="Add a new expense"
                 />
                 <ChildButton
-                    onClick={childMenuClick}
+                    onClick={() => childMenuClick('group')}
                     icon="a-icon fa fa-align-justify"
                     label="Create a group"
                 />
                 <ChildButton
-                    onClick={childMenuClick}
+                    onClick={() => childMenuClick('refresh')}
                     icon="a-icon fa fa-refresh"
                     label="Update application"
                 />
