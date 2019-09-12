@@ -5,6 +5,7 @@ INBOX
   - show hidden / hide
   - show projected payoff date in popup
   - scroll history graph
+  - dayjs versus moment
 
 GROUPED ACCOUNTS
   - amount that is shown due/pending should only be that due within period

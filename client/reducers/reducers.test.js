@@ -91,7 +91,7 @@ describe('app reducer', () => {
 		});
 	});
 
-	it('should return the initial state', () => {
+	it('returns the initial state', () => {
 		var action = {};
 		var expected = { app: {}, page: {}, popup: {} };
 		var currentState = reduce(undefined, action);
@@ -99,7 +99,7 @@ describe('app reducer', () => {
 		expect(currentState).toEqual(expected);
 	});
 
-	it('should handle basic receive accounts', () => {
+	it('handles basic receive accounts', () => {
 		var action = receiveAccounts({
 			liabilities: []
 		});
@@ -126,7 +126,7 @@ describe('app reducer', () => {
 		expect(currentState).toEqual(expected);
 	});
 
-	it('should update group/totals when group child changes', () => {
+	it('updates group/totals when group child changes', () => {
 		// ARRANGE
 		var currentState = exampleInitial();
 		var expected = clone(currentState);
@@ -178,7 +178,7 @@ describe('app reducer', () => {
 	});
 
 
-	it('should update date when status changes', () => {
+	it('updates date when status changes', () => {
 		//ARRANGE
 		var state = exampleInitial();
 		var result = reduce(state, accountClick('child2'));
@@ -211,7 +211,7 @@ describe('app reducer', () => {
 		expect(result).toEqual(expected);
 	});
 
-	it('should save group properly when updating group title', () => {
+	it('saves group properly when updating group title', () => {
 		root.globalState().reset();
 
 		//ARRANGE
@@ -253,7 +253,7 @@ describe('app reducer', () => {
 		expect(currentState).toEqual(expected);
 	});
 
-	it('should remove child from group properly', () => {
+	it('removes child from group properly', () => {
 		var currentState = exampleInitial();
 
 		currentState = reduce(currentState, accountClick('group'));
@@ -274,7 +274,7 @@ describe('app reducer', () => {
 		expect(currentState.app.accounts.liabilities.length).toEqual(2);
 	});
 
-	it('should keep track of useful info in root reducer', () => {
+	it('keeps track of useful info in root reducer', () => {
 		// ARRANGE
 		root.globalState().reset();
 		var exampleAccounts = basicExample();
@@ -316,7 +316,7 @@ describe('app reducer', () => {
 
 	});
 
-	it('should handle new group create and save properly', () => {
+	it('handles new group create and save properly', () => {
 		/*
 				1) select two accounts
 				2) create group from accounts
@@ -354,7 +354,7 @@ describe('app reducer', () => {
 		//TODO: write assertions
 	});
 
-	it('should handle seperator accounts properly', () => {
+	it('handles seperator accounts properly', () => {
 		/*
 			1) seperator account should never show up as normal account
 			2) seperators should be created dynamically based on seperator account
@@ -393,7 +393,7 @@ describe('app reducer', () => {
 		// what about seperators for other actions/reducers?
 	});
 
-	it('should show totals properly', ()=>{
+	it('shows totals properly', ()=>{
 		root.globalState().reset();
 		var exampleAccounts = lotsOfAccounts(15).accounts;
 		exampleAccounts.liabilities = exampleAccounts.liabilities
@@ -414,7 +414,7 @@ describe('app reducer', () => {
 		expect(currentState.root.accounts.totals).toEqual(currentState.app.accounts.totals);
 	});
 
-	xit('should create and use keys on accounts', () => {
+	xit('creates and use keys on accounts', () => {
 		/*
 			create key when:
 				receive accounts and key not already exists
@@ -434,17 +434,17 @@ describe('app reducer', () => {
 
 	});
 
-	xit('should expand group in UI properly', () => {
+	xit('expands group in UI properly', () => {
 	});
 
-	xit('should update UI state when popup updates account', () => {
+	xit('updates UI state when popup updates account', () => {
 	});
 
-	xit('should add child to group properly', () => {
+	xit('adds child to group properly', () => {
 
 	});
 
-	xit('should update popup with new info once saved', () => {
+	xit('updates popup with new info once saved', () => {
 		/*
 				1) open account popup
 				2) update something

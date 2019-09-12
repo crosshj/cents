@@ -1,0 +1,199 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`changes class when clicked 1`] = `
+<div
+  className="floating-action-button"
+>
+  <ul
+    className="mfb-slidein mfb-component--br"
+    data-mfb-state="closed"
+    data-mfb-toggle="click"
+  >
+    <li
+      className="mfb-component__wrap"
+    >
+      <a
+        className="mfb-component__button--main"
+        href="#"
+        onClick={[Function]}
+      >
+        <i
+          className="mfb-component__main-icon--resting a-icon fa fa-plus"
+        />
+        <i
+          className="mfb-component__main-icon--active a-icon fa fa-times"
+        />
+      </a>
+      <ul
+        className="mfb-component__list"
+      >
+        <li>
+          <a
+            className="mfb-component__button--child"
+            data-mfb-label="Add a new expense"
+            onClick={[Function]}
+          >
+            <i
+              className="mfb-component__child-icon a-icon fa fa-dollar"
+            />
+          </a>
+        </li>
+        <li>
+          <a
+            className="mfb-component__button--child"
+            data-mfb-label="Create a group"
+            onClick={[Function]}
+          >
+            <i
+              className="mfb-component__child-icon a-icon fa fa-align-justify"
+            />
+          </a>
+        </li>
+        <li>
+          <a
+            className="mfb-component__button--child"
+            data-mfb-label="Update application"
+            onClick={[Function]}
+          >
+            <i
+              className="mfb-component__child-icon a-icon fa fa-refresh"
+            />
+          </a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+`;
+
+exports[`changes class when clicked 2`] = `
+<div
+  className="floating-action-button"
+>
+  <ul
+    className="mfb-slidein mfb-component--br"
+    data-mfb-state="open"
+    data-mfb-toggle="click"
+  >
+    <li
+      className="mfb-component__wrap"
+    >
+      <a
+        className="mfb-component__button--main"
+        href="#"
+        onClick={[Function]}
+      >
+        <i
+          className="mfb-component__main-icon--resting a-icon fa fa-plus"
+        />
+        <i
+          className="mfb-component__main-icon--active a-icon fa fa-times"
+        />
+      </a>
+      <ul
+        className="mfb-component__list"
+      >
+        <li>
+          <a
+            className="mfb-component__button--child"
+            data-mfb-label="Add a new expense"
+            onClick={[Function]}
+          >
+            <i
+              className="mfb-component__child-icon a-icon fa fa-dollar"
+            />
+          </a>
+        </li>
+        <li>
+          <a
+            className="mfb-component__button--child"
+            data-mfb-label="Create a group"
+            onClick={[Function]}
+          >
+            <i
+              className="mfb-component__child-icon a-icon fa fa-align-justify"
+            />
+          </a>
+        </li>
+        <li>
+          <a
+            className="mfb-component__button--child"
+            data-mfb-label="Update application"
+            onClick={[Function]}
+          >
+            <i
+              className="mfb-component__child-icon a-icon fa fa-refresh"
+            />
+          </a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+`;
+
+exports[`renders in initial state 1`] = `
+<div
+  className="floating-action-button"
+>
+  <ul
+    className="mfb-slidein mfb-component--br"
+    data-mfb-state="closed"
+    data-mfb-toggle="click"
+  >
+    <li
+      className="mfb-component__wrap"
+    >
+      <a
+        className="mfb-component__button--main"
+        href="#"
+        onClick={[Function]}
+      >
+        <i
+          className="mfb-component__main-icon--resting a-icon fa fa-plus"
+        />
+        <i
+          className="mfb-component__main-icon--active a-icon fa fa-times"
+        />
+      </a>
+      <ul
+        className="mfb-component__list"
+      >
+        <li>
+          <a
+            className="mfb-component__button--child"
+            data-mfb-label="Add a new expense"
+            onClick={[Function]}
+          >
+            <i
+              className="mfb-component__child-icon a-icon fa fa-dollar"
+            />
+          </a>
+        </li>
+        <li>
+          <a
+            className="mfb-component__button--child"
+            data-mfb-label="Create a group"
+            onClick={[Function]}
+          >
+            <i
+              className="mfb-component__child-icon a-icon fa fa-align-justify"
+            />
+          </a>
+        </li>
+        <li>
+          <a
+            className="mfb-component__button--child"
+            data-mfb-label="Update application"
+            onClick={[Function]}
+          >
+            <i
+              className="mfb-component__child-icon a-icon fa fa-refresh"
+            />
+          </a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+`;

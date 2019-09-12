@@ -1,0 +1,272 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders APR test page 1`] = `
+<div
+  className="apr-wrapper"
+>
+  <div
+    className="apr-contain container"
+  >
+    <h2>
+      Debt Payment Calculator
+    </h2>
+    <div
+      id="mockHistory"
+    />
+    <h5>
+      STRATEGY
+    </h5>
+    <div
+      className="grid-row"
+    >
+      <button
+        className="button-primary grey"
+        onClick={[Function]}
+      >
+        High APR
+      </button>
+      <button
+        className=""
+        onClick={[Function]}
+      >
+        Low APR
+      </button>
+      <button
+        className=""
+        onClick={[Function]}
+      >
+        High Debt
+      </button>
+      <button
+        className=""
+        onClick={[Function]}
+      >
+        Low Debt
+      </button>
+      <button
+        className=""
+        onClick={[Function]}
+      >
+        High Cost
+      </button>
+      <button
+        className=""
+        onClick={[Function]}
+      >
+        Low Cost
+      </button>
+      <button
+        className=""
+        onClick={[Function]}
+      >
+        None
+      </button>
+    </div>
+    <h5
+      style={
+        Object {
+          "marginBottom": 10,
+          "marginTop": 25,
+        }
+      }
+    >
+      INTEREST COST
+    </h5>
+    <h4
+      style={
+        Object {
+          "fontWeight": 500,
+          "marginBottom": 40,
+        }
+      }
+    >
+      $6,148.71
+    </h4>
+    <div
+      className="container"
+    >
+      <div
+        className="flex-row"
+      >
+        <div
+          className="columns"
+        >
+          <form>
+            <h5>
+              BLUE
+               
+              DEBT
+            </h5>
+            <div
+              className=""
+            >
+              <label>
+                Amount
+              </label>
+              <input
+                onChange={[Function]}
+                step={1}
+                type="number"
+                value={10210.49}
+              />
+            </div>
+            <div
+              className=""
+            >
+              <label>
+                APR
+              </label>
+              <input
+                onChange={[Function]}
+                step={0.001}
+                type="number"
+                value={0.1774}
+              />
+            </div>
+            <div
+              className=""
+            >
+              <label>
+                Minimum Percent
+              </label>
+              <input
+                onChange={[Function]}
+                step={0.001}
+                type="number"
+                value={0.0255}
+              />
+            </div>
+            <div
+              className=""
+            >
+              <label>
+                Minimum Payment
+              </label>
+              <input
+                onChange={[Function]}
+                step={1}
+                type="number"
+                value={25}
+              />
+            </div>
+          </form>
+        </div>
+        <div
+          className="columns"
+        >
+          <form>
+            <h5>
+              RED
+               
+              DEBT
+            </h5>
+            <div
+              className=""
+            >
+              <label>
+                Amount
+              </label>
+              <input
+                onChange={[Function]}
+                step={1}
+                type="number"
+                value={2145}
+              />
+            </div>
+            <div
+              className=""
+            >
+              <label>
+                APR
+              </label>
+              <input
+                onChange={[Function]}
+                step={0.001}
+                type="number"
+                value={0.239}
+              />
+            </div>
+            <div
+              className=""
+            >
+              <label>
+                Minimum Percent
+              </label>
+              <input
+                onChange={[Function]}
+                step={0.001}
+                type="number"
+                value={0.031}
+              />
+            </div>
+            <div
+              className=""
+            >
+              <label>
+                Minimum Payment
+              </label>
+              <input
+                onChange={[Function]}
+                step={1}
+                type="number"
+                value={25}
+              />
+            </div>
+          </form>
+        </div>
+        <div
+          className="columns"
+        >
+          <form>
+            <h5>
+              OTHER
+               
+              
+            </h5>
+            <div
+              className=""
+            >
+              <label>
+                months
+              </label>
+              <input
+                onChange={[Function]}
+                step={1}
+                type="number"
+                value={60}
+              />
+            </div>
+            <div
+              className=""
+            >
+              <label>
+                extra
+              </label>
+              <input
+                onChange={[Function]}
+                step={0.001}
+                type="number"
+                value={0}
+              />
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div>
+      
+The idea here is to see what strategies work best for paying down debt.  Consider the following:
+
+    - pay off debts in order of highest/lowest APR
+    - pay off lowest/highest debt first
+    - pay off whatever debt is costing the most/least per month first
+    - split extra money between accounts [ NOT IMPLEMENTED ]
+    - only pay minimum payment
+
+Here "pay off" means that there is some extra amount available in addition to normal payment amount.
+
+
+    </div>
+  </div>
+</div>
+`;
