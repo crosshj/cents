@@ -1,12 +1,16 @@
-/*
-eslint-disable no-console
-*/
+/* istanbul ignore file */
+/* eslint-disable no-console */
+
 var session = require('express-session');
 var serveStatic = require('serve-static');
 var compression = require('compression');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var passport = require('passport');
+var authentication = require('./authentication');
+const errorHandler = require('./expressErrorHandler');;
+
+const hostname = 'http://localhost';
 
 function serverStart(app, settings) {
   var useFileStore = true;
@@ -31,7 +35,6 @@ function serverStart(app, settings) {
       databaseName: 'cents',
       collection: 'sessions'
     }, connectErrorCallback);
-
     store.on('error', connectErrorCallback);
     return store;
 
@@ -44,7 +47,8 @@ function serverStart(app, settings) {
   app.use(serveStatic('./dist/client', {
     index: ['index.html', 'index.htm']
   }));
-  require('./authentication').init(app);
+
+  authentication.init(app);
   app.use(cookieParser());
   app.use(session({
     secret: settings.cookieSecret,
@@ -55,7 +59,8 @@ function serverStart(app, settings) {
   app.use(passport.initialize());
   app.use(passport.session());
   require('./routes')(app, passport);
-  const hostname = 'http://localhost';
+
+  app.use(errorHandler);
 
   app.listen(settings.appPort, function () {
     console.log(`\nDone. Server ready at ${hostname}:${settings.appPort} .`);

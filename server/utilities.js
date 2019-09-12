@@ -134,6 +134,7 @@ function updateAccounts(accounts) {
   });
   u.liabilities = [].concat(due, pending, paid);
 
+  // creates totals
   u.totals = {};
   u.totals.pendingTotal = pending
     .filter(item => !(JSON.parse(item.hidden||'false') || item.type === 'group'))

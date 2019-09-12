@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 
 console.log('Using Webpack Dev Middleware (NOT)!');
 const webpack = require('webpack');

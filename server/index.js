@@ -1,3 +1,5 @@
+/* istanbul ignore file */
+
 var express = require('express');
 var serverStart = require('./server');
 var app = express();
