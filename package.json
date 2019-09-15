@@ -83,7 +83,8 @@
     "reporters": [
       "default",
       "jest-junit"
-    ]
+    ],
+    "setupFiles": ["./__test-helpers__/helpers.js"]
   },
   "jest-junit": {
     "outputDirectory": "./build/reports/",
