@@ -1,3 +1,5 @@
+/* istanbul ignore file */
+
 const accounts = require('./accounts');
 const history = require('./history');
 const login = require('./login');
