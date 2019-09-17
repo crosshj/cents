@@ -22,6 +22,10 @@ function serverStart(app, settings) {
 
   const thisSession = new AppSession(app, 'redis', settings);
 
+  app.use('/', serveStatic('./dist/client', {
+    index: false
+  }));
+
   app.use('/', thisSession.protect);
 
   app.use(serveStatic('./dist/client', {
