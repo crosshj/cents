@@ -99,6 +99,16 @@ class AppSession {
             authentication.init(app);
         }
 
+        if(store === 'redis'){
+            passport.serializeUser(function (user, done) {
+                done(null, user);
+              });
+
+            passport.deserializeUser(function (user, done) {
+            done(null, user);
+            });
+        }
+
         const passportProtect = passport.authenticationMiddleware
             ? passport.authenticationMiddleware()
             : (req, res, next) => next('error with passport authenticationMiddleware')
