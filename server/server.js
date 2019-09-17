@@ -17,13 +17,16 @@ function serverStart(app, settings) {
   app.enable('etag', 'strong');
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: false }));
-  app.use(serveStatic('./dist/client', {
-    index: ['index.html', 'index.htm']
-  }));
+  app.use(cookieParser());
+
 
   const thisSession = new AppSession(app, 'redis', settings);
 
-  app.use(cookieParser());
+  app.use('/', thisSession.protect);
+
+  app.use(serveStatic('./dist/client', {
+    index: ['index.html', 'index.htm']
+  }));
 
   require('./routes')(app, thisSession.protect);
 
