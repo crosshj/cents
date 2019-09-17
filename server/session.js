@@ -8,7 +8,7 @@ function redisProtect(req, res, next) {
     if (!token) {
         const redirectUrl = 'https://auth.crosshj.com/';
         const redirectTo = 'https://cents.crosshj.com' + req.originalUrl;
-        if(req.sessio){
+        if(req.session){
             req.session.redirectTo = redirectTo;
         }
         return res.redirect(redirectUrl);
