@@ -5,6 +5,7 @@ var sop = require('simple-object-path');
 function redisProtect(req, res, next) {
     res.header('Cache-Control', 'no-cache');
     const token = sop(req.session, 'passport/user/accessToken');
+    console.log(req.session.passport);
     if (!token) {
         const redirectUrl = 'https://auth.crosshj.com/';
         const redirectTo = 'https://cents.crosshj.com' + req.originalUrl;
