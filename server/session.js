@@ -90,16 +90,15 @@ class AppSession {
         }[store] || fileStoreSession;
 
         this.express = whichSession(settings);
+        app.use(this.express);
+        app.use(passport.initialize());
+        app.use(passport.session());
 
         if(store === 'mongo' || store === 'file'){
-            app.use(passport.initialize());
-            app.use(passport.session());
-
             var authentication = require('./authentication');
             authentication.init(app);
         }
-        app.use(this.express);
-
+\
         const passportProtect = passport.authenticationMiddleware
             ? passport.authenticationMiddleware()
             : (req, res, next) => next('error with passport authenticationMiddleware')
