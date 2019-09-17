@@ -136,8 +136,8 @@ function postAccounts(req, res) {
 	}
 }
 
-module.exports = function (app, passport) {
-	app.get('/json', passport.authenticationMiddleware(), getJSON);
-	app.get('/accounts', passport.authenticationMiddleware(), getAccounts);
-	app.post('/accounts', passport.authenticationMiddleware(), postAccounts);
+module.exports = function (app, protect) {
+	app.get('/json', protect, getJSON);
+	app.get('/accounts', protect, getAccounts);
+	app.post('/accounts', protect, postAccounts);
 };

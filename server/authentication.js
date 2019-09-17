@@ -1,5 +1,3 @@
-/* istanbul ignore file */
-
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 

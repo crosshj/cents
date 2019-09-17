@@ -1,6 +1,5 @@
-module.exports = function(app) {
-    //TODO: this should be protected
-    app.get('/restart', function (req, res, next) {
+module.exports = function(app, protect) {
+    app.get('/restart', protect, function (req, res, next) {
       const timeout = 3;
 
       res.send(`restarting in ${timeout} seconds`);

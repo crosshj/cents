@@ -1,3 +1,5 @@
+var passport = require('passport');
+
 // module.exports = function(app, passport) {
 //   app.post('/login', passport.authenticate('local', {
 //     successReturnToOrRedirect: './',
@@ -5,7 +7,7 @@
 //   }));
 // };
 
-module.exports = function(app, passport){
+module.exports = function(app, protect){
   app.get('/login$', function(req, res, next){
     // handled by express.static after this
     return res.redirect('./login/');

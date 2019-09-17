@@ -63,6 +63,6 @@ function getDiffs(req, res) {
   });
 }
 
-module.exports = function (app, passport) {
-  app.get('/diffs', passport.authenticationMiddleware(), getDiffs);
+module.exports = function (app, protect) {
+  app.get('/diffs', protect, getDiffs);
 };

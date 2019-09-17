@@ -24,11 +24,9 @@ global.makeHandlerTestable = handler => {
 		get: (route, ...handlers) => routeDummy('get', route, handlers),
 		post: (route, ...handlers) => routeDummy('post', route, handlers)
 	};
-	const passportDummy = {
-		authenticationMiddleware: () => undefined
-	};
+	const protect = undefined;
 
-	handler(appDummy, passportDummy);
+	handler(appDummy, protect);
 
 	return serverDummy;
 };
