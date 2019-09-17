@@ -22,7 +22,7 @@ function redisSession(settings) {
     const RedisStore = require('connect-redis')(session);
     return session({
         secret: settings.cookieSecret,
-        name: 'centsSession',
+        name: 'gAuthSess',
         store: new RedisStore({
             host: 'redis',
             port: 6379
