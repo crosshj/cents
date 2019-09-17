@@ -6,8 +6,9 @@ function redisProtect(req, res, next) {
     res.header('Cache-Control', 'no-cache');
     const token = sop(req.session, 'passport/user/accessToken');
     const user_id = sop(req.session, 'passport/user/user_id');
-    console.log(req.session);
-    if (!token && !user_id) {
+    const id = sop(req.session, 'passport/user/id');
+    //console.log(req.session);
+    if (!token && !user_id && !id) {
         const redirectUrl = 'https://auth.crosshj.com/';
         const redirectTo = 'https://cents.crosshj.com' + req.originalUrl;
         if(req.session){
@@ -17,6 +18,7 @@ function redisProtect(req, res, next) {
     }
     res.locals.token = token;
     res.locals.user_id = user_id;
+    res.locals.id = id;
     next();
 }
 
