@@ -98,7 +98,7 @@ class AppSession {
             var authentication = require('./authentication');
             authentication.init(app);
         }
-\
+
         const passportProtect = passport.authenticationMiddleware
             ? passport.authenticationMiddleware()
             : (req, res, next) => next('error with passport authenticationMiddleware')
