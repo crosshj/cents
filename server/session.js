@@ -115,7 +115,7 @@ class AppSession {
 
         const passportProtect = passport.authenticationMiddleware
             ? passport.authenticationMiddleware()
-            : (req, res, next) => next('error with passport authenticationMiddleware')
+            : (req, res, next) => next('error with passport authenticationMiddleware');
         const whichProtect = {
             mongo: passportProtect,
             redis: redisProtect,

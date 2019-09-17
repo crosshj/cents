@@ -30,7 +30,7 @@ describe('app session: local file store', () => {
         expect(session.store).toEqual('file');
 
         // should have told express to use some things (why is initialize here?)
-        expect(app.using.map(x => x.name)).toEqual([ 'initialize', 'authenticate', 'session' ]);
+        expect(app.using.map(x => x.name)).toEqual([ 'session', 'initialize', 'authenticate']);
 
         //TODO: other important assertions?
     });
