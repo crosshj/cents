@@ -1,28 +1,6 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 
-const authenticationMiddleware = function authenticationMiddleware () {
-  return function (req, res, next) {
-    if (req.isAuthenticated()) {
-      if(!req.cookies.username){
-        res.cookie('username', req.user.username, { maxAge: 900000, httpOnly: true });
-      }
-      return next();
-    }
-    if (/json/.test(req.headers.accept)) {
-      res.send({ error: 'not logged in' });
-      return;
-    }
-
-    // redirect to URL if not logged in before request
-    if (req.session) {
-      req.session.returnTo = req.originalUrl || req.url;
-    }
-    res.redirect('./login');
-  };
-};
-
-
 //TODO: should connect to user DB, this is fake
 const user = {
   username: 'user',
@@ -31,6 +9,7 @@ const user = {
 };
 
 function findUser (username, callback) {
+  //TODO: call database for user
   if (username === user.username) {
     return callback(null, user);
   }
