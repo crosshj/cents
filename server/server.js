@@ -27,8 +27,6 @@ function serverStart(app, settings) {
     index: ['index.html', 'index.htm']
   }));
 
-  app.use('/', thisSession.protect);
-
   require('./routes')(app, thisSession.protect);
 
   app.use(errorHandler);
