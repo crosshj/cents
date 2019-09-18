@@ -20,7 +20,8 @@ function serverStart(app, settings) {
   app.use(cookieParser());
 
 
-  const thisSession = new AppSession(app, 'redis', settings);
+  const sessionStore = process.env.SessionStore || 'file';
+  const thisSession = new AppSession(app, sessionStore, settings);
 
   app.use('/', serveStatic('./dist/client', {
     index: false
