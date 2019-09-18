@@ -7,4 +7,5 @@ client does not continue to work even after the server is down
 prompt does not work in chrome canary
   - click which should trigger prompt does not
 
-
+common auth does not work with PWA
+  - one solution - https://github.com/jonnyk20/simple-popup-login

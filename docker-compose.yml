@@ -26,7 +26,7 @@ services:
   # https://github.com/docker/dockercloud-haproxy/tree/master
   haproxy:
     image: dockercloud/haproxy
-    container_name: cents_proxy
+    container_name: cents_haproxy
     links:
       - cents
     depends_on:
