@@ -37,8 +37,6 @@ function initPassport () {
       });
     }
   ));
-
-  passport.authenticationMiddleware = authenticationMiddleware;
 }
 
 module.exports = {init: initPassport};
