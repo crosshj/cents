@@ -2,6 +2,25 @@ var session = require('express-session');
 var passport = require('passport');
 var sop = require('simple-object-path');
 
+const authenticationMiddleware = function (req, res, next) {
+    if (req.isAuthenticated()) {
+        if (!req.cookies.username) {
+            res.cookie('username', req.user.username, { maxAge: 900000, httpOnly: true });
+        }
+        return next();
+    }
+    if (/json/.test(req.headers.accept)) {
+        res.send({ error: 'not logged in' });
+        return;
+    }
+
+    // redirect to URL if not logged in before request
+    if (req.session) {
+        req.session.returnTo = req.originalUrl || req.url;
+    }
+    res.redirect('./login');
+};
+
 function redisProtect(req, res, next) {
     res.header('Cache-Control', 'no-cache');
     const token = sop(req.session, 'passport/user/accessToken');
@@ -11,7 +30,7 @@ function redisProtect(req, res, next) {
     if (!token && !user_id && !id) {
         const redirectUrl = 'https://auth.crosshj.com/';
         const redirectTo = 'https://cents.crosshj.com' + req.originalUrl;
-        if(req.session){
+        if (req.session) {
             req.session.redirectTo = redirectTo;
         }
         return res.redirect(redirectUrl);
@@ -98,29 +117,26 @@ class AppSession {
         app.use(passport.initialize());
         app.use(passport.session());
 
-        if(store === 'mongo' || store === 'file'){
+        if (store === 'mongo' || store === 'file') {
             var authentication = require('./authentication');
             authentication.init(app);
         }
 
-        if(store === 'redis'){
+        if (store === 'redis') {
             passport.serializeUser(function (user, done) {
                 done(null, user);
-              });
+            });
 
             passport.deserializeUser(function (user, done) {
-            done(null, user);
+                done(null, user);
             });
         }
 
-        const passportProtect = passport.authenticationMiddleware
-            ? passport.authenticationMiddleware()
-            : (req, res, next) => next('error with passport authenticationMiddleware');
         const whichProtect = {
-            mongo: passportProtect,
+            mongo: authenticationMiddleware,
             redis: redisProtect,
-            file: passportProtect
-        }[store] || passportProtect;
+            file: authenticationMiddleware
+        }[store] || authenticationMiddleware;
 
         this.protect = whichProtect;
     }
