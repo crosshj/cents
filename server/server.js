@@ -23,15 +23,11 @@ function serverStart(app, settings) {
   const sessionStore = process.env.SessionStore || 'file';
   const thisSession = new AppSession(app, sessionStore, settings);
 
-  app.use('/', serveStatic('./dist/client', {
-    index: false
-  }));
-
-  app.use('/', thisSession.protect);
-
   app.use(serveStatic('./dist/client', {
     index: ['index.html', 'index.htm']
   }));
+
+  app.use('/', thisSession.protect);
 
   require('./routes')(app, thisSession.protect);
 
