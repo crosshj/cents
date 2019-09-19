@@ -51,6 +51,23 @@
         position: absolute;
         bottom: 100px;
     ">loginpoc</a>
+
+    <script type="text/javascript">
+      function login(){
+        window.open ("https://auth.crosshj.com","mywindow", "width=350,height=250");
+      }
+      window.addEventListener('message', function(e){
+        alert('got something back!');
+      })
+    </script>
+    <a
+      href="#login"
+      style="
+        position: absolute;
+        bottom: 75px;
+      "
+      onclick="login(); return false;"
+    >loginpoc</a>
   </body>
 
 </html>
