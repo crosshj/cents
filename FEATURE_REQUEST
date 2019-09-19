@@ -29,6 +29,8 @@ SERVICE WORKER / WEB WORKER
 LOGIN / AUTH
   - this should work for anyone and not be dummy like it is already
   - should track anyone's finances
+  - google auth is not verified
+    - https://developers.google.com/apps-script/guides/client-verification#requesting_verification
 
 DESKTOP vs MOBILE
   - desktop should be all-in-one view
