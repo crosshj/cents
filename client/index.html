@@ -47,17 +47,16 @@
 
   <body class="green-theme">
     <div id="app"></div>
-    <a href="./loginpoc.html" style="
-        position: absolute;
-        bottom: 100px;
-    ">loginpoc</a>
 
     <script type="text/javascript">
       function login(){
-        window.open ("https://auth.crosshj.com","mywindow", "width=350,height=250");
+        window.open ("https://auth.crosshj.com","auth-crosshj", "width=350,height=500");
       }
       window.addEventListener('message', function(e){
-        alert('got something back!');
+        if(e.origin !== "https://auth.crosshj.com" || !e.data){
+          return;
+        }
+        alert(e.data.message);
       })
     </script>
     <a
