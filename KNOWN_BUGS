@@ -9,3 +9,4 @@ prompt does not work in chrome canary
 
 common auth does not work with PWA
   - one solution - https://github.com/jonnyk20/simple-popup-login
+  - some "EPERM: operation not permitted" error with auth
