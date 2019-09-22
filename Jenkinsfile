@@ -22,7 +22,7 @@ pipeline {
     stages {
         stage('Lint') {
             steps {
-                sh 'npm install eslint eslint-plugin-react'
+                sh 'npm install eslint eslint-plugin-react babel-eslint'
                 sh 'npm run lint'
             }
         }
