@@ -22,6 +22,7 @@ pipeline {
     stages {
         stage('Lint') {
             steps {
+                sh 'npm install eslint'
                 sh 'npm run lint'
             }
         }
