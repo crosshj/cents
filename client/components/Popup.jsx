@@ -82,6 +82,8 @@ function Popup({error, account, history}){
 
     const historyTitle = `${((history||{}).title||'').toUpperCase()} ${((history||{}).field||'').replace('_', ' ')} History`;
 
+    const showAPRSection = !!account && !!account.total_owed;
+
     return (
         <div id="popup-modal" className={popupClass} ref={ref => ref && ref.scrollTo(0,0)}>
             { history &&
@@ -206,20 +208,22 @@ function Popup({error, account, history}){
                             </button>
                         }
                     </div>
-                    <div className="flex-row flex-row-apr">
-                        <div className="form-group">
-                            <label>APR</label>
-                            <input type="number" value={account.apr} className="u-full-width"
-                                onChange={(event) => update('apr', event)}
-                            />
+                    { showAPRSection &&
+                        <div className="flex-row flex-row-apr">
+                            <div className="form-group">
+                                <label>APR</label>
+                                <input type="number" value={account.apr} className="u-full-width"
+                                    onChange={(event) => update('apr', event)}
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label>APR (cash advance)</label>
+                                <input type="number" value={account.aprCash} className="u-full-width"
+                                    onChange={(event) => update('aprCash', event)}
+                                />
+                            </div>
                         </div>
-                        <div className="form-group">
-                            <label>APR (cash advance)</label>
-                            <input type="number" value={account.aprCash} className="u-full-width"
-                                onChange={(event) => update('aprCash', event)}
-                            />
-                        </div>
-                    </div>
+                    }
                     <div className="form-group">
                         <label>Date Due</label>
                         <input type="date" value={account.date||''}
