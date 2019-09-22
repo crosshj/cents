@@ -57,7 +57,7 @@ class AppContainer extends React.Component {
             <header>
               <div className="hamburger-menu">
                 <a>
-                  <i class="fa fa-bars"></i>
+                  <i className="fa fa-bars"></i>
                 </a>
               </div>
               <span>{headerText}</span>
