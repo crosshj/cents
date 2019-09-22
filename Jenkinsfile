@@ -16,10 +16,15 @@ pipeline {
         artifactNumToKeepStr: only this number of builds have their artifacts kept.
     */
 
-    // environment { 
+    // environment {
     // }
 
     stages {
+        stage('Lint') {
+            steps {
+                sh 'npm run lint'
+            }
+        }
         stage('Build') {
             steps {
                 script {
@@ -43,9 +48,6 @@ pipeline {
                 parallel (
                     "test" : {
                         sh 'npm run test.ci'
-                    },
-                    "lint" : {
-                        sh 'npm run lint'
                     },
                     "build stats": {
                         echo 'TODO: build/dist analysis (jenkins plugin?) - https://survivejs.com/webpack/optimizing/build-analysis/'
@@ -96,8 +98,8 @@ pipeline {
                             remoteDirectorySDF: false,
                             removePrefix: '',
                             sourceFiles: 'dist/**, service/**, node_modules/**, deploy.sh, docker-compose.yml, .env'
-                        )], 
-                        usePromotionTimestamp: false, 
+                        )],
+                        usePromotionTimestamp: false,
                         useWorkspaceInPromotion: false,
                         verbose: false
                     )]
