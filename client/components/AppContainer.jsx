@@ -49,12 +49,19 @@ class AppContainer extends React.Component {
     //console.log({ props: this.props });
 
     const { liabilities, assets, totals } = safeAccess(() => this.props.accounts) || {};
-
+    const headerText = 'Accounts';
     return (
       <React.Fragment>
         <Router page={this.props.page}>
           <Route path='/accounts'>
-            <header></header>
+            <header>
+              <div className="hamburger-menu">
+                <a>
+                  <i class="fa fa-bars"></i>
+                </a>
+              </div>
+              <span>{headerText}</span>
+            </header>
             <nav>
               { !this.props.error &&
                 <Menu

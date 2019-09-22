@@ -42,12 +42,38 @@
   }
 } */
 
+header {
+  background: #dcaa3e;
+  color: var(--text-inverse-color);
+  z-index: 2;
+  position: fixed;
+  width: 100%;
+  font-size: 20px;
+  height: 35px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+header > .hamburger-menu {
+  padding: 13px;
+  cursor: pointer;
+}
+
+header > .hamburger-menu > a {
+  color: inherit;
+}
+
 nav {
   background: #dcaa3e;
   box-shadow: 0 -4px 7px 3px #313131;
   z-index: 1;
-  position: absolute;
+  position: fixed;
   width: 100%;
+  top: 20px;
+  height: 44px;
 }
 a.button.menu.button-primary {
   margin-bottom: 0px;
@@ -574,7 +600,7 @@ a.button.selected {
 .main-carousel {
   position: absolute;
   bottom: 0px;
-  top: 44px;
+  top: 65px;
   left: 0px;
   right: 0px;
 }
