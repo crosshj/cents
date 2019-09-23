@@ -1,6 +1,7 @@
 import React from 'react';
-import ActionButton from './ActionButton';
+import Sidebar from "react-sidebar";
 
+import ActionButton from './ActionButton';
 import Menu from './Menu';
 import Liabilities from './Liabilities';
 import Assets from './Assets';
@@ -27,9 +28,25 @@ var safeAccess = (fn) => {
   return response;
 };
 
+const SideBar = () => {
+  return (
+    <div className="sidebar-menu">
+      [ Insert Sidebar Content Here ]
+    </div>
+  );
+};
+
 class AppContainer extends React.Component {
   constructor(props, context){
     super(props, context);
+    this.state = {
+      sidebarOpen: false
+    };
+    this.onSetSidebarOpen = this.onSetSidebarOpen.bind(this);
+  }
+
+  onSetSidebarOpen(open) {
+    this.setState({ sidebarOpen: open });
   }
 
   render () {
@@ -52,11 +69,17 @@ class AppContainer extends React.Component {
     const headerText = 'Accounts';
     return (
       <React.Fragment>
+        <Sidebar
+          sidebar={SideBar()}
+          open={this.state.sidebarOpen}
+          onSetOpen={this.onSetSidebarOpen}
+          styles={{ sidebar: { zIndex: 3 } }}
+        ></Sidebar>
         <Router page={this.props.page}>
           <Route path='/accounts'>
             <header>
               <div className="hamburger-menu">
-                <a>
+                <a onClick={() => this.onSetSidebarOpen(true)}>
                   <i className="fa fa-bars"></i>
                 </a>
               </div>

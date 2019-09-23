@@ -57,6 +57,7 @@
     "react-flickity-component": "git+https://github.com/crosshj/react-flickity-component.git",
     "react-highcharts": "16.0.2",
     "react-mfb": "^0.6.0",
+    "react-sidebar": "3.0.2",
     "react-test-renderer": "16.9.0",
     "redux": "^3.7.2",
     "sass": "1.22.10",

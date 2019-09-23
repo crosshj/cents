@@ -7,8 +7,6 @@
   --body-color: #667088;
 }
 
-
-
 .old-green-theme {
   --due-color: #e66060;
   --pending-color: #cea95a;
@@ -41,6 +39,15 @@
     --body-color: #082f24;
   }
 } */
+
+.sidebar-menu {
+  width: 400px;
+  background: var(--body-color);
+  color: var(--text-color);
+  height: 100%;
+  box-sizing: border-box;
+  padding: 10px;
+}
 
 header {
   background: #dcaa3e;
