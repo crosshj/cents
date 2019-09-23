@@ -10,3 +10,10 @@ prompt does not work in chrome canary
 common auth does not work with PWA
   - one solution - https://github.com/jonnyk20/simple-popup-login
   - some "EPERM: operation not permitted" error with auth
+
+client service worker issues
+  - Request scheme 'chrome-extension' is unsupported at sw.new.js:259
+
+server issue
+  - --- express error ---
+    Error: EPERM: operation not permitted, rename 'D:\Github\cents\service\database\data\siYjEO4Y2LZphrjqWEwOEuuO0c2mxMg7.json.2712884339' -> 'D:\Github\cents\service\database\data\siYjEO4Y2LZphrjqWEwOEuuO0c2mxMg7.json'

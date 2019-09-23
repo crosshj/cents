@@ -41,7 +41,7 @@
 } */
 
 .sidebar-menu {
-  width: 400px;
+  min-width: 300px;
   background: var(--body-color);
   color: var(--text-color);
   height: 100%;
