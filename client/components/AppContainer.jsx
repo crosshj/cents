@@ -1,5 +1,5 @@
 import React from 'react';
-import Sidebar from "react-sidebar";
+import Sidebar from "./Sidebar";
 
 import ActionButton from './ActionButton';
 import Menu from './Menu';
@@ -26,14 +26,6 @@ var safeAccess = (fn) => {
     // nothing
   }
   return response;
-};
-
-const SideBar = () => {
-  return (
-    <div className="sidebar-menu">
-      [ Insert Sidebar Content Here ]
-    </div>
-  );
 };
 
 class AppContainer extends React.Component {
@@ -70,10 +62,8 @@ class AppContainer extends React.Component {
     return (
       <React.Fragment>
         <Sidebar
-          sidebar={SideBar()}
           open={this.state.sidebarOpen}
           onSetOpen={this.onSetSidebarOpen}
-          styles={{ sidebar: { zIndex: 3 } }}
         ></Sidebar>
         <Router page={this.props.page}>
           <Route path='/accounts'>
