@@ -17,3 +17,8 @@ client service worker issues
 server issue
   - --- express error ---
     Error: EPERM: operation not permitted, rename 'D:\Github\cents\service\database\data\siYjEO4Y2LZphrjqWEwOEuuO0c2mxMg7.json.2712884339' -> 'D:\Github\cents\service\database\data\siYjEO4Y2LZphrjqWEwOEuuO0c2mxMg7.json'
+  - killCache does not work
+
+client UI issues
+  - sidebar width is too much on mobile
+  - z-index is a nightmare
