@@ -7,9 +7,6 @@ exports[`APR test page renders intitial view 1`] = `
   <div
     className="apr-contain container"
   >
-    <h2>
-      Debt Payment Calculator
-    </h2>
     <div
       id="mockHistory"
     />

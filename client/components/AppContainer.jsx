@@ -29,7 +29,7 @@ var safeAccess = (fn) => {
 };
 
 class AppContainer extends React.Component {
-  constructor(props, context){
+  constructor(props, context) {
     super(props, context);
     this.state = {
       sidebarOpen: false
@@ -41,7 +41,7 @@ class AppContainer extends React.Component {
     this.setState({ sidebarOpen: open });
   }
 
-  render () {
+  render() {
     //console.log('--- render');
     const flickityOptions = {
       // options
@@ -58,13 +58,33 @@ class AppContainer extends React.Component {
     //console.log({ props: this.props });
 
     const { liabilities, assets, totals } = safeAccess(() => this.props.accounts) || {};
-    const headerText = 'Accounts';
+    const headerText = this.props.page !== '/debt-pay-calc'
+      ? 'Accounts'
+      : 'Debt Payment Caclulator';
     return (
       <React.Fragment>
         <Sidebar
           open={this.state.sidebarOpen}
           onSetOpen={this.onSetSidebarOpen}
-        ></Sidebar>
+        >
+          <a
+            onClick={() => { window.login(); return false; }}
+          >Login POC</a>
+          { this.props.page !== '/debt-pay-calc' &&
+            <Link
+              action="PAGE_CHANGE"
+              to='/debt-pay-calc'
+              text="Debt Pay Calc"
+            />
+          }
+          { this.props.page !== '/accounts' &&
+            <Link
+              action="PAGE_CHANGE"
+              to='/accounts'
+              text="Accounts Page"
+            />
+          }
+        </Sidebar>
         <Router page={this.props.page}>
           <Route path='/accounts'>
             <header>
@@ -76,7 +96,7 @@ class AppContainer extends React.Component {
               <span>{headerText}</span>
             </header>
             <nav>
-              { !this.props.error &&
+              {!this.props.error &&
                 <Menu
                   items={['Debts', 'Totals', 'Assets']}
                   selected={this.props.selectedMenuIndex}
@@ -84,50 +104,46 @@ class AppContainer extends React.Component {
               }
             </nav>
             <main>
-              { !this.props.error &&
+              {!this.props.error &&
                 <Flickity
-                  className={ 'main-carousel' }
-                  elementType={ 'div' } // default 'div'
-                  options={ flickityOptions } // takes flickity options {}
-                  disableImagesLoaded={ true } // default false
+                  className={'main-carousel'}
+                  elementType={'div'} // default 'div'
+                  options={flickityOptions} // takes flickity options {}
+                  disableImagesLoaded={true} // default false
                   reloadOnUpdate={false}
                   onSwipe={menuSelect}
                 >
-                    <Liabilities liabilities={liabilities}/>
-                    <Totals totals={totals}/>
-                    <Assets assets={assets}/>
+                  <Liabilities liabilities={liabilities} />
+                  <Totals totals={totals} />
+                  <Assets assets={assets} />
                 </Flickity>
               }
-              { this.props.error &&
+              {this.props.error &&
                 <div className="center-all">
                   <i className="fa fa-spinner fa-pulse fa-5x fa-fw white  "></i>
                 </div>
               }
-              { this.props.error &&
+              {this.props.error &&
                 <Login />
               }
-              <Popup {...this.props.popup}/>
+              <Popup {...this.props.popup} />
             </main>
             <footer>
               <div id="corner-circle">0</div>
               <ActionButton />
-              <Link
-                action="PAGE_CHANGE"
-                to='/debt-pay-calc'
-                className="test-link"
-                text="Debt Pay Calc"
-              />
             </footer>
           </Route>
 
           <Route path='/debt-pay-calc'>
-            <APR/>
-            <Link
-              action="PAGE_CHANGE"
-              to='/accounts'
-              className="test-link"
-              text="Accounts Page"
-            />
+            <header>
+              <div className="hamburger-menu">
+                <a onClick={() => this.onSetSidebarOpen(true)}>
+                  <i className="fa fa-bars"></i>
+                </a>
+              </div>
+              <span>{headerText}</span>
+            </header>
+            <APR />
           </Route>
 
         </Router>

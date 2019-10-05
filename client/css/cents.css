@@ -988,7 +988,7 @@ button.button-primary.grey {
 
 a.test-link {
   position: absolute;
-  z-index: 999;
+  z-index: 1;
   bottom: 20px;
   left: 0;
   right: 0;
@@ -1006,6 +1006,23 @@ a.test-link {
   padding: 5px;
 }
 
+li.sidebar-link {
+  list-style: none;
+  width: 100%;
+  background: var(--text-light-color);
+  padding: 10px;
+  box-sizing: border-box;
+  text-decoration: none;
+  color: white;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+li.sidebar-link a {
+  color: var(--text-inverse-color);
+  text-decoration: none;
+}
+
 .apr-wrapper {
   position: absolute;
   top: 0;
@@ -1016,11 +1033,13 @@ a.test-link {
   background: #769492;
   background: url('../images/triangles.png');
   background-size: cover;
+  margin-top: 34px;
 }
 
 @media (max-width: 550px) {
   .apr-wrapper {
     zoom: 0.385;
+    margin-top: 92px;
   }
 }
 
