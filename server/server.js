@@ -27,6 +27,10 @@ function serverStart(app, settings) {
     index: ['index.html', 'index.htm']
   }));
 
+  app.use('/sw', serveStatic('./serviceWorker', {
+    index: ['index.html', 'index.htm']
+  }));
+
   require('./routes')(app, thisSession.protect);
 
   app.use(errorHandler);
