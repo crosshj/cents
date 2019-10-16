@@ -7,14 +7,14 @@
     <title>ooo SW...</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link crossorigin="anonymous" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link crossorigin="anonymous" href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="index.css">
 </head>
 
 <body>
     <nav class="grey darken-2" role="navigation">
-        <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo">Logo</a>
+        <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo">Service Worker POC</a>
             <ul class="right hide-on-med-and-down">
                 <li><a href="#">Navbar Link</a></li>
             </ul>
@@ -22,7 +22,9 @@
             <ul id="nav-mobile" class="sidenav" style="transform: translateX(-105%);">
                 <li><a href="#">Navbar Link</a></li>
             </ul>
-            <a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+            <a href="#" data-target="nav-mobile" class="sidenav-trigger">
+                <i class="material-icons">menu</i>
+            </a>
         </div>
     </nav>
 
@@ -30,6 +32,20 @@
         <div class="section">
             <div class="card green lighten-4">
                 <div id="swStatus" class="card-content green-text text-darken-1">
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-content">
+                    <h6>info</h6>
+                    <a href="https://gist.github.com/Rich-Harris/fd6c3c73e6e707e312d7c5d7d0f3b2f9">Stuff I wish I'd known sooner about service workers</a>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-content">
+                    <h6>todo</h6>
+                    <p>FIX: when an update is waiting, requires 2 refreshes to show update is waiting</p>
+                    <p>provide a way to force content update or entire app refresh</p>
+                    <p>very elegant cache solution</p>
                 </div>
             </div>
         </div>
@@ -44,7 +60,7 @@
         </div>
     </div> -->
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script  crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script src="./index.js"></script>
 </body>
 
