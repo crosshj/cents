@@ -12,6 +12,7 @@ services:
       - SessionStore
     volumes:
       - ./dist:/app/dist
+      - ./serviceWorker:/serviceWorker
       - ./service:/app/service
       - ./node_modules:/app/node_modules
       - ./accounts.json:/app/accounts.json
