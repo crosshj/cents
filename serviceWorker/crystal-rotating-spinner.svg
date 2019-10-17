@@ -1,0 +1,30 @@
+<svg width="80px"  height="80px"  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" class="lds-crystal" style="">
+    <defs>
+      <mask id="mask">
+        <path d="M50 13L75 30L75 70L50 87L25 70L25 30L50 13Z" fill="#fff" stroke="#000" ng-attr-stroke-width="{{config.width}}" stroke-width="1"></path>
+      </mask>
+    </defs>
+    <path d="M50 13L75 30L75 70L50 87L25 70L25 30L50 13Z" ng-attr-fill="{{config.fill1}}" ng-attr-stroke="{{config.stroke}}" ng-attr-stroke-width="{{config.width}}" fill="#c8000d" stroke="#e15b64" stroke-width="1"></path>
+    <path d="M 50 13 L 59.6667 30 L 59.6667 70 L 50 87 L 44.6667 70 L 44.6667 30 Z" mask="url(#mask)" fill="#c8000d" ng-attr-stroke="{{config.stroke}}" ng-attr-stroke-width="{{config.width}}" stroke="#e15b64" stroke-width="1">
+      <animate attributeName="d" calcMode="linear" values="M50 13L90 30L90 70L50 87L75 70L75 30Z;M50 13L25 30L25 70L50 87L10 70L10 30Z" keyTimes="0;1" dur="1.5" begin="-0.30000000000000004s" repeatCount="indefinite"></animate>
+      <animate attributeName="fill" calcMode="linear" values="#c8000d;#ffd985;#ff8989" keyTimes="0;0.5;1" dur="1.5" begin="-0.30000000000000004s" repeatCount="indefinite"></animate>
+    </path>
+    <path d="M 50 13 L 46.6667 30 L 46.6667 70 L 50 87 L 31.6667 70 L 31.6667 30 Z" mask="url(#mask)" fill="#c8000d" ng-attr-stroke="{{config.stroke}}" ng-attr-stroke-width="{{config.width}}" stroke="#e15b64" stroke-width="1">
+      <animate attributeName="d" calcMode="linear" values="M50 13L90 30L90 70L50 87L75 70L75 30Z;M50 13L25 30L25 70L50 87L10 70L10 30Z" keyTimes="0;1" dur="1.5" begin="-0.6000000000000001s" repeatCount="indefinite"></animate>
+      <animate attributeName="fill" calcMode="linear" values="#c8000d;#ffd985;#ff8989" keyTimes="0;0.5;1" dur="1.5" begin="-0.6000000000000001s" repeatCount="indefinite"></animate>
+    </path>
+    <path d="M 50 13 L 33.6667 30 L 33.6667 70 L 50 87 L 18.6667 70 L 18.6667 30 Z" mask="url(#mask)" fill="#c8000d" ng-attr-stroke="{{config.stroke}}" ng-attr-stroke-width="{{config.width}}" stroke="#e15b64" stroke-width="1">
+      <animate attributeName="d" calcMode="linear" values="M50 13L90 30L90 70L50 87L75 70L75 30Z;M50 13L25 30L25 70L50 87L10 70L10 30Z" keyTimes="0;1" dur="1.5" begin="-0.8999999999999999s" repeatCount="indefinite"></animate>
+      <animate attributeName="fill" calcMode="linear" values="#c8000d;#ffd985;#ff8989" keyTimes="0;0.5;1" dur="1.5" begin="-0.8999999999999999s" repeatCount="indefinite"></animate>
+    </path>
+    <path d="M 50 13 L 85.6667 30 L 85.6667 70 L 50 87 L 70.6667 70 L 70.6667 30 Z" mask="url(#mask)" fill="#c8000d" ng-attr-stroke="{{config.stroke}}" ng-attr-stroke-width="{{config.width}}" stroke="#e15b64" stroke-width="1">
+      <animate attributeName="d" calcMode="linear" values="M50 13L90 30L90 70L50 87L75 70L75 30Z;M50 13L25 30L25 70L50 87L10 70L10 30Z" keyTimes="0;1" dur="1.5" begin="-1.2000000000000002s" repeatCount="indefinite"></animate>
+      <animate attributeName="fill" calcMode="linear" values="#c8000d;#ffd985;#ff8989" keyTimes="0;0.5;1" dur="1.5" begin="-1.2000000000000002s" repeatCount="indefinite"></animate>
+    </path>
+    <path d="M 50 13 L 72.6667 30 L 72.6667 70 L 50 87 L 57.6667 70 L 57.6667 30 Z" mask="url(#mask)" fill="#c8000d" ng-attr-stroke="{{config.stroke}}" ng-attr-stroke-width="{{config.width}}" stroke="#e15b64" stroke-width="1">
+      <animate attributeName="d" calcMode="linear" values="M50 13L90 30L90 70L50 87L75 70L75 30Z;M50 13L25 30L25 70L50 87L10 70L10 30Z" keyTimes="0;1" dur="1.5" begin="0s" repeatCount="indefinite"></animate>
+      <animate attributeName="fill" calcMode="linear" values="#c8000d;#ffd985;#ff8989" keyTimes="0;0.5;1" dur="1.5" begin="0s" repeatCount="indefinite"></animate>
+    </path>
+    <path d="M25 30L75 30" ng-attr-fill="{{config.fill1}}" ng-attr-stroke="{{config.stroke}}" ng-attr-stroke-width="{{config.width}}" fill="#c8000d" stroke="#e15b64" stroke-width="1"></path>
+    <path d="M25 70L75 70" ng-attr-fill="{{config.fill1}}" ng-attr-stroke="{{config.stroke}}" ng-attr-stroke-width="{{config.width}}" fill="#c8000d" stroke="#e15b64" stroke-width="1"></path>
+  </svg>

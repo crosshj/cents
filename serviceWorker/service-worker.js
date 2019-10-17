@@ -1,4 +1,4 @@
-var cacheName = 'secondVersion-foo';
+var cacheName = 'secondVersion-wow';
 
 const filesToCache = [
   './',
