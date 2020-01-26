@@ -48,6 +48,7 @@ var config = {
         'COMMIT_DATE': commitDate
       }
     }),
+    // eslint-disable-next-line no-useless-escape
     new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en/),
     new webpack.optimize.CommonsChunkPlugin({
       name: 'vendor',

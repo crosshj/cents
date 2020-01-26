@@ -1,3 +1,5 @@
+/* global M */
+
 (function(){
 
 let newWorker;
@@ -16,7 +18,7 @@ function showUpdateBar() {
         `;
 
     //TODO: on dismiss remember until next update
-    M.toast({ html: toastHTML, displayLength: Number.MAX_SAFE_INTEGER })
+    M.toast({ html: toastHTML, displayLength: Number.MAX_SAFE_INTEGER });
 }
 
 function hideUpdateBar(){
@@ -74,13 +76,13 @@ window.update = update;
 function setupSideNav(){
     var elems = document.querySelectorAll('.sidenav');
     var options = {};
-    var instances = M.Sidenav.init(elems, options);
+    /* var instances = */ M.Sidenav.init(elems, options);
 }
 
 function setupLoadingModal(){
     var elems = document.querySelectorAll('.modal');
     var options = {};
-    var instances = M.Modal.init(elems, options);
+    /* var instances = */ M.Modal.init(elems, options);
 }
 
 document.addEventListener("DOMContentLoaded", function () {
