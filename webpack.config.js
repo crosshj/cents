@@ -207,5 +207,6 @@ if (process.env.NODE_ENV === 'dev') {
 	}));
 }
 
-module.exports = [ clientBuild, serverBuild ];
+//module.exports = [ clientBuild, serverBuild ];
 //module.exports = serverBuild;
+module.exports = clientBuild;
