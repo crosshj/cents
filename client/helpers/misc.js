@@ -7,7 +7,7 @@ var GLOBAL_FUNCTION_QUEUE = [];
 function ajaxLogin(username, password, callback){
     const loginBody = `username=${username}&password=${password}`;
 
-    fetch('./login/', {
+    fetch('./api/login/', {
         method: 'POST',
         body: loginBody,
         headers: {
