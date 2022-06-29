@@ -10,7 +10,7 @@ function clone(item) {
 var GLOBAL_FUNCTION_QUEUE = [];
 
 function fetchAccounts() {
-    const url = './json';
+    const url = './api/json';
     const config = {
         credentials: 'include',
         method: 'GET',
@@ -42,7 +42,7 @@ function fetchAccounts() {
 
 // TODO: steal this from misc.js later
 function login({ username, password }) {
-    const url = './login/';
+    const url = './api/login/';
     const config = {
         method: 'POST',
         body: `username=${username}&password=${password}`,
@@ -64,7 +64,7 @@ function login({ username, password }) {
 }
 
 function fetchAccountsData() {
-    const url = './accounts';
+    const url = './api/accounts';
     const config = {
         method: 'GET',
         credentials: 'include'
@@ -87,7 +87,7 @@ function fetchHistory({ type, title, field }) {
         GLOBAL_FUNCTION_QUEUE.push(thisFunction.bind(thisFunction));
 
         const fetchField = field.toLowerCase().replace(' ', '_');
-        const url = `diffs?type=${type}&account=${title}&field=${fetchField}`;
+        const url = `api/diffs?type=${type}&account=${title}&field=${fetchField}`;
         const config = {
             method: 'GET',
             headers: {
@@ -140,7 +140,7 @@ function saveAccounts(accounts) {
         }
         return true;
     });
-    const url = './accounts';
+    const url = './api/accounts';
     const config = {
         method: 'POST',
         body: JSON.stringify(accountsToSave),
