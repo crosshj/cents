@@ -1,0 +1,22 @@
+{
+    "singleQuote": true,
+    "useTabs": true,
+    "tabWidth": 4,
+    "semi": true,
+    "singleAttributePerLine": true,
+
+    "overrides": [
+        {
+            "files": "*.json",
+            "options": {
+                "useTabs": false
+            }
+        },
+        {
+            "files": "*.yml",
+            "options": {
+                "tabWidth": 2
+            }
+        }
+    ]
+}
