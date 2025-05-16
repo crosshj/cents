@@ -1,0 +1,88 @@
+:root {
+	color-scheme: light dark;
+
+	--bg: Canvas;
+	--fg: CanvasText;
+	--card-bg: rgb(24, 24, 27);
+	--card-fg: CanvasText;
+	--card-border: rgba(255, 255, 255, 0.1);
+	--muted: 0.6;
+	--card-radius: 8px;
+	--card-padding: 1em;
+	--font-small: 0.85em;
+	--font-normal: 0.95em;
+	--font-large: 1.1em;
+	--accent: #3ea6ff;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+body {
+	font-family: system-ui, sans-serif;
+	background: var(--bg);
+	color: var(--fg);
+	max-width: 1280px;
+	margin: 0 auto;
+	padding: 2em;
+}
+
+h1, h2 {
+	margin: 0.5em 0 0.75em;
+}
+
+section {
+	margin-bottom: 2em;
+}
+
+.card-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+	gap: 1em;
+}
+
+.card {
+	background: var(--card-bg);
+	color: var(--card-fg);
+	border-radius: var(--card-radius);
+	padding: var(--card-padding);
+	border: 1px solid var(--card-border);
+	word-wrap: break-word;
+	overflow-wrap: break-word;
+}
+
+.card h3 {
+	margin: 0 0 0.5em;
+	font-size: var(--font-normal);
+	font-weight: 600;
+	color: var(--fg);
+}
+
+.card .amount {
+	font-size: var(--font-large);
+	font-weight: 700;
+	color: white;
+	margin-bottom: 0.5em;
+}
+
+.small {
+	font-size: var(--font-small);
+	line-height: 1.4;
+	opacity: var(--muted);
+	white-space: pre-wrap;
+}
+
+.card a {
+	color: var(--accent);
+	text-decoration: none;
+	word-break: break-word;
+}
+
+.card a:hover {
+	text-decoration: underline;
+}
+
+#fileInput {
+	margin-bottom: 1.5em;
+}

@@ -1,9 +1,0 @@
-language: node_js
-node_js:
-  - 6
-notifications:
-  email:
-    recipients:
-      - cents.build@crosshj.com
-    on_success: change # default: change
-    on_failure: always # default: always
