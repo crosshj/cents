@@ -1,0 +1,611 @@
+{
+	"balance": [
+		{
+			"title": "Total Assets",
+			"amount": "6442.00"
+		},
+		{
+			"title": "Total Liabilities",
+			"amount": "4442.63"
+		},
+		{
+			"title": "Balance",
+			"amount": 2430.42
+		},
+		{
+			"title": "Total Owed",
+			"amount": 79488.91
+		}
+	],
+	"assets": [
+		{
+			"title": "Paycheck",
+			"status": "Paid",
+			"amount": "6178.77",
+			"occurence": "bi-week",
+			"date": "2018-01-26",
+			"total_owed": "0.00",
+			"website": "-",
+			"note": "6,178.77 = 2,851.74 (low check) * 26 / 12 - bi-week paycheck * number of bi-weeks / months in a year\ntotal = average_paycheck * 2.1667",
+			"hidden": false,
+			"auto": false
+		},
+		{
+			"title": "Thorne Circle",
+			"rental": "",
+			"status": "Paid",
+			"amount": "0.00",
+			"occurence": "month",
+			"date": "2015-07-01",
+			"total_owed": "0.00",
+			"website": "http://bit.ly/128Thorne",
+			"note": "- https://docs.google.com/spreadsheets/d/1eHubrWharychq-tmemYmcCzBgJvWe5DNQBtrY-CrHeM/edit?usp=sharing",
+			"hidden": false,
+			"auto": false
+		},
+		{
+			"title": "Disability",
+			"status": "Paid",
+			"amount": "269.30",
+			"occurence": "month",
+			"date": "2018-01-31",
+			"total_owed": "",
+			"note": "-",
+			"hidden": false,
+			"auto": false
+		}
+	],
+	"liabilities": [
+		{
+			"title": "Sawnee Power",
+			"status": "Due",
+			"amount": "112.51",
+			"occurence": "month",
+			"date": "2014-06-18",
+			"website": "https://ebill.sawnee.com/css/",
+			"total_owed": "0.00",
+			"note": "AUTO 48.72 53.37 70.50 78.48 46.45 - hcross75@gmail.com - regular minus special",
+			"hidden": "true"
+		},
+		{
+			"title": "Geico Auto",
+			"status": "Due",
+			"amount": "381.80",
+			"occurence": "month",
+			"date": "2015-01-19",
+			"total_owed": "0.00",
+			"website": "https://ecams.geico.com/ecams/login.xhtml",
+			"note": "-",
+			"hidden": "true"
+		},
+		{
+			"title": "Childcare Brenda",
+			"status": "Due",
+			"amount": 0,
+			"occurence": "weekly",
+			"date": "2015-08-01",
+			"total_owed": "0",
+			"website": "-",
+			"note": "for now, 100 per week / 400 a month",
+			"hidden": "true"
+		},
+		{
+			"occurence": "month",
+			"website": "",
+			"hidden": true,
+			"title": "HBO",
+			"status": "pending",
+			"amount": "14.99",
+			"total_owed": "0.00",
+			"date": "2018-01-07",
+			"note": "pay through google",
+			"auto": true
+		},
+		{
+			"occurence": "month",
+			"website": "",
+			"hidden": true,
+			"title": "YouTube Red",
+			"status": "pending",
+			"amount": "9.99",
+			"total_owed": "0.00",
+			"date": "2018-01-20",
+			"note": "",
+			"auto": true
+		},
+		{
+			"title": "SCANA gas",
+			"status": "pending",
+			"amount": "55.29",
+			"occurence": "month",
+			"date": "2019-08-12",
+			"website": "https://secure.scanaenergy.com/ecs/ecsBillAndPayment/ecsMakePayment.aspx",
+			"total_owed": "",
+			"note": "crosshj-(usual)minuspoundplusmoney",
+			"hidden": false,
+			"auto": false
+		},
+		{
+			"title": "Project Fi",
+			"status": "pending",
+			"amount": "142.74",
+			"occurence": "month",
+			"date": "2019-08-13",
+			"total_owed": "405.71",
+			"website": "https://fi.google.com/",
+			"note": "hjacobcross@gmail.com regular",
+			"hidden": false,
+			"auto": true
+		},
+		{
+			"title": "Wal-mart",
+			"status": "pending",
+			"amount": "51",
+			"occurence": "month",
+			"date": "2019-08-14",
+			"total_owed": "2145.20",
+			"website": "http://bit.ly/13caRe",
+			"note": "228.00, 227.44, 330 = 30 * $11 - \nAPR - 23.9, 26.90 cash advance\nhttp://bit.ly/info/13caRe - crosshj - reg minus spec",
+			"hidden": false,
+			"auto": true
+		},
+		{
+			"title": "Education Loans",
+			"status": "pending",
+			"amount": "510.68",
+			"occurence": "none",
+			"date": "2019-08-14",
+			"total_owed": "14919.38",
+			"website": "https://accountaccess.myfedloan.org",
+			"website2": "https://www.nslds.ed.gov",
+			"website3": "https://bannerssb.utk.edu/webapp/ssbredir.jsp?SSBGotoURL=bwrksumm.P_DispSumm%3faidy_in%3d1112",
+			"note": "crosshj - usual\nAPR - ~5.77225\nPIN - 6 dig usual ate heaven",
+			"hidden": true,
+			"auto": true
+		},
+		{
+			"title": "Mortgage",
+			"status": "pending",
+			"amount": "733.37",
+			"occurence": "month",
+			"date": "2019-08-15",
+			"total_owed": "42722.08",
+			"note": "crosshj - usual money\nAPR - 3.5\n\n\n78,000 on Aug 25 2006\n31,265 principal reduction in 12 years\naverage 2605/yr, 217/mn\n\naverage payment per month?\nminus amount given by John?\noperating at how much of a loss?\n",
+			"website": "https://www.rocketmortgage.com/sign-in",
+			"website1": "https://www.myql.com/signin",
+			"website2": "https://usaa.mortgagebanksite.com/logon/index.htm",
+			"hidden": false,
+			"auto": false
+		},
+		{
+			"title": "Charter Internet",
+			"status": "pending",
+			"amount": "65.99",
+			"occurence": "month",
+			"date": "2019-08-15",
+			"total_owed": "",
+			"website": "https://www.charter.net/login/?referer=myaccount",
+			"website2": "https://www.att.com/olam/loginAction.olamexecute?pId=U_View_Bill_Passthru",
+			"note": "crosshj1 - reg at money",
+			"note2": "- crosshj@att.net - usual minus special",
+			"hidden": false,
+			"auto": true
+		},
+		{
+			"title": "GEICO Auto Insurance",
+			"status": "pending",
+			"amount": "129.68",
+			"occurence": "bi-ann",
+			"date": "2019-08-18",
+			"website": "https://ecams.geico.com/ecams/login",
+			"total_owed": "0.00",
+			"note": "356.70 339.70 290.70 284.03, hcross75 - reg",
+			"hidden": false,
+			"auto": true
+		},
+		{
+			"title": "Kohls",
+			"status": "Pending",
+			"amount": "0.00",
+			"occurence": "month",
+			"date": "2020-12-15",
+			"total_owed": "0",
+			"website": "https://credit.kohls.com/eCustService/",
+			"note": "- crosshj - usual",
+			"hidden": "true"
+		},
+		{
+			"title": "Water/Sewage",
+			"status": "paid",
+			"amount": "71.50",
+			"occurence": "month",
+			"date": "2019-08-09",
+			"total_owed": "0.00",
+			"website": "https://waterbilling.fultoncountyga.gov",
+			"note": "crosshj/regular ...",
+			"hidden": false,
+			"auto": false
+		},
+		{
+			"title": "Trash",
+			"status": "paid",
+			"amount": "24.60",
+			"occurence": "month",
+			"date": "2019-09-20",
+			"total_owed": "",
+			"website": "http://www.roswellgov.com/utilitybilling",
+			"note": "ac# - 46401031\ncustID - 129783",
+			"hidden": false,
+			"auto": false
+		},
+		{
+			"occurence": "bi-week",
+			"website": "www.usaa.com",
+			"hidden": false,
+			"title": "Groceries 4th",
+			"status": "paid",
+			"amount": "150",
+			"total_owed": "",
+			"date": "2019-08-23",
+			"note": "",
+			"auto": false
+		},
+		{
+			"title": "Discover",
+			"status": "paid",
+			"amount": "187",
+			"occurence": "month",
+			"date": "2019-08-23",
+			"note": "crosshj usual at money\nAPR - 18.24, 23.99 cash advance",
+			"total_owed": "9086.05",
+			"website": "https://www.discovercard.com/cardmembersvcs/loginlogout/app/ac_main",
+			"hidden": false,
+			"auto": true
+		},
+		{
+			"occurence": "month",
+			"website": "",
+			"hidden": false,
+			"title": "Services",
+			"status": "paid",
+			"amount": 86.83,
+			"date": "2019-08-26",
+			"note": "TODOIST - Oct 25",
+			"auto": false,
+			"type": "group",
+			"items": [
+				{
+					"title": "Audible"
+				},
+				{
+					"title": "Dropbox"
+				},
+				{
+					"title": "AWS"
+				},
+				{
+					"title": "Hulu"
+				},
+				{
+					"title": "Netflix"
+				},
+				{
+					"title": "Todoist"
+				},
+				{
+					"title": "Amazon Prime"
+				},
+				{
+					"title": "Sony Online"
+				},
+				{
+					"title": "Pocket"
+				}
+			],
+			"total_owed": 0
+		},
+		{
+			"title": "Geico Renters",
+			"status": "paid",
+			"amount": "35.92",
+			"occurence": "month",
+			"date": "2019-08-26",
+			"total_owed": "0.00",
+			"website": "http://www.libertymutual.com/geico",
+			"note": "crosshj regular minus special - LIBERTY MUTUAL - pending on 24th usually final on the 27th",
+			"hidden": false,
+			"auto": true
+		},
+		{
+			"occurence": "month",
+			"website": "",
+			"hidden": false,
+			"title": "Audible",
+			"status": "paid",
+			"amount": "14.00",
+			"total_owed": "",
+			"date": "2019-08-26",
+			"note": "Billed every other month.",
+			"auto": true
+		},
+		{
+			"occurence": "month",
+			"website": "",
+			"hidden": false,
+			"title": "Hulu",
+			"status": "paid",
+			"amount": "11.99",
+			"total_owed": "",
+			"date": "2019-08-27",
+			"note": "pay through paypal",
+			"auto": true
+		},
+		{
+			"title": "American Express",
+			"status": "paid",
+			"amount": "260",
+			"occurence": "month",
+			"date": "2019-08-30",
+			"website": "https://online.americanexpress.com",
+			"total_owed": "10210.49",
+			"note": "hcross75 - reg but pound pound\nAPR - 17.74, 26.24 cash advance",
+			"hidden": false,
+			"notes": "hcross75 - ???",
+			"auto": true
+		},
+		{
+			"starts": "2018-07-27",
+			"type": "seperator-def",
+			"available": "0",
+			"amount": "2519.21",
+			"period": 14,
+			"status": "paid"
+		},
+		{
+			"title": "Windward Lane",
+			"status": "paid",
+			"amount": "1700",
+			"occurence": "month",
+			"date": "2019-09-01",
+			"total_owed": "0.00",
+			"website": "https://mobile.usaa.com/inet/ent_logon/Logon",
+			"note": "-",
+			"hidden": false,
+			"auto": false
+		},
+		{
+			"occurence": "month",
+			"website": "",
+			"hidden": false,
+			"title": "AWS",
+			"status": "paid",
+			"amount": "0.80",
+			"total_owed": "",
+			"date": "2019-09-02",
+			"note": "",
+			"auto": true
+		},
+		{
+			"title": "Georgia Power",
+			"status": "paid",
+			"amount": "180.36",
+			"occurence": "month",
+			"date": "2019-09-03",
+			"website": "https://customerservice.southerncompany.com/NonSecure/LoginFrames.aspx?redirect=Y",
+			"total_owed": "",
+			"note": "hcross75 - usual at money",
+			"hidden": false,
+			"auto": false
+		},
+		{
+			"occurence": "month",
+			"website": "",
+			"hidden": false,
+			"title": "Netflix",
+			"status": "paid",
+			"amount": "10.99",
+			"total_owed": "",
+			"date": "2019-09-03",
+			"note": "pay through paypal",
+			"auto": true
+		},
+		{
+			"occurence": "bi-week",
+			"website": "www.usaa.com",
+			"hidden": false,
+			"title": "Groceries 1st",
+			"status": "paid",
+			"amount": "150",
+			"total_owed": "",
+			"date": "2019-09-06",
+			"note": "",
+			"auto": false
+		},
+		{
+			"occurence": "bi-week",
+			"website": "www.usaa.com",
+			"hidden": false,
+			"title": "Groceries 2nd",
+			"status": "paid",
+			"amount": "150",
+			"total_owed": "",
+			"date": "2019-09-09",
+			"note": "",
+			"auto": false
+		},
+		{
+			"occurence": "bi-week",
+			"website": "https://www.xoom.com/myaccount",
+			"hidden": false,
+			"title": "Philippines",
+			"status": "paid",
+			"amount": "250",
+			"total_owed": "",
+			"date": "2019-09-11",
+			"note": "open in incognito, $130 every two weeks\n\n11/12 - $200\n",
+			"auto": false
+		},
+		{
+			"occurence": "month",
+			"website": "",
+			"hidden": false,
+			"title": "Sony Online",
+			"status": "paid",
+			"amount": "5.00",
+			"total_owed": "",
+			"date": "2019-09-11",
+			"note": "??? unknown status",
+			"auto": true
+		},
+		{
+			"occurence": "month",
+			"website": "",
+			"hidden": false,
+			"title": "Amazon Prime",
+			"status": "paid",
+			"amount": "8.33",
+			"total_owed": "",
+			"date": "2019-09-11",
+			"note": "$119 yearly, renews September 11",
+			"auto": true
+		},
+		{
+			"title": "Lance Lunch",
+			"status": "paid",
+			"amount": "93.86",
+			"occurence": "month",
+			"date": "2019-09-12",
+			"total_owed": "",
+			"website": "https://www.mypaymentsplus.com",
+			"note": "Lance only - 52.77\n\nhttp://www.fultonschools.org/en/PublishingImages/Lists/FCSSpotLight/SpotlightLandingPage/2018_2019_School_Calendar_Updated.pdf\n\ncrosshj - usual (atmoney)  - 50.6 * 2 + fee = 101.20 + 4.34 = 105.54\n\n",
+			"hidden": false,
+			"auto": false
+		},
+		{
+			"hidden": false,
+			"title": "Pocket",
+			"note": "https://getpocket.com/premium_settings",
+			"status": "paid",
+			"date": "2019-09-16",
+			"amount": "24.99",
+			"total_owed": 0,
+			"auto": true
+		},
+		{
+			"occurence": "bi-week",
+			"website": "www.usaa.com",
+			"hidden": false,
+			"title": "Groceries 3rd",
+			"status": "paid",
+			"amount": "150",
+			"total_owed": "",
+			"date": "2019-09-19",
+			"note": "",
+			"auto": false
+		},
+		{
+			"occurence": "month",
+			"website": "",
+			"hidden": false,
+			"title": "Todoist",
+			"status": "paid",
+			"amount": "2.40",
+			"total_owed": "",
+			"date": "2019-10-25",
+			"note": "yearly, renews Oct 25 2018",
+			"auto": true
+		},
+		{
+			"occurence": "month",
+			"website": "",
+			"hidden": false,
+			"title": "Dropbox",
+			"status": "paid",
+			"amount": "8.33",
+			"total_owed": "",
+			"date": "2020-03-14",
+			"note": "",
+			"auto": true
+		},
+		{
+			"title": "BBT Loan",
+			"status": "Paid",
+			"amount": "0",
+			"occurence": "month",
+			"date": "2020-10-17",
+			"total_owed": "0",
+			"website": "http://www.bbt.com/",
+			"note": "-",
+			"hidden": "true"
+		},
+		{
+			"title": "Taxes",
+			"status": "paid",
+			"amount": "0",
+			"occurence": "month",
+			"date": "2021-04-15",
+			"website": "",
+			"total_owed": "0",
+			"note": "2016 - 6878.69 + 107 (fee) = 6985.69\nFirst Payment - JUNE 2017",
+			"hidden": true,
+			"auto": true,
+			"autoReduce": true
+		},
+		{
+			"title": "Childcare YMCA",
+			"status": "Paid",
+			"amount": "0.00",
+			"occurence": "month",
+			"date": "2066-06-23",
+			"total_owed": "0",
+			"website": "https://spiritonline.ymcaatlanta.org/SpiritWeb/Login",
+			"note": "690, 268 * 2 = 536 --- 65 per week per child - ymca@crosshj.com, usual minus atpoundORmoney",
+			"hidden": "true"
+		},
+		{
+			"title": "Wells Fargo",
+			"status": "paid",
+			"amount": "0",
+			"occurence": "month",
+			"date": "2099-01-01",
+			"website": "https://eservices.wellsfargodealerservices.com/MyAccount/login.aspx",
+			"note": "hcross75-regatmoney\nAPR - 6.450",
+			"total_owed": "0",
+			"hidden": true,
+			"auto": true
+		},
+		{
+			"title": "Ashleys Furniture",
+			"status": "Paid",
+			"amount": "0.00",
+			"occurence": "month",
+			"date": "2118-03-10",
+			"total_owed": "0.00",
+			"website": "https://mysynchrony.com/index.html",
+			"note": "crosshj - usual minus pound plus money",
+			"hidden": "true"
+		},
+		{
+			"title": "Other Costs",
+			"status": "Paid",
+			"amount": "0.00",
+			"occurence": "month",
+			"date": "9999-9-9",
+			"total_owed": "0.00",
+			"website": "-",
+			"note": "hidden, non-billable, monthly costs - gas, food, pandora, ps plus, etc",
+			"hidden": "true"
+		},
+		{
+			"title": "Verizon Wireless",
+			"status": "Paid",
+			"amount": "0.00",
+			"occurence": "month",
+			"date": "9999-09-09",
+			"website": "http://www.vzw.com/myverizon/",
+			"total_owed": "0.00",
+			"note": "crosshj - reg minus spec - 178.38, 218.38, 187.96, 207.96, 200.64, 217.61, 383.45 ,77.78, 77.83, 77.17",
+			"hidden": "true"
+		}
+	]
+}
