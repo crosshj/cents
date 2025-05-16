@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Finance Overview</title>
+	<style>
+		body {
+			font-family: system-ui, sans-serif;
+			background: #f4f6f8;
+			margin: 0;
+			padding: 1em;
+			color: #333;
+		}
+		h1, h2 {
+			margin: 0.5em 0;
+			color: #222;
+		}
+		section {
+			margin-bottom: 2em;
+		}
+		.card-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+			gap: 1em;
+		}
+		.card {
+			background: white;
+			border-radius: 8px;
+			padding: 1em;
+			box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+		}
+		.card h3 {
+			margin: 0 0 0.25em;
+			font-size: 1em;
+			color: #555;
+		}
+		.card .amount {
+			font-size: 1.2em;
+			font-weight: bold;
+		}
+		.small {
+			font-size: 0.9em;
+			color: #777;
+		}
+		#fileInput {
+			margin-bottom: 1em;
+		}
+	</style>
+</head>
+<body>
+	<h1>Finance Overview</h1>
+	<input type="file" id="fileInput" accept=".json" />
+	<section id="balance">
+		<h2>Balance Summary</h2>
+		<div class="card-grid" id="balanceGrid"></div>
+	</section>
+	<section id="assets">
+		<h2>Assets</h2>
+		<div class="card-grid" id="assetsGrid"></div>
+	</section>
+	<section id="liabilities">
+		<h2>Liabilities</h2>
+		<div class="card-grid" id="liabilitiesGrid"></div>
+	</section>
+
+	<script>
+		const LS_KEY = 'financeData';
+
+		const formatCard = (item) => `
+			<div class="card">
+				<h3>${item.title || "Untitled"}</h3>
+				<div class="amount">$${parseFloat(item.amount || 0).toFixed(2)}</div>
+				<div class="small">${item.status || ""}${item.date ? ` | ${item.date}` : ""}</div>
+			</div>
+		`;
+
+		const populate = (data) => {
+			const balanceGrid = document.getElementById("balanceGrid");
+			const assetsGrid = document.getElementById("assetsGrid");
+			const liabilitiesGrid = document.getElementById("liabilitiesGrid");
+
+			balanceGrid.innerHTML = (data.balance || []).map(formatCard).join("");
+			assetsGrid.innerHTML = (data.assets || []).filter(x => !x.hidden || x.hidden === false).map(formatCard).join("");
+			liabilitiesGrid.innerHTML = (data.liabilities || []).filter(x => !x.hidden || x.hidden === false).map(formatCard).join("");
+		};
+
+		const loadFromLocalStorage = () => {
+			const raw = localStorage.getItem(LS_KEY);
+			if (raw) {
+				try {
+					const parsed = JSON.parse(raw);
+					populate(parsed);
+				} catch {
+					console.warn("Invalid JSON in localStorage.");
+				}
+			}
+		};
+
+		document.getElementById("fileInput").addEventListener("change", (e) => {
+			const file = e.target.files[0];
+			if (!file) return;
+
+			const reader = new FileReader();
+			reader.onload = (evt) => {
+				try {
+					const json = JSON.parse(evt.target.result);
+					localStorage.setItem(LS_KEY, JSON.stringify(json));
+					populate(json);
+				} catch {
+					alert("Invalid JSON file.");
+				}
+			};
+			reader.readAsText(file);
+		});
+
+		loadFromLocalStorage();
+	</script>
+</body>
+</html>
