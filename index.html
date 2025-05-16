@@ -15,26 +15,25 @@
 			rel="stylesheet"
 			href="index.css"
 		/>
+		<style>
+			.symbols-outlined {
+				visibility: hidden;
+			}
+		</style>
 	</head>
 	<body>
-		<h1>Finance</h1>
-		<input
-			type="file"
-			id="fileInput"
-			accept=".json"
-		/>
+		<div class="page-header">
+			<h1>Finance</h1>
+			<div
+				id="file-controls"
+				class="action-buttons"
+			></div>
+		</div>
 		<section id="balance">
-			<h2>Balance Summary</h2>
+			<h2>Summary</h2>
 			<div
 				class="card-grid"
 				id="balanceGrid"
-			></div>
-		</section>
-		<section id="assets">
-			<h2>Assets</h2>
-			<div
-				class="card-grid"
-				id="assetsGrid"
 			></div>
 		</section>
 		<section id="liabilities">
@@ -42,6 +41,13 @@
 			<div
 				class="card-grid"
 				id="liabilitiesGrid"
+			></div>
+		</section>
+		<section id="assets">
+			<h2>Assets</h2>
+			<div
+				class="card-grid"
+				id="assetsGrid"
 			></div>
 		</section>
 		<script

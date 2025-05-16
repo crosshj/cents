@@ -1,17 +1,34 @@
 const LS_KEY = 'financeData';
 
+const Money = (value) => {
+	const num = Number(value);
+	if (isNaN(num)) return '';
+	const numString = num.toLocaleString('en-US', {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2,
+	});
+	return numString;
+};
+
 const formatCard = (item) => {
 	if (item.hidden || item.type === 'seperator-def' || item.type === 'group')
 		return '';
 
-	const amount = parseFloat(item.amount || 0).toFixed(2);
+	const amount = Money(item.amount || 0);
 	const owed =
 		item.total_owed && parseFloat(item.total_owed) > 0
-			? `$${parseFloat(item.total_owed).toFixed(2)}`
+			? `$${Money(item.total_owed)}`
 			: '';
 	const recurrence = item.occurence || '';
 	const auto = item.auto ? `<span class="auto-pill">AUTO</span>` : '';
-	const status = item.status || '';
+	const statusIcon = {
+		paid: 'check',
+		pending: 'sync',
+	}[(item.status || '').toLowerCase()];
+
+	const status = statusIcon
+		? `<span class="symbols-outlined" style="padding-right: 0.5em">${statusIcon}</span>`
+		: item?.status || '';
 	const date = item.date || '';
 
 	const note = item.notes || item.note || '';
@@ -28,44 +45,105 @@ const formatCard = (item) => {
 	return `
 		<div class="card">
 			<div class="header-row">
-                <div class="title">
-                    <h3>${item.title || 'Untitled'}</h3>
-                    ${auto}
-                </div>
-			    ${link ? `<div class="links">${link}</div>` : ''}
-            </div>
+				<div class="title">
+					<h3>${item.title || 'Untitled'}</h3>
+					${auto}
+				</div>
+				<div class="links">
+					${link}
+					${
+						item.log !== false
+							? `
+                                <a onclick="window.logAccount('${item.title.replace(
+									/'/g,
+									"\\'"
+								)}'); return false;">log</a>
+                            `.trim()
+							: ''
+					}
+
+				</div>
+			</div>
 
 			<div class="money-row">
 				<div><span class="amount">$${amount}</span> ${recurrence}</div>
-				${owed ? `<div class="owed">Owed: ${owed}</div>` : ''}
+				${owed ? `<div class="owed">${owed} owed</div>` : ''}
 			</div>
 
-			${note ? `<div class="note">${note.split('\n')[0]}</div>` : ''}
-            ${subItems}
-            <div class="meta-bottom">${[status, date]
-				.filter(Boolean)
-				.join(' · ')}</div>
+			${note ? `<div class="note">${note}</div>` : ''}
+			${subItems}
+			<div class="meta-bottom">${[status, date].filter(Boolean).join('   ')}</div>
 		</div>
 	`;
 };
+
+function summarize(data) {
+	const assets = data.assets || [];
+	const liabilities = data.liabilities || [];
+
+	const sum = (arr, key) =>
+		arr.reduce((total, item) => {
+			const num = parseFloat(item[key] || 0);
+			return isNaN(num) ? total : total + num;
+		}, 0);
+
+	const totalAssets = sum(assets, 'amount');
+	const totalLiabilities = sum(liabilities, 'amount');
+	const totalOwed = sum(liabilities, 'total_owed');
+	const balance = totalAssets - totalLiabilities;
+
+	return [
+		{
+			title: 'Total Liabilities',
+			amount: totalLiabilities,
+			log: false,
+		},
+		{ title: 'Total Owed', amount: totalOwed, log: false },
+		{
+			title: 'Total Assets',
+			amount: totalAssets,
+			log: false,
+		},
+		{ title: 'Balance', amount: balance, log: false },
+	];
+}
 
 const populate = (data) => {
 	const balanceGrid = document.getElementById('balanceGrid');
 	const assetsGrid = document.getElementById('assetsGrid');
 	const liabilitiesGrid = document.getElementById('liabilitiesGrid');
 
-	balanceGrid.innerHTML = (data.balance || []).map(formatCard).join('');
-	assetsGrid.innerHTML = (data.assets || [])
-		.filter((x) => !x.hidden || x.hidden === false)
-		.map(formatCard)
-		.join('');
-	liabilitiesGrid.innerHTML = (data.liabilities || [])
-		.filter((x) => !x.hidden || x.hidden === false)
-		.map(formatCard)
-		.join('');
+	const summary = summarize(data);
+	const assets = data.assets || [];
+	const liabilities = data.liabilities || [];
+
+	balanceGrid.innerHTML = summary.length
+		? summary.map(formatCard).join('')
+		: `<div class="card no-data">No data</div>`;
+
+	assetsGrid.innerHTML = assets.filter((x) => !x.hidden).length
+		? assets
+				.filter((x) => !x.hidden)
+				.map(formatCard)
+				.join('')
+		: `<div class="card no-data">No data</div>`;
+
+	liabilitiesGrid.innerHTML = liabilities.filter((x) => !x.hidden).length
+		? liabilities
+				.filter((x) => !x.hidden)
+				.map(formatCard)
+				.join('')
+		: `<div class="card no-data">No data</div>`;
+
+	window.logAccount = (title) => {
+		const item = [...summary, ...assets, ...liabilities].filter(
+			(x) => x.title === title
+		);
+		console.log(JSON.stringify(item, null, 2));
+	};
 };
 
-const loadFromLocalStorage = () => {
+function loadFromLocalStorage() {
 	const raw = localStorage.getItem(LS_KEY);
 	if (raw) {
 		try {
@@ -74,24 +152,65 @@ const loadFromLocalStorage = () => {
 		} catch {
 			console.warn('Invalid JSON in localStorage.');
 		}
+	} else {
+		populate({ assets: [], liabilities: [] });
 	}
-};
+}
 
-document.getElementById('fileInput').addEventListener('change', (e) => {
-	const file = e.target.files[0];
-	if (!file) return;
+function setUpFileControls() {
+	const container = document.getElementById('file-controls');
+	if (!container) return;
 
-	const reader = new FileReader();
-	reader.onload = (evt) => {
-		try {
-			const json = JSON.parse(evt.target.result);
-			localStorage.setItem(LS_KEY, JSON.stringify(json));
-			populate(json);
-		} catch {
-			alert('Invalid JSON file.');
-		}
-	};
-	reader.readAsText(file);
+	// Create the hidden file input
+	const fileInput = document.createElement('input');
+	fileInput.type = 'file';
+	fileInput.id = 'fileInput';
+	fileInput.hidden = true;
+	fileInput.accept = '.json';
+
+	// Custom upload button
+	const uploadBtn = document.createElement('button');
+	uploadBtn.textContent = 'Upload File';
+	uploadBtn.addEventListener('click', () => fileInput.click());
+
+	// Clear button if localStorage exists
+	const showClear = localStorage.getItem(LS_KEY);
+	if (showClear) {
+		const clearBtn = document.createElement('button');
+		clearBtn.textContent = 'Clear';
+		clearBtn.className = 'clear-button';
+		clearBtn.addEventListener('click', () => {
+			localStorage.removeItem(LS_KEY);
+			location.reload();
+		});
+		container.append(clearBtn);
+	} else {
+		container.append(uploadBtn);
+		container.append(fileInput);
+		fileInput.addEventListener('change', (e) => {
+			const file = e.target.files[0];
+			if (!file) return;
+
+			const reader = new FileReader();
+			reader.onload = (evt) => {
+				try {
+					const json = JSON.parse(evt.target.result);
+					localStorage.setItem(LS_KEY, JSON.stringify(json));
+					location.reload();
+				} catch {
+					alert('Invalid JSON file.');
+				}
+			};
+			reader.readAsText(file);
+		});
+	}
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+	document.fonts.ready.then(() => {
+		document.documentElement.classList.add('fonts-loaded');
+	});
+
+	loadFromLocalStorage();
+	setUpFileControls();
 });
-
-loadFromLocalStorage();
