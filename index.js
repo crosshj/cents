@@ -1,3 +1,5 @@
+import { decryptJson } from './crypto.js';
+
 const LS_KEY = 'financeData';
 
 const Money = (value) => {
@@ -54,14 +56,12 @@ const formatCard = (item) => {
 					${
 						item.log !== false
 							? `
-                                <a onclick="window.logAccount('${item.title.replace(
-									/'/g,
-									"\\'"
-								)}'); return false;">log</a>
-                            `.trim()
+								<a onclick="window.logAccount('${item.title.replace(/'/g, "\\'")}'); return false;">
+									log
+								</a>
+							  `.trim()
 							: ''
 					}
-
 				</div>
 			</div>
 
@@ -82,10 +82,13 @@ function summarize(data) {
 	const liabilities = data.liabilities || [];
 
 	const sum = (arr, key) =>
-		arr.reduce((total, item) => {
+		arr.filter(x => x.hidden+'' !== "true")
+		.reduce((total, item) => {
 			const num = parseFloat(item[key] || 0);
 			return isNaN(num) ? total : total + num;
 		}, 0);
+		
+	console.log(liabilities.filter(x => x.hidden+'' !== "true"));
 
 	const totalAssets = sum(assets, 'amount');
 	const totalLiabilities = sum(liabilities, 'amount');
@@ -114,8 +117,8 @@ const populate = (data) => {
 	const liabilitiesGrid = document.getElementById('liabilitiesGrid');
 
 	const summary = summarize(data);
-	const assets = data.assets || [];
-	const liabilities = data.liabilities || [];
+	const assets = (data.assets || []).sort((a,b) => b.amount - a.amount);
+	const liabilities = (data.liabilities || []).sort((a,b) => b.amount - a.amount);
 
 	balanceGrid.innerHTML = summary.length
 		? summary.map(formatCard).join('')
@@ -156,10 +159,26 @@ function loadFromLocalStorage() {
 		populate({ assets: [], liabilities: [] });
 	}
 }
-
-function setUpFileControls() {
+	
+async function setUpFileControls() {
 	const container = document.getElementById('file-controls');
 	if (!container) return;
+
+	const hasLocalStorage = !!localStorage.getItem(LS_KEY);
+	let fetchedLocal = null;
+
+	// Attempt to fetch accounts.json if localStorage is empty
+	if (!hasLocalStorage) {
+
+		try {
+			const response = await fetch('accounts.encrypted.json', { cache: 'no-store' });
+			if (response.ok) {
+				fetchedLocal = await response.json();
+			}
+		} catch (err) {
+			console.info('accounts.json not available:', err);
+		}
+	}
 
 	// Create the hidden file input
 	const fileInput = document.createElement('input');
@@ -174,8 +193,7 @@ function setUpFileControls() {
 	uploadBtn.addEventListener('click', () => fileInput.click());
 
 	// Clear button if localStorage exists
-	const showClear = localStorage.getItem(LS_KEY);
-	if (showClear) {
+	if (hasLocalStorage) {
 		const clearBtn = document.createElement('button');
 		clearBtn.textContent = 'Clear';
 		clearBtn.className = 'clear-button';
@@ -187,6 +205,23 @@ function setUpFileControls() {
 	} else {
 		container.append(uploadBtn);
 		container.append(fileInput);
+
+		// Optionally show "Use Local" if it was fetched successfully
+		if (fetchedLocal) {
+			const useLocalBtn = document.createElement('button');
+			useLocalBtn.textContent = 'Use Local';
+			useLocalBtn.className = 'button';
+			useLocalBtn.addEventListener('click', async () => {
+				const username = prompt('Enter your username');
+				const password = prompt('Enter your password');
+				const decrypted = await decryptJson(fetchedLocal, username, password);
+				if(decrypted?.error) return;
+				localStorage.setItem(LS_KEY, JSON.stringify(decrypted));
+				location.reload();
+			});
+			container.append(useLocalBtn);
+		}
+
 		fileInput.addEventListener('change', (e) => {
 			const file = e.target.files[0];
 			if (!file) return;
@@ -206,11 +241,12 @@ function setUpFileControls() {
 	}
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+
+document.addEventListener('DOMContentLoaded', async () => {
 	document.fonts.ready.then(() => {
 		document.documentElement.classList.add('fonts-loaded');
 	});
 
 	loadFromLocalStorage();
-	setUpFileControls();
+	await setUpFileControls();
 });

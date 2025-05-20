@@ -10,23 +10,23 @@
 	--accent: LinkText;
 	--muted: 0.6;
 
-	--card-bg: color-mix(in srgb, canvastext 2%, canvas);
-	--card-border: color-mix(in srgb, canvastext 10%, canvas);
-
 	--text-muted: color-mix(in srgb, canvastext 60%, transparent);
 	--text-subtle: color-mix(in srgb, canvastext 40%, transparent);
-
 	--text-bright: var(--fg);
 	--text-accent: color-mix(
 		in srgb,
-		canvastext 35%,
+		canvastext 10%,
 		var(--accent)
 	); /* link color */
 
+	/* card */
+	--card-bg: color-mix(in srgb, canvastext 4%, canvas);
+	--card-border: color-mix(in srgb, canvastext 10%, canvas);
 	--card-radius: 8px;
 	--card-padding: 1.25em;
-	--pill-bg: color-mix(in srgb, canvastext 5%, transparent);
-	--pill-fg: color-mix(in srgb, canvastext 85%, transparent);
+
+	--pill-bg: color-mix(in srgb, canvastext 30%, transparent);
+	--pill-fg: color-mix(in srgb, canvas 100%, transparent);
 
 	--font-body: system-ui, sans-serif;
 	--font-heading: system-ui, sans-serif;
