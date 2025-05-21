@@ -99,10 +99,19 @@ body {
 /* Hide on small screens ( < 640px ) */
 @media (max-width: 639px) {
 	.hide-sm { display: none; }
+	body {
+		padding: 1em
+	}
+	:root {
+		--card-padding: 0.8em;
+	}
 }
 /* Hide on medium screens ( ≥ 640px and < 1024px ) */
 @media (min-width: 640px) and (max-width: 1023px) {
 	.hide-md { display: none; }
+	body {
+		padding: 1em
+	}
 }
 /* Hide on large screens ( ≥ 1024px and < 1280px ) */
 @media (min-width: 1024px) and (max-width: 1279px) {
@@ -355,7 +364,7 @@ button:hover {
 		width: 100%;
 		border: none;
 		border-top: 1px solid var(--text-muted);
-		margin: 0.5em 0;
+		margin: 0.2em 0;
 	}
 
 }

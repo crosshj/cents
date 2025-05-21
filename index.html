@@ -77,8 +77,15 @@
 		
 		<template id="summary-template">
 			<h2>Summary</h2>
-			<div class="card flex-row">
+			<div class="card flex-row" style="border:none; background:transparent;">
 				<div class="card-section">
+					<div class="row total-owed" style="margin-bottom: 2em;">
+						<label>Owed</label>
+						<div>
+							<span class="muted">$ </span>
+							<span class="value amount" data-text="totalOwed"></span>
+						</div>
+					</div>
 					<div class="row">
 						<label>Assets</label>
 						<div>
@@ -87,27 +94,18 @@
 						</div>
 					</div>
 					<div class="row">
-						<label>Liabilities</label>
+						<label>Debts</label>
 						<div>
 							<span class="muted">$ </span>
 							<span class="value amount" data-text="liabilities"></span>
 						</div>
 					</div>
+					<hr style="opacity:0.5;"/>
 					<div class="row result">
 						<label></label>
 						<div>
 							<span class="muted">$ </span>
 							<span class="value amount" data-text="balance"></span>
-						</div>
-					</div>
-				</div>
-				<div class="vertical-rule"></div>
-				<div class="card-section">
-					<div class="row total-owed">
-						<label>Total Owed</label>
-						<div>
-							<span class="muted">$ </span>
-							<span class="value amount" data-text="totalOwed"></span>
 						</div>
 					</div>
 				</div>
@@ -127,7 +125,7 @@
 		<section id="summary">
 		</section>
 		<section id="liabilities">
-			<h2>Liabilities</h2>
+			<h2>Debts</h2>
 			<div
 				class="card-grid"
 				id="liabilitiesGrid"
