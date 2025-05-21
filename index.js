@@ -12,70 +12,85 @@ const Money = (value) => {
 	return numString;
 };
 
-const formatCard = (item) => {
-	if (item.hidden || item.type === 'seperator-def' || item.type === 'group')
-		return '';
+function bindData(template, context) {
+	const clone = template.content.cloneNode(true);
 
-	const amount = Money(item.amount || 0);
-	const owed =
-		item.total_owed && parseFloat(item.total_owed) > 0
-			? `$${Money(item.total_owed)}`
-			: '';
-	const recurrence = item.occurence || '';
-	const auto = item.auto ? `<span class="auto-pill">AUTO</span>` : '';
+	clone.querySelectorAll('*').forEach(el => {
+		// Replace tokens like {{key}} in all attribute values
+		[...el.attributes].forEach(attr => {
+			if (attr.value.includes('{{')) {
+				el.setAttribute(
+					attr.name,
+					attr.value.replace(/\{\{(\w+)\}\}/g, (_, key) =>
+						context[key] != null ? context[key] : ''
+					)
+				);
+			}
+		});
+
+		// data-if condition
+		const keyIf = el.getAttribute('data-if');
+		if (keyIf && !context[keyIf]) {
+			el.remove();
+			return; // skip further updates
+		}
+
+		// data-text binding
+		const keyText = el.getAttribute('data-text');
+		if (keyText && context[keyText] != null) {
+			el.textContent = context[keyText];
+		}
+
+		// data-href binding
+		const keyHref = el.getAttribute('data-href');
+		if (keyHref && context[keyHref]) {
+			el.href = context[keyHref];
+		}
+	});
+
+	const container = document.createElement('div');
+	container.appendChild(clone);
+	return container;
+}
+
+function formatCard(item) {
+	if (item.hidden || item.type === 'seperator-def' || item.type === 'group') return '';
+
+	const tpl = document.getElementById('card-template');
 	const statusIcon = {
 		paid: 'check',
-		pending: 'sync',
+		pending: 'sync'
 	}[(item.status || '').toLowerCase()];
 
-	const status = statusIcon
-		? `<span class="symbols-outlined" style="padding-right: 0.5em">${statusIcon}</span>`
-		: item?.status || '';
-	const date = item.date || '';
+	const context = {
+		...item,
+		title: item.title || 'Untitled',
+		amount: Money(item.amount || 0),
+		owed: Number(item.total_owed) > 0 ? Money(item.total_owed) : '',
+		includes: Array.isArray(item.items)
+			? `Includes: ${item.items.map(i => i.title).join(', ')}`
+			: '',
+		statusIcon
+	};
 
-	const note = item.notes || item.note || '';
-	const link = item.website
-		? `<a href="${item.website}" target="_blank">website</a>`
-		: '';
+	const htmlString = bindData(tpl, context).innerHTML;
+	
+	// console.log({ item, htmlString });
+	return htmlString
+}
 
-	const subItems = Array.isArray(item.items)
-		? `<div class="sub">Includes: ${item.items
-				.map((i) => i.title)
-				.join(', ')}</div>`
-		: '';
-
-	return `
-		<div class="card">
-			<div class="header-row">
-				<div class="title">
-					<h3>${item.title || 'Untitled'}</h3>
-					${auto}
-				</div>
-				<div class="links">
-					${link}
-					${
-						item.log !== false
-							? `
-								<a onclick="window.logAccount('${item.title.replace(/'/g, "\\'")}'); return false;">
-									log
-								</a>
-							  `.trim()
-							: ''
-					}
-				</div>
-			</div>
-
-			<div class="money-row">
-				<div><span class="amount">$${amount}</span> ${recurrence}</div>
-				${owed ? `<div class="owed">${owed} owed</div>` : ''}
-			</div>
-
-			${note ? `<div class="note">${note}</div>` : ''}
-			${subItems}
-			<div class="meta-bottom">${[status, date].filter(Boolean).join('   ')}</div>
-		</div>
-	`;
-};
+function renderSummary(data){
+	const tpl = document.getElementById('summary-template');
+	console.log(data)
+	const context = {
+		assets: Money(data.find(x => x.title.includes('Assets')).amount),
+		liabilities: Money(data.find(x => x.title.includes('Liabilities')).amount),
+		balance: Money(data.find(x => x.title.includes('Balance')).amount),
+		totalOwed: Money(data.find(x => x.title.includes('Total Owed')).amount),
+	}
+	const htmlString = bindData(tpl, context).innerHTML;
+	return htmlString
+}
 
 function summarize(data) {
 	const assets = data.assets || [];
@@ -88,7 +103,7 @@ function summarize(data) {
 			return isNaN(num) ? total : total + num;
 		}, 0);
 		
-	console.log(liabilities.filter(x => x.hidden+'' !== "true"));
+	// console.log(liabilities.filter(x => x.hidden+'' !== "true"));
 
 	const totalAssets = sum(assets, 'amount');
 	const totalLiabilities = sum(liabilities, 'amount');
@@ -112,7 +127,7 @@ function summarize(data) {
 }
 
 const populate = (data) => {
-	const balanceGrid = document.getElementById('balanceGrid');
+	const summarySection = document.getElementById('summary');
 	const assetsGrid = document.getElementById('assetsGrid');
 	const liabilitiesGrid = document.getElementById('liabilitiesGrid');
 
@@ -120,13 +135,17 @@ const populate = (data) => {
 	const assets = (data.assets || []).sort((a,b) => b.amount - a.amount);
 	const liabilities = (data.liabilities || []).sort((a,b) => b.amount - a.amount);
 
-	balanceGrid.innerHTML = summary.length
-		? summary.map(formatCard).join('')
-		: `<div class="card no-data">No data</div>`;
+	summarySection.innerHTML = renderSummary(summary);
+
+	let showLog = false;
+	if(document.location.href.includes('fiug.dev')){
+		showLog = true;
+	}
 
 	assetsGrid.innerHTML = assets.filter((x) => !x.hidden).length
 		? assets
 				.filter((x) => !x.hidden)
+				.map(x => ({ ...x, showLog }))
 				.map(formatCard)
 				.join('')
 		: `<div class="card no-data">No data</div>`;
@@ -134,6 +153,7 @@ const populate = (data) => {
 	liabilitiesGrid.innerHTML = liabilities.filter((x) => !x.hidden).length
 		? liabilities
 				.filter((x) => !x.hidden)
+				.map(x => ({ ...x, showLog }))
 				.map(formatCard)
 				.join('')
 		: `<div class="card no-data">No data</div>`;
@@ -151,12 +171,12 @@ function loadFromLocalStorage() {
 	if (raw) {
 		try {
 			const parsed = JSON.parse(raw);
-			populate(parsed);
+			return parsed
 		} catch {
 			console.warn('Invalid JSON in localStorage.');
 		}
 	} else {
-		populate({ assets: [], liabilities: [] });
+		return { assets: [], liabilities: [] };
 	}
 }
 	
@@ -247,6 +267,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 		document.documentElement.classList.add('fonts-loaded');
 	});
 
-	loadFromLocalStorage();
+	const pageData = loadFromLocalStorage();
+	if(pageData){
+		populate(pageData);
+	}
 	await setUpFileControls();
 });

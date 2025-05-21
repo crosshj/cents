@@ -19,29 +19,112 @@
 			rel="icon"
 			sizes="192x192"
 			type="image/png"
-			href="images/launcher-icon-4x.png"
+			href="images/cents-logo-flat.svg"
 		/>
-		<link rel="manifest" href="/manifest.json" />
+		<link rel="manifest" href="manifest.json" />
 		<style>
 			.symbols-outlined {
 				visibility: hidden;
 			}
 		</style>
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Azeret+Mono:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 	</head>
 	<body>
+
+		<template id="card-template">
+			<div class="card">
+				<div class="header-row">
+					<div class="title">
+						<div class="flex-row align-center gap-2">
+							<h3 data-text="title">Untitled</h3>
+						</div>
+					</div>
+					<div class="links">
+						<a data-if="website" data-href="website" target="_blank">
+							website
+						</a>
+						<a class="" data-if="showLog" data-title="{{title}}" onclick="window.logAccount(this.dataset.title)">
+							log
+						</a>
+					</div>
+				</div>
+
+				<div class="money-row">
+					<div>
+							<span class="muted">$</span>
+							<span class="amount" data-text="amount"></span>
+							<span class="muted" data-text="occurence"></span>
+							<span class="auto-pill" data-if="auto">AUTO</span>
+					</div>
+					<div class="owed" data-if="owed">
+						<span class="muted">$</span>
+						<span data-text="owed"></span>
+						<span> owed</span>
+					</div>
+				</div>
+
+				<div class="note" data-if="note" data-text="note"></div>
+				<div class="sub" data-if="includes" data-text="includes"></div>
+
+				<div class="meta-bottom">
+					<span class="symbols-outlined" data-if="statusIcon" data-text="statusIcon"></span>
+					<span data-text="date"></span>
+				</div>
+			</div>
+		</template>
+		
+		<template id="summary-template">
+			<h2>Summary</h2>
+			<div class="card flex-row">
+				<div class="card-section">
+					<div class="row">
+						<label>Assets</label>
+						<div>
+							<span class="muted">$ </span>
+							<span class="value amount" data-text="assets"></span>
+						</div>
+					</div>
+					<div class="row">
+						<label>Liabilities</label>
+						<div>
+							<span class="muted">$ </span>
+							<span class="value amount" data-text="liabilities"></span>
+						</div>
+					</div>
+					<div class="row result">
+						<label></label>
+						<div>
+							<span class="muted">$ </span>
+							<span class="value amount" data-text="balance"></span>
+						</div>
+					</div>
+				</div>
+				<div class="vertical-rule"></div>
+				<div class="card-section">
+					<div class="row total-owed">
+						<label>Total Owed</label>
+						<div>
+							<span class="muted">$ </span>
+							<span class="value amount" data-text="totalOwed"></span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</template>
+
 		<div class="page-header">
-			<h1>Finance</h1>
+			<h1>
+				<img src="./images/cents-logo-flat.svg" class="headerLogo"/>
+				<span>Cents Personal Finance</span>
+			</h1>
 			<div
 				id="file-controls"
 				class="action-buttons"
 			></div>
 		</div>
-		<section id="balance">
-			<h2>Summary</h2>
-			<div
-				class="card-grid"
-				id="balanceGrid"
-			></div>
+		<section id="summary">
 		</section>
 		<section id="liabilities">
 			<h2>Liabilities</h2>
