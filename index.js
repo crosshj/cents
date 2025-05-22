@@ -81,11 +81,17 @@ function formatCard(item) {
 
 function renderSummary(data){
 	const tpl = document.getElementById('summary-template');
-	console.log(data)
+
+	const assets = Money(data.find(x => x.title.includes('Assets')).amount);
+	const liabilities = Money(data.find(x => x.title.includes('Liabilities')).amount);
+	const balance = Money(data.find(x => x.title.includes('Balance')).amount);
+
+	const maxLength = Math.max(assets.length, liabilities.length)
+
 	const context = {
-		assets: Money(data.find(x => x.title.includes('Assets')).amount),
-		liabilities: Money(data.find(x => x.title.includes('Liabilities')).amount),
-		balance: Money(data.find(x => x.title.includes('Balance')).amount),
+		assets: assets.padStart(maxLength, '\u00A0'),
+		liabilities: liabilities.padStart(maxLength, '\u00A0'),
+		balance: balance.padStart(maxLength, '\u00A0'),
 		totalOwed: Money(data.find(x => x.title.includes('Total Owed')).amount),
 	}
 	const htmlString = bindData(tpl, context).innerHTML;
