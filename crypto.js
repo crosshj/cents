@@ -1,5 +1,5 @@
-const USERNAME = 'harrison';
-const PASSWORD = 'password';
+const USERNAME = '{insert username}';
+const PASSWORD = '{insert password}';
 
 // ENCRYPT
 export async function encryptJson(json, username, password) {
@@ -48,7 +48,7 @@ export async function encryptJson(json, username, password) {
 
 // use this to get file contents for encrypted file
 // const plain = await fetch('accounts.json').then(x => x.json());
-//console.log(JSON.stringify(plain, null, '\t'));
+// console.log(JSON.stringify(plain, null, '\t'));
 // const encryptedPlain = await encryptJson(plain, USERNAME, PASSWORD);
 // console.log(JSON.stringify(encryptedPlain, null, '\t'));
 

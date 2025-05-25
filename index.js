@@ -1,5 +1,6 @@
 import { decryptJson } from './crypto.js';
 
+const USE_ENCRYPTED = true;
 const LS_KEY = 'financeData';
 
 const Money = (value) => {
@@ -197,12 +198,13 @@ async function setUpFileControls() {
 	if (!hasLocalStorage) {
 
 		try {
-			const response = await fetch('accounts.encrypted.json', { cache: 'no-store' });
+			const jsonURL = USE_ENCRYPTED ? 'accounts.encrypted.json' : 'accounts.json'
+			const response = await fetch(jsonURL, { cache: 'no-store' });
 			if (response.ok) {
 				fetchedLocal = await response.json();
 			}
 		} catch (err) {
-			console.info('accounts.json not available:', err);
+			console.info(`${jsonURL} not available:`, err);
 		}
 	}
 
@@ -238,11 +240,15 @@ async function setUpFileControls() {
 			useLocalBtn.textContent = 'Use Local';
 			useLocalBtn.className = 'button';
 			useLocalBtn.addEventListener('click', async () => {
-				const username = prompt('Enter your username');
-				const password = prompt('Enter your password');
-				const decrypted = await decryptJson(fetchedLocal, username, password);
-				if(decrypted?.error) return;
-				localStorage.setItem(LS_KEY, JSON.stringify(decrypted));
+				if(USE_ENCRYPTED){
+					const username = prompt('Enter your username');
+					const password = prompt('Enter your password');
+					const decrypted = await decryptJson(fetchedLocal, username, password);
+					if(decrypted?.error) return;
+					localStorage.setItem(LS_KEY, JSON.stringify(decrypted));
+				} else {
+					localStorage.setItem(LS_KEY, JSON.stringify(fetchedLocal))
+				} 
 				location.reload();
 			});
 			container.append(useLocalBtn);
