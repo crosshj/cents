@@ -1,0 +1,341 @@
+<x-page>
+	<x-subscribe
+		path="pageLoaded"
+		handler="showLoginForm"
+	></x-subscribe>
+
+	<x-data
+		name="formData"
+		defaultValue='{
+			"email": "",
+			"password": "",
+			"name": ""
+		}'
+	></x-data>
+
+	<x-data
+		name="currentTemplate"
+		defaultValue=""
+	></x-data>
+
+	<!-- Template switching scripts -->
+	<script
+		type="application/flow"
+		data-key="showSignupForm"
+	>
+		SetData('formData', { email: '', password: '' });
+
+		const signupTemplate = document.getElementById('signupTemplate');
+		if (signupTemplate) {
+			SetData('currentTemplate', signupTemplate.innerHTML);
+		}
+	</script>
+
+	<script
+		type="application/flow"
+		data-key="showLoginForm"
+	>
+		//SetData('formData', { email: '', password: '' });
+
+		const loginTemplate = document.getElementById('loginTemplate');
+		if (loginTemplate) {
+			SetData('currentTemplate', loginTemplate.innerHTML);
+		}
+	</script>
+
+	<template id="loginTemplate">
+		<!-- Login form schema -->
+		<x-schema name="loginSchema">
+			email: string, required, min:1 password: string, required, min:8
+		</x-schema>
+
+		<script
+			type="application/flow"
+			data-key="handleLogin"
+		>
+			// Get the form and validate manually against login schema
+			const form = document.querySelector('x-form[name="loginForm"]');
+			if (!form) {
+				console.error('Login form not found');
+				return;
+			}
+
+			// Set the schema and validate
+			form.setAttribute('schema', 'loginSchema');
+			form.markAsSubmitted();
+
+			// Check if form is valid
+			if (!form.isValid) {
+				await Alert({
+					title: 'Validation Error',
+					message: 'Please fix the errors in the form before submitting.'
+				});
+				return;
+			}
+
+			// Get values from form data
+			const formData = state.formData;
+			const { email, password } = formData;
+
+			// Clear template to show loading spinner
+			SetData('currentTemplate', '');
+
+			try {
+				// TODO: just put the password and username together to make an encrypted token
+				const token = btoa(`${email}:${password}`);
+				localStorage.setItem('authToken', token);
+
+				// Load the main page (which will return app content since we're now authenticated)
+				const appResponse = await fetch('./pages/_app.html');
+				const appContent = await appResponse.text();
+				SetData('appContent', appContent);
+
+				// Navigate to the page indicated by hash, default to dashboard
+				const hash = window.location.hash || '#/dashboard';
+				const path = hash.replace(/^#/, '');
+				Navigate(path);
+				SetData('formData', null);
+			} catch (error) {
+				// Restore login form on network error
+				const loginTemplate = document.getElementById('loginTemplate');
+				if (loginTemplate) {
+					SetData('currentTemplate', loginTemplate.innerHTML);
+				}
+				await Alert({
+					title: 'Network Error',
+					message: 'Please check your connection and try again.'
+				});
+			}
+		</script>
+
+		<x-form
+			name="loginForm"
+			data="global_formData"
+		>
+			<x-box
+				sx:mb="2"
+				sx:mt="2"
+			>
+				<input
+					id="loginForm-email"
+					label="Email"
+					name="email"
+					type="email"
+					placeholder="Enter your email"
+					required
+					autocomplete="email"
+				/>
+			</x-box>
+
+			<x-box sx:mb="3">
+				<input
+					id="loginForm-password"
+					label="Password"
+					name="password"
+					type="password"
+					placeholder="Enter your password"
+					required
+					autocomplete="current-password"
+				/>
+			</x-box>
+		</x-form>
+
+		<x-box
+			sx:mb="2"
+			sx:mt="2"
+			sx:display="flex"
+			sx:justify-content="center"
+		>
+			<x-button
+				label="Sign In"
+				variant="primary"
+				fullWidth
+				handler="handleLogin"
+			></x-button>
+		</x-box>
+
+		<x-box
+			sx:text-align="center"
+			sx:mt="3"
+		>
+			<p style="margin: 0; color: var(--paletteTextSecondary)">
+				Don't have an account?
+				<x-button
+					label="Sign up here"
+					variant="link"
+					handler="showSignupForm"
+				></x-button>
+			</p>
+		</x-box>
+	</template>
+
+	<template id="signupTemplate">
+		<!-- Signup form schema -->
+		<x-schema name="signupSchema">
+			email: string, required, min:1 password: string, required, min:8
+		</x-schema>
+
+		<script
+			type="application/flow"
+			data-key="handleSignup"
+		>
+			const form = document.querySelector('x-form[name="signupForm"]');
+			if (!form) {
+				console.error('Signup form not found');
+				return;
+			}
+
+			// Set the schema and validate
+			form.setAttribute('schema', 'signupSchema');
+			form.markAsSubmitted();
+
+			// Check if form is valid
+			if (!form.isValid) {
+				await Alert({
+					title: 'Validation Error',
+					message: 'Please fix the errors in the form before submitting.'
+				});
+				return;
+			}
+
+			// Get values from form data
+			const formData = state.formData;
+			const { email, password } = formData;
+
+			// Clear template to show loading spinner
+			SetData('currentTemplate', '');
+
+			try {
+				   const response = await fetch('/api/auth', {
+					   method: 'POST',
+					   headers: {
+						   'Content-Type': 'application/json',
+					   },
+					   body: JSON.stringify({ action: 'signup', email, password })
+				   });
+
+				const result = await response.json();
+
+				if (result.success) {
+					// Load the main page (which will return app content since we're now authenticated)
+						const appResponse = await fetch('/api/pages?path=main');
+					const appContent = await appResponse.text();
+					await SetData('mainContent', '');
+					await SetData('appContent', appContent);
+
+					// Navigate to the page indicated by hash, default to dashboard
+					const hash = window.location.hash || '#/dashboard';
+					const path = hash.replace(/^#/, '');
+					SetData('formData', null);
+					setTimeout(Navigate(path),3000);
+				} else {
+					// Restore signup form on error
+					const signupTemplate = document.getElementById('signupTemplate');
+					if (signupTemplate) {
+						SetData('currentTemplate', signupTemplate.innerHTML);
+					}
+					await Alert({
+						title: 'Signup Failed',
+						message: result.message || 'Could not create account'
+					});
+				}
+			} catch (error) {
+				// Restore signup form on network error
+				const signupTemplate = document.getElementById('signupTemplate');
+				if (signupTemplate) {
+					SetData('currentTemplate', signupTemplate.innerHTML);
+				}
+				await Alert({
+					title: 'Network Error',
+					message: 'Please check your connection and try again.'
+				});
+			}
+		</script>
+
+		<x-form
+			name="signupForm"
+			data="global_formData"
+		>
+			<x-box sx:mb="2">
+				<input
+					id="signupForm-email"
+					label="Email"
+					name="email"
+					type="email"
+					placeholder="Enter your email"
+					required
+					autocomplete="email"
+				/>
+			</x-box>
+
+			<x-box sx:mb="3">
+				<input
+					id="signupForm-password"
+					label="Password"
+					name="password"
+					type="password"
+					placeholder="Create a password (min 8 characters)"
+					required
+					autocomplete="new-password"
+				/>
+			</x-box>
+		</x-form>
+
+		<x-box
+			sx:mb="2"
+			sx:mt="2"
+			sx:display="flex"
+			sx:justify-content="center"
+		>
+			<x-button
+				label="Create Account"
+				variant="primary"
+				fullWidth
+				handler="handleSignup"
+			></x-button>
+		</x-box>
+
+		<x-box
+			sx:text-align="center"
+			sx:mt="3"
+		>
+			<p style="margin: 0; color: var(--paletteTextSecondary)">
+				Already have an account?
+				<x-button
+					label="Sign in here"
+					variant="link"
+					handler="showLoginForm"
+				></x-button>
+			</p>
+		</x-box>
+	</template>
+
+	<x-content>
+		<x-box
+			sx:width="100%"
+			sx:max-width="400px"
+			sx:margin="0 auto"
+			sx:mt="10"
+		>
+			<x-box
+				sx:height="200px"
+				sx:display="flex"
+				sx:align-items="center"
+				sx:mb="4"
+			>
+				<img
+					src="../images/cents-logo-flat.svg"
+					style="height: 100%; margin: auto"
+				/>
+			</x-box>
+
+			<!-- Single fragment that renders the current template content -->
+			<x-fragment contents="global_currentTemplate"></x-fragment>
+		</x-box>
+	</x-content>
+
+	<x-data
+		name="pageLoaded"
+		defaultValue="true"
+	></x-data>
+</x-page>

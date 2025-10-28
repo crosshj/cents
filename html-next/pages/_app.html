@@ -1,0 +1,131 @@
+<x-page>
+	<x-data name="mainContent"></x-data>
+
+	<!-- Menu Items - loaded from state -->
+	<x-data name="menuItems"></x-data>
+	<x-data name="menuItemsBottom"></x-data>
+
+	<!-- Theme Settings -->
+	<x-data name="themeSettings"></x-data>
+	<x-subscribe
+		path="themeSettings"
+		handler="themeChanged"
+	></x-subscribe>
+	<script
+		type="application/flow"
+		data-key="themeChanged"
+	>
+		if (typeof window.setTheme !== 'function') return;
+		const themeMode = state?.themeSettings?.mode || 'light';
+		window.setTheme(themeMode);
+	</script>
+
+	<!-- Logout flow -->
+	<script
+		type="application/flow"
+		data-key="logout"
+	>
+		const confirmed = await Confirm({
+			title: 'Logout',
+			message: 'Are you sure you want to logout?',
+		});
+
+		if (!confirmed) return false;
+		SetData('mainContent', '');
+		SetData('appContent', '');
+		try {
+			// Call logout API
+			localStorage.removeItem('authToken');
+			await new Promise((resolve) => setTimeout(resolve, 1500)); // Simulate delay
+
+			// Load auth page content
+			const response = await fetch('./pages/_auth.html');
+			const content = await response.text();
+			await SetData('appContent', content);
+		} catch (error) {
+			console.error('Logout error:', error);
+		}
+	</script>
+
+	<x-box class="app-layout">
+		<x-box
+			id="sidebar"
+			class="fade-right"
+			onclick="document.getElementById('sidebar')?.classList?.remove('open')"
+		>
+			<div>
+				<x-box
+					sx:height="75px"
+					sx:display="flex"
+					sx:align-items="center"
+					sx:px="0.5em"
+				>
+					<img
+						src="../images/cents-logo-flat.svg"
+						class="headerLogo"
+						style="height: 28px"
+					/>
+					<x-typography
+						variant="h1"
+						sx:ml="0.5em"
+					>
+						Cents
+					</x-typography>
+				</x-box>
+				<x-box
+					sx:display="flex"
+					sx:flex-direction="column"
+					sx:gap="8px"
+					sx:flex-grow="1"
+				>
+					<!-- prettier-ignore -->
+					<x-map items="global_menuItems">
+						{{#if item_icon}}
+						<x-button
+							class="menuItem"
+							href="{{item_path}}"
+							variant="text"
+							icon="{{item_icon}}"
+							sx:justify-content="flex-start"
+							fullWidth
+						>
+							{{ item_label }}
+						</x-button>
+						{{/if}} 
+						
+						{{#if item_spacer}}
+						<x-box sx:flex-grow="1"></x-box>
+						{{/if}}
+
+						{{#if item_hasAvatar}}
+						<x-box
+							class="menuItem"
+							href="{{item_path}}"
+						>
+							<x-link
+								href="{{item_path}}"
+								underline="none"
+							>
+								<x-box class="menuItem-avatar">
+									<img
+										src="{{item_avatar}}"
+										class="avatar-image"
+									/>
+									<span> {{ item_label }} </span>
+								</x-box>
+							</x-link>
+						</x-box>
+						{{/if}} 
+					</x-map>
+					<x-box sx:mb="1"></x-box>
+				</x-box>
+			</div>
+		</x-box>
+		<x-box id="main">
+			<x-fragment
+				contents="global_mainContent"
+				showLoading="true"
+			></x-fragment>
+		</x-box>
+	</x-box>
+</x-page>

@@ -1,0 +1,22 @@
+<x-page>
+	<x-navbar
+		menuButtonShow="true"
+		menuButtonTarget="sidebar"
+	></x-navbar>
+
+	<x-content class="fade-up">
+		<x-form
+			name="themeSettings"
+			data="global_themeSettings"
+		>
+			<select
+				id="themeSettings-mode"
+				label="Theme Mode"
+				name="mode"
+			>
+				<option value="light">Light</option>
+				<option value="dark">Dark</option>
+			</select>
+		</x-form>
+	</x-content>
+</x-page>
