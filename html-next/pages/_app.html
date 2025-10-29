@@ -47,11 +47,18 @@
 		}
 	</script>
 
+	<script
+		type="application/flow"
+		data-key="closeSidebar"
+	>
+		document.getElementById('sidebar')?.classList?.remove('open')
+	</script>
+
 	<x-box class="app-layout">
 		<x-box
 			id="sidebar"
-			class="fade-right"
-			onclick="document.getElementById('sidebar')?.classList?.remove('open')"
+			class="fade-rightDISABLED"
+			onclick="this?.classList?.remove('open')"
 		>
 			<div>
 				<x-box

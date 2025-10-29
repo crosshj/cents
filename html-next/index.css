@@ -65,7 +65,7 @@ html.app-html.dark {
 	--palettePrimaryLight: #6b8fcf;
 	--palettePrimaryDark: #2c3e5c;
 	--palettePrimaryContrast: #fff;
-	--palettePrimaryNavbar: #20232a;
+	--palettePrimaryNavbar: #101217;
 
 	/* Secondary Palette - Muted Blue Gray */
 	--paletteSecondaryMain: #5c7fa3;
@@ -75,7 +75,7 @@ html.app-html.dark {
 
 	/* Background Palette - Neutral Dark */
 	--paletteBackgroundDefault: #23272f;
-	--paletteBackgroundPaper: #282c34;
+	--paletteBackgroundPaper: #101217;
 	--paletteBackgroundContrast: #31343c;
 
 	/* Text Palette - Softer Contrast */
@@ -153,11 +153,6 @@ x-button[variant='link'] button {
 	&.open {
 		width: 100vw;
 	}
-	& > div {
-		height: 100%;
-		width: 250px;
-		background: var(--palettePrimaryNavbar);
-	}
 }
 #main {
 	grid-area: main;
@@ -193,8 +188,13 @@ x-button[variant='link'] button {
 }
 
 #sidebar > div {
-	padding-inline: 16px;
+	position: absolute;
+	z-index: 9999;
+	height: 100%;
+	width: 250px;
+	background: var(--palettePrimaryNavbar);
 
+	padding-inline: 16px;
 	display: flex;
 	flex-direction: column;
 	gap: 12px;
