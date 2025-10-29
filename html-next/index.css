@@ -116,7 +116,7 @@ html.app-html.dark {
 
 x-content {
 	box-sizing: border-box;
-	min-height: calc(100vh - 300px);
+	min-height: calc(100vh - 350px);
 }
 
 /* x-button link variant styling */
