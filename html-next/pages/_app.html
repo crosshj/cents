@@ -47,11 +47,15 @@
 		}
 	</script>
 
+	<x-data
+		name="menuItemSelected"
+		defaultValue="0"
+	></x-data>
 	<script
 		type="application/flow"
-		data-key="closeSidebar"
+		data-key="onMenuSelect"
 	>
-		document.getElementById('sidebar')?.classList?.remove('open')
+		document.getElementById('sidebar')?.classList?.remove('open');
 	</script>
 
 	<x-box class="app-layout">
@@ -86,7 +90,13 @@
 					sx:flex-grow="1"
 				>
 					<!-- prettier-ignore -->
-					<x-map items="global_menuItems">
+					<x-map
+						id="app-menu"
+						items="global_menuItems"
+						selectMode="single"
+						selected="global_menuItemSelected"
+						onSelect="onMenuSelect"
+					>
 						{{#if item_icon}}
 						<x-button
 							class="menuItem"
@@ -101,7 +111,10 @@
 						{{/if}} 
 						
 						{{#if item_spacer}}
-						<x-box sx:flex-grow="1"></x-box>
+						<x-box
+							sx:flex-grow="1"
+							sx:pointer-events="none"
+						></x-box>
 						{{/if}}
 
 						{{#if item_hasAvatar}}

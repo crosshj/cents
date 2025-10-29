@@ -79,16 +79,6 @@ const routerSetup = async () => {
 		await SetData('activePath', newPath);
 		const content = await fetchPage(newPath.replace(/^\//, ''));
 		await SetData('mainContent', content);
-		document.querySelectorAll('.menuItem.active').forEach((item) => {
-			item.classList.remove('active');
-		});
-		const menuItems = document.querySelectorAll('.menuItem');
-		for (const item of menuItems) {
-			const href = item.getAttribute('href');
-			if (!newPath.startsWith(href)) continue;
-			item.classList.add('active');
-		}
-		document.getElementById('sidebar')?.classList?.remove('open');
 	};
 
 	window.addEventListener('hashchange', handleNavigation);
@@ -125,12 +115,12 @@ const routerSetup = async () => {
 	const menuItems = [
 		{
 			label: 'Dashboard',
-			icon: 'fa-tachometer',
+			icon: 'fa-tasks',
 			path: '/dashboard',
 		},
 		{
 			label: 'Assets',
-			icon: 'fa-piggy-bank',
+			icon: 'fa-money',
 			path: '/assets',
 		},
 		{
@@ -156,10 +146,16 @@ const routerSetup = async () => {
 			icon: 'fa-sign-out',
 		},
 	];
+	const newHash = window.location.hash || '#/dashboard';
+	const newPath = newHash.replace(/^#/, '');
+	const menuItemSelected = menuItems.findIndex(
+		(item) => item.path === newPath
+	);
 	const state = {
 		appContent,
 		mainContent: '',
 		menuItems,
+		menuItemSelected,
 		themeSettings: {
 			mode: document.documentElement.classList.contains('dark')
 				? 'dark'

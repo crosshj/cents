@@ -1,0 +1,165 @@
+/* HighlightJS Theme CSS - Dynamic theme switching */
+
+/* Light theme (default) */
+:root {
+  --hljs-bg: #f6f8fa;
+  --hljs-text: #24292e;
+  --hljs-comment: #6a737d;
+  --hljs-keyword: #d73a49;
+  --hljs-string: #032f62;
+  --hljs-number: #005cc5;
+  --hljs-function: #6f42c1;
+  --hljs-variable: #e36209;
+  --hljs-type: #005cc5;
+  --hljs-constant: #005cc5;
+  --hljs-tag: #22863a;
+  --hljs-attr: #6f42c1;
+  --hljs-built_in: #005cc5;
+  --hljs-title: #6f42c1;
+  --hljs-section: #005cc5;
+  --hljs-addition: #28a745;
+  --hljs-deletion: #d73a49;
+}
+
+/* Dark theme */
+html.dark {
+  --hljs-bg: #0d1117;
+  --hljs-text: #c9d1d9;
+  --hljs-comment: #8b949e;
+  --hljs-keyword: #ff7b72;
+  --hljs-string: #a5d6ff;
+  --hljs-number: #79c0ff;
+  --hljs-function: #d2a8ff;
+  --hljs-variable: #ffa657;
+  --hljs-type: #79c0ff;
+  --hljs-constant: #79c0ff;
+  --hljs-tag: #7ee787;
+  --hljs-attr: #d2a8ff;
+  --hljs-built_in: #79c0ff;
+  --hljs-title: #d2a8ff;
+  --hljs-section: #79c0ff;
+  --hljs-addition: #7ee787;
+  --hljs-deletion: #ff7b72;
+}
+
+/* Apply highlightjs styles using CSS custom properties */
+/* Use higher specificity instead of !important */
+pre .hljs,
+code .hljs,
+.hljs {
+  background: var(--hljs-bg);
+  color: var(--hljs-text);
+}
+
+pre .hljs-comment,
+pre .hljs-quote,
+code .hljs-comment,
+code .hljs-quote,
+.hljs-comment,
+.hljs-quote {
+  color: var(--hljs-comment);
+}
+
+pre .hljs-keyword,
+pre .hljs-selector-tag,
+pre .hljs-subst,
+code .hljs-keyword,
+code .hljs-selector-tag,
+code .hljs-subst,
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-subst {
+  color: var(--hljs-keyword);
+}
+
+pre .hljs-string,
+pre .hljs-doctag,
+code .hljs-string,
+code .hljs-doctag,
+.hljs-string,
+.hljs-doctag {
+  color: var(--hljs-string);
+}
+
+pre .hljs-number,
+pre .hljs-literal,
+code .hljs-number,
+code .hljs-literal,
+.hljs-number,
+.hljs-literal {
+  color: var(--hljs-number);
+}
+
+pre .hljs-function,
+pre .hljs-title,
+code .hljs-function,
+code .hljs-title,
+.hljs-function,
+.hljs-title {
+  color: var(--hljs-function);
+}
+
+pre .hljs-variable,
+pre .hljs-template-variable,
+code .hljs-variable,
+code .hljs-template-variable,
+.hljs-variable,
+.hljs-template-variable {
+  color: var(--hljs-variable);
+}
+
+pre .hljs-type,
+pre .hljs-class .hljs-title,
+code .hljs-type,
+code .hljs-class .hljs-title,
+.hljs-type,
+.hljs-class .hljs-title {
+  color: var(--hljs-type);
+}
+
+pre .hljs-constant,
+code .hljs-constant,
+.hljs-constant {
+  color: var(--hljs-constant);
+}
+
+pre .hljs-tag,
+pre .hljs-name,
+code .hljs-tag,
+code .hljs-name,
+.hljs-tag,
+.hljs-name {
+  color: var(--hljs-tag);
+}
+
+pre .hljs-attr,
+code .hljs-attr,
+.hljs-attr {
+  color: var(--hljs-attr);
+}
+
+pre .hljs-built_in,
+code .hljs-built_in,
+.hljs-built_in {
+  color: var(--hljs-built_in);
+}
+
+pre .hljs-section,
+code .hljs-section,
+.hljs-section {
+  color: var(--hljs-section);
+}
+
+pre .hljs-addition,
+code .hljs-addition,
+.hljs-addition {
+  background-color: var(--hljs-addition);
+  color: var(--hljs-bg);
+}
+
+pre .hljs-deletion,
+code .hljs-deletion,
+.hljs-deletion {
+  background-color: var(--hljs-deletion);
+  color: var(--hljs-bg);
+}

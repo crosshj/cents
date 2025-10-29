@@ -1,17 +1,83 @@
 <x-page>
-	<x-navbar></x-navbar>
-	<x-content class="fade-up">
-		<!-- prettier-ignore -->
-		<x-markdown>
-			>TODO: Dashboard Here   
+	<x-data
+		name="summaryData"
+		defaultValue='{
+			"totalOwed":"12,345.67",
+			"assets":"4,000.00",
+			"liabilities":"3,000.00",
+			"balance":"1,000.00"
+		}'
+	></x-data>
 
-			- [ ] minimise initial boilerplate
-			- [ ] use map select functionality for menu
-			- [ ] match previous functionality
-			- [ ] connect with DB
-			- [ ] connect auth
-			- [ ] make sure login/logout works properly
-			- [ ] replace previous solution (move to root)
-		</x-markdown>
+	<x-navbar></x-navbar>
+
+	<template id="summary-template">
+		<div class="card">
+			<x-typography
+				variant="h4"
+				sx:mb="2"
+				>Summary</x-typography
+			>
+			<div class="card-section">
+				<div
+					class="row total-owed"
+					style="margin-bottom: 2em"
+				>
+					<label>Owed</label>
+					<div>
+						<span class="muted">$ </span>
+						<span class="value amount">{{item_totalOwed}}</span>
+					</div>
+				</div>
+
+				<hr class="section-separator" />
+
+				<div class="row">
+					<label>Assets</label>
+					<div>
+						<span class="muted">$ </span>
+						<span class="value amount">{{item_assets}}</span>
+					</div>
+				</div>
+				<div class="row">
+					<label>Debts</label>
+					<div>
+						<span>−</span>
+						<span class="muted">$ </span>
+						<span class="value amount">{{item_liabilities}}</span>
+					</div>
+				</div>
+				<hr class="math-separator" />
+				<div class="row result">
+					<label></label>
+					<div>
+						<span>=</span>
+						<span class="muted">$ </span>
+						<span class="value amount">{{item_balance}}</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</template>
+
+	<x-content class="fade-up">
+		<x-fill
+			template="summary-template"
+			item="global_summaryData"
+		></x-fill>
+
+		<div class="card">
+			<!-- prettier-ignore -->
+			<x-markdown>
+				#### Next Steps   
+
+				- [ ] minimise initial boilerplate
+				- [ ] match previous functionality
+				- [ ] connect with DB
+				- [ ] connect auth
+				- [ ] make sure login/logout works properly
+				- [ ] replace previous solution (move to root)
+			</x-markdown>
+		</div>
 	</x-content>
 </x-page>

@@ -1,0 +1,204 @@
+.card {
+	width: 100%;
+	max-width: 700px;
+	margin: auto;
+	margin-top: 0;
+}
+.row {
+	display: flex;
+	label {
+		flex: 1;
+		display: block;
+	}
+}
+hr {
+	border: none;
+	border-top: 1px solid var(--text-muted);
+
+	&.math-separator {
+		width: 135px;
+		margin: 0.2em 0;
+		margin-left: auto;
+	}
+	&.section-separator {
+		opacity: 0.1;
+	}
+}
+
+.amount {
+	font-family: 'Azeret Mono', monospace;
+	font-size: 1rem;
+	font-weight: 300;
+	padding-right: 5px;
+}
+
+.muted {
+	color: var(--text-muted);
+}
+
+.card {
+	--bg: var(--paletteBackgroundPaper);
+	--fg: var(--paletteTextPrimary);
+	--accent: LinkText;
+	--muted: 0.6;
+	--text-muted: color-mix(in srgb, var(--fg) 60%, transparent);
+	--text-subtle: color-mix(in srgb, var(--fg) 40%, transparent);
+	--text-bright: var(--fg);
+	--text-accent: color-mix(in srgb, var(--fg) 10%, var(--accent));
+	--text-accent: #1a73e8;
+	--section-header-text: color-mix(in srgb, var(--fg) 50%, var(--bg));
+	--card-bg: color-mix(in srgb, var(--fg) 4%, var(--bg));
+	--card-border: color-mix(in srgb, var(--fg) 10%, var(--bg));
+	--card-radius: 8px;
+	--card-padding: 1.25em;
+	--pill-bg: color-mix(in srgb, var(--fg) 30%, transparent);
+	--pill-fg: color-mix(in srgb, var(--bg) 100%, transparent);
+	--font-body: system-ui, sans-serif;
+	--font-heading: system-ui, sans-serif;
+
+	background: var(--card-bg);
+	color: var(--card-fg);
+	border-radius: var(--card-radius);
+	padding: var(--card-padding);
+	border: 1px solid var(--card-border);
+	word-wrap: break-word;
+	overflow-wrap: break-word;
+	display: flex;
+	flex-direction: column;
+	line-height: 1.5;
+
+	&.flex-row {
+		flex-direction: row;
+		.card-section {
+			flex: 1;
+		}
+		.vertical-rule {
+			width: 1px;
+			height: auto;
+			background-color: var(--text-muted);
+			opacity: 0.5;
+			margin-inline: 1.5em;
+		}
+	}
+
+	h3 {
+		margin: 0 0 0.5em;
+		font-size: 1rem;
+		font-weight: 600;
+		color: var(--fg);
+	}
+
+	a {
+		color: var(--text-accent);
+		text-decoration: none;
+		word-break: break-word;
+
+		&:hover {
+			text-decoration: underline;
+		}
+	}
+
+	.header-row {
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		gap: 0.5em;
+		margin-bottom: 0.75em;
+
+		.title {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+
+			h3 {
+				margin-bottom: 0;
+			}
+		}
+	}
+
+	.auto-pill {
+		background: var(--pill-bg);
+		color: var(--pill-fg);
+		font-size: 0.75rem;
+		font-weight: 500;
+		padding: 0.1em 0.5em;
+		border-radius: 4px;
+		opacity: 0.6;
+	}
+
+	.money-row {
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		align-items: baseline;
+		margin-bottom: 0.5em;
+
+		.owed {
+			font-size: 0.85rem;
+			font-weight: 500;
+			color: var(--text-muted);
+			opacity: 0.9;
+			text-align: right;
+		}
+	}
+
+	.billing-row {
+		display: flex;
+		gap: 1em;
+		font-size: 0.85rem;
+		opacity: 0.75;
+		margin-bottom: 0.5em;
+
+		.auto {
+			font-weight: 600;
+			color: var(--accent);
+		}
+	}
+
+	.note {
+		font-size: 0.85rem;
+		line-height: 1.4;
+		margin: 0.75em 0;
+		opacity: 0.75;
+		white-space: pre-wrap;
+		font-style: italic;
+	}
+
+	.sub {
+		font-size: 0.85rem;
+		opacity: 0.7;
+		margin-bottom: 0.5em;
+	}
+
+	.links {
+		display: flex;
+		gap: 10px;
+		font-size: 0.85rem;
+
+		a {
+			cursor: pointer;
+		}
+	}
+
+	.meta-top,
+	.meta-bottom {
+		font-size: 0.85rem;
+		color: var(--text-muted);
+		opacity: var(--muted);
+		line-height: 1.4;
+	}
+
+	.meta-bottom {
+		margin-top: auto;
+		padding-top: 1em;
+		display: flex;
+		justify-content: flex-end;
+	}
+
+	&.no-data {
+		opacity: 0.6;
+		font-style: italic;
+		text-align: center;
+		padding: 2em;
+	}
+}
