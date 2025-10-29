@@ -34,6 +34,7 @@ body.framework-loaded {
 	min-height: 100vh;
 	min-width: 100vw;
 	display: block;
+	overflow: hidden;
 }
 
 /* Override framework CSS variables for custom theme */
