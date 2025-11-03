@@ -7,7 +7,7 @@
 		<meta charset="UTF-8" />
 		<meta
 			name="viewport"
-			content="width=device-width, initial-scale=1.0"
+			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
 		/>
 
 		<!-- PWA Meta Tags -->
@@ -153,6 +153,17 @@
 		body {
 			color-scheme: dark light;
 			background-color: Canvas;
+			height: 100vh;
+			width: 100vw;
+			overflow: hidden;
+		}
+
+		@supports (height: 100dvh) and (width: 100dvw) {
+			html,
+			body {
+				height: 100dvh;
+				width: 100dvw;
+			}
 		}
 	</style>
 
