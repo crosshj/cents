@@ -165,9 +165,9 @@
 			showLoading="true"
 		></x-fragment>
 
-		<script
-			type="module"
-			src="./index.js"
-		></script>
+		<script type="module">
+			import { setupMain } from './index.js';
+			setupMain();
+		</script>
 	</body>
 </html>

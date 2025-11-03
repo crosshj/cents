@@ -1,3 +1,4 @@
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import {
 	initializeFramework,
 	SetData,
@@ -5,9 +6,9 @@ import {
 	Trigger,
 } from 'https://cdn.jsdelivr.net/npm/@crosshj/html-next@latest/dist/htmlNext.min.js';
 
-const fallback404 = document.getElementById('fallback404').innerHTML;
+const fallback404 = () => document.getElementById('fallback404').innerHTML;
 
-const getMenuItems = () => {
+const getMenuItems = ({ user } = {}) => {
 	const menuItems = [
 		{
 			label: 'Dashboard',
@@ -27,7 +28,7 @@ const getMenuItems = () => {
 		{ spacer: true },
 		{
 			path: '/profile',
-			label: 'USER PROFILE',
+			label: user?.email || 'User Profile',
 			avatar: './assets/test_user.jpg',
 			hasAvatar: true,
 		},
@@ -48,7 +49,7 @@ const getMenuItems = () => {
 const cache = new Map();
 const fetchPage = async (path) => {
 	if (path === '404') {
-		return fallback404;
+		return fallback404();
 	}
 	if (cache.has(path)) return cache.get(path);
 	try {
@@ -62,7 +63,7 @@ const fetchPage = async (path) => {
 		}
 	} catch (error) {
 		console.error(`Failed to fetch page from ${path}:`, error);
-		return fallback404;
+		return fallback404();
 	}
 };
 const fetchData = async (path, defaultValue = {}) => {
@@ -140,13 +141,62 @@ const routerSetup = async () => {
 	});
 };
 
-(async () => {
+export const authSetup = () => {
+	const SUPABASE_URL = 'https://milxguwisdbbftfhbxwm.supabase.co';
+	const SUPABASE_ANON_KEY =
+		'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1pbHhndXdpc2RiYmZ0ZmhieHdtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIxMzE2NTcsImV4cCI6MjA3NzcwNzY1N30.t7tiWAz84z-OO_bDxkNwJPbmxkrsqcljfj36MCCeHpA';
+	const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+		auth: {
+			persistSession: true,
+			autoRefreshToken: true,
+			detectSessionInUrl: true,
+		},
+	});
+	const emailRedirectTo =
+		location.origin === 'https://cents.crosshj.com'
+			? 'https://cents.crosshj.com/html-next/auth/callback'
+			: `http://localhost:3312/html-next/auth/callback`;
+	const signUp = (email, password) =>
+		supabase.auth.signUp({
+			email,
+			password,
+			options: { emailRedirectTo },
+		});
+
+	const signIn = (email, password) =>
+		supabase.auth.signInWithPassword({ email, password });
+
+	const signOut = () => supabase.auth.signOut();
+
+	const getSession = () => supabase.auth.getSession();
+
+	const onAuthChange = (cb) =>
+		supabase.auth.onAuthStateChange((_event, session) => cb(session));
+
+	const updateUserMetadata = async (metadata) =>
+		supabase.auth.updateUser({ data: metadata });
+
+	return {
+		signUp,
+		signIn,
+		signOut,
+		getSession,
+		onAuthChange,
+		updateUserMetadata,
+	};
+};
+
+export const setupMain = async () => {
 	setTheme();
 	window.setTheme = setTheme;
 	const router = await routerSetup();
-	const authToken = localStorage.getItem('authToken');
-	const appContent = await fetchPage(authToken ? '_app' : '_auth');
-	const menuItems = getMenuItems();
+
+	window.auth = authSetup();
+	const { data: { session } = {} } = await auth.getSession();
+	// console.log({ session });
+
+	const appContent = await fetchPage(session ? '_app' : '_auth');
+	const menuItems = getMenuItems({ user: session?.user });
 	const newHash = window.location.hash || '#/dashboard';
 	const newPath = newHash.replace(/^#/, '');
 	const menuItemSelected = menuItems.findIndex(
@@ -167,4 +217,4 @@ const routerSetup = async () => {
 	const hooks = {};
 	await initializeFramework({ router, state, hooks });
 	document.body.classList.add('framework-loaded');
-})();
+};

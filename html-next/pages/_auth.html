@@ -81,9 +81,10 @@
 			SetData('currentTemplate', '');
 
 			try {
-				// TODO: just put the password and username together to make an encrypted token
-				const token = btoa(`${email}:${password}`);
-				localStorage.setItem('authToken', token);
+				const res = await window.auth.signIn(email, password);
+				if(res?.error){
+					throw new Error(res.error.message);
+				}
 
 				// Load the main page (which will return app content since we're now authenticated)
 				const appResponse = await fetch('./pages/_app.html');
@@ -206,39 +207,11 @@
 			SetData('currentTemplate', '');
 
 			try {
-				   const response = await fetch('/api/auth', {
-					   method: 'POST',
-					   headers: {
-						   'Content-Type': 'application/json',
-					   },
-					   body: JSON.stringify({ action: 'signup', email, password })
-				   });
-
-				const result = await response.json();
-
-				if (result.success) {
-					// Load the main page (which will return app content since we're now authenticated)
-						const appResponse = await fetch('/api/pages?path=main');
-					const appContent = await appResponse.text();
-					await SetData('mainContent', '');
-					await SetData('appContent', appContent);
-
-					// Navigate to the page indicated by hash, default to dashboard
-					const hash = window.location.hash || '#/dashboard';
-					const path = hash.replace(/^#/, '');
-					SetData('formData', null);
-					setTimeout(Navigate(path),3000);
-				} else {
-					// Restore signup form on error
-					const signupTemplate = document.getElementById('signupTemplate');
-					if (signupTemplate) {
-						SetData('currentTemplate', signupTemplate.innerHTML);
-					}
-					await Alert({
-						title: 'Signup Failed',
-						message: result.message || 'Could not create account'
-					});
+				const res = await window.auth.signUp(email, password);
+				if(res?.error){
+					throw new Error(res.error.message);
 				}
+				location.reload();
 			} catch (error) {
 				// Restore signup form on network error
 				const signupTemplate = document.getElementById('signupTemplate');
@@ -246,8 +219,8 @@
 					SetData('currentTemplate', signupTemplate.innerHTML);
 				}
 				await Alert({
-					title: 'Network Error',
-					message: 'Please check your connection and try again.'
+					title: 'Signup Error',
+					message: 'Please check your details and try again.'
 				});
 			}
 		</script>

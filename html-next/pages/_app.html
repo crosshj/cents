@@ -35,8 +35,7 @@
 		SetData('appContent', '');
 		try {
 			// Call logout API
-			localStorage.removeItem('authToken');
-			await new Promise((resolve) => setTimeout(resolve, 1500)); // Simulate delay
+			await window.auth.signOut();
 
 			// Load auth page content
 			const response = await fetch('./pages/_auth.html');

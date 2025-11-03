@@ -1,11 +1,102 @@
 <x-page>
-	<x-navbar></x-navbar>
-	<x-content class="fade-up">
-		<!-- prettier-ignore -->
-		<x-markdown>
-			>TODO: Profile Here
+	<x-data
+		name="profileData"
+		defaultValue="loading"
+	></x-data>
 
-			- [ ] match previous functionality
-		</x-markdown>
+	<x-subscribe
+		path="profileData"
+		handler="profileDataChanged"
+	></x-subscribe>
+	<script
+		type="application/flow"
+		data-key="profileDataChanged"
+	>
+		if(state.profileData !== 'loading') return;
+		const { data: {session}} = await window.auth.getSession();
+		if (session?.user) {
+			SetData('profileData', session.user?.user_metadata || {});
+		} else {
+			SetData('profileData', 'error');
+		}
+	</script>
+
+	<script
+		type="application/flow"
+		data-key="updateUserMetadata"
+	>
+		const res = await window.auth.updateUserMetadata({
+			displayName: 'Updated Name - '+new Date().toISOString(),
+			bio: 'Updated Bio - '+new Date().toISOString(),
+			avatar: 'https://cents.crosshj.com/html-next/assets/test_user.jpg'
+		});
+		if (res) {
+			SetData('profileData', res?.data?.user?.user_metadata || {});
+		} else {
+			SetData('profileData', 'error');
+		}
+	</script>
+
+	<x-navbar></x-navbar>
+
+	<template id="profileTemplate">
+		<div class="card">
+			<!-- prettier-ignore -->
+			<x-markdown>
+				> NOTE:   
+				> This page is WIP!   
+				> The update button will just fill user info with some test data.    
+
+				- [x] show current user info
+				- [ ] allow updating user metadata (display name, bio, avatar) and user email
+
+				---
+			</x-markdown>
+
+			<x-box sx:mb="2">
+				<x-typography variant="h4">Avatar</x-typography>
+				<x-box class="value">
+					<img
+						src="{{item_avatar}}"
+						alt="User Avatar"
+						style="
+							height: 80px;
+							width: 80px;
+							border-radius: 40px;
+							margin-top: 1em;
+						"
+					/>
+					<x-typography
+						variant="caption"
+						sx:display="block"
+						sx:mt="1"
+						>{{item_avatar}}</x-typography
+					>
+				</x-box>
+			</x-box>
+			<x-box sx:mb="3">
+				<x-typography variant="h4">Display Name</x-typography>
+				<x-box class="value">{{item_displayName}}</x-box>
+			</x-box>
+			<x-box sx:mb="2">
+				<x-typography variant="h4">Bio</x-typography>
+				<x-box class="value">{{item_bio}}</x-box>
+			</x-box>
+
+			<x-button
+				variant="primary"
+				label="Update"
+				handler="updateUserMetadata"
+				sx:mt="2"
+				sx:ml="auto"
+			></x-button>
+		</div>
+	</template>
+
+	<x-content class="fade-up">
+		<x-fill
+			template="profileTemplate"
+			item="global_profileData"
+		></x-fill>
 	</x-content>
 </x-page>
