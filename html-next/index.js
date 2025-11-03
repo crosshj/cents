@@ -7,6 +7,44 @@ import {
 
 const fallback404 = document.getElementById('fallback404').innerHTML;
 
+const getMenuItems = () => {
+	const menuItems = [
+		{
+			label: 'Dashboard',
+			icon: 'fa-tasks',
+			path: '/dashboard',
+		},
+		{
+			label: 'Assets',
+			icon: 'fa-money',
+			path: '/assets',
+		},
+		{
+			label: 'Debts',
+			icon: 'fa-credit-card',
+			path: '/debts',
+		},
+		{ spacer: true },
+		{
+			path: '/profile',
+			label: 'USER PROFILE',
+			avatar: './assets/test_user.jpg',
+			hasAvatar: true,
+		},
+		{
+			path: '/settings',
+			label: 'Settings',
+			icon: 'fa-cog',
+		},
+		{
+			path: '/logout',
+			label: 'Logout',
+			icon: 'fa-sign-out',
+		},
+	];
+	return menuItems;
+};
+
 const cache = new Map();
 const fetchPage = async (path) => {
 	if (path === '404') {
@@ -71,7 +109,6 @@ const routerSetup = async () => {
 	const initialHash = window.location.hash || '#/dashboard';
 	const initialPath = initialHash.replace(/^#/, '');
 
-	// Handle hash changes and browser back/forward
 	const handleNavigation = async () => {
 		SetData('mainContent', '');
 		const newHash = window.location.hash || '#/dashboard';
@@ -97,12 +134,9 @@ const routerSetup = async () => {
 		}
 	};
 
-	const afterEach = async (context) => {};
-
 	return Router({
 		initialPath,
 		beforeEach,
-		afterEach,
 	});
 };
 
@@ -112,40 +146,7 @@ const routerSetup = async () => {
 	const router = await routerSetup();
 	const authToken = localStorage.getItem('authToken');
 	const appContent = await fetchPage(authToken ? '_app' : '_auth');
-	const menuItems = [
-		{
-			label: 'Dashboard',
-			icon: 'fa-tasks',
-			path: '/dashboard',
-		},
-		{
-			label: 'Assets',
-			icon: 'fa-money',
-			path: '/assets',
-		},
-		{
-			label: 'Debts',
-			icon: 'fa-credit-card',
-			path: '/debts',
-		},
-		{ spacer: true },
-		{
-			path: '/profile',
-			label: 'USER PROFILE',
-			avatar: './assets/test_user.jpg',
-			hasAvatar: true,
-		},
-		{
-			path: '/settings',
-			label: 'Settings',
-			icon: 'fa-cog',
-		},
-		{
-			path: '/logout',
-			label: 'Logout',
-			icon: 'fa-sign-out',
-		},
-	];
+	const menuItems = getMenuItems();
 	const newHash = window.location.hash || '#/dashboard';
 	const newPath = newHash.replace(/^#/, '');
 	const menuItemSelected = menuItems.findIndex(
