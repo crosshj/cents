@@ -2,6 +2,12 @@
 @import './vendor/inter.css';
 @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined&display=swap');
 
+html,
+body,
+.app-content {
+	overflow: hidden;
+}
+
 body {
 	visibility: hidden;
 	/* Border Radius - More Rounded */
@@ -80,7 +86,6 @@ h2 {
 	min-height: 100vh;
 	min-width: 100vw;
 	display: block;
-	overflow: hidden;
 }
 
 /* Override framework CSS variables for custom theme */
