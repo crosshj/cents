@@ -5,7 +5,12 @@ import {
 	Router,
 	Trigger,
 } from 'https://cdn.jsdelivr.net/npm/@crosshj/html-next@latest/dist/htmlNext.min.js';
-import { getAccounts, saveAccounts } from './accounts.js';
+import {
+	getAccounts,
+	saveAccounts,
+	updateAndSaveAccounts,
+	calculateSummary,
+} from './accounts.js';
 
 const fallback404 = () => document.getElementById('fallback404').innerHTML;
 
@@ -197,6 +202,9 @@ export const setupMain = async () => {
 	// Expose saveAccounts globally for use in pages
 	window.saveAccounts = (userId, data) =>
 		saveAccounts(window.auth.supabase, userId, data);
+	// Expose updateAndSaveAccounts globally for use in pages
+	window.updateAndSaveAccounts = (userId, rawData) =>
+		updateAndSaveAccounts(window.auth.supabase, userId, rawData);
 	const { data: { session } = {} } = await auth.getSession();
 	// console.log({ session });
 
@@ -213,11 +221,19 @@ export const setupMain = async () => {
 		(item) => item.path === newPath
 	);
 
+	const rawData = accounts.rawAccountsData || {
+		assets: [],
+		liabilities: [],
+	};
+	// Calculate summary on the fly from raw data
+	const summary = calculateSummary(rawData);
+
 	const state = {
 		appContent,
-		accountsSummary: accounts.summary,
+		accountsSummary: summary,
 		accountsAssets: accounts.assets,
 		accountsLiabilities: accounts.liabilities,
+		accountsRawData: rawData,
 		mainContent: '',
 		menuItems,
 		menuItemSelected,
@@ -230,5 +246,25 @@ export const setupMain = async () => {
 	};
 	const hooks = {};
 	await initializeFramework({ router, state, hooks });
+
+	// Expose function to refresh accounts data in state
+	window.refreshAccountsData = async () => {
+		const { data: { session } = {} } = await window.auth.getSession();
+		const updatedAccounts = await getAccounts(
+			window.auth?.supabase,
+			session?.user?.id
+		);
+		await SetData('accountsAssets', updatedAccounts.assets);
+		await SetData('accountsLiabilities', updatedAccounts.liabilities);
+		const rawData = updatedAccounts.rawAccountsData || {
+			assets: [],
+			liabilities: [],
+		};
+		await SetData('accountsRawData', rawData);
+		// Calculate summary on the fly from raw data
+		const summary = calculateSummary(rawData);
+		await SetData('accountsSummary', summary);
+	};
+
 	document.body.classList.add('framework-loaded');
 };

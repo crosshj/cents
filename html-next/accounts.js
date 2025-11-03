@@ -17,7 +17,7 @@ const formatMoney = (value) => {
  * Same logic as old index.js summarize function
  * Returns dollar-formatted strings
  */
-const calculateSummary = (data) => {
+export const calculateSummary = (data) => {
 	const assets = data.assets || [];
 	const liabilities = data.liabilities || [];
 
@@ -153,6 +153,7 @@ export const getAccounts = async (supabase, userId) => {
 		const emptyData = { assets: [], liabilities: [], balance: [] };
 		return {
 			...emptyData,
+			rawAccountsData: emptyData, // Store raw data for editing
 			assets: processAssets([]),
 			liabilities: processAssets([]),
 			summary: calculateSummary(emptyData),
@@ -172,6 +173,7 @@ export const getAccounts = async (supabase, userId) => {
 				const emptyData = { assets: [], liabilities: [], balance: [] };
 				return {
 					...emptyData,
+					rawAccountsData: emptyData, // Store raw data for editing
 					assets: processAssets([]),
 					liabilities: processAssets([]),
 					summary: calculateSummary(emptyData),
@@ -181,6 +183,7 @@ export const getAccounts = async (supabase, userId) => {
 			const emptyData = { assets: [], liabilities: [], balance: [] };
 			return {
 				...emptyData,
+				rawAccountsData: emptyData, // Store raw data for editing
 				assets: processAssets([]),
 				liabilities: processAssets([]),
 				summary: calculateSummary(emptyData),
@@ -195,6 +198,7 @@ export const getAccounts = async (supabase, userId) => {
 
 		return {
 			...accountsData,
+			rawAccountsData: accountsData, // Store raw data for editing
 			assets: processAssets(accountsData.assets || []),
 			liabilities: processAssets(accountsData.liabilities || []),
 			summary: calculateSummary(accountsData),
@@ -204,6 +208,7 @@ export const getAccounts = async (supabase, userId) => {
 		const emptyData = { assets: [], liabilities: [], balance: [] };
 		return {
 			...emptyData,
+			rawAccountsData: emptyData, // Store raw data for editing
 			assets: processAssets([]),
 			liabilities: processAssets([]),
 			summary: calculateSummary(emptyData),
@@ -213,6 +218,7 @@ export const getAccounts = async (supabase, userId) => {
 
 /**
  * Save accounts data to Supabase
+ * Only saves assets and liabilities, filters out any other properties
  */
 export const saveAccounts = async (supabase, userId, accountsData) => {
 	if (!userId || !supabase || !accountsData) {
@@ -220,12 +226,18 @@ export const saveAccounts = async (supabase, userId, accountsData) => {
 	}
 
 	try {
+		// Only send assets and liabilities to backend
+		const cleanData = {
+			assets: accountsData.assets || [],
+			liabilities: accountsData.liabilities || [],
+		};
+
 		const { data, error } = await supabase
 			.from('user_accounts')
 			.upsert(
 				{
 					user_id: userId,
-					accounts_data: accountsData,
+					accounts_data: cleanData,
 				},
 				{
 					onConflict: 'user_id',
@@ -242,6 +254,38 @@ export const saveAccounts = async (supabase, userId, accountsData) => {
 		return data;
 	} catch (error) {
 		console.error('Failed to save accounts:', error);
+		throw error;
+	}
+};
+
+/**
+ * Update and save accounts data, then refresh
+ * Helper function for edit/archive/add operations
+ * Only sends assets and liabilities to backend
+ */
+export const updateAndSaveAccounts = async (
+	supabase,
+	userId,
+	rawAccountsData
+) => {
+	if (!userId || !supabase || !rawAccountsData) {
+		throw new Error('Missing required parameters');
+	}
+
+	try {
+		// Only send assets and liabilities to backend
+		const cleanData = {
+			assets: rawAccountsData.assets || [],
+			liabilities: rawAccountsData.liabilities || [],
+		};
+
+		// Save clean data to Supabase
+		await saveAccounts(supabase, userId, cleanData);
+
+		// Re-fetch and return updated accounts data
+		return await getAccounts(supabase, userId);
+	} catch (error) {
+		console.error('Failed to update and save accounts:', error);
 		throw error;
 	}
 };

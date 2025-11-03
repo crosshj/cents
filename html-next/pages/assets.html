@@ -10,7 +10,123 @@
 		console.log(JSON.stringify(account, null, 4));
 	</script>
 
-	<x-navbar></x-navbar>
+	<script
+		type="application/flow"
+		data-key="archiveAsset"
+	>
+		const title = event.element.dataset.title;
+		const { data: { session } = {} } = await window.auth.getSession();
+		if (!session?.user?.id) return;
+
+		const confirmed = await Confirm({
+			title: 'Archive Asset',
+			message: `Are you sure you want to archive "${title}"?`,
+		});
+
+		if (!confirmed) return;
+
+		const rawData = { ...state.accountsRawData };
+		const asset = rawData.assets.find(x => x.title === title);
+		if (asset) {
+			asset.hidden = true;
+			await window.updateAndSaveAccounts(session.user.id, rawData);
+			await window.refreshAccountsData();
+		}
+	</script>
+
+	<script
+		type="application/flow"
+		data-key="editAsset"
+	>
+		const title = event.element.dataset.title;
+		const { data: { session } = {} } = await window.auth.getSession();
+		if (!session?.user?.id) return;
+
+		const rawData = { ...state.accountsRawData };
+		const asset = rawData.assets.find(x => x.title === title);
+		if (!asset) return;
+
+		// Edit fields using prompts
+		const newTitle = prompt('Title:', asset.title || '');
+		if (newTitle === null) return; // User cancelled
+		asset.title = newTitle || asset.title;
+
+		const newAmount = prompt('Amount:', asset.amount || '0');
+		if (newAmount !== null) {
+			const numAmount = parseFloat(newAmount);
+			asset.amount = isNaN(numAmount) ? asset.amount : numAmount;
+		}
+
+		const newDate = prompt('Date (YYYY-MM-DD):', asset.date || '');
+		if (newDate !== null) asset.date = newDate || asset.date;
+
+		const newStatus = prompt('Status (paid/pending):', asset.status || 'pending');
+		if (newStatus !== null) asset.status = newStatus || asset.status;
+
+		const newOccurrence = prompt('Occurrence (month/bi-week/none):', asset.occurence || 'month');
+		if (newOccurrence !== null) asset.occurence = newOccurrence || asset.occurence;
+
+		const newWebsite = prompt('Website URL:', asset.website || '');
+		if (newWebsite !== null) asset.website = newWebsite || asset.website;
+
+		const newNote = prompt('Note:', asset.note || '');
+		if (newNote !== null) asset.note = newNote || asset.note;
+
+		await window.updateAndSaveAccounts(session.user.id, rawData);
+		await window.refreshAccountsData();
+	</script>
+
+	<script
+		type="application/flow"
+		data-key="addAsset"
+	>
+		const { data: { session } = {} } = await window.auth.getSession();
+		if (!session?.user?.id) return;
+
+		const title = prompt('Title:');
+		if (!title) return; // User cancelled or empty
+
+		const amountStr = prompt('Amount:', '0');
+		if (amountStr === null) return;
+		const amount = parseFloat(amountStr) || 0;
+
+		const today = new Date().toISOString().split('T')[0];
+		const date = prompt('Date (YYYY-MM-DD):', today) || today;
+
+		const status = prompt('Status (paid/pending):', 'pending') || 'pending';
+		const occurrence = prompt('Occurrence (month/bi-week/none):', 'month') || 'month';
+		const website = prompt('Website URL:', '') || '';
+		const note = prompt('Note:', '') || '';
+
+		const rawData = { ...state.accountsRawData };
+		const newAsset = {
+			title,
+			amount,
+			date,
+			status,
+			occurence: occurrence,
+			website,
+			note,
+			hidden: false,
+			auto: false,
+			total_owed: '0.00',
+		};
+
+		rawData.assets = rawData.assets || [];
+		rawData.assets.push(newAsset);
+
+		await window.updateAndSaveAccounts(session.user.id, rawData);
+		await window.refreshAccountsData();
+	</script>
+
+	<x-navbar>
+		<x-button
+			variant="primary"
+			handler="addAsset"
+		>
+			Add New
+		</x-button>
+	</x-navbar>
 
 	<template id="card-template">
 		<div class="card">
@@ -40,6 +156,24 @@
 						sx:display="WHEN '{{item_showLog}}' IS '' THEN 'none' ELSE 'block'"
 					>
 						log
+					</x-button>
+
+					<x-button
+						class="link-button"
+						variant="link"
+						data-title="{{item_title}}"
+						handler="editAsset"
+					>
+						edit
+					</x-button>
+
+					<x-button
+						class="link-button"
+						variant="link"
+						data-title="{{item_title}}"
+						handler="archiveAsset"
+					>
+						archive
 					</x-button>
 				</div>
 			</div>

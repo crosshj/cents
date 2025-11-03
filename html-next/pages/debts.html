@@ -10,7 +10,136 @@
 		console.log(JSON.stringify(account, null, 4));
 	</script>
 
-	<x-navbar></x-navbar>
+	<script
+		type="application/flow"
+		data-key="archiveLiability"
+	>
+		const title = event.element.dataset.title;
+		const { data: { session } = {} } = await window.auth.getSession();
+		if (!session?.user?.id) return;
+
+		const confirmed = await Confirm({
+			title: 'Archive Liability',
+			message: `Are you sure you want to archive "${title}"?`,
+		});
+
+		if (!confirmed) return;
+
+		const rawData = { ...state.accountsRawData };
+		const liability = rawData.liabilities.find(x => x.title === title);
+		if (liability) {
+			liability.hidden = true;
+			await window.updateAndSaveAccounts(session.user.id, rawData);
+			await window.refreshAccountsData();
+		}
+	</script>
+
+	<script
+		type="application/flow"
+		data-key="editLiability"
+	>
+		const title = event.element.dataset.title;
+		const { data: { session } = {} } = await window.auth.getSession();
+		if (!session?.user?.id) return;
+
+		const rawData = { ...state.accountsRawData };
+		const liability = rawData.liabilities.find(x => x.title === title);
+		if (!liability) return;
+
+		// Edit fields using prompts
+		const newTitle = prompt('Title:', liability.title || '');
+		if (newTitle === null) return; // User cancelled
+		liability.title = newTitle || liability.title;
+
+		const newAmount = prompt('Amount:', liability.amount || '0');
+		if (newAmount !== null) {
+			const numAmount = parseFloat(newAmount);
+			liability.amount = isNaN(numAmount) ? liability.amount : numAmount;
+		}
+
+		const newDate = prompt('Date (YYYY-MM-DD):', liability.date || '');
+		if (newDate !== null) liability.date = newDate || liability.date;
+
+		const newStatus = prompt('Status (paid/pending):', liability.status || 'pending');
+		if (newStatus !== null) liability.status = newStatus || liability.status;
+
+		const newOccurrence = prompt('Occurrence (month/bi-week/none):', liability.occurence || 'month');
+		if (newOccurrence !== null) liability.occurence = newOccurrence || liability.occurence;
+
+		const newWebsite = prompt('Website URL:', liability.website || '');
+		if (newWebsite !== null) liability.website = newWebsite || liability.website;
+
+		const newTotalOwed = prompt('Total Owed:', liability.total_owed || '0');
+		if (newTotalOwed !== null) {
+			const numOwed = parseFloat(newTotalOwed);
+			liability.total_owed = isNaN(numOwed) ? liability.total_owed : numOwed;
+		}
+
+		const newNote = prompt('Note:', liability.note || '');
+		if (newNote !== null) liability.note = newNote || liability.note;
+
+		const newAuto = prompt('Auto (true/false):', (liability.auto ? 'true' : 'false'));
+		if (newAuto !== null) liability.auto = newAuto === 'true';
+
+		await window.updateAndSaveAccounts(session.user.id, rawData);
+		await window.refreshAccountsData();
+	</script>
+
+	<script
+		type="application/flow"
+		data-key="addLiability"
+	>
+		const { data: { session } = {} } = await window.auth.getSession();
+		if (!session?.user?.id) return;
+
+		const title = prompt('Title:');
+		if (!title) return; // User cancelled or empty
+
+		const amountStr = prompt('Amount:', '0');
+		if (amountStr === null) return;
+		const amount = parseFloat(amountStr) || 0;
+
+		const today = new Date().toISOString().split('T')[0];
+		const date = prompt('Date (YYYY-MM-DD):', today) || today;
+
+		const status = prompt('Status (paid/pending):', 'pending') || 'pending';
+		const occurrence = prompt('Occurrence (month/bi-week/none):', 'month') || 'month';
+		const website = prompt('Website URL:', '') || '';
+		const totalOwedStr = prompt('Total Owed:', '0');
+		const totalOwed = parseFloat(totalOwedStr) || 0;
+		const note = prompt('Note:', '') || '';
+		const autoStr = prompt('Auto (true/false):', 'false');
+		const auto = autoStr === 'true';
+
+		const rawData = { ...state.accountsRawData };
+		const newLiability = {
+			title,
+			amount,
+			date,
+			status,
+			occurence: occurrence,
+			website,
+			total_owed: totalOwed,
+			note,
+			hidden: false,
+			auto,
+		};
+
+		rawData.liabilities = rawData.liabilities || [];
+		rawData.liabilities.push(newLiability);
+
+		await window.updateAndSaveAccounts(session.user.id, rawData);
+		await window.refreshAccountsData();
+	</script>
+
+	<x-navbar>
+		<x-button
+			variant="primary"
+			handler="addLiability"
+		>
+			Add New
+		</x-button>
+	</x-navbar>
 
 	<template id="card-template">
 		<div class="card">
@@ -40,6 +169,24 @@
 						sx:display="WHEN '{{item_showLog}}' IS '' THEN 'none' ELSE 'block'"
 					>
 						log
+					</x-button>
+
+					<x-button
+						class="link-button"
+						variant="link"
+						data-title="{{item_title}}"
+						handler="editLiability"
+					>
+						edit
+					</x-button>
+
+					<x-button
+						class="link-button"
+						variant="link"
+						data-title="{{item_title}}"
+						handler="archiveLiability"
+					>
+						archive
 					</x-button>
 				</div>
 			</div>
