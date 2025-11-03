@@ -1,11 +1,75 @@
 <x-page>
-	<x-navbar></x-navbar>
-	<x-content class="fade-up">
-		<!-- prettier-ignore -->
-		<x-markdown>
-			>TODO: Assets Here   
+	<x-data name="accountsAssets"></x-data>
 
-			- [ ] match previous functionality
-		</x-markdown>
+	<script
+		type="application/flow"
+		data-key="logAccount"
+	>
+		const title = event.element.dataset.title;
+		const account = state.accountsAssets.find(x => x.title === title);
+		console.log(JSON.stringify(account, null, 4));
+	</script>
+
+	<x-navbar></x-navbar>
+
+	<template id="card-template">
+		<div class="card">
+			<div class="header-row">
+				<div class="title">
+					<div class="flex-row align-center gap-2">
+						<h3>{{item_title}}</h3>
+					</div>
+				</div>
+				<div class="links">
+					<x-box
+						sx:display="WHEN '{{item_website}}' IS '' THEN 'none' ELSE 'block'"
+					>
+						<a
+							href="{{item_website}}"
+							target="_blank"
+						>
+							website
+						</a>
+					</x-box>
+
+					<x-button
+						class="link-button"
+						variant="link"
+						data-title="{{item_title}}"
+						handler="logAccount"
+						sx:display="WHEN '{{item_showLog}}' IS '' THEN 'none' ELSE 'block'"
+					>
+						log
+					</x-button>
+				</div>
+			</div>
+
+			<div class="money-row">
+				<div>
+					<span class="muted">$</span>
+					<span class="amount">{{item_amount}}</span>
+					<span class="muted">{{item_occurence}}</span>
+				</div>
+			</div>
+
+			<div class="note">{{item_note}}</div>
+			<div class="sub">{{item_includes}}</div>
+
+			<div class="meta-bottom">
+				<span class="symbols-outlined">{{item_statusIcon}}</span>
+				<span>{{item_date}}</span>
+			</div>
+		</div>
+	</template>
+
+	<x-content class="fade-up">
+		<div class="card-grid">
+			<x-map items="global_accountsAssets">
+				<x-fill
+					template="card-template"
+					item="{{item}}"
+				></x-fill>
+			</x-map>
+		</div>
 	</x-content>
 </x-page>

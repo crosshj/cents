@@ -5,18 +5,164 @@
 	></x-navbar>
 
 	<x-content class="fade-up">
-		<x-form
-			name="themeSettings"
-			data="global_themeSettings"
-		>
-			<select
-				id="themeSettings-mode"
-				label="Theme Mode"
-				name="mode"
+		<x-box sx:mb="3">
+			<x-typography
+				variant="h5"
+				sx:mb="2"
+				>Theme Settings</x-typography
 			>
-				<option value="light">Light</option>
-				<option value="dark">Dark</option>
-			</select>
-		</x-form>
+			<x-form
+				name="themeSettings"
+				data="global_themeSettings"
+			>
+				<select
+					id="themeSettings-mode"
+					label="Theme Mode"
+					name="mode"
+				>
+					<option value="light">Light</option>
+					<option value="dark">Dark</option>
+				</select>
+			</x-form>
+		</x-box>
+
+		<x-box sx:mb="3">
+			<x-typography
+				variant="h5"
+				sx:mb="2"
+				>Accounts Data</x-typography
+			>
+			<x-box
+				sx:display="flex"
+				sx:flex-direction="column"
+				sx:gap="1"
+			>
+				<input
+					type="file"
+					id="accountsFileInput"
+					accept=".json"
+					style="display: none"
+				/>
+				<x-button
+					handler="handleUploadClick"
+					variant="primary"
+					sx:mb="1"
+				>
+					Upload Accounts JSON
+				</x-button>
+				<x-box
+					sx:font-size="0.875rem"
+					sx:color="var(--paletteTextSecondary)"
+				>
+					Upload a JSON file to replace your accounts data. The file
+					should match the accounts.json structure.
+				</x-box>
+			</x-box>
+		</x-box>
+
+		<script
+			type="application/flow"
+			data-key="handleUploadClick"
+		>
+			const fileInput = document.getElementById('accountsFileInput');
+			if (!fileInput) {
+				console.error('File input not found');
+				return;
+			}
+
+			// Remove existing listener if any
+			const oldHandler = fileInput._changeHandler;
+			if (oldHandler) {
+				fileInput.removeEventListener('change', oldHandler);
+			}
+
+			// Set up new change handler
+			const changeHandler = async (e) => {
+				// Tear down immediately
+				fileInput.removeEventListener('change', changeHandler);
+				delete fileInput._changeHandler;
+
+				console.log('File selected');
+				const file = e.target.files[0];
+				if (!file) {
+					console.log('No file selected');
+					return;
+				}
+
+				// Get user session
+				const session = await window.auth?.getSession();
+				if (!session?.data?.session?.user) {
+					alert('You must be logged in to upload accounts data.');
+					fileInput.value = '';
+					return;
+				}
+
+				const userId = session.data.session.user.id;
+				console.log('User ID:', userId);
+
+				// Read file
+				const reader = new FileReader();
+				reader.onload = async (evt) => {
+					try {
+						const json = JSON.parse(evt.target.result);
+						console.log('JSON parsed:', json);
+
+						// Validate structure
+						if (!json || typeof json !== 'object') {
+							throw new Error('Invalid JSON structure');
+						}
+
+						// Confirm upload
+						const confirmed = await Confirm({
+							title: 'Upload Accounts',
+							message:
+								'This will replace your current accounts data. Are you sure?',
+						});
+
+						if (!confirmed) {
+							fileInput.value = '';
+							return;
+						}
+
+						console.log('Saving to Supabase...');
+						// Save to Supabase
+						await window.saveAccounts(userId, json);
+						console.log('✅ Accounts saved via file upload:', json);
+
+						await Alert({
+							title: 'Success',
+							message: 'Accounts data uploaded successfully!',
+						});
+
+						fileInput.value = '';
+						location.reload();
+					} catch (error) {
+						console.error('Upload error:', error);
+						await Alert({
+							title: 'Upload Error',
+							message:
+								error.message ||
+								'Failed to upload accounts data. Please check the file format.',
+						});
+						fileInput.value = '';
+					}
+				};
+
+				reader.onerror = () => {
+					alert('Failed to read file.');
+					fileInput.value = '';
+				};
+
+				reader.readAsText(file);
+			};
+
+			// Store handler reference for cleanup
+			fileInput._changeHandler = changeHandler;
+			fileInput.addEventListener('change', changeHandler);
+
+			// Trigger file input click
+			console.log('Clicking file input');
+			fileInput.click();
+		</script>
 	</x-content>
 </x-page>

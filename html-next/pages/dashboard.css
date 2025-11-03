@@ -45,7 +45,7 @@ hr {
 	--text-subtle: color-mix(in srgb, var(--fg) 40%, transparent);
 	--text-bright: var(--fg);
 	--text-accent: color-mix(in srgb, var(--fg) 10%, var(--accent));
-	--text-accent: #1a73e8;
+	--text-accent: #94dafd;
 	--section-header-text: color-mix(in srgb, var(--fg) 50%, var(--bg));
 	--card-bg: color-mix(in srgb, var(--fg) 4%, var(--bg));
 	--card-border: color-mix(in srgb, var(--fg) 10%, var(--bg));
@@ -95,6 +95,27 @@ hr {
 
 		&:hover {
 			text-decoration: underline;
+		}
+	}
+
+	x-button[variant='link'] button {
+		background: none;
+		text-decoration: none !important;
+		color: var(--text-accent);
+		padding: 0;
+		text-transform: none;
+		font-size: inherit;
+		min-height: unset;
+		min-width: unset;
+		line-height: unset;
+		border: none;
+		transition: unset;
+		&:hover {
+			text-decoration: underline !important;
+		}
+		&:focus {
+			outline: none;
+			box-shadow: none;
 		}
 	}
 

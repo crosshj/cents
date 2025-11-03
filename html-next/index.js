@@ -5,6 +5,7 @@ import {
 	Router,
 	Trigger,
 } from 'https://cdn.jsdelivr.net/npm/@crosshj/html-next@latest/dist/htmlNext.min.js';
+import { getAccounts, saveAccounts } from './accounts.js';
 
 const fallback404 = () => document.getElementById('fallback404').innerHTML;
 
@@ -183,6 +184,7 @@ export const authSetup = () => {
 		getSession,
 		onAuthChange,
 		updateUserMetadata,
+		supabase, // Expose supabase client for direct access if needed
 	};
 };
 
@@ -192,9 +194,17 @@ export const setupMain = async () => {
 	const router = await routerSetup();
 
 	window.auth = authSetup();
+	// Expose saveAccounts globally for use in pages
+	window.saveAccounts = (userId, data) =>
+		saveAccounts(window.auth.supabase, userId, data);
 	const { data: { session } = {} } = await auth.getSession();
 	// console.log({ session });
 
+	// Test accounts.js database access - fetch only (proves read works)
+	const accounts = await getAccounts(
+		window.auth?.supabase,
+		session?.user?.id
+	);
 	const appContent = await fetchPage(session ? '_app' : '_auth');
 	const menuItems = getMenuItems({ user: session?.user });
 	const newHash = window.location.hash || '#/dashboard';
@@ -202,8 +212,12 @@ export const setupMain = async () => {
 	const menuItemSelected = menuItems.findIndex(
 		(item) => item.path === newPath
 	);
+
 	const state = {
 		appContent,
+		accountsSummary: accounts.summary,
+		accountsAssets: accounts.assets,
+		accountsLiabilities: accounts.liabilities,
 		mainContent: '',
 		menuItems,
 		menuItemSelected,

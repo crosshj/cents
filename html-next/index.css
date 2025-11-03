@@ -1,5 +1,6 @@
 @import url('./pages/dashboard.css');
 @import './vendor/inter.css';
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined&display=swap');
 
 body {
 	visibility: hidden;
@@ -27,6 +28,46 @@ body {
 
 body.framework-loaded {
 	visibility: visible;
+}
+
+/* Material Symbols */
+.symbols-outlined {
+	font-family: 'Material Symbols Outlined';
+	font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+	vertical-align: middle;
+	font-size: 1.15em;
+	visibility: visible;
+}
+
+/* Card grid layout */
+.card-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+	gap: 1em;
+	.card {
+		height: 100%;
+	}
+}
+
+/* Money amount formatting */
+.amount {
+	font-family: 'Azeret Mono', monospace;
+	font-size: 1rem;
+	font-weight: 300;
+	padding-right: 5px;
+}
+
+.muted {
+	color: var(--paletteTextSecondary);
+}
+
+/* Section headers */
+h2 {
+	font-size: 1.05rem;
+	margin: 0.5em 0 0.75em;
+	font-weight: 500;
+	text-transform: uppercase;
+	color: var(--paletteTextTertiary);
 }
 
 .app-html .fragment-loading-spinner > div {

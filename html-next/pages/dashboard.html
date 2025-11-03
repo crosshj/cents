@@ -1,13 +1,5 @@
 <x-page>
-	<x-data
-		name="summaryData"
-		defaultValue='{
-			"totalOwed":"12,345.67",
-			"assets":"4,000.00",
-			"liabilities":"3,000.00",
-			"balance":"1,000.00"
-		}'
-	></x-data>
+	<x-data name="accountsSummary"></x-data>
 
 	<x-navbar></x-navbar>
 
@@ -63,7 +55,7 @@
 	<x-content class="fade-up">
 		<x-fill
 			template="summary-template"
-			item="global_summaryData"
+			item="global_accountsSummary"
 		></x-fill>
 
 		<div class="card">
@@ -71,12 +63,12 @@
 			<x-markdown>
 				#### Next Steps   
 
+				- [ ] replace previous solution (move this to root)
 				- [ ] minimise initial boilerplate
-				- [ ] match previous functionality
-				- [ ] connect with DB
-				- [ ] connect auth
-				- [ ] make sure login/logout works properly
-				- [ ] replace previous solution (move to root)
+				- [x] match previous functionality
+				- [x] connect with DB
+				- [x] connect auth
+				- [x] make sure login/logout works properly
 			</x-markdown>
 		</div>
 	</x-content>
