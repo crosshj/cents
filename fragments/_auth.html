@@ -74,6 +74,7 @@
 				if(res?.error){
 					throw new Error(res.error.message);
 				}
+				await new Promise((resolve) => setTimeout(resolve, 500));
 
 				// Load the main page (which will return app content since we're now authenticated)
 				const appResponse = await fetch('./fragments/_app.html');
