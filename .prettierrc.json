@@ -9,13 +9,13 @@
         {
             "files": "*.json",
             "options": {
-                "useTabs": false
+                "useTabs": true
             }
         },
         {
             "files": "*.yml",
             "options": {
-                "tabWidth": 2
+                "tabWidth": 4
             }
         }
     ]
