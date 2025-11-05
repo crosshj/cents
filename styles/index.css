@@ -114,6 +114,7 @@ html.app-html.light {
 	--paletteTextTertiary: #6b7280;
 	--paletteTextDisabled: #bdbdbd;
 	--paletteDivider: #9197a4;
+	--text-accent: #5992d5;
 }
 
 html.app-html.dark {
@@ -143,6 +144,7 @@ html.app-html.dark {
 
 	/* Divider - Dark Mode */
 	--paletteDivider: #282c34;
+	--text-accent: #94dafd;
 }
 
 /* Disable tap highlight on hamburger menu button */

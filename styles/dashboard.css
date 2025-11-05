@@ -30,6 +30,7 @@ hr {
 	font-size: 1rem;
 	font-weight: 300;
 	padding-right: 5px;
+	white-space: pre;
 }
 
 .muted {
@@ -41,11 +42,11 @@ hr {
 	--fg: var(--paletteTextPrimary);
 	--accent: LinkText;
 	--muted: 0.6;
-	--text-muted: color-mix(in srgb, var(--fg) 60%, transparent);
-	--text-subtle: color-mix(in srgb, var(--fg) 40%, transparent);
-	--text-bright: var(--fg);
-	--text-accent: color-mix(in srgb, var(--fg) 10%, var(--accent));
-	--text-accent: #94dafd;
+	--text-muted: color-mix(
+		in srgb,
+		var(--paletteTextPrimary) 60%,
+		transparent
+	);
 	--section-header-text: color-mix(in srgb, var(--fg) 50%, var(--bg));
 	--card-bg: color-mix(in srgb, var(--fg) 4%, var(--bg));
 	--card-border: color-mix(in srgb, var(--fg) 10%, var(--bg));
@@ -138,13 +139,17 @@ hr {
 	}
 
 	.auto-pill {
-		background: var(--pill-bg);
-		color: var(--pill-fg);
+		background: color-mix(
+			in srgb,
+			var(--paletteTextSecondary) 50%,
+			var(--paletteBackgroundPaper)
+		);
+		color: var(--paletteBackgroundPaper);
 		font-size: 0.75rem;
-		font-weight: 500;
+		font-weight: 600;
+		margin-left: 0.5rem;
 		padding: 0.1em 0.5em;
 		border-radius: 4px;
-		opacity: 0.6;
 	}
 
 	.money-row {
@@ -205,7 +210,6 @@ hr {
 	.meta-bottom {
 		font-size: 0.85rem;
 		color: var(--text-muted);
-		opacity: var(--muted);
 		line-height: 1.4;
 	}
 
