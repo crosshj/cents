@@ -38,7 +38,7 @@
 			await window.auth.signOut();
 
 			// Load auth page content
-			const response = await fetch('./pages/_auth.html');
+			const response = await fetch('./fragments/_auth.html');
 			const content = await response.text();
 			await SetData('appContent', content);
 		} catch (error) {

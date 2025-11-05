@@ -16,9 +16,9 @@ const Money = (value) => {
 function bindData(template, context) {
 	const clone = template.content.cloneNode(true);
 
-	clone.querySelectorAll('*').forEach(el => {
+	clone.querySelectorAll('*').forEach((el) => {
 		// Replace tokens like {{key}} in all attribute values
-		[...el.attributes].forEach(attr => {
+		[...el.attributes].forEach((attr) => {
 			if (attr.value.includes('{{')) {
 				el.setAttribute(
 					attr.name,
@@ -55,12 +55,13 @@ function bindData(template, context) {
 }
 
 function formatCard(item) {
-	if (item.hidden || item.type === 'seperator-def' || item.type === 'group') return '';
+	if (item.hidden || item.type === 'seperator-def' || item.type === 'group')
+		return '';
 
 	const tpl = document.getElementById('card-template');
 	const statusIcon = {
 		paid: 'check',
-		pending: 'sync'
+		pending: 'sync',
 	}[(item.status || '').toLowerCase()];
 
 	const context = {
@@ -69,34 +70,38 @@ function formatCard(item) {
 		amount: Money(item.amount || 0),
 		owed: Number(item.total_owed) > 0 ? Money(item.total_owed) : '',
 		includes: Array.isArray(item.items)
-			? `Includes: ${item.items.map(i => i.title).join(', ')}`
+			? `Includes: ${item.items.map((i) => i.title).join(', ')}`
 			: '',
-		statusIcon
+		statusIcon,
 	};
 
 	const htmlString = bindData(tpl, context).innerHTML;
-	
+
 	// console.log({ item, htmlString });
-	return htmlString
+	return htmlString;
 }
 
-function renderSummary(data){
+function renderSummary(data) {
 	const tpl = document.getElementById('summary-template');
 
-	const assets = Money(data.find(x => x.title.includes('Assets')).amount);
-	const liabilities = Money(data.find(x => x.title.includes('Liabilities')).amount);
-	const balance = Money(data.find(x => x.title.includes('Balance')).amount);
+	const assets = Money(data.find((x) => x.title.includes('Assets')).amount);
+	const liabilities = Money(
+		data.find((x) => x.title.includes('Liabilities')).amount
+	);
+	const balance = Money(data.find((x) => x.title.includes('Balance')).amount);
 
-	const maxLength = Math.max(assets.length, liabilities.length)
+	const maxLength = Math.max(assets.length, liabilities.length);
 
 	const context = {
 		assets: assets.padStart(maxLength, '\u00A0'),
 		liabilities: liabilities.padStart(maxLength, '\u00A0'),
 		balance: balance.padStart(maxLength, '\u00A0'),
-		totalOwed: Money(data.find(x => x.title.includes('Total Owed')).amount),
-	}
+		totalOwed: Money(
+			data.find((x) => x.title.includes('Total Owed')).amount
+		),
+	};
 	const htmlString = bindData(tpl, context).innerHTML;
-	return htmlString
+	return htmlString;
 }
 
 function summarize(data) {
@@ -104,12 +109,13 @@ function summarize(data) {
 	const liabilities = data.liabilities || [];
 
 	const sum = (arr, key) =>
-		arr.filter(x => x.hidden+'' !== "true")
-		.reduce((total, item) => {
-			const num = parseFloat(item[key] || 0);
-			return isNaN(num) ? total : total + num;
-		}, 0);
-		
+		arr
+			.filter((x) => x.hidden + '' !== 'true')
+			.reduce((total, item) => {
+				const num = parseFloat(item[key] || 0);
+				return isNaN(num) ? total : total + num;
+			}, 0);
+
 	// console.log(liabilities.filter(x => x.hidden+'' !== "true"));
 
 	const totalAssets = sum(assets, 'amount');
@@ -139,20 +145,22 @@ const populate = (data) => {
 	const liabilitiesGrid = document.getElementById('liabilitiesGrid');
 
 	const summary = summarize(data);
-	const assets = (data.assets || []).sort((a,b) => b.amount - a.amount);
-	const liabilities = (data.liabilities || []).sort((a,b) => b.amount - a.amount);
+	const assets = (data.assets || []).sort((a, b) => b.amount - a.amount);
+	const liabilities = (data.liabilities || []).sort(
+		(a, b) => b.amount - a.amount
+	);
 
 	summarySection.innerHTML = renderSummary(summary);
 
 	let showLog = false;
-	if(document.location.href.includes('fiug.dev')){
+	if (document.location.href.includes('fiug.dev')) {
 		showLog = true;
 	}
 
 	assetsGrid.innerHTML = assets.filter((x) => !x.hidden).length
 		? assets
 				.filter((x) => !x.hidden)
-				.map(x => ({ ...x, showLog }))
+				.map((x) => ({ ...x, showLog }))
 				.map(formatCard)
 				.join('')
 		: `<div class="card no-data">No data</div>`;
@@ -160,7 +168,7 @@ const populate = (data) => {
 	liabilitiesGrid.innerHTML = liabilities.filter((x) => !x.hidden).length
 		? liabilities
 				.filter((x) => !x.hidden)
-				.map(x => ({ ...x, showLog }))
+				.map((x) => ({ ...x, showLog }))
 				.map(formatCard)
 				.join('')
 		: `<div class="card no-data">No data</div>`;
@@ -178,7 +186,7 @@ function loadFromLocalStorage() {
 	if (raw) {
 		try {
 			const parsed = JSON.parse(raw);
-			return parsed
+			return parsed;
 		} catch {
 			console.warn('Invalid JSON in localStorage.');
 		}
@@ -186,7 +194,7 @@ function loadFromLocalStorage() {
 		return { assets: [], liabilities: [] };
 	}
 }
-	
+
 async function setUpFileControls() {
 	const container = document.getElementById('file-controls');
 	if (!container) return;
@@ -196,9 +204,10 @@ async function setUpFileControls() {
 
 	// Attempt to fetch accounts.json if localStorage is empty
 	if (!hasLocalStorage) {
-
 		try {
-			const jsonURL = USE_ENCRYPTED ? 'accounts.encrypted.json' : 'accounts.json'
+			const jsonURL = USE_ENCRYPTED
+				? 'accounts.encrypted.json'
+				: 'accounts.json';
 			const response = await fetch(jsonURL, { cache: 'no-store' });
 			if (response.ok) {
 				fetchedLocal = await response.json();
@@ -240,15 +249,19 @@ async function setUpFileControls() {
 			useLocalBtn.textContent = 'Use Local';
 			useLocalBtn.className = 'button';
 			useLocalBtn.addEventListener('click', async () => {
-				if(USE_ENCRYPTED){
+				if (USE_ENCRYPTED) {
 					const username = prompt('Enter your username');
 					const password = prompt('Enter your password');
-					const decrypted = await decryptJson(fetchedLocal, username, password);
-					if(decrypted?.error) return;
+					const decrypted = await decryptJson(
+						fetchedLocal,
+						username,
+						password
+					);
+					if (decrypted?.error) return;
 					localStorage.setItem(LS_KEY, JSON.stringify(decrypted));
 				} else {
-					localStorage.setItem(LS_KEY, JSON.stringify(fetchedLocal))
-				} 
+					localStorage.setItem(LS_KEY, JSON.stringify(fetchedLocal));
+				}
 				location.reload();
 			});
 			container.append(useLocalBtn);
@@ -273,14 +286,13 @@ async function setUpFileControls() {
 	}
 }
 
-
 document.addEventListener('DOMContentLoaded', async () => {
 	document.fonts.ready.then(() => {
 		document.documentElement.classList.add('fonts-loaded');
 	});
 
 	const pageData = loadFromLocalStorage();
-	if(pageData){
+	if (pageData) {
 		populate(pageData);
 	}
 	await setUpFileControls();

@@ -1,35 +1,94 @@
 <!DOCTYPE html>
-<html lang="en">
+<html
+	lang="en"
+	class="app-html"
+>
 	<head>
 		<meta charset="UTF-8" />
 		<meta
 			name="viewport"
-			content="width=device-width, initial-scale=1.0"
+			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
 		/>
-		<title>Finance</title>
+
+		<!-- PWA Meta Tags -->
+		<meta
+			name="application-name"
+			content="Cents"
+		/>
+		<meta
+			name="apple-mobile-web-app-capable"
+			content="yes"
+		/>
+		<meta
+			name="apple-mobile-web-app-status-bar-style"
+			content="default"
+		/>
+		<meta
+			name="apple-mobile-web-app-title"
+			content="Cents"
+		/>
+		<meta
+			name="description"
+			content="A personal finance management interface"
+		/>
+		<meta
+			name="format-detection"
+			content="telephone=no"
+		/>
+		<meta
+			name="mobile-web-app-capable"
+			content="yes"
+		/>
+		<meta
+			name="msapplication-config"
+			content="/browserconfig.xml"
+		/>
+		<meta
+			name="msapplication-TileColor"
+			content="#fcfcfc"
+		/>
+		<meta
+			name="msapplication-tap-highlight"
+			content="no"
+		/>
+
+		<!-- Mobile browser UI color -->
+		<meta
+			name="theme-color"
+			content="#fcfcfc"
+			id="theme-color-meta"
+		/>
+		<meta
+			name="theme-color"
+			media="(prefers-color-scheme: light)"
+			content="#fcfcfc"
+		/>
+		<meta
+			name="theme-color"
+			media="(prefers-color-scheme: dark)"
+			content="#101217"
+		/>
 		<meta
 			name="color-scheme"
-			content="light dark"
+			content="dark light"
 		/>
-		<link
-			rel="stylesheet"
-			href="index.css"
-		/>
-		<link
-			rel="icon"
-			sizes="192x192"
-			type="image/png"
-			href="images/cents-logo-flat.svg"
-		/>
+
+		<title>Cents</title>
+
+		<!-- PWA Manifest -->
 		<link
 			rel="manifest"
-			href="manifest.json"
+			href="/manifest.json"
 		/>
-		<style>
-			.symbols-outlined {
-				visibility: hidden;
-			}
-		</style>
+
+		<!-- Icons -->
+		<link
+			rel="icon"
+			type="image/svg+xml"
+			href="../images/cents-logo-flat.svg"
+		/>
+
+		<!-- Azeret Mono font for amounts -->
 		<link
 			rel="preconnect"
 			href="https://fonts.googleapis.com"
@@ -43,178 +102,110 @@
 			href="https://fonts.googleapis.com/css2?family=Azeret+Mono:ital,wght@0,100..900;1,100..900&display=swap"
 			rel="stylesheet"
 		/>
+
+		<!-- font awesome -->
+		<link
+			rel="preload"
+			as="style"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+			onload="this.rel='stylesheet'"
+		/>
+		<link
+			rel="preload"
+			as="style"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/v4-shims.min.css"
+			onload="this.rel='stylesheet'"
+		/>
+		<link
+			rel="preload"
+			as="style"
+			href="./vendor/htmlNext.css"
+			onload="this.rel='stylesheet'"
+		/>
+		<link
+			rel="preload"
+			as="style"
+			href="./styles/index.css"
+			onload="this.rel='stylesheet'"
+		/>
+		<noscript>
+			<link
+				rel="stylesheet"
+				href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+			/>
+			<link
+				rel="stylesheet"
+				href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/v4-shims.min.css"
+			/>
+			<link
+				rel="stylesheet"
+				href="https://cdn.jsdelivr.net/npm/@crosshj/html-next@latest/dist/htmlNext.css"
+			/>
+			<link
+				rel="stylesheet"
+				href="./styles/index.css"
+			/>
+		</noscript>
 	</head>
+
+	<style>
+		html,
+		body {
+			color-scheme: dark light;
+			background-color: Canvas;
+			height: 100vh;
+			width: 100vw;
+			overflow: hidden;
+		}
+
+		@supports (height: 100dvh) and (width: 100dvw) {
+			html,
+			body {
+				height: 100dvh;
+				width: 100dvw;
+			}
+		}
+	</style>
+
+	<!-- Fallback 404 template -->
+	<template id="fallback404">
+		<x-page>
+			<x-navbar titleText="Page Not Found"></x-navbar>
+			<x-content>
+				<x-markdown>
+					The page you're looking for doesn't exist or has been moved.
+				</x-markdown>
+				<x-box
+					sx:mt="4"
+					sx:display="flex"
+					sx:gap="2"
+					sx:justify-content="center"
+				>
+					<x-button
+						href="/dashboard"
+						variant="primary"
+						label="Go to Dashboard"
+					></x-button>
+				</x-box>
+			</x-content>
+		</x-page>
+	</template>
+
 	<body>
-		<template id="card-template">
-			<div class="card">
-				<div class="header-row">
-					<div class="title">
-						<div class="flex-row align-center gap-2">
-							<h3 data-text="title">Untitled</h3>
-						</div>
-					</div>
-					<div class="links">
-						<a
-							data-if="website"
-							data-href="website"
-							target="_blank"
-						>
-							website
-						</a>
-						<a
-							class=""
-							data-if="showLog"
-							data-title="{{title}}"
-							onclick="window.logAccount(this.dataset.title)"
-						>
-							log
-						</a>
-					</div>
-				</div>
+		<x-data
+			name="appContent"
+			defaultValue=""
+		></x-data>
 
-				<div class="money-row">
-					<div>
-						<span class="muted">$</span>
-						<span
-							class="amount"
-							data-text="amount"
-						></span>
-						<span
-							class="muted"
-							data-text="occurence"
-						></span>
-						<span
-							class="auto-pill"
-							data-if="auto"
-							>AUTO</span
-						>
-					</div>
-					<div
-						class="owed"
-						data-if="owed"
-					>
-						<span class="muted">$</span>
-						<span data-text="owed"></span>
-						<span> owed</span>
-					</div>
-				</div>
+		<x-fragment
+			class="app-content"
+			contents="global_appContent"
+			showLoading="true"
+		></x-fragment>
 
-				<div
-					class="note"
-					data-if="note"
-					data-text="note"
-				></div>
-				<div
-					class="sub"
-					data-if="includes"
-					data-text="includes"
-				></div>
-
-				<div class="meta-bottom">
-					<span
-						class="symbols-outlined"
-						data-if="statusIcon"
-						data-text="statusIcon"
-					></span>
-					<span data-text="date"></span>
-				</div>
-			</div>
-		</template>
-
-		<template id="summary-template">
-			<h2>Summary</h2>
-			<div
-				class="card flex-row"
-				style="border: none; background: transparent"
-			>
-				<div class="card-section">
-					<div
-						class="row total-owed"
-						style="margin-bottom: 2em"
-					>
-						<label>Owed</label>
-						<div>
-							<span class="muted">$ </span>
-							<span
-								class="value amount"
-								data-text="totalOwed"
-							></span>
-						</div>
-					</div>
-
-					<hr class="section-separator" />
-
-					<div class="row">
-						<label>Assets</label>
-						<div>
-							<span class="muted">$ </span>
-							<span
-								class="value amount"
-								data-text="assets"
-							></span>
-						</div>
-					</div>
-					<div class="row">
-						<label>Debts</label>
-						<div>
-							<span>−</span>
-							<span class="muted">$ </span>
-							<span
-								class="value amount"
-								data-text="liabilities"
-							></span>
-						</div>
-					</div>
-					<hr class="math-separator" />
-					<div class="row result">
-						<label></label>
-						<div>
-							<span>=</span>
-							<span class="muted">$ </span>
-							<span
-								class="value amount"
-								data-text="balance"
-							></span>
-						</div>
-					</div>
-				</div>
-			</div>
-		</template>
-
-		<div class="page-header">
-			<h1>
-				<img
-					src="./images/cents-logo-flat.svg"
-					class="headerLogo"
-				/>
-				<span>Cents Personal Finance</span>
-			</h1>
-			<div
-				id="file-controls"
-				class="action-buttons"
-			></div>
-		</div>
-		<section id="summary"></section>
-		<section id="liabilities">
-			<h2>Debts</h2>
-			<div
-				class="card-grid"
-				id="liabilitiesGrid"
-			></div>
-		</section>
-		<section id="assets">
-			<h2>Assets</h2>
-			<div
-				class="card-grid"
-				id="assetsGrid"
-			></div>
-		</section>
-		<div style="display: flex; justify-content: center; margin: 2em">
-			<a href="./html-next/">BETA SITE</a>
-		</div>
-		<script
-			src="index.js"
-			type="module"
-		></script>
+		<script type="module">
+			import { setupMain } from './lib/index.js';
+			setupMain();
+		</script>
 	</body>
 </html>

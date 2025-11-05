@@ -1,0 +1,5 @@
+# Ignore vendor folder
+vendor/
+
+# Ignore minified JavaScript files
+*.min.js

@@ -28,7 +28,7 @@
 		const res = await window.auth.updateUserMetadata({
 			displayName: 'Updated Name - '+new Date().toISOString(),
 			bio: 'Updated Bio - '+new Date().toISOString(),
-			avatar: 'https://cents.crosshj.com/html-next/assets/test_user.jpg'
+			avatar: 'https://cents.crosshj.com/images/test_user.jpg'
 		});
 		if (res) {
 			SetData('profileData', res?.data?.user?.user_metadata || {});
