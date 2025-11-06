@@ -31,16 +31,14 @@
 		});
 
 		if (!confirmed) return false;
-		SetData('mainContent', '');
-		SetData('appContent', '');
+
 		try {
+			await SetData('appContent', '');
 			// Call logout API
 			await window.auth.signOut();
 
-			// Load auth page content
-			const response = await fetch('./fragments/_auth.html');
-			const content = await response.text();
-			await SetData('appContent', content);
+			await new Promise((resolve) => setTimeout(resolve, 500));
+			document.location.reload();
 		} catch (error) {
 			console.error('Logout error:', error);
 		}

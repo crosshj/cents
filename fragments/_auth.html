@@ -75,17 +75,7 @@
 					throw new Error(res.error.message);
 				}
 				await new Promise((resolve) => setTimeout(resolve, 500));
-
-				// Load the main page (which will return app content since we're now authenticated)
-				const appResponse = await fetch('./fragments/_app.html');
-				const appContent = await appResponse.text();
-				SetData('appContent', appContent);
-
-				// Navigate to the page indicated by hash, default to dashboard
-				const hash = window.location.hash || '#/dashboard';
-				const path = hash.replace(/^#/, '');
-				Navigate(path);
-				SetData('formData', null);
+				document.location.reload();
 			} catch (error) {
 				// Restore login form on network error
 				const loginTemplate = document.getElementById('loginTemplate');
@@ -201,7 +191,8 @@
 				if(res?.error){
 					throw new Error(res.error.message);
 				}
-				location.reload();
+				await new Promise((resolve) => setTimeout(resolve, 500));
+				document.location.reload();
 			} catch (error) {
 				// Restore signup form on network error
 				const signupTemplate = document.getElementById('signupTemplate');
