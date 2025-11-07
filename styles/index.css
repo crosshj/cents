@@ -88,10 +88,10 @@ h2 {
 }
 
 .app-html .fragment-loading-spinner > div {
-	width: 3rem !important;
-	height: 3rem !important;
-	border: 5px solid var(--paletteDivider) !important;
-	border-top: 5px solid var(--palettePrimaryLight) !important;
+	width: 3.5rem !important;
+	height: 3.5rem !important;
+	border: 7px solid var(--paletteDivider) !important;
+	border-top: 7px solid var(--palettePrimaryMain) !important;
 }
 
 /* Override framework CSS variables for custom theme */
@@ -388,4 +388,8 @@ x-button[variant='link'] button {
 			'sidebar'
 			'main';
 	}
+}
+
+html.dark .logo-image {
+	filter: invert(1) brightness(1) hue-rotate(320deg);
 }
