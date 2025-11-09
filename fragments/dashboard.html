@@ -25,14 +25,18 @@
 				<hr class="section-separator" />
 
 				<div class="row">
-					<label>Assets</label>
+					<label>
+						<x-link href="/assets">Assets</x-link>
+					</label>
 					<div>
 						<span class="muted">$ </span>
 						<span class="value amount">{{item_assets}}</span>
 					</div>
 				</div>
 				<div class="row">
-					<label>Debts</label>
+					<label>
+						<x-link href="/debts">Debts</x-link>
+					</label>
 					<div>
 						<span>−</span>
 						<span class="muted">$ </span>
@@ -63,12 +67,9 @@
 			<x-markdown>
 				#### Future   
 
-				- [ ] minimise framework boilerplate
-				- [ ] easier click to assets/debts sections
-				- [ ] total owed over time
-				- [ ] discretionary analysis
-				- [ ] reduction suggestions
-				- [ ] visualizations
+				- [ ] visualize totals over time
+				- [ ] discretionary spending analysis
+				- [ ] debt reduction suggestions
 			</x-markdown>
 		</div>
 	</x-content>
