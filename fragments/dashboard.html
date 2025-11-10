@@ -3,6 +3,20 @@
 
 	<x-navbar></x-navbar>
 
+	<template id="dashboard-notes">
+		<div class="card">
+			<!-- prettier-ignore -->
+			<x-markdown>
+				#### Future   
+
+				- [ ] visualize totals over time
+				- [ ] discretionary spending analysis
+				- [ ] debt reduction suggestions
+				- [ ] dynamic items based on history, ie discretionary spending
+			</x-markdown>
+		</div>
+	</template>
+
 	<template id="summary-template">
 		<div class="card">
 			<x-typography
@@ -62,15 +76,9 @@
 			item="global_accountsSummary"
 		></x-fill>
 
-		<div class="card">
-			<!-- prettier-ignore -->
-			<x-markdown>
-				#### Future   
-
-				- [ ] visualize totals over time
-				- [ ] discretionary spending analysis
-				- [ ] debt reduction suggestions
-			</x-markdown>
-		</div>
+		<x-fill
+			template="dashboard-notes"
+			item="global_accountsSummary"
+		></x-fill>
 	</x-content>
 </x-page>
