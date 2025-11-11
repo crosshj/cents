@@ -18,92 +18,110 @@
 		data-key="onLiabilitiesChange"
 	>
 		const debtName = decodeURIComponent(window.location.hash.split('?')[1]);
-		const debtDetail = state.accountsLiabilities.find(c => c.title === debtName);
-
-		console.log({ debtName, debtDetail });
-
+		const debtDetail = await window.getDebtDetail(debtName);
 		if(!debtDetail) {
 			SetData('pagePath', `/debts/Unknown Debt`);
-			console.warn('Debt not found:', debtName);
+			const debtNotFoundHTML = document.getElementById('debt-not-found-template').innerHTML;
+			SetData('debtDetailHTML', debtNotFoundHTML.replace('{{debtName}}', debtName));
 			return;
 		}
-
+		const debtDetailHTML = document.getElementById('debt-detail-template').innerHTML;
+		SetData('debtDetailHTML', debtDetailHTML);
 		SetData('pagePath', `/debts/${debtDetail.title}`);
+		SetData('debtDetailForm', debtDetail);
+	</script>
 
-		// form
-		const debtAmount = typeof debtDetail.amount === 'number'
-			? debtDetail.amount.toFixed(2)
-			: Number(debtDetail.amount.replaceAll(',', '')).toFixed(2);
-
-		const totalOwed = typeof debtDetail.total_owed === 'number'
-			? debtDetail.total_owed.toFixed(2)
-			: Number(debtDetail.total_owed.replaceAll(',', '')).toFixed(2);
-
-		SetData('debtDetailForm', {
-			...debtDetail,
-			amount: debtAmount,
-			total_owed: totalOwed,
-			occurrence: debtDetail.occurence || debtDetail.occurrence || 'monthly',
-		});
+	<script
+		type="application/flow"
+		data-key="updateDebt"
+	>
+		Alert({ message: 'WIP: update debt functionality not yet implemented.'});
 	</script>
 
 	<x-navbar titleSource="pagePath"></x-navbar>
 
-	<x-content class="fade-up">
-		<div class="cardX">
-			<x-form data="global_debtDetailForm">
-				<input
-					label="Title"
-					name="title"
-					disabled
-				/>
-				<input
-					label="Amount"
-					name="amount"
-					type="number"
-				/>
-				<select
-					label="Status"
-					name="status"
-				>
-					<option value="paid">Paid</option>
-					<option value="pending">Pending</option>
-					<option value="due">Due</option>
-				</select>
-				<input
-					label="Date"
-					name="date"
-					type="date"
-				/>
-				<select
-					label="Occurrence"
-					name="occurrence"
-				>
-					<option value="weekly">Weekly</option>
-					<option value="month">Monthly</option>
-					<option value="year">Yearly</option>
-				</select>
-				<input
-					label="Auto Pay"
-					type="toggle"
-					name="auto"
-				/>
-				<input
-					label="Total Owed"
-					name="total_owed"
-					type="number"
-				/>
-				<input
-					label="Website"
-					name="website"
-					type="url"
-				/>
-				<textarea
-					label="Notes"
-					name="note"
-					rows="6"
-				></textarea>
-			</x-form>
+	<template id="debt-not-found-template">
+		<div class="card">
+			<p>Debt not found: {{debtName}}.</p>
 		</div>
+	</template>
+
+	<template id="debt-detail-template">
+		<!-- prettier-ignore -->
+		<x-schema name="debtSchema">
+			title: string, required, min:2, max:50
+			amount: number, required, min:0
+			status: string
+			date: date
+			occurence: string
+			auto: boolean
+			total_owed: number, required, min:0
+			website: string
+			note: string
+		</x-schema>
+		<x-form
+			data="global_debtDetailForm"
+			schema="debtSchema"
+		>
+			<input
+				label="Title"
+				name="title"
+				disabled
+			/>
+			<select
+				label="Status"
+				name="status"
+			>
+				<option value="paid">Paid</option>
+				<option value="pending">Pending</option>
+				<option value="due">Due</option>
+			</select>
+			<input
+				label="Date"
+				name="date"
+				type="date"
+			/>
+			<input
+				label="Amount"
+				name="amount"
+				inputmode="decimal"
+			/>
+			<select
+				label="Occurrence"
+				name="occurence"
+			>
+				<option value="weekly">Weekly</option>
+				<option value="month">Monthly</option>
+				<option value="year">Yearly</option>
+			</select>
+			<input
+				label="Auto Pay"
+				type="toggle"
+				name="auto"
+			/>
+			<input
+				label="Total Owed"
+				name="total_owed"
+				inputmode="decimal"
+			/>
+			<input
+				label="Website"
+				name="website"
+				type="url"
+			/>
+			<textarea
+				label="Notes"
+				name="note"
+				rows="6"
+			></textarea>
+			<x-button
+				label="Update"
+				handler="updateDebt"
+			></x-button>
+		</x-form>
+	</template>
+
+	<x-content class="fade-up">
+		<x-fragment contents="debtDetailHTML"></x-fragment>
 	</x-content>
 </x-page>
