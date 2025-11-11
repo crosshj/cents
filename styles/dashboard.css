@@ -215,7 +215,7 @@ hr {
 
 	.meta-bottom {
 		margin-top: auto;
-		padding-top: 1em;
+		/* padding-top: 1em; */
 		display: flex;
 		justify-content: flex-end;
 		gap: 5px;
