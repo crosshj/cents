@@ -1,0 +1,109 @@
+<x-page>
+	<x-data name="accountsLiabilities"></x-data>
+	<x-data name="debtDetailHTML"></x-data>
+	<x-data name="debtDetailForm"></x-data>
+
+	<x-data
+		name="pagePath"
+		defaultValue="/debts"
+	></x-data>
+
+	<x-subscribe
+		path="accountsLiabilities"
+		handler="onLiabilitiesChange"
+	></x-subscribe>
+
+	<script
+		type="application/flow"
+		data-key="onLiabilitiesChange"
+	>
+		const debtName = decodeURIComponent(window.location.hash.split('?')[1]);
+		const debtDetail = state.accountsLiabilities.find(c => c.title === debtName);
+
+		console.log({ debtName, debtDetail });
+
+		if(!debtDetail) {
+			SetData('pagePath', `/debts/Unknown Debt`);
+			console.warn('Debt not found:', debtName);
+			return;
+		}
+
+		SetData('pagePath', `/debts/${debtDetail.title}`);
+
+		// form
+		const debtAmount = typeof debtDetail.amount === 'number'
+			? debtDetail.amount.toFixed(2)
+			: Number(debtDetail.amount.replaceAll(',', '')).toFixed(2);
+
+		const totalOwed = typeof debtDetail.total_owed === 'number'
+			? debtDetail.total_owed.toFixed(2)
+			: Number(debtDetail.total_owed.replaceAll(',', '')).toFixed(2);
+
+		SetData('debtDetailForm', {
+			...debtDetail,
+			amount: debtAmount,
+			total_owed: totalOwed,
+			occurrence: debtDetail.occurence || debtDetail.occurrence || 'monthly',
+		});
+	</script>
+
+	<x-navbar titleSource="pagePath"></x-navbar>
+
+	<x-content class="fade-up">
+		<div class="cardX">
+			<x-form data="global_debtDetailForm">
+				<input
+					label="Title"
+					name="title"
+					disabled
+				/>
+				<input
+					label="Amount"
+					name="amount"
+					type="number"
+				/>
+				<select
+					label="Status"
+					name="status"
+				>
+					<option value="paid">Paid</option>
+					<option value="pending">Pending</option>
+					<option value="due">Due</option>
+				</select>
+				<input
+					label="Date"
+					name="date"
+					type="date"
+				/>
+				<select
+					label="Occurrence"
+					name="occurrence"
+				>
+					<option value="weekly">Weekly</option>
+					<option value="month">Monthly</option>
+					<option value="year">Yearly</option>
+				</select>
+				<input
+					label="Auto Pay"
+					type="toggle"
+					name="auto"
+				/>
+				<input
+					label="Total Owed"
+					name="total_owed"
+					type="number"
+				/>
+				<input
+					label="Website"
+					name="website"
+					type="url"
+				/>
+				<textarea
+					label="Notes"
+					name="note"
+					rows="6"
+				></textarea>
+			</x-form>
+		</div>
+	</x-content>
+</x-page>

@@ -132,6 +132,14 @@
 		await window.refreshAccountsData();
 	</script>
 
+	<script
+		type="application/flow"
+		data-key="liabilityDetail"
+	>
+		const title = event.element.dataset.title;
+		Navigate(`/debts/detail.html?${encodeURIComponent(title)}`);
+	</script>
+
 	<x-navbar>
 		<x-button
 			variant="primary"
@@ -187,6 +195,15 @@
 						handler="archiveLiability"
 					>
 						archive
+					</x-button>
+
+					<x-button
+						class="link-button"
+						variant="link"
+						data-title="{{item_title}}"
+						handler="liabilityDetail"
+					>
+						detail
 					</x-button>
 				</div>
 			</div>
