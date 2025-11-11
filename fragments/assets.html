@@ -15,8 +15,6 @@
 		data-key="archiveAsset"
 	>
 		const title = event.element.dataset.title;
-		const { data: { session } = {} } = await window.auth.getSession();
-		if (!session?.user?.id) return;
 
 		const confirmed = await Confirm({
 			title: 'Archive Asset',
@@ -29,7 +27,7 @@
 		const asset = rawData.assets.find(x => x.title === title);
 		if (asset) {
 			asset.hidden = true;
-			await window.updateAndSaveAccounts(session.user.id, rawData);
+			await window.updateAndSaveAccounts(rawData);
 			await window.refreshAccountsData();
 		}
 	</script>
@@ -39,8 +37,6 @@
 		data-key="editAsset"
 	>
 		const title = event.element.dataset.title;
-		const { data: { session } = {} } = await window.auth.getSession();
-		if (!session?.user?.id) return;
 
 		const rawData = { ...state.accountsRawData };
 		const asset = rawData.assets.find(x => x.title === title);
@@ -72,7 +68,7 @@
 		const newNote = prompt('Note:', asset.note || '');
 		if (newNote !== null) asset.note = newNote || asset.note;
 
-		await window.updateAndSaveAccounts(session.user.id, rawData);
+		await window.updateAndSaveAccounts(rawData);
 		await window.refreshAccountsData();
 	</script>
 
@@ -80,9 +76,6 @@
 		type="application/flow"
 		data-key="addAsset"
 	>
-		const { data: { session } = {} } = await window.auth.getSession();
-		if (!session?.user?.id) return;
-
 		const title = prompt('Title:');
 		if (!title) return; // User cancelled or empty
 
@@ -115,7 +108,7 @@
 		rawData.assets = rawData.assets || [];
 		rawData.assets.push(newAsset);
 
-		await window.updateAndSaveAccounts(session.user.id, rawData);
+		await window.updateAndSaveAccounts(rawData);
 		await window.refreshAccountsData();
 	</script>
 

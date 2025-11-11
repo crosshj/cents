@@ -2,6 +2,10 @@
 	<x-data name="accountsLiabilities"></x-data>
 	<x-data name="debtDetailHTML"></x-data>
 	<x-data name="debtDetailForm"></x-data>
+	<x-data
+		name="showArchiveButton"
+		defaultValue="false"
+	></x-data>
 
 	<x-data
 		name="pagePath"
@@ -17,28 +21,160 @@
 		type="application/flow"
 		data-key="onLiabilitiesChange"
 	>
-		const debtName = decodeURIComponent(window.location.hash.split('?')[1]);
-		const debtDetail = await window.getDebtDetail(debtName);
-		if(!debtDetail) {
-			SetData('pagePath', `/debts/Unknown Debt`);
-			const debtNotFoundHTML = document.getElementById('debt-not-found-template').innerHTML;
-			SetData('debtDetailHTML', debtNotFoundHTML.replace('{{debtName}}', debtName));
-			return;
-		}
-		const debtDetailHTML = document.getElementById('debt-detail-template').innerHTML;
-		SetData('debtDetailHTML', debtDetailHTML);
-		SetData('pagePath', `/debts/${debtDetail.title}`);
-		SetData('debtDetailForm', debtDetail);
+		//NOTE: this is a workaround to avoid stale state on update
+		setTimeout(async () => {
+			const debtName = decodeURIComponent(window.location.hash.split('?')[1]);
+			const debtDetail = debtName === '_new'
+				? {
+					hidden: false,
+					date: new Date().toISOString().split('T')[0],
+					occurence: 'month',
+				}
+				: await window.getDebtDetail(debtName);
+			if(!debtDetail) {
+				SetData('pagePath', `/debts/Unknown Debt`);
+				const debtNotFoundHTML = document.getElementById('debt-not-found-template').innerHTML;
+				SetData('debtDetailHTML', debtNotFoundHTML.replace('{{debtName}}', debtName));
+				return;
+			}
+			SetData('debtDetailForm', debtDetail);
+			const debtDetailHTML = document.getElementById('debt-detail-template').innerHTML
+				.replace('{{titleEditDisabled}}', debtName === '_new' ? '' : 'disabled')
+				.replace('{{formActionLabel}}', debtName === '_new' ? 'Create' : 'Update');
+			SetData('debtDetailHTML', debtDetailHTML);
+			SetData('pagePath', `/debts/${debtName === '_new' ? 'New' : debtDetail.title}`);
+			SetData('showArchiveButton', debtName !== '_new' && debtDetail.hidden+'' !== 'true');
+			SetData('showRestoreButton', debtName !== '_new' && debtDetail.hidden+'' === 'true');
+		}, 1);
 	</script>
 
 	<script
 		type="application/flow"
 		data-key="updateDebt"
 	>
-		Alert({ message: 'WIP: update debt functionality not yet implemented.'});
+		const rawData = { ...state.accountsRawData };
+		const debtName = decodeURIComponent(window.location.hash.split('?')[1]);
+
+		let liability = rawData.liabilities.find(x => x.title === state.debtDetailForm.title);
+		if (debtName === '_new' && liability) {
+			Alert({
+				title: 'Debt already exists',
+				message: `Debt "${state.debtDetailForm.title}" already exists.`,
+			});
+			return;
+		}
+		if (!liability && debtName !== '_new'){
+			Alert({
+				title: 'Debt not found',
+				message: `Debt "${state.debtDetailForm.title}" not found.`,
+			});
+			return;
+		};
+		if (!liability && debtName === '_new'){
+			rawData.liabilities.push(state.debtDetailForm);
+			liability = rawData.liabilities.find(x => x.title === state.debtDetailForm.title);
+		}
+
+		SetData('debtDetailHTML', ''); //loading indicator
+
+		liability.title = state.debtDetailForm.title;
+		liability.amount = state.debtDetailForm.amount;
+		liability.status = state.debtDetailForm.status;
+		liability.date = state.debtDetailForm.date;
+		liability.occurence = state.debtDetailForm.occurence;
+		liability.auto = state.debtDetailForm.auto;
+		liability.total_owed = state.debtDetailForm.total_owed;
+		liability.website = state.debtDetailForm.website;
+		liability.note = state.debtDetailForm.note;
+
+		await window.updateAndSaveAccounts(rawData);
+		await window.refreshAccountsData();
+
+		if(debtName === '_new') {
+			Navigate(`/debts/detail.html?${encodeURIComponent(state.debtDetailForm.title)}`);
+		} else {
+			SetData('debtDetailForm', {}); //clear form
+		}
 	</script>
 
-	<x-navbar titleSource="pagePath"></x-navbar>
+	<script
+		type="application/flow"
+		data-key="archiveLiability"
+	>
+		const title = decodeURIComponent(window.location.hash.split('?')[1]);
+		const rawData = { ...state.accountsRawData };
+		const liability = rawData.liabilities.find(x => x.title === title);
+
+		if (!liability){
+			Alert({
+				title: 'Debt not found',
+				message: `Debt "${title}" not found.`,
+			});
+			return;
+		}
+
+		const confirmed = await Confirm({
+			title: 'Archive Liability',
+			message: `Are you sure you want to archive "${title}"?`,
+		});
+
+		if (!confirmed) return;
+
+		liability.hidden = true;
+		await window.updateAndSaveAccounts(rawData);
+		await window.refreshAccountsData();
+	</script>
+
+	<script
+		type="application/flow"
+		data-key="restoreLiability"
+	>
+		const title = decodeURIComponent(window.location.hash.split('?')[1]);
+		const rawData = { ...state.accountsRawData };
+		const liability = rawData.liabilities.find(x => x.title === title);
+
+		if (!liability){
+			Alert({
+				title: 'Debt not found',
+				message: `Debt "${title}" not found.`,
+			});
+			return;
+		}
+
+		const confirmed = await Confirm({
+			title: 'Restore Liability',
+			message: `Are you sure you want to restore "${title}"?`,
+		});
+
+		if (!confirmed) return;
+
+		liability.hidden = false;
+		await window.updateAndSaveAccounts(rawData);
+		await window.refreshAccountsData();
+	</script>
+
+	<x-navbar titleSource="pagePath">
+		<x-box
+			sx:display="WHEN global_showArchiveButton THEN 'block' ELSE 'none'"
+		>
+			<x-button
+				variant="outlined"
+				handler="archiveLiability"
+			>
+				Archive
+			</x-button>
+		</x-box>
+		<x-box
+			sx:display="WHEN global_showRestoreButton THEN 'block' ELSE 'none'"
+		>
+			<x-button
+				variant="outlined"
+				handler="restoreLiability"
+			>
+				Restore
+			</x-button>
+		</x-box>
+	</x-navbar>
 
 	<template id="debt-not-found-template">
 		<div class="card">
@@ -66,7 +202,7 @@
 			<input
 				label="Title"
 				name="title"
-				disabled
+				{{titleEditDisabled}}
 			/>
 			<select
 				label="Status"
@@ -84,14 +220,19 @@
 			<input
 				label="Amount"
 				name="amount"
+				type="number"
 				inputmode="decimal"
 			/>
 			<select
 				label="Occurrence"
 				name="occurence"
 			>
+				<option value="bi-week">Bi-Weekly</option>
 				<option value="weekly">Weekly</option>
 				<option value="month">Monthly</option>
+				<option value="bi-month">Bi-Monthly</option>
+				<option value="quarter">Quarterly</option>
+				<option value="semi-year">Semi-Yearly</option>
 				<option value="year">Yearly</option>
 			</select>
 			<input
@@ -102,6 +243,7 @@
 			<input
 				label="Total Owed"
 				name="total_owed"
+				type="number"
 				inputmode="decimal"
 			/>
 			<input
@@ -114,10 +256,12 @@
 				name="note"
 				rows="6"
 			></textarea>
+
 			<x-button
-				label="Update"
 				handler="updateDebt"
-			></x-button>
+				label="{{formActionLabel}}"
+			>
+			</x-button>
 		</x-form>
 	</template>
 
