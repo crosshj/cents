@@ -78,7 +78,7 @@
 		SetData('debtDetailHTML', ''); //loading indicator
 
 		liability.title = state.debtDetailForm.title;
-		liability.amount = state.debtDetailForm.amount;
+		liability.amount = window.timeWeightedAverage.inputCoerce(state.debtDetailForm.amount);
 		liability.status = state.debtDetailForm.status;
 		liability.date = state.debtDetailForm.date;
 		liability.occurence = state.debtDetailForm.occurence;
@@ -110,7 +110,7 @@
 		<!-- prettier-ignore -->
 		<x-schema name="debtSchema">
 			title: string, required, min:2, max:50
-			amount: number, required, min:0
+			amount: string, required, min:0
 			status: string
 			date: date
 			occurence: string
@@ -141,12 +141,11 @@
 				name="date"
 				type="date"
 			/>
-			<input
+			<textarea
 				label="Amount"
 				name="amount"
-				type="number"
-				inputmode="decimal"
-			/>
+				rows="2"
+			></textarea>
 			<select
 				label="Occurrence"
 				name="occurence"
