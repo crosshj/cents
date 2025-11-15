@@ -1,6 +1,6 @@
 <x-page>
 	<x-data name="accountsLiabilities"></x-data>
-	<x-data name="amountItems"></x-data>
+	<x-data name="amountCollectItems"></x-data>
 
 	<script
 		type="application/flow"
@@ -44,8 +44,9 @@
 		confirmButton.onclick = async () => {
 			await Alert({ title: 'Not Implemented', message:'Check back later.'});
 			//TODO: update liability data with amount and save all
-			await SetData('amountCollectItems', '');
 			modal.hide();
+			modal.updateBody('');
+			await SetData('amountCollectItems', '');
 		};
 
 		const cancelButton = modal.querySelector('.modal-button-cancel');
