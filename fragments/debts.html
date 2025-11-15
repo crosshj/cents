@@ -1,5 +1,6 @@
 <x-page>
 	<x-data name="accountsLiabilities"></x-data>
+	<x-data name="amountItems"></x-data>
 
 	<script
 		type="application/flow"
@@ -16,6 +17,64 @@
 	>
 		const title = event.element.dataset.title;
 		Navigate(`/debts/detail.html?${encodeURIComponent(title)}`);
+	</script>
+
+	<script
+		type="application/flow"
+		data-key="amountCollect"
+	>
+		const modal = document.getElementById('amountCollectModal');
+		if(!modal) return;
+
+		const title = event.element.dataset.title;
+		const account = state.accountsRawData.liabilities.find(x => x.title === title);
+		const amountItems = state.amountCollectItems || account.amount
+			.replace('[time-weighted-average]\n','').trim()
+			.split(',').map(x => x.trim().split(':').map(y => y.trim()))
+			.map(([amount,date]) => ({ amount: Number(amount), date}))
+		SetData('amountCollectItems', amountItems);
+
+		const collectModalBodyTemplate = document.getElementById('collectModalBodyTemplate');
+		const modalHTML = collectModalBodyTemplate.innerHTML;
+		modal.updateBody(modalHTML);
+
+		Array.from(modal.querySelectorAll('x-button')).forEach(x => x.removeAttribute('disabled'))
+
+		const confirmButton = modal.querySelector('.modal-button-confirm');
+		confirmButton.onclick = async () => {
+			await Alert({ title: 'Not Implemented', message:'Check back later.'});
+			//TODO: update liability data with amount and save all
+			await SetData('amountCollectItems', '');
+			modal.hide();
+		};
+
+		const cancelButton = modal.querySelector('.modal-button-cancel');
+		cancelButton.onclick = async () => {
+			//const confirmed = await Confirm({ title: 'Warning', message: 'This will discard your work.  You sure?'});
+			//if(!confirmed) return;
+			modal.hide();
+		}
+
+		modal.show();
+	</script>
+
+	<script
+		type="application/flow"
+		data-key="amountCollectAddNew"
+	>
+		SetData('amountCollectItems', [
+			...state.amountCollectItems,
+			{ date:new Date().toISOString().slice(0, 10), amount: "" }
+		]);
+	</script>
+
+	<script
+		type="application/flow"
+		data-key="amountCollectRemove"
+	>
+		const index = Number(event.element.dataset.index)-1;
+		const newList = state.amountCollectItems.filter((_, i) => i !== index);
+		SetData('amountCollectItems', newList);
 	</script>
 
 	<x-navbar>
@@ -65,6 +124,19 @@
 					>
 						detail
 					</x-button>
+
+					<x-box
+						sx:display="WHEN '{{item_amount_type}}' IS 'time-weighted-average' THEN 'block' ELSE 'none'"
+					>
+						<x-button
+							class="link-button"
+							variant="link"
+							data-title="{{item_title}}"
+							handler="amountCollect"
+						>
+							track
+						</x-button>
+					</x-box>
 				</div>
 			</div>
 
@@ -95,6 +167,91 @@
 			<div class="meta-bottom">
 				<x-icon icon="fa-{{item_statusIcon}}"></x-icon>
 				<span>{{item_date}}</span>
+			</div>
+		</div>
+	</template>
+
+	<style>
+		#amountCollectModal {
+			.modal-overlay {
+				.modal-container {
+					/* max-width: unset; */
+					.collectModalContainer {
+						height: 23rem;
+						overflow-y: auto;
+						padding-bottom: 4em;
+
+						x-form {
+							display: flex;
+							flex-direction: column;
+							gap: 1.5em;
+						}
+					}
+					input {
+						flex: 1;
+					}
+					x-button button {
+						min-width: unset;
+					}
+				}
+			}
+		}
+	</style>
+	<x-modal
+		id="amountCollectModal"
+		type="confirm"
+		confirmText="Save"
+		reuse="false"
+	>
+	</x-modal>
+	<template id="collectModalBodyTemplate">
+		<x-typography
+			variant="h3"
+			sx:mb="4"
+		>
+			Track Costs
+		</x-typography>
+		<x-typography
+			variant="body"
+			sx:mb="4"
+		>
+			TODO: show Time-weighted Average here
+		</x-typography>
+		<div class="collectModalContainer">
+			<x-form data="">
+				<x-map items="global_amountCollectItems">
+					<div style="display: flex; gap: 1em; align-items: center">
+						<input
+							label="Date"
+							name="date"
+							type="date"
+							value="{{item_date}}"
+						/>
+						<input
+							label="Amount"
+							name="amount"
+							type="number"
+							value="{{item_amount}}"
+						/>
+						<x-button
+							variant="text"
+							data-index="{{index}}"
+							handler="amountCollectRemove"
+							label=""
+							icon="fa-trash-o"
+							sx:padding="0.4em"
+						></x-button>
+					</div>
+				</x-map>
+			</x-form>
+			<div
+				style="display: flex; justify-content: center; margin-top: 2em"
+			>
+				<x-button
+					label="Add Amount"
+					handler="amountCollectAddNew"
+					variant="outlined"
+				></x-button>
 			</div>
 		</div>
 	</template>
