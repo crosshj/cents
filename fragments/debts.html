@@ -1,6 +1,11 @@
 <x-page>
 	<x-data name="accountsLiabilities"></x-data>
 	<x-data name="amountCollectItems"></x-data>
+	<x-data name="amountCollectItemsChanged"></x-data>
+	<x-data
+		name="timeWeightedAverage"
+		defaultValue="<span>0.00</span>"
+	></x-data>
 
 	<script
 		type="application/flow"
@@ -28,7 +33,7 @@
 
 		const title = event.element.dataset.title;
 		const account = state.accountsRawData.liabilities.find(x => x.title === title);
-		const amountItems = state.amountCollectItems || account.amount
+		const amountItems = state.amountCollectItemsChanged || account.amount
 			.replace('[time-weighted-average]\n','').trim()
 			.split(',').map(x => x.trim().split(':').map(y => y.trim()))
 			.map(([amount,date]) => ({ amount: Number(amount), date}))
@@ -42,11 +47,15 @@
 
 		const confirmButton = modal.querySelector('.modal-button-confirm');
 		confirmButton.onclick = async () => {
-			await Alert({ title: 'Not Implemented', message:'Check back later.'});
+			const toSave = await GetData('amountCollectItemsChanged') || await GetData('amountCollectItems')
 			//TODO: update liability data with amount and save all
+			console.log({ toSave });
+			await Alert({ title: 'Not Implemented', message:'Check back later.'});
+
 			modal.hide();
 			modal.updateBody('');
-			await SetData('amountCollectItems', '');
+			SetData('amountCollectItems', '');
+			SetData('amountCollectItemsChanged', '');
 		};
 
 		const cancelButton = modal.querySelector('.modal-button-cancel');
@@ -54,9 +63,14 @@
 			//const confirmed = await Confirm({ title: 'Warning', message: 'This will discard your work.  You sure?'});
 			//if(!confirmed) return;
 			modal.hide();
+			modal.updateBody('');
 		}
 
 		modal.show();
+		window.formUpdate = () => {
+			Trigger('updateTimeWeightedAverage');
+		};
+		window.formUpdate();
 	</script>
 
 	<script
@@ -65,8 +79,9 @@
 	>
 		SetData('amountCollectItems', [
 			...state.amountCollectItems,
-			{ date:new Date().toISOString().slice(0, 10), amount: "" }
+			{ date:new Date().toISOString().slice(0, 10), amount: "0.00" }
 		]);
+		window.formUpdate();
 	</script>
 
 	<script
@@ -76,6 +91,30 @@
 		const index = Number(event.element.dataset.index)-1;
 		const newList = state.amountCollectItems.filter((_, i) => i !== index);
 		SetData('amountCollectItems', newList);
+		window.formUpdate();
+	</script>
+
+	<script
+		type="application/flow"
+		data-key="updateTimeWeightedAverage"
+	>
+		const inputs = Array.from(document.querySelectorAll('.collectModalContainer x-form div > input')).map(x=>x.value)
+		const entries = [];
+		for(let i=0; i<inputs.length;){
+			entries.push({
+				d: new Date(inputs[i]),
+				v: Number(inputs[i+1])
+			});
+			i+=2;
+		}
+		const average = window.timeWeightedAverage.calculateTWA(entries)
+		SetData('timeWeightedAverage', `<span>${average}</span>`);
+
+		const updatedAmountCollect = entries.map(({d,v}) => ({
+			date: d.toISOString().slice(0, 10),
+			amount: v
+		}));
+		SetData('amountCollectItemsChanged', updatedAmountCollect);
 	</script>
 
 	<x-navbar>
@@ -212,12 +251,23 @@
 		>
 			Track Costs
 		</x-typography>
-		<x-typography
-			variant="body"
-			sx:mb="4"
+		<div
+			style="
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				margin-bottom: 3em;
+			"
 		>
-			TODO: show Time-weighted Average here
-		</x-typography>
+			<x-box
+				variant="body"
+				sx:display="flex"
+				sx:gap="2"
+			>
+				<span>Time-weighted Average:</span>
+				<x-fragment contents="global_timeWeightedAverage"></x-fragment>
+			</x-box>
+		</div>
 		<div class="collectModalContainer">
 			<x-form data="">
 				<x-map items="global_amountCollectItems">
@@ -227,12 +277,14 @@
 							name="date"
 							type="date"
 							value="{{item_date}}"
+							onchange="window.formUpdate()"
 						/>
 						<input
 							label="Amount"
 							name="amount"
 							type="number"
 							value="{{item_amount}}"
+							oninput="window.formUpdate()"
 						/>
 						<x-button
 							variant="text"
