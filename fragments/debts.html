@@ -47,10 +47,11 @@
 
 		const confirmButton = modal.querySelector('.modal-button-confirm');
 		confirmButton.onclick = async () => {
+			const confirmed = await Confirm({ title: 'Warning', message: 'This will overwrite the existing history.  You sure?'});
+			if(!confirmed) return;
+
 			const toSave = await GetData('amountCollectItemsChanged') || await GetData('amountCollectItems')
-			//TODO: update liability data with amount and save all
-			console.log({ toSave });
-			await Alert({ title: 'Not Implemented', message:'Check back later.'});
+			await window.timeWeightedAverage.saveHistory(account.title, toSave);
 
 			modal.hide();
 			modal.updateBody('');
